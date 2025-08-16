@@ -1,0 +1,20 @@
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+        - NEXT_PUBLIC_MAINTENANCE_MODE=${NEXT_PUBLIC_MAINTENANCE_MODE}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.development
+    environment:
+      - NEXT_PUBLIC_MAINTENANCE_MODE=${NEXT_PUBLIC_MAINTENANCE_MODE}
+    networks:
+      - server
+
+networks:
+  server:
+    name: server

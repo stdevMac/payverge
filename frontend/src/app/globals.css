@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* Web3Modal customization */
+    --w3m-color-fg-1: #000000 !important;
+    --w3m-color-fg-2: #000000 !important;
+    --w3m-color-fg-3: #000000 !important;
+    --w3m-accent-color: #000000 !important;
+    --w3m-accent-fill-color: #000000 !important;
+    --w3m-text-big-bold: 700 !important;
+    --w3m-text-medium-regular: 700 !important;
+    --w3m-text-small-regular: 700 !important;
+    --w3m-text-small-thin: 700 !important;
+    --w3m-overlay-background-color: rgba(0, 0, 0, 0.8) !important;
+    --primary: #274494;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+} */
+
+body {
+    /* color: rgb(var(--foreground-rgb));
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgb(var(--background-start-rgb))
+      )
+      rgb(var(--background-end-rgb)); */
+    background-color: #ffffff;
+    scrollbar-width: thin; /* Para Firefox */
+    scrollbar-color: #60a5fa #bfdbfe; /* Thumb (verde) y Track (gris) para Firefox */
+}
+
+/* Scrollbar personalizado para navegadores basados en WebKit */
+::-webkit-scrollbar {
+    width: 9px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+    background-color: #dbeafe; /* Color del fondo de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #60a5fa; /* Color del pulgar de desplazamiento */
+    border-radius: 9999px; /* Para hacer que sea redondeada */
+}
+
+/* //////////////////////////////////////// */
+
+/* global.css */
+/* Make wallet balance text darker */
+w3m-button::part(balance),
+w3m-button [data-testid="balance"],
+w3m-button div[role="button"],
+appkit-button::part(balance),
+w3m-button span,
+appkit-button span {
+    color: #000 !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+    text-shadow: 0 0 0 #000 !important;
+}
+
+/* Additional specificity for the Web3Modal button */
+:root w3m-button,
+:root appkit-button,
+:root {
+    --w3m-color-fg-1: #000 !important;
+    --w3m-color-fg-2: #000 !important;
+    --w3m-text-big-bold: 700 !important;
+    --w3m-accent-color: #000 !important;
+    --w3m-accent-fill-color: #000 !important;
+    --w3m-text-medium-regular: 700 !important;
+}
+
+.web3modal-modal-lightbox {
+    z-index: 9999; /* Ensure this is higher than other elements */
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    -webkit-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+    background-size: 200% 100%;
+  }
+  25% {
+    background-position: 100% 50%;
+    background-size: 200% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 100% 200%;
+  }
+  75% {
+    background-position: 0% 50%;
+    background-size: 200% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+    background-size: 200% 100%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 4s ease infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.shine-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shine 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

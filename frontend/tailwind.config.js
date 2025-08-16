@@ -1,51 +1,140 @@
 /** @type {import('tailwindcss').Config} */
+const { nextui } = require("@nextui-org/react");
+
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {
-      colors: {
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+      keyframes: {
+        slideFromRight: {
+          '0%': { transform: 'translateX(100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
         },
-        success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+        slideToLeft: {
+          '0%': { transform: 'translateX(0)', opacity: 1 },
+          '100%': { transform: 'translateX(-100%)', opacity: 0 },
         },
-        warning: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
+        slideFromLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
         },
+        slideToRight: {
+          '0%': { transform: 'translateX(0)', opacity: 1 },
+          '100%': { transform: 'translateX(100%)', opacity: 0 },
+        },
+        gradient: {
+          '0%, 100%': {
+            'background-position': '0% 50%',
+          },
+          '50%': {
+            'background-position': '100% 50%',
+          },
+        },
+        dotMove: {
+          '0%': { 
+            top: '-6px',
+            left: '0%',
+            transform: 'translateX(-50%)'
+          },
+          '25%': { 
+            top: '-6px',
+            left: '100%',
+            transform: 'translateX(-50%)'
+          },
+          '35%': { 
+            top: '-6px',
+            left: '100%',
+            transform: 'translateX(-50%)'
+          },
+          '40%': { 
+            top: '0%',
+            left: 'calc(100% + 6px)',
+            transform: 'translateY(-50%)'
+          },
+          '60%': { 
+            top: '100%',
+            left: 'calc(100% + 6px)',
+            transform: 'translateY(-50%)'
+          },
+          '65%': { 
+            top: '100%',
+            left: '100%',
+            transform: 'translate(-50%, 6px)'
+          },
+          '85%': { 
+            top: '100%',
+            left: '0%',
+            transform: 'translate(-50%, 6px)'
+          },
+          '90%': { 
+            top: '100%',
+            left: '0%',
+            transform: 'translate(-50%, 6px)'
+          },
+          '95%': { 
+            top: '0%',
+            left: '-6px',
+            transform: 'translateY(-50%)'
+          },
+          '100%': { 
+            top: '-6px',
+            left: '0%',
+            transform: 'translateX(-50%)'
+          }
+        },
+        pulseSlow: {
+          '0%, 100%': { 
+            opacity: 0.4,
+            transform: 'scale(1)'
+          },
+          '50%': { 
+            opacity: 0.8,
+            transform: 'scale(1.03)'
+          }
+        },
+        pulseShadow: {
+          '0%, 100%': { 
+            'box-shadow': '0 0 0 0 rgba(var(--color-primary), 0.7)'
+          },
+          '50%': { 
+            'box-shadow': '0 0 30px 10px rgba(var(--color-primary), 0.4)'
+          }
+        },
+        borderGlow: {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.5 },
+        },
+        borderGradient: {
+          '0%': {
+            transform: 'translateX(-50%) rotate(0deg)',
+          },
+          '100%': {
+            transform: 'translateX(0%) rotate(360deg)',
+          },
+        },
+      },
+      animation: {
+        'slideFromRight': 'slideFromRight 0.5s ease-out forwards',
+        'slideToLeft': 'slideToLeft 0.5s ease-out forwards',
+        'slideFromLeft': 'slideFromLeft 0.5s ease-out forwards',
+        'slideToRight': 'slideToRight 0.5s ease-out forwards',
+        'gradient': 'gradient 6s ease infinite',
+        'dot-move': 'dotMove 6s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+        'pulse-slow': 'pulseSlow 2s ease-in-out infinite',
+        'pulse-shadow': 'pulseShadow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'border-move': 'borderGlow 2s ease-in-out infinite',
+        'border-gradient': 'borderGradient 8s linear infinite',
+      },
+      backgroundSize: {
+        'gradient-size': '200% 200%',
       },
     },
   },
-  plugins: [],
+  darkMode: "class",
+  plugins: [nextui()],
 }

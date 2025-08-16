@@ -1,0 +1,35 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub Actions UI
+    inputs:
+      maintenance_mode:
+        description: 'Enable maintenance mode'
+        required: false
+        type: boolean
+        default: false
+      coming_soon_mode:
+        description: 'Enable coming soon mode'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          username: ${{ secrets.USERNAME_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          port: ${{ secrets.PORT_PROD }}
+          script: |
+            cd ${{ secrets.PROJECT_PATH_PROD }}
+            git pull origin main
+            cp .env.production.sample .env
+            ENV_COPY=production NEXT_PUBLIC_MAINTENANCE_MODE=${{ inputs.maintenance_mode == true }} NEXT_PUBLIC_COMING_SOON_MODE=${{ inputs.coming_soon_mode == true }} docker compose up -d --build --no-deps
+

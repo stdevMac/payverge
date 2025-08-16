@@ -1,0 +1,32 @@
+name: Deploy Development
+
+on:
+  push:
+    branches: [ main ]  # Trigger on push to main branch
+  workflow_dispatch:  # Manual trigger from GitHub Actions UI
+    inputs:
+      maintenance_mode:
+        description: 'Enable maintenance mode'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /root/shares-car-front
+            git pull origin main
+            cp .env.development.sample .env
+            ENV_COPY=development NEXT_PUBLIC_MAINTENANCE_MODE=${{ inputs.maintenance_mode == true }} docker compose -f docker-compose.yml up -d --build --no-deps
+
