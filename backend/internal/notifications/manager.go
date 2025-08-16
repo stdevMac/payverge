@@ -1,8 +1,8 @@
 package notifications
 
 import (
-	"github.com/stdevMac/shares/internal/emails"
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/emails"
+	"web3-boilerplate/internal/structs"
 )
 
 // NotificationManager handles routing notifications to the appropriate dispatcher
@@ -29,15 +29,15 @@ func (m *NotificationManager) shouldSendNotification(templateID int, notificatio
 		}
 
 		switch templateID {
-		case emails.TemplateGenericNotification:
+		case emails.TemplateGenericNotification, emails.TemplateSpanishGenericNotification:
 			return preferences.TransactionalEnabled
-		case emails.TemplateFleetAlmostFunded, emails.TemplateSpanishFleetAlmostFunded:
+		case emails.TemplateWelcomeEmail, emails.TemplateSpanishWelcomeEmail:
 			return preferences.TransactionalEnabled
-		case emails.TemplateFleetFunded, emails.TemplateAdminFleetFunded, emails.TemplateSpanishFleetFunded:
+		case emails.TemplatePasswordReset, emails.TemplateSpanishPasswordReset:
 			return preferences.TransactionalEnabled
-		case emails.TemplateFleetNotRealized, emails.TemplateSpanishFleetNotRealized:
+		case emails.TemplateEmailVerification, emails.TemplateSpanishEmailVerification:
 			return preferences.TransactionalEnabled
-		case emails.TemplateDailyReport:
+		case emails.TemplateAdminNotification, emails.TemplateDailyReport:
 			return preferences.ReportsEnabled
 		default:
 			return preferences.TransactionalEnabled // Default to transactional for unknown types

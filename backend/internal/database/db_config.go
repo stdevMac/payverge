@@ -28,15 +28,15 @@ type DBClient *mongo.Client
 
 var (
 	dbName                   = "database"
-	fleetCollectionName      = "fleets"
 	usersCollectionName      = "users"
 	operationsCollectionName = "operations"
 	errorLogsCollectionName  = "error_logs"
+	subscribersCollectionName = "subscribers"
 
 	mongoClient *mongo.Client
 )
 
-func InitCarsDB(config *DbConfig) {
+func InitDB(config *DbConfig) {
 	clientOptions := options.Client().ApplyURI(config.URI)
 
 	// Add the authentication credentials
@@ -57,4 +57,9 @@ func InitCarsDB(config *DbConfig) {
 	}
 
 	mongoClient = client
+}
+
+// GetClient returns the MongoDB client instance
+func GetClient() *mongo.Client {
+	return mongoClient
 }

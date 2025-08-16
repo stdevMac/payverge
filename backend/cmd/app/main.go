@@ -11,18 +11,20 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/stdevMac/shares/internal/faucet"
-
-	"github.com/stdevMac/shares/internal/s3"
+	"web3-boilerplate/internal/faucet"
+	"web3-boilerplate/internal/health"
+	"web3-boilerplate/internal/logger"
+	"web3-boilerplate/internal/middleware"
+	"web3-boilerplate/internal/s3"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/emails"
-	"github.com/stdevMac/shares/internal/metrics"
-	"github.com/stdevMac/shares/internal/notifications"
-	"github.com/stdevMac/shares/internal/server"
-	"github.com/stdevMac/shares/internal/telegram"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/emails"
+	"web3-boilerplate/internal/metrics"
+	"web3-boilerplate/internal/notifications"
+	"web3-boilerplate/internal/server"
+	"web3-boilerplate/internal/telegram"
 )
 
 func main() {
@@ -67,10 +69,10 @@ func main() {
 
 	// Initialize the email server
 	emailServer := emails.NewEmailServer(
-		"Token Fleet Info <info@tokenfleet.io>",
-		"Token Fleet News <info@news.tokenfleet.io>",
-		"Token Fleet Updates <info@updates.tokenfleet.io>",
-		"63494ce7-430a-43c6-b950-fa732da363a3",
+		os.Getenv("FROM_EMAIL"),
+		os.Getenv("FROM_EMAIL_NEWS"),
+		os.Getenv("FROM_EMAIL_UPDATES"),
+		os.Getenv("POSTMARK_SERVER_TOKEN"),
 	)
 
 	// Initialize notification dispatchers
@@ -93,7 +95,7 @@ func main() {
 
 	// Initialize the database
 	config := database.NewConfig(*uriFlag, *usernameFlag, *passwordFlag)
-	database.InitCarsDB(config)
+	database.InitDB(config)
 
 	// Initialize S3
 	if err := s3.InitS3(*s3Bucket, *awsAccessKey, *awsSecretKey, *awsRegion, *s3EndpointURL); err != nil {
@@ -103,16 +105,30 @@ func main() {
 	if err := s3.InitS3Protected(*s3ProtectedBucket, *awsProtectedAccessKey, *awsProtectedSecretKey, *awsRegion, *s3ProtectedEndpointURL); err != nil {
 		log.Fatalf("Failed to initialize S3: %v", err)
 	}
+	// Initialize structured logging
+	logger.InitLogger()
+
 	// Initialize the metrics
 	metrics.Init()
 
-	// Initialize PostHog
-	metrics.InitPostHogClient("phc_lHcZzDzjvzncDeqCoRugImiNoTS0RXOH7lyTRs7pBjI", "https://us.i.posthog.com")
-	defer metrics.ClosePostHogClient()
+	// Initialize PostHog with environment variable
+	posthogAPIKey := os.Getenv("POSTHOG_API_KEY")
+	posthogHost := os.Getenv("POSTHOG_HOST")
+	if posthogAPIKey != "" && posthogHost != "" {
+		metrics.InitPostHogClient(posthogAPIKey, posthogHost)
+		defer metrics.ClosePostHogClient()
+	}
+
+	// Create rate limiter (60 requests per minute)
+	rateLimiter := middleware.NewRateLimiter(60)
 
 	r := gin.Default()
 	r.Use(gin.Recovery())
-	r.Use(CORSMiddleware())
+	r.Use(middleware.CORS())
+	r.Use(middleware.SecurityHeaders())
+	r.Use(middleware.InputValidation())
+	r.Use(middleware.JSONSizeLimit(10 << 20)) // 10MB limit
+	r.Use(rateLimiter.RateLimit())
 	r.Use(server.PrometheusMiddleware())
 
 	// Configure Gin to handle larger file uploads
@@ -133,12 +149,10 @@ func main() {
 	// Public routes (do not require authentication)
 	publicRoutes := r.Group("/api/v1/")
 	{
-		// Health check endpoint
-		publicRoutes.GET("/health", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"status": "UP",
-			})
-		})
+		// Health check endpoints
+		publicRoutes.GET("/health", health.Handler(database.GetClient(), "1.0.0"))
+		publicRoutes.GET("/health/ready", health.ReadinessHandler(database.GetClient()))
+		publicRoutes.GET("/health/live", health.LivenessHandler())
 
 		// Telegram webhook
 		publicRoutes.POST("/telegram/webhook", server.WebhookHandler)
@@ -246,18 +260,4 @@ func main() {
 	log.Println("Server exiting")
 }
 
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, PATCH, DELETE")
-
-		if c.Request.Method == "OPTIONS" {
-			c.Status(http.StatusOK)
-			return
-		}
-
-		c.Next()
-	}
-}
+// Removed old CORS middleware - now using secure CORS from middleware package

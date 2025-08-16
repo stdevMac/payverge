@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/stdevMac/shares/internal/notifications"
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/notifications"
+	"web3-boilerplate/internal/structs"
 )
 
 var notificationManager *notifications.NotificationManager

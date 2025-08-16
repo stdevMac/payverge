@@ -2,7 +2,7 @@ package migrations
 
 import (
 	"fmt"
-	"github.com/stdevMac/shares/internal/database"
+	"web3-boilerplate/internal/database"
 )
 
 // SetDefaultNotificationPreferences sets all notification preference fields to true for existing users

@@ -3,9 +3,9 @@ package server
 import (
 	"log"
 
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/emails"
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/emails"
+	"web3-boilerplate/internal/structs"
 )
 
 func getTemplateLanguage(templateId int, language string) int {
@@ -13,24 +13,14 @@ func getTemplateLanguage(templateId int, language string) int {
 		return templateId
 	}
 	switch templateId {
-	case emails.TemplateFleetFunded:
-		return emails.TemplateSpanishFleetFunded
-	case emails.TemplateFleetAlmostFunded:
-		return emails.TemplateSpanishFleetAlmostFunded
-	case emails.TemplateFleetReadyToInvest:
-		return emails.TemplateSpanishFleetReadyToInvest
-	case emails.TemplateFleetNotRealized:
-		return emails.TemplateSpanishFleetNotRealized
-	case emails.TemplateCarSold:
-		return emails.TemplateSpanishCarSold
-	case emails.TemplateCarBought:
-		return emails.TemplateSpanishCarBought
-	case emails.TemplateCarRented:
-		return emails.TemplateSpanishCarRented
-	case emails.TemplateCarMaintenance:
-		return emails.TemplateSpanishCarMaintenance
-	case emails.TemplateCarAvailable:
-		return emails.TemplateSpanishCarAvailable
+	case emails.TemplateWelcomeEmail:
+		return emails.TemplateSpanishWelcomeEmail
+	case emails.TemplateGenericNotification:
+		return emails.TemplateSpanishGenericNotification
+	case emails.TemplatePasswordReset:
+		return emails.TemplateSpanishPasswordReset
+	case emails.TemplateEmailVerification:
+		return emails.TemplateSpanishEmailVerification
 	default:
 		return templateId
 	}
@@ -75,7 +65,7 @@ func sendAdminNotification(title, description string, templateID int, templateDa
 			TGChatID:               677517973,
 			NotificationPreference: structs.TGNotificationPreference,
 			Role:                   structs.RoleAdmin,
-			Email:                  "marcos@tokenfleet.io",
+			Email:                  "admin@web3boilerplate.com",
 		}
 		adminNotification := structs.NewTemplateNotification(title, description, uint(adminUser.TGChatID), templateID, templateData)
 		SendNotification(adminNotification, adminUser)

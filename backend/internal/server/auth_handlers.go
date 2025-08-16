@@ -9,13 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/logic"
-	"github.com/stdevMac/shares/internal/metrics"
-	"github.com/stdevMac/shares/internal/structs"
-	"github.com/stdevMac/shares/internal/utils"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/logic"
+	"web3-boilerplate/internal/metrics"
+	"web3-boilerplate/internal/structs"
+	"web3-boilerplate/internal/utils"
 )
 
 var ChallengeStore *logic.ChallengeStore
@@ -198,7 +198,7 @@ func SignIn(c *gin.Context) {
 
 	metrics.AuthOperations.WithLabelValues("sign_in_success").Inc()
 	ChallengeStore.Delete(address)
-	c.SetCookie("session_token", token, 3600*24, "/", "localhost", false, true)
+	c.SetCookie("session_token", token, 3600*24, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"success": true, "token": token, "address": address})
 
 	// Track successful sign in
@@ -216,7 +216,7 @@ func SignIn(c *gin.Context) {
 func SignOut(c *gin.Context) {
 	metrics.AuthOperations.WithLabelValues("sign_out").Inc()
 	// Invalidate the session token (remove cookie)
-	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
+	c.SetCookie("session_token", "", -1, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully signed out"})
 
 	// Track sign out

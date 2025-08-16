@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/metrics"
+	"web3-boilerplate/internal/metrics"
 	"net/http"
 	"strings"
 )
@@ -29,7 +29,6 @@ func AuthenticationMiddleware() gin.HandlerFunc {
 		tokenString = tokenParts[1]
 		// Remove the \"\" from the token string
 		tokenString = tokenString[1 : len(tokenString)-1]
-		fmt.Println("tokenString auth: ", tokenString)
 		claims, err := VerifyToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication token"})
@@ -64,7 +63,6 @@ func AuthenticationAdminMiddleware() gin.HandlerFunc {
 		tokenString = tokenParts[1]
 		// Remove the \"\" from the token string
 		tokenString = tokenString[1 : len(tokenString)-1]
-		fmt.Println("tokenString auth: ", tokenString)
 		claims, err := VerifyToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authentication token"})

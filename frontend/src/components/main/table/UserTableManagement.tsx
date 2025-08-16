@@ -128,7 +128,6 @@ export const UserTableManagement = ({ setToggleSwitch }: Props) => {
           const referralCount = user.referees
             ? Object.keys(user.referees).length
             : 0;
-          const fleetCount = user.referees?.length || 0;
           return (
             <div className="flex items-center gap-2">
               <Tooltip content="User Referrals">

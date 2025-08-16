@@ -3,7 +3,7 @@ package emails
 import (
 	"log"
 
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/structs"
 )
 
 // EmailServerDispatcher wraps the EmailServer to implement NotificationDispatcher

@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/metrics"
-	"github.com/stdevMac/shares/internal/structs"
-	"github.com/stdevMac/shares/internal/utils"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/metrics"
+	"web3-boilerplate/internal/structs"
+	"web3-boilerplate/internal/utils"
 
 	"math/big"
 )

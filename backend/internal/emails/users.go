@@ -1,7 +1,7 @@
 package emails
 
 import (
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/structs"
 	"strings"
 )
 

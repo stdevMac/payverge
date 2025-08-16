@@ -8,9 +8,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/metrics"
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/metrics"
+	"web3-boilerplate/internal/structs"
 )
 
 var bot *tgbotapi.BotAPI

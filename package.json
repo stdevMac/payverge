@@ -1,37 +1,41 @@
 {
-  "name": "invoice-generator",
+  "name": "web3-boilerplate",
   "version": "1.0.0",
-  "description": "One-Click USDC Invoice Generator - Professional crypto invoices with automatic payments",
+  "description": "A comprehensive, production-ready boilerplate for building Web3 applications with modern authentication, blockchain integration, and scalable architecture",
   "scripts": {
     "start": "./start.sh",
     "dev": "./start.sh",
     "build": "npm run build:contracts && npm run build:frontend",
-    "build:contracts": "cd contracts && npm run compile",
-    "build:backend": "cd backend && go build -o invoice-generator main.go",
+    "build:contracts": "cd contracts && forge build",
+    "build:backend": "cd backend && go build -o web3-boilerplate cmd/app/main.go",
     "build:frontend": "cd frontend && npm run build",
-    "deploy:contracts": "cd contracts && npx hardhat run scripts/deploy.js",
-    "test": "npm run test:contracts",
-    "test:contracts": "cd contracts && npm run test",
+    "deploy:contracts": "cd contracts && forge script script/Deploy.s.sol",
+    "test": "npm run test:contracts && npm run test:backend && npm run test:frontend",
+    "test:contracts": "cd contracts && forge test",
+    "test:backend": "cd backend && go test ./...",
+    "test:frontend": "cd frontend && npm run test",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
   },
   "keywords": [
-    "invoice",
-    "crypto",
-    "usdc",
-    "blockchain",
-    "payments",
     "web3",
-    "smart-contracts",
-    "freelancer",
-    "ethereum"
+    "blockchain",
+    "ethereum",
+    "siwe",
+    "boilerplate",
+    "nextjs",
+    "golang",
+    "mongodb",
+    "wagmi",
+    "reown",
+    "smart-contracts"
   ],
   "author": "Your Name",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/invoice-generator.git"
+    "url": "https://github.com/yourusername/web3-boilerplate.git"
   },
   "engines": {
     "node": ">=18.0.0",

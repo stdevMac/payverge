@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/database"
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/database"
+	"web3-boilerplate/internal/structs"
 )
 
 // UpdateNotificationPreferencesRequest represents the request body for updating notification preferences

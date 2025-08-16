@@ -1,5 +1,5 @@
 {
-  "name": "car_rental",
+  "name": "web3-boilerplate-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest",
     "format": "npx prettier --write \"src/**/*.tsx\""
   },
   "dependencies": {

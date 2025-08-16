@@ -230,7 +230,7 @@ export default function Profile() {
     }
 
     // Create the bot link with the user's address as the start parameter
-    const botUrl = `https://t.me/tokenfleet_bot?start=${user.address}`;
+    const botUrl = `https://t.me/web3boilerplate_bot?start=${user.address}`;
 
     // Open the bot link in a new tab
     window.open(botUrl, "_blank");

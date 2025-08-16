@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/s3"
+	"web3-boilerplate/internal/s3"
 	"net/http"
 	"path/filepath"
 	"strings"

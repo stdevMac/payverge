@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/stdevMac/shares/internal/structs"
+	"github.com/golang-jwt/jwt/v4"
+	"web3-boilerplate/internal/structs"
 	"time"
 )
 

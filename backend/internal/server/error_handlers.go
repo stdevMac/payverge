@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/database"
+	"web3-boilerplate/internal/database"
 )
 
 // ErrorLogPayload represents the structure of the error log received from the frontend

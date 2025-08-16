@@ -12,9 +12,7 @@ import { FullUserInterface } from "@/interface";
 import { SubscriberInterface } from "@/interface/subscribers/subscriber-interface";
 import { getAllSubscribers } from "@/api/subscribers/getSubscribers";
 import {
-  FaCar,
   FaUsers,
-  FaMoneyBillWave,
   FaEnvelope,
   FaChartLine,
 } from "react-icons/fa";
@@ -141,7 +139,7 @@ const AdminDashboard = () => {
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-bold">Admin Dashboard</h1>
         <p className="text-default-500">
-          Welcome back! Here&#39;s what&#39;s happening with your fleets today.
+          Welcome back! Here&apos;s what&apos;s happening with your platform today.
         </p>
       </div>
 
@@ -186,7 +184,7 @@ const AdminDashboard = () => {
             <div className="flex flex-col">
               <p className="text-lg font-semibold">Growth Trends</p>
               <p className="text-small text-default-500">
-                Monthly growth of users, subscribers
+                Monthly growth of users and subscribers
               </p>
             </div>
           </CardHeader>
@@ -222,18 +220,6 @@ const AdminDashboard = () => {
                     <stop
                       offset="95%"
                       stopColor={COLORS.success}
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                  <linearGradient id="colorFleets" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor={COLORS.warning}
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor={COLORS.warning}
                       stopOpacity={0}
                     />
                   </linearGradient>

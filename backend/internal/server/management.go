@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/database"
+	"web3-boilerplate/internal/database"
 )
 
 // GetAllUsers Serve all users information

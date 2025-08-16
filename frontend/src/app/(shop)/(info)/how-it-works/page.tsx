@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardBody } from "@nextui-org/react";
 import {
   IoWalletOutline,
-  IoCarSportOutline,
+  IoCodeSlashOutline,
   IoStatsChartOutline,
   IoShieldCheckmarkOutline,
   IoRocketOutline,
@@ -44,11 +44,11 @@ export default function HowItWorksPage() {
       title: t('howItWorks.steps.2.title'),
       description: t('howItWorks.steps.2.description'),
       details: Array.isArray(t('howItWorks.steps.2.details')) ? t('howItWorks.steps.2.details') : [
-        "Premium vehicle selection",
-        "Transparent documentation",
-        "Flexible investment options"
+        "Smart contract integration",
+        "Transparent blockchain transactions",
+        "Flexible development options"
       ],
-      icon: <IoCarSportOutline className="w-12 h-12 text-primary" />
+      icon: <IoCodeSlashOutline className="w-12 h-12 text-primary" />
     },
     {
       title: t('howItWorks.steps.3.title'),

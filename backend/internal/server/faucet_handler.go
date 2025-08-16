@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stdevMac/shares/internal/database"
+	"web3-boilerplate/internal/database"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stdevMac/shares/internal/faucet"
+	"web3-boilerplate/internal/faucet"
 )
 
 // CheckAndTopUp handles requests to check an Ethereum address balance and top it up if needed

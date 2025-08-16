@@ -3,7 +3,7 @@ package structs
 import (
 	"time"
 
-	"github.com/stdevMac/shares/internal/utils"
+	"web3-boilerplate/internal/utils"
 )
 
 type Notification struct {

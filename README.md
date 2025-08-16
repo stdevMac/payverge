@@ -1,80 +1,87 @@
-# One-Click USDC Invoice Generator
+# Web3 Boilerplate
 
-A comprehensive web application for creating professional crypto invoices with automatic USDC payments, built with smart contracts, Golang backend, and Next.js frontend.
+A comprehensive, production-ready boilerplate for building Web3 applications with modern authentication, blockchain integration, and scalable architecture.
 
 ## 🚀 Features
 
-- **Smart Contract Payments**: Automatic 1% fee split with 99% going directly to creators
-- **Professional Invoices**: Clean, branded invoice creation and sharing
-- **Email Notifications**: Automated invoice delivery and payment confirmations via Postmark
-- **QR Code Support**: Mobile-friendly payment links and QR codes
-- **Real-time Updates**: WebSocket integration for instant payment notifications
-- **Multi-chain Support**: Ethereum mainnet with Polygon/Base expansion planned
-- **Wallet Integration**: RainbowKit + Wagmi for seamless Web3 connectivity
+- **SIWE Authentication**: Sign-In with Ethereum using Reown AppKit + Wagmi
+- **Multi-chain Support**: Ethereum, Polygon, Base with easy chain switching
+- **Modern Stack**: Next.js 14, Golang backend, MongoDB database
+- **Web3 Integration**: Contract interaction, transaction handling, wallet management
+- **File Storage**: AWS S3 integration with dual bucket support
+- **Notifications**: Email (Postmark) and Telegram bot integration
+- **Real-time Updates**: WebSocket support for live data
+- **Monitoring**: Prometheus metrics and PostHog analytics
+- **Containerized**: Docker Compose for easy development and deployment
 
 ## 🏗️ Architecture
 
-### Smart Contract (`/contracts`)
-- **InvoiceGenerator.sol**: Core contract handling invoice creation and payments
-- **1% Platform Fee**: Automatic fee deduction with direct creator payouts
-- **Event Emission**: Real-time blockchain events for payment tracking
+### Smart Contracts (`/contracts`)
+- **Foundry Setup**: Modern Solidity development environment
+- **Contract Templates**: ERC20, ERC721, and governance contract examples
+- **Deployment Scripts**: Automated deployment to multiple networks
+- **Testing Suite**: Comprehensive contract testing with Foundry
 
 ### Backend (`/backend`)
-- **Golang + Gin**: High-performance API server
-- **PostgreSQL**: Invoice and payment data storage
-- **Event Listener**: Blockchain event monitoring via go-ethereum
-- **Email Service**: Postmark integration for notifications
-- **QR/Link Generation**: Payment link and QR code services
+- **Golang + Gin**: High-performance REST API server
+- **MongoDB**: Document database with connection pooling
+- **SIWE Authentication**: Ethereum-based user authentication
+- **Web3 Integration**: Ethereum client for blockchain interactions
+- **File Upload**: S3 integration for secure file storage
+- **Notifications**: Multi-channel notification system
 
 ### Frontend (`/frontend`)
 - **Next.js 14**: Modern React framework with App Router
-- **RainbowKit + Wagmi**: Web3 wallet connection and contract interaction
-- **Tailwind CSS**: Responsive, modern UI design
-- **Real-time Updates**: WebSocket connection for live payment status
+- **Reown AppKit**: Advanced wallet connection and management
+- **Wagmi + Viem**: Type-safe Ethereum interactions
+- **NextUI + Tailwind**: Beautiful, responsive UI components
+- **Internationalization**: Multi-language support with next-intl
+- **State Management**: Zustand + React Query for optimal performance
 
-## 🛠️ Setup Instructions
+## 🛠️ Quick Start
 
 ### Prerequisites
 - Node.js 18+
 - Go 1.21+
-- PostgreSQL 14+
-- Ethereum wallet with testnet/mainnet access
+- MongoDB 7.0+
+- Docker & Docker Compose
 
-### 1. Environment Configuration
+### 1. Environment Setup
 ```bash
-cp .env.example .env
+cp .env.sample .env
 # Edit .env with your configuration
 ```
 
-### 2. Database Setup
+### 2. Start with Docker (Recommended)
 ```bash
-# Create PostgreSQL database
-createdb invoice_generator
-
-# Database will be auto-migrated on first run
+npm run docker:up
 ```
 
-### 3. Smart Contract Deployment
+### 3. Manual Setup
+
+#### Database
+```bash
+# Start MongoDB
+docker run -d -p 27017:27017 --name mongodb mongo:7.0
+```
+
+#### Smart Contracts
 ```bash
 cd contracts
-npm install
-npx hardhat compile
-
-# Deploy to testnet (Sepolia)
-npx hardhat run scripts/deploy.js --network sepolia
-
-# Update CONTRACT_ADDRESS in .env
+forge install
+forge build
+forge test
 ```
 
-### 4. Backend Setup
+#### Backend
 ```bash
 cd backend
 go mod download
-go run main.go
+go run cmd/app/main.go
 # Server runs on http://localhost:8080
 ```
 
-### 5. Frontend Setup
+#### Frontend
 ```bash
 cd frontend
 npm install
@@ -82,126 +89,164 @@ npm run dev
 # Frontend runs on http://localhost:3000
 ```
 
-## 📝 Usage
+## 📝 Configuration
 
-### Creating an Invoice
-1. Connect your wallet on the homepage
-2. Fill out the invoice form with:
-   - Title and description
-   - Amount in USDC
-   - Optional client email and due date
-3. Submit to create invoice and get shareable payment link
+### Environment Variables
 
-### Paying an Invoice
-1. Visit the payment link
-2. Connect wallet and approve USDC spending
-3. Enter payment amount (supports partial payments)
-4. Confirm transaction - 99% goes to creator, 1% platform fee
+#### Required
+```env
+# Database
+MONGO_ROOT_USERNAME=admin
+MONGO_ROOT_PASSWORD=your_password
+MONGO_DATABASE=your_app_name
 
-### Managing Invoices
-- View all your invoices in the dashboard
-- Track payment status in real-time
-- Copy payment links and download QR codes
-- View transaction history on Etherscan
+# Web3
+NEXT_PUBLIC_PROJECT_ID=your_wallet_connect_project_id
+NEXT_PUBLIC_ALCHEMY_ID=your_alchemy_api_key
+RPC_URL=https://eth-mainnet.g.alchemy.com/v2/your-key
+CHAIN_ID=1
+
+# Authentication
+FAUCET_PRIVATE_KEY=your_private_key_for_testnet_faucet
+```
+
+#### Optional
+```env
+# AWS S3
+AWS_ACCESS_KEY=your_aws_access_key
+AWS_SECRET_KEY=your_aws_secret_key
+S3_BUCKET=your_bucket_name
+
+# Notifications
+POSTMARK_API_KEY=your_postmark_key
+TELEGRAM_TOKEN=your_telegram_bot_token
+
+# Analytics
+POSTHOG_API_KEY=your_posthog_key
+```
 
 ## 🔧 API Endpoints
 
-### Invoices
-- `POST /api/v1/invoices` - Create new invoice
-- `GET /api/v1/invoices/:id` - Get invoice details
-- `GET /api/v1/invoices?creator=:address` - Get invoices by creator
-- `DELETE /api/v1/invoices/:id` - Cancel invoice
+### Authentication
+- `POST /api/v1/auth/challenge` - Generate SIWE challenge
+- `POST /api/v1/auth/signin` - Sign in with Ethereum
+- `POST /api/v1/auth/signout` - Sign out user
+- `GET /api/v1/auth/session` - Get current session
 
-### Payments
-- `GET /api/v1/invoices/:id/payments` - Get payment history
-- `GET /api/v1/invoices/:id/metadata` - Get invoice metadata
+### User Management
+- `GET /api/v1/inside/get_user/:address` - Get user profile
+- `PUT /api/v1/inside/update_user` - Update user profile
+- `PUT /api/v1/inside/settings/notifications` - Update notification preferences
 
-### WebSocket
-- `ws://localhost:8080/ws` - Real-time updates
+### File Upload
+- `POST /api/v1/inside/upload` - Upload file to S3
+- `POST /api/v1/inside/upload_protected` - Upload to protected bucket
+
+### Blockchain
+- `POST /api/v1/inside/faucet` - Request testnet tokens
+- `GET /api/v1/inside/faucet/check/:address` - Check faucet availability
+
+### Admin
+- `GET /api/v1/admin/get_all_users` - Get all users (admin only)
+- `GET /api/v1/admin/get_subscribers` - Get email subscribers
 
 ## 🚀 Deployment
 
-### Backend Deployment
+### Production Build
 ```bash
-# Build binary
-go build -o invoice-generator main.go
-
-# Run with production environment
-./invoice-generator
-```
-
-### Frontend Deployment
-```bash
-# Build for production
+# Build all components
 npm run build
-npm run start
+
+# Or build individually
+npm run build:contracts
+npm run build:backend
+npm run build:frontend
 ```
 
-### Smart Contract Deployment
+### Docker Deployment
 ```bash
+# Production deployment
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Contract Deployment
+```bash
+cd contracts
 # Deploy to mainnet
-npx hardhat run scripts/deploy.js --network ethereum
-npx hardhat verify --network ethereum DEPLOYED_ADDRESS
+forge script script/Deploy.s.sol --rpc-url $ETHEREUM_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
 ```
 
 ## 🔐 Security Features
 
-- **Non-custodial**: Payments flow directly through smart contracts
-- **ReentrancyGuard**: Protection against reentrancy attacks
-- **Input Validation**: Comprehensive validation on all inputs
-- **Rate Limiting**: API rate limiting for abuse prevention
+- **Non-custodial Authentication**: SIWE-based login without storing private keys
+- **Input Validation**: Comprehensive validation on all API endpoints
+- **Rate Limiting**: Built-in protection against abuse
 - **CORS Protection**: Proper cross-origin request handling
+- **Environment Isolation**: Separate configurations for development/production
 
-## 📊 Monitoring
+## 🧪 Testing
 
-### Health Checks
-- `GET /health` - Backend health status
-- Database connection monitoring
-- Smart contract interaction status
+```bash
+# Run all tests
+npm run test
 
-### Logging
-- Structured logging with request tracing
-- Payment event logging
-- Error tracking and alerting
+# Backend tests
+cd backend && go test ./...
+
+# Frontend tests
+cd frontend && npm run test
+
+# Contract tests
+cd contracts && forge test
+```
+
+## 📊 Monitoring & Analytics
+
+- **Health Checks**: `/health` endpoint for service monitoring
+- **Metrics**: Prometheus metrics at `/metrics`
+- **Analytics**: PostHog integration for user analytics
+- **Logging**: Structured logging with request tracing
 
 ## 🛣️ Roadmap
 
-### Phase 1 (MVP) ✅
-- [x] Smart contract with fee handling
-- [x] Invoice creation and payment flow
-- [x] Email notifications
-- [x] Basic dashboard
+### ✅ Completed
+- [x] SIWE authentication system
+- [x] Multi-chain wallet integration
+- [x] File upload and storage
+- [x] Notification system
+- [x] Docker containerization
 
-### Phase 2
-- [ ] Multi-token support (DAI, USDT)
-- [ ] Recurring invoices/subscriptions
-- [ ] PDF invoice generation
-- [ ] Advanced analytics
+### 🔄 In Progress
+- [ ] Smart contract templates
+- [ ] Comprehensive testing suite
+- [ ] API documentation
+- [ ] Performance optimizations
 
-### Phase 3
-- [ ] Multi-chain deployment (Polygon, Base)
-- [ ] Mobile app
-- [ ] White-label solutions
-- [ ] API for third-party integrations
+### 📋 Planned
+- [ ] Multi-chain deployment scripts
+- [ ] DeFi integration templates
+- [ ] Mobile app support
+- [ ] Advanced analytics dashboard
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and add tests
+4. Commit your changes: `git commit -m 'Add amazing feature'`
+5. Push to the branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-- Documentation: [Link to docs]
-- Discord: [Community link]
-- Email: support@invoicegen.com
+- **Documentation**: Check the `/docs` folder for detailed guides
+- **Issues**: Report bugs and request features via GitHub Issues
+- **Discussions**: Join community discussions in GitHub Discussions
 
 ---
 
-**Built with ❤️ for the Web3 community**
+**Built for the Web3 community** 🌐⚡

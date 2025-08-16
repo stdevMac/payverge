@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/stdevMac/shares/internal/structs"
+	"web3-boilerplate/internal/structs"
 	"go.mongodb.org/mongo-driver/bson"
 )
 

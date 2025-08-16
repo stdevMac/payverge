@@ -1,4 +1,4 @@
-module github.com/stdevMac/shares
+module web3-boilerplate
 
 go 1.21
 
@@ -8,12 +8,12 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.4
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.16.6
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dstotijn/go-notion v0.11.0
 	github.com/ethereum/go-ethereum v1.14.7
 	github.com/fogleman/gg v1.3.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/mattevans/postmark-go v1.0.0
 	github.com/posthog/posthog-go v1.2.24
@@ -81,6 +81,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/supranational/blst v0.3.11 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect

@@ -13,9 +13,9 @@ import WithMaintenance from "@/components/WithMaintenance";
 import WithComingSoon from "@/components/WithComingSoon";
 
 export const metadata: Metadata = {
-  title: "Token Fleet",
+  title: "Web3 Boilerplate",
   description:
-    "Revolutionary RWA platform for car rentals, allowing you to get profits from your car shares",
+    "A comprehensive, production-ready boilerplate for building Web3 applications with modern authentication, blockchain integration, and scalable architecture",
 };
 
 export default function RootLayout({
