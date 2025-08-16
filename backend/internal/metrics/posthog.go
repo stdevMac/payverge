@@ -22,6 +22,11 @@ func InitPostHogClient(apiKey string, endpoint string) {
 
 // TrackEvent captures an event with PostHog
 func TrackEvent(distinctId string, event string, properties map[string]interface{}) error {
+	// Skip tracking if client is not initialized (e.g., during tests)
+	if postHogClient == nil {
+		return nil
+	}
+
 	propertiesPostHog := posthog.NewProperties()
 
 	for key, value := range properties {
@@ -43,6 +48,11 @@ func TrackEvent(distinctId string, event string, properties map[string]interface
 
 // IdentifyUser can be used to update user profile data in PostHog
 func IdentifyUser(distinctId string, userProperties map[string]interface{}) error {
+	// Skip tracking if client is not initialized (e.g., during tests)
+	if postHogClient == nil {
+		return nil
+	}
+
 	propertiesPostHog := posthog.NewProperties()
 
 	for key, value := range userProperties {
@@ -62,6 +72,11 @@ func IdentifyUser(distinctId string, userProperties map[string]interface{}) erro
 
 // TrackGeneralEvent is used for non-user-specific events like API hits
 func TrackGeneralEvent(event string, properties map[string]interface{}) error {
+	// Skip tracking if client is not initialized (e.g., during tests)
+	if postHogClient == nil {
+		return nil
+	}
+
 	propertiesPostHog := posthog.NewProperties()
 
 	for key, value := range properties {

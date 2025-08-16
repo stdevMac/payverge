@@ -66,7 +66,7 @@ func VerifySignature(address, msg, signature, chainId string) bool {
 	// Decode the signature
 	sig, err := hexutil.Decode(signature)
 	if err != nil {
-		log.Fatalf("Failed to decode signature: %v", err)
+		log.Printf("Failed to decode signature: %v", err)
 		return false
 	}
 
@@ -85,21 +85,21 @@ func VerifySignature(address, msg, signature, chainId string) bool {
 	// Recover the public key
 	pubKeyBytes, err := crypto.Ecrecover(messageHash, sig)
 	if err != nil {
-		log.Fatalf("Failed to recover public key: %v", err)
+		log.Printf("Failed to recover public key: %v", err)
 		return false
 	}
 
 	// Convert the public key to ecdsa.PublicKey
 	pubKey, err := crypto.UnmarshalPubkey(pubKeyBytes)
 	if err != nil {
-		log.Fatalf("Failed to unmarshal public key: %v", err)
+		log.Printf("Failed to unmarshal public key: %v", err)
 		return false
 	}
 
 	// Get the address from the public key
 	recoveredAddress := crypto.PubkeyToAddress(*pubKey).Hex()
 
-	return strings.ToLower(recoveredAddress) == strings.ToLower(address)
+	return strings.EqualFold(recoveredAddress, address)
 }
 
 func GenerateNonce() string {
