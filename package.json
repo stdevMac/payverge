@@ -1,0 +1,40 @@
+{
+  "name": "invoice-generator",
+  "version": "1.0.0",
+  "description": "One-Click USDC Invoice Generator - Professional crypto invoices with automatic payments",
+  "scripts": {
+    "start": "./start.sh",
+    "dev": "./start.sh",
+    "build": "npm run build:contracts && npm run build:frontend",
+    "build:contracts": "cd contracts && npm run compile",
+    "build:backend": "cd backend && go build -o invoice-generator main.go",
+    "build:frontend": "cd frontend && npm run build",
+    "deploy:contracts": "cd contracts && npx hardhat run scripts/deploy.js",
+    "test": "npm run test:contracts",
+    "test:contracts": "cd contracts && npm run test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "keywords": [
+    "invoice",
+    "crypto",
+    "usdc",
+    "blockchain",
+    "payments",
+    "web3",
+    "smart-contracts",
+    "freelancer",
+    "ethereum"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/invoice-generator.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
