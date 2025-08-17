@@ -23,15 +23,15 @@ export default function RootLayout({
     <LanguageProvider>
       <TranslationProvider>
         <UserProvider>
-          <main className="min-h-screen flex flex-col">
+          <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 transition-colors duration-200">
             <TopMenu />
             {/* {getNetwork().id === baseSepolia.id && <InvestmentBanner />} */}
             <Sidebar />
-            <div className="px-5 sm:px-10 flex-grow">{children}</div>
+            <div className="px-5 sm:px-10 flex-1">{children}</div>
             <Footer />
             <OnboardingWrapper />
             <FloatingLanguageSwitcher />
-            <ShareBar />
+            {/* <ShareBar /> */}
           </main>
         </UserProvider>
       </TranslationProvider>

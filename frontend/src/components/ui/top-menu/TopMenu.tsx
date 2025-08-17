@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useLogout } from "@/hooks";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n/useTranslation";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export const TopMenu = () => {
   const { isConnected, status, address } = useAccount();
@@ -86,7 +87,7 @@ export const TopMenu = () => {
   // Show loading state while initializing
   if (!isInitialized || status === 'reconnecting') {
     return (
-      <nav className="relative flex items-center justify-between px-2 sm:px-5 py-2 shadow-md bg-white/80 backdrop-blur-md z-[100]">
+      <nav className="relative flex items-center justify-between px-2 sm:px-5 py-2 shadow-md bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-[100] transition-colors duration-200">
         <div className="flex items-center">
           <div
             className="cursor-pointer"
@@ -112,7 +113,7 @@ export const TopMenu = () => {
   }
 
   return (
-    <nav className="relative flex items-center justify-between px-2 sm:px-5 py-2 shadow-md bg-white/80 backdrop-blur-md z-[100]">
+    <nav className="relative flex items-center justify-between px-2 sm:px-5 py-2 shadow-md bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-[100] transition-colors duration-200">
       {/* Logo */}
       <div className="flex items-center">
         <div
@@ -134,6 +135,9 @@ export const TopMenu = () => {
 
       {/* Right Side Menu */}
       <div className="flex items-center gap-1 sm:gap-2">
+        {/* Theme Toggle */}
+        <ThemeToggle />
+        
         {/* Language Switcher - hidden on mobile */}
         <div className="hidden md:block">
           <LanguageSwitcher />
@@ -219,7 +223,7 @@ export const TopMenu = () => {
 
         {/* Mobile Menu Dropdown */}
         {isConnected && isMenuOpen && (
-          <div className="fixed top-[52px] right-0 left-0 md:hidden bg-white shadow-lg z-[999]">
+          <div className="fixed top-[52px] right-0 left-0 md:hidden bg-white dark:bg-gray-900 shadow-lg z-[999] transition-colors duration-200">
             <div className="p-4 flex flex-col gap-3">
               {address && (
                 <>

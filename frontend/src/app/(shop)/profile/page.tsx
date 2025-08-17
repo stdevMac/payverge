@@ -314,19 +314,19 @@ export default function Profile() {
 
   if (isLoading || loading) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl transition-colors duration-200">
         {/* Profile Header Skeleton */}
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm transition-colors duration-200">
           <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-            <div className="h-24 w-24 rounded-full bg-gray-200 animate-pulse" />
+            <div className="h-24 w-24 rounded-full bg-gray-200 dark:bg-gray-600 animate-pulse" />
             <div className="flex-1 space-y-4 w-full">
               <div className="space-y-2">
-                <div className="h-6 bg-gray-200 rounded w-1/4 animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded w-1/3 animate-pulse" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-1/4 animate-pulse" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3 animate-pulse" />
               </div>
               <div className="flex flex-wrap gap-3">
-                <div className="h-8 w-24 bg-gray-200 rounded animate-pulse" />
-                <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-8 w-24 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+                <div className="h-8 w-32 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
               </div>
             </div>
           </div>
@@ -335,24 +335,24 @@ export default function Profile() {
         {/* Profile Content Skeleton */}
         <div className="mt-4 sm:mt-8">
           <div className="flex items-center justify-between mb-4">
-            <div className="h-6 bg-gray-200 rounded w-48 animate-pulse" />
-            <div className="h-6 bg-gray-200 rounded w-32 animate-pulse" />
+            <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-48 animate-pulse" />
+            <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-32 animate-pulse" />
           </div>
 
           {/* Tab Button Skeleton */}
           <div className="relative z-[6]">
-            <div className="w-full h-16 sm:h-20 bg-gray-100 rounded-xl border-2 border-gray-200 animate-pulse">
+            <div className="w-full h-16 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-xl border-2 border-gray-200 dark:border-gray-600 animate-pulse transition-colors duration-200">
               <div className="flex items-center justify-between p-4 sm:p-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-8 w-8 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
                   <div className="space-y-2">
-                    <div className="h-5 bg-gray-200 rounded w-32 animate-pulse" />
-                    <div className="h-4 bg-gray-200 rounded w-48 hidden sm:block animate-pulse" />
+                    <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-32 animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-48 hidden sm:block animate-pulse" />
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-5 bg-gray-200 rounded w-24 animate-pulse" />
-                  <div className="h-6 w-6 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-24 animate-pulse" />
+                  <div className="h-6 w-6 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
                 </div>
               </div>
             </div>
@@ -360,14 +360,14 @@ export default function Profile() {
             {/* Tab Content Skeleton */}
             <div className="mt-6 sm:mt-8">
               <div className="max-w-2xl mx-auto">
-                <div className="bg-white rounded-lg p-6 shadow-sm space-y-6">
-                  <div className="h-6 bg-gray-200 rounded w-1/3 animate-pulse" />
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm space-y-6 transition-colors duration-200">
+                  <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded w-1/3 animate-pulse" />
                   <div className="space-y-4">
-                    <div className="h-4 bg-gray-200 rounded w-full animate-pulse" />
-                    <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
-                    <div className="h-4 bg-gray-200 rounded w-4/6 animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-full animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-5/6 animate-pulse" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-4/6 animate-pulse" />
                   </div>
-                  <div className="h-10 bg-gray-200 rounded w-full animate-pulse" />
+                  <div className="h-10 bg-gray-200 dark:bg-gray-600 rounded w-full animate-pulse" />
                 </div>
               </div>
             </div>
@@ -379,16 +379,16 @@ export default function Profile() {
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 transition-colors duration-200">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">{t('profile.welcome.title')}</h2>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 dark:text-gray-300 mb-8 transition-colors duration-200">
             {t('profile.welcome.description')}
           </p>
-          <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200">
             <IoWalletOutline className="mx-auto text-4xl text-primary mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('profile.welcome.connectWallet')}</h3>
-            <p className="text-gray-500 text-sm">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white transition-colors duration-200">{t('profile.welcome.connectWallet')}</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm transition-colors duration-200">
               {t('profile.welcome.connectInstructions')}
             </p>
           </div>
@@ -400,7 +400,7 @@ export default function Profile() {
   if (!profileUser) return null;
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl">
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-7xl transition-colors duration-200">
       {/* Back Navigation */}
       <div className="sticky top-[88px] -ml-[120px] hidden lg:block float-left">
         <Tooltip content={t('profile.backToHome')} placement="right">
@@ -424,7 +424,7 @@ export default function Profile() {
       />
 
       <div className="mt-4 sm:mt-8">
-        <div className="flex items-center justify-between mb-4 text-base sm:text-lg text-gray-500">
+        <div className="flex items-center justify-between mb-4 text-base sm:text-lg text-gray-500 dark:text-gray-400 transition-colors duration-200">
           <span className="font-medium">{t('profile.settingsTitle')}</span>
         </div>
 
@@ -441,7 +441,7 @@ export default function Profile() {
                   className={`w-full min-h-[4.5rem] p-4 rounded-xl group transition-all duration-200 ${
                     selectedTab === key
                       ? "bg-primary text-white shadow-lg border-primary hover:bg-primary/90"
-                      : "bg-background hover:bg-gray-50 border-default-200 hover:border-primary"
+                      : "bg-background hover:bg-gray-50 dark:hover:bg-slate-600/50 border-default-200 hover:border-primary transition-colors duration-200"
                   }`}
                 >
                   <div className="flex items-start gap-3 w-full">
@@ -460,7 +460,7 @@ export default function Profile() {
                         className={`text-sm truncate transition-colors duration-200 ${
                           selectedTab === key
                             ? "text-white/80"
-                            : "text-gray-500"
+                            : "text-gray-500 dark:text-slate-400"
                         }`}
                       >
                         {tabDescriptions[key as keyof typeof tabDescriptions]}
@@ -485,7 +485,7 @@ export default function Profile() {
               <DropdownTrigger>
                 <Button
                   variant="bordered"
-                  className="relative w-full justify-between min-h-[4rem] p-4 bg-background border-2 border-primary shadow-lg hover:shadow-xl transition-shadow duration-200 rounded-xl"
+                  className="relative w-full justify-between min-h-[4rem] p-4 bg-background dark:bg-gray-800 border-2 border-primary shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-2xl text-primary">
@@ -499,7 +499,7 @@ export default function Profile() {
                           ]
                         }
                       </p>
-                      <p className="text-sm text-gray-500 truncate max-w-[150px]">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[150px] transition-colors duration-200">
                         {
                           tabDescriptions[
                             selectedTab as keyof typeof tabDescriptions

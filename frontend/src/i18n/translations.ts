@@ -1427,7 +1427,7 @@ export const en = {
       privacy: "Privacy Policy",
     },
     contact: "Contact Us",
-    companyBy: "by Reliable Route Rental Car LLC.",
+    companyBy: "Made with ❤️ by BlockVantage.",
     allRightsReserved: "All Rights Reserved.",
   },
   howItWorks: {
@@ -3380,7 +3380,7 @@ export const es = {
       privacy: "Política de Privacidad",
     },
     contact: "Contáctanos",
-    companyBy: "por Reliable Route Rental Car LLC.",
+    companyBy: "Hecho con ❤️ por BlockVantage.",
     allRightsReserved: "Todos los Derechos Reservados.",
   },
   howItWorks: {

@@ -175,7 +175,7 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
         >
           <span className="sr-only">{t("common.loading")}</span>
         </div>
-        <p className="text-default-600">{t("profile.refereeTab.loading")}</p>
+        <p className="text-default-600 dark:text-default-300 transition-colors duration-200">{t("profile.refereeTab.loading")}</p>
       </div>
     );
   }
@@ -186,43 +186,43 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
         {/* Overview Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Total Referees */}
-          <div className="bg-primary-50 p-3 sm:p-4 rounded-xl border border-primary-200 min-h-[140px] flex flex-col justify-between">
+          <div className="bg-primary-50 dark:bg-primary-900/20 p-3 sm:p-4 rounded-xl border border-primary-200 dark:border-primary-800 min-h-[140px] flex flex-col justify-between transition-colors duration-200">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <IoPeopleOutline className="text-lg sm:text-xl text-primary-600" />
-                <span className="text-xs sm:text-sm font-medium text-primary-700">
+                <span className="text-xs sm:text-sm font-medium text-primary-700 dark:text-primary-300 transition-colors duration-200">
                   {t("profile.refereeTab.overview.totalReferees")}
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-primary-600">
+              <p className="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400 transition-colors duration-200">
                 {totalReferees}
               </p>
             </div>
-            <p className="text-xs sm:text-sm text-primary-600">
+            <p className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 transition-colors duration-200">
               {t("profile.refereeTab.overview.activeReferees")}
             </p>
           </div>
           {/* Total Unclaimed Rewards */}
-          <div className="bg-secondary-50 p-3 sm:p-4 rounded-xl border border-secondary-200 min-h-[140px] flex flex-col justify-between">
+          <div className="bg-secondary-50 dark:bg-secondary-900/20 p-3 sm:p-4 rounded-xl border border-secondary-200 dark:border-secondary-800 min-h-[140px] flex flex-col justify-between transition-colors duration-200">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <IoGiftOutline className="text-lg sm:text-xl text-secondary-600" />
-                <span className="text-xs sm:text-sm font-medium text-secondary-700">
+                <span className="text-xs sm:text-sm font-medium text-secondary-700 dark:text-secondary-300 transition-colors duration-200">
                   {t("profile.refereeTab.overview.totalUnclaimed")}
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-secondary-600">
+              <p className="text-xl sm:text-2xl font-bold text-secondary-600 dark:text-secondary-400 transition-colors duration-200">
                 {formatCurrency(totalRewards)}
               </p>
             </div>
-            <p className="text-xs sm:text-sm text-secondary-600">
+            <p className="text-xs sm:text-sm text-secondary-600 dark:text-secondary-400 transition-colors duration-200">
               {t("profile.refereeTab.overview.totalToBeClaimedDesc")}
             </p>
           </div>
         </div>
 
         {/* Referral Link */}
-        <Card className="mb-6 bg-default-50">
+        <Card className="mb-6 bg-default-50 dark:bg-default-900/20 transition-colors duration-200">
           <CardBody className="p-3 sm:p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -230,10 +230,10 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
                   <IoGiftOutline className="text-xl text-white" />
                 </div>
                 <div>
-                  <h5 className="text-sm font-semibold text-default-700">
+                  <h5 className="text-sm font-semibold text-default-700 dark:text-default-200 transition-colors duration-200">
                     {t("profile.refereeTab.referralLink.title")}
                   </h5>
-                  <p className="text-xs text-default-500">
+                  <p className="text-xs text-default-500 dark:text-default-400 transition-colors duration-200">
                     {t("profile.refereeTab.referralLink.description")}
                   </p>
                 </div>
@@ -252,7 +252,7 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
         </Card>
 
         {/* Referral Benefits Dropdown */}
-        <div className="mt-6 bg-primary-50 rounded-xl border border-primary-200">
+        <div className="mt-6 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 transition-colors duration-200">
           <Accordion>
             <AccordionItem
               key="benefits"
@@ -263,10 +263,10 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
                     <IoGiftOutline className="text-lg sm:text-xl text-primary-600" />
                   </div>
                   <div>
-                    <span className="font-semibold text-primary-700">
+                    <span className="font-semibold text-primary-700 dark:text-primary-300 transition-colors duration-200">
                       {t("profile.refereeTab.benefits.title")}
                     </span>
-                    <p className="text-sm text-primary-600">
+                    <p className="text-sm text-primary-600 dark:text-primary-400 transition-colors duration-200">
                       {t("profile.refereeTab.benefits.subtitle")}
                     </p>
                   </div>
@@ -281,7 +281,7 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
                       {t("profile.refereeTab.benefits.fleetSpecific.title")}
                     </span>
                   </div>
-                  <p className="text-sm text-default-500">
+                  <p className="text-sm text-default-500 dark:text-default-400 transition-colors duration-200">
                     {t("profile.refereeTab.benefits.fleetSpecific.description")}
                   </p>
                 </div>
@@ -292,7 +292,7 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
                       {t("profile.refereeTab.benefits.earnings.title")}
                     </span>
                   </div>
-                  <p className="text-sm text-default-500">
+                  <p className="text-sm text-default-500 dark:text-default-400 transition-colors duration-200">
                     {t("profile.refereeTab.benefits.earnings.description")}
                   </p>
                 </div>
@@ -303,11 +303,11 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
                       {t("profile.refereeTab.benefits.incomeSources.title")}
                     </span>
                   </div>
-                  <p className="text-sm text-default-500">
+                  <p className="text-sm text-default-500 dark:text-default-400 transition-colors duration-200">
                     {t("profile.refereeTab.benefits.incomeSources.description")}
                   </p>
                 </div>
-                <div className="text-sm text-default-500 space-y-1">
+                <div className="text-sm text-default-500 dark:text-default-400 space-y-1 transition-colors duration-200">
                   <p>• {t("profile.refereeTab.benefits.bulletPoints.0")}</p>
                   <p>• {t("profile.refereeTab.benefits.bulletPoints.1")}</p>
                   <p>• {t("profile.refereeTab.benefits.bulletPoints.2")}</p>
@@ -318,8 +318,8 @@ const RefereeTab: React.FC<Props> = ({ user, reFetchUser }) => {
           </Accordion>
         </div>
         {/* Rewards History */}
-        <div className="mt-6 bg-default-50 rounded-xl p-6">
-          <h5 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <div className="mt-6 bg-default-50 dark:bg-default-900/20 rounded-xl p-6 transition-colors duration-200">
+          <h5 className="text-lg font-semibold mb-4 flex items-center gap-2 text-default-700 dark:text-default-200 transition-colors duration-200">
             <IoTrophyOutline className="text-lg sm:text-xl" />
             {t("profile.refereeTab.sections.rewardsHistory")}
           </h5>

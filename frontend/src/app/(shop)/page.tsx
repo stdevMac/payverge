@@ -10,7 +10,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
@@ -25,7 +25,7 @@ export default function Home() {
 
       {/* Start Section */}
       <section className="container mx-auto px-2 sm:px-4 -mt-4 relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg p-3 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-3 sm:p-6 mb-6 sm:mb-8 transition-colors duration-200">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-6 mb-4">
             <div className="sm:flex-shrink-0">
               <Title
@@ -47,17 +47,17 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">🔐 Authentication</h3>
-                <p className="text-gray-600">Secure SIWE-based authentication with wallet integration</p>
+              <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-200">
+                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">🔐 Authentication</h3>
+                <p className="text-gray-600 dark:text-gray-300">Secure SIWE-based authentication with wallet integration</p>
               </div>
-              <div className="p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">💾 Database</h3>
-                <p className="text-gray-600">MongoDB integration with user management</p>
+              <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-200">
+                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">💾 Database</h3>
+                <p className="text-gray-600 dark:text-gray-300">MongoDB integration with user management</p>
               </div>
-              <div className="p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">🚀 Ready to Deploy</h3>
-                <p className="text-gray-600">Docker containerized with production-ready setup</p>
+              <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-200">
+                <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">🚀 Ready to Deploy</h3>
+                <p className="text-gray-600 dark:text-gray-300">Docker containerized with production-ready setup</p>
               </div>
             </div>
           )}

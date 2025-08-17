@@ -189,51 +189,51 @@ export const GeneralTab = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
 
         {/* Total Rewards */}
-        <div className="bg-success-50 p-3 sm:p-4 rounded-xl border border-success-200">
+        <div className="bg-success-50 dark:bg-slate-700 p-3 sm:p-4 rounded-xl border border-success-200 dark:border-slate-600 transition-colors duration-200">
           <div className="flex items-center gap-2 mb-2">
             <IoGiftOutline className="text-lg sm:text-xl text-success-600" />
-            <span className="text-xs sm:text-sm font-medium text-success-700">
+            <span className="text-xs sm:text-sm font-medium text-success-700 dark:text-green-400 transition-colors duration-200">
               {t("profile.generalTab.stats.totalRewards")}
             </span>
           </div>
         </div>
 
         {/* Referral Program */}
-        <div className="bg-secondary-50 p-3 sm:p-4 rounded-xl border border-secondary-200">
+        <div className="bg-secondary-50 dark:bg-slate-700 p-3 sm:p-4 rounded-xl border border-secondary-200 dark:border-slate-600 transition-colors duration-200">
           <div className="flex items-center gap-2 mb-2">
             <IoPeopleOutline className="text-lg sm:text-xl text-secondary-600" />
-            <span className="text-xs sm:text-sm font-medium text-secondary-700">
+            <span className="text-xs sm:text-sm font-medium text-secondary-700 dark:text-purple-400 transition-colors duration-200">
               {t("profile.generalTab.stats.referralProgram")}
             </span>
           </div>
-          <p className="text-xl sm:text-2xl font-bold text-secondary-600">
+          <p className="text-xl sm:text-2xl font-bold text-secondary-600 dark:text-purple-300 transition-colors duration-200">
             {totalReferees} {t("profile.generalTab.stats.referees")}
           </p>
         </div>
       </div>
 
       {/* User Stats */}
-      <Card className="bg-default-50">
+      <Card className="bg-default-50 dark:bg-slate-700 border dark:border-slate-600 transition-colors duration-200">
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-2">
             <IoStatsChartOutline className="text-lg sm:text-xl text-default-600" />
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-default-700 dark:text-slate-200 transition-colors duration-200">
               {t("profile.generalTab.accountStats.title")}
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-default-100 rounded-lg">
-              <p className="text-sm text-default-500">
+            <div className="p-4 bg-default-100 dark:bg-slate-600 rounded-lg transition-colors duration-200">
+              <p className="text-sm text-default-500 dark:text-slate-300 transition-colors duration-200">
                 {t("profile.generalTab.accountStats.totalInvestments")}
               </p>
             </div>
-            <div className="p-4 bg-default-100 rounded-lg">
-              <p className="text-sm text-default-500">
+            <div className="p-4 bg-default-100 dark:bg-slate-600 rounded-lg transition-colors duration-200">
+              <p className="text-sm text-default-500 dark:text-slate-300 transition-colors duration-200">
                 {t("profile.generalTab.accountStats.lastClaim")}
               </p>
             </div>
-            <div className="p-4 bg-default-100 rounded-lg">
-              <p className="text-sm text-default-500">
+            <div className="p-4 bg-default-100 dark:bg-slate-600 rounded-lg transition-colors duration-200">
+              <p className="text-sm text-default-500 dark:text-slate-300 transition-colors duration-200">
                 {t("profile.generalTab.accountStats.accountStatus")}
               </p>
             </div>

@@ -81,7 +81,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
       {/* Referral Link Section */}
       {user.referral_code && (
-        <div className="mt-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border border-purple-100">
+        <div className="mt-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl border border-purple-100 dark:border-purple-800 transition-colors duration-200">
           <div className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -89,10 +89,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   <IoLinkOutline className="text-xl text-white" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-200">
                     {t('profile.profileHeader.referralLink.title')}
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200">
                     {t('profile.profileHeader.referralLink.description')}
                   </p>
                 </div>

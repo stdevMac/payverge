@@ -1,0 +1,218 @@
+/* Theme CSS Variables */
+:root {
+  /* Light theme colors */
+  --background: 255 255 255;
+  --foreground: 15 23 42;
+  --card: 255 255 255;
+  --card-foreground: 15 23 42;
+  --popover: 255 255 255;
+  --popover-foreground: 15 23 42;
+  --primary: 59 130 246;
+  --primary-foreground: 255 255 255;
+  --secondary: 241 245 249;
+  --secondary-foreground: 15 23 42;
+  --muted: 241 245 249;
+  --muted-foreground: 100 116 139;
+  --accent: 241 245 249;
+  --accent-foreground: 15 23 42;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 226 232 240;
+  --input: 226 232 240;
+  --ring: 59 130 246;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Dark theme colors - balanced and softer palette */
+  --background: 15 23 42;
+  --foreground: 241 245 249;
+  --card: 30 41 59;
+  --card-foreground: 241 245 249;
+  --popover: 30 41 59;
+  --popover-foreground: 241 245 249;
+  --primary: 99 102 241;
+  --primary-foreground: 255 255 255;
+  --secondary: 51 65 85;
+  --secondary-foreground: 203 213 225;
+  --muted: 51 65 85;
+  --muted-foreground: 148 163 184;
+  --accent: 79 70 229;
+  --accent-foreground: 255 255 255;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 71 85 105;
+  --input: 51 65 85;
+  --ring: 99 102 241;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Enhanced dark mode styles for better text contrast and readability */
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: rgb(250 250 250);
+  font-weight: 600;
+}
+
+.dark p {
+  color: rgb(212 212 216);
+  line-height: 1.6;
+}
+
+.dark .text-gray-500 {
+  color: rgb(148 163 184) !important;
+}
+
+.dark .text-gray-600 {
+  color: rgb(203 213 225) !important;
+}
+
+.dark .text-gray-700 {
+  color: rgb(226 232 240) !important;
+}
+
+.dark .text-gray-800 {
+  color: rgb(241 245 249) !important;
+}
+
+.dark .text-gray-900 {
+  color: rgb(248 250 252) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: rgb(51 65 85) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: rgb(71 85 105) !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: rgb(100 116 139) !important;
+}
+
+.dark .bg-gray-700 {
+  background-color: rgb(51 65 85) !important;
+}
+
+.dark .bg-gray-800 {
+  background-color: rgb(30 41 59) !important;
+}
+
+.dark .bg-gray-900 {
+  background-color: rgb(15 23 42) !important;
+}
+
+.dark .border-gray-200 {
+  border-color: rgb(71 85 105) !important;
+}
+
+.dark .border-gray-600 {
+  border-color: rgb(100 116 139) !important;
+}
+
+/* Custom scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgb(39 39 42);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgb(82 82 91);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgb(113 113 122);
+}
+
+/* Enhanced card and component styles for dark mode */
+.dark .bg-white {
+  background-color: rgb(30 41 59) !important;
+  border: 1px solid rgb(71 85 105);
+}
+
+.dark .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(241 245 249);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(148 163 184);
+}
+
+/* Enhanced typography for better readability */
+.dark .font-semibold {
+  font-weight: 600;
+}
+
+.dark .font-bold {
+  font-weight: 700;
+}
+
+/* Better button contrast in dark mode */
+.dark button {
+  font-weight: 500;
+}
+
+.dark .bg-primary-50 {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+.dark .bg-secondary-50 {
+  background-color: rgba(79, 70, 229, 0.1) !important;
+}
+
+.dark .bg-success-50 {
+  background-color: rgba(34, 197, 94, 0.1) !important;
+}
+
+.dark .text-primary-600 {
+  color: rgb(129 140 248) !important;
+}
+
+.dark .text-primary-700 {
+  color: rgb(99 102 241) !important;
+}
+
+.dark .text-secondary-600 {
+  color: rgb(129 140 248) !important;
+}
+
+.dark .text-secondary-700 {
+  color: rgb(99 102 241) !important;
+}
+
+.dark .text-success-600 {
+  color: rgb(34 197 94) !important;
+}
+
+.dark .text-success-700 {
+  color: rgb(22 163 74) !important;
+}
