@@ -45,7 +45,7 @@ export const Footer = () => {
                     {/* Logo Section */}
                     <div className="flex flex-col items-center lg:items-start space-y-4">
                         <Image
-                            src="/footer-icons/TokenFleetLogo-01.svg"
+                            src="/footer-icons/Web3BoilerplateLogo-01.svg"
                             alt="logo"
                             width={160}
                             height={80}
@@ -85,7 +85,7 @@ export const Footer = () => {
                         <ul className="space-y-2 text-sm text-gray-600">
                             <li>
                                 <a
-                                    href="https://docs.tokenfleet.io"
+                                    href="https://docs.yourapp.com"
                                     className="hover:text-primary transition-colors"
                                 >
                                     {t('footer.resourceLinks.documentation')}
@@ -122,8 +122,8 @@ export const Footer = () => {
                                     height={18}
                                 />
                                 <span>
-                  <a href="mailto:info@tokenfleet.io" className="underline">
-                    info@tokenfleet.io
+                  <a href="mailto:info@yourapp.com" className="underline">
+                    info@yourapp.com
                   </a>
                 </span>
                             </div>
@@ -179,7 +179,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://t.me/tokenfleet_io"
+                            href="https://t.me/yourapp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"
@@ -205,7 +205,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://x.com/tokenfleet_io"
+                            href="https://x.com/yourapp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"
@@ -218,7 +218,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://www.youtube.com/@TokenFleet"
+                            href="https://www.youtube.com/@YourApp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"
@@ -231,7 +231,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://www.instagram.com/tokenfleet"
+                            href="https://www.instagram.com/yourapp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"
@@ -244,7 +244,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://www.linkedin.com/company/tokenfleet"
+                            href="https://www.linkedin.com/company/yourapp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"
@@ -257,7 +257,7 @@ export const Footer = () => {
                             />
                         </a>
                         <a
-                            href="https://www.tiktok.com/@tokenfleet"
+                            href="https://www.tiktok.com/@yourapp"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="transform hover:rotate-12 transition-all duration-300 ease-in-out hover:scale-110"

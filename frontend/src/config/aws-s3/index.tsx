@@ -7,10 +7,10 @@ export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) throw new Error("Project ID is not defined");
 
 export const metadata = {
-  name: "Token Fleet",
+  name: "Web3 Boilerplate",
   description:
-    "Token Fleet - Revolutionary RWA platform for car rentals, allowing you to get profits from your car share",
-  url: "https://app.tokenfleet.io",
+    "Web3 Boilerplate - A comprehensive starter template for Web3 applications with authentication and wallet integration",
+  url: "https://yourapp.com",
   icons: ["/images/logo.svg"],
 };
 

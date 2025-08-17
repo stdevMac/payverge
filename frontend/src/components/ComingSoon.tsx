@@ -10,8 +10,8 @@ export default function ComingSoon() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-gray-50 to-blue-100">
       <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 mb-6 sm:mb-8 max-w-lg text-center hover:shadow-blue-200 transition-shadow duration-300">
         <Image
-          src="/footer-icons/TokenFleetLogo-01.svg"
-          alt="Token Fleet Logo"
+          src="/footer-icons/Web3BoilerplateLogo-01.svg"
+          alt="Web3 Boilerplate Logo"
           width={128}
           height={128}
           className="h-auto mb-6 mx-auto hover:scale-110 transition-transform duration-300"
@@ -24,19 +24,19 @@ export default function ComingSoon() {
         </p>
         <div className="flex flex-col gap-4 animate-fade-in-delayed">
           <a
-            href="https://tokenfleet.io"
+            href="https://yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
             {t('comingSoon.visitWebsite', 'Visit our Website')}
           </a>
           <a
-            href="https://docs.tokenfleet.io"
+            href="https://docs.yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
             {t('comingSoon.checkDocs', 'Check our Documentation')}
           </a>
           <a
-            href="https://link.tokenfleet.io"
+            href="https://links.yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
             {t('comingSoon.exploreLinks', 'Explore all our Links')}

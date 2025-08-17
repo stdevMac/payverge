@@ -32,7 +32,7 @@ export const en = {
       description:
         "Congratulations! Your {{name}} has been minted successfully.",
       shareButton: "Share on X",
-      shareOnXContent: "I just minted my {{name}} NFT on @tokenfleet_io! 🚗\n",
+      shareOnXContent: "I just minted my {{name}} NFT on @yourapp! 🔗\n",
       addToWalletButton: "Add to Wallet",
       addingToWalletButton: "Adding to Wallet...",
       mainButton: "Go to Main Page",
@@ -364,7 +364,7 @@ export const en = {
           "All rental income calculated based on smart contract specifications",
         rewardAvailability: "Unclaimed rewards remain available until claimed",
         rewardDistributions:
-          "Revenue distributions available in your Token Fleet platform account",
+          "Revenue distributions available in your Web3 Boilerplate platform account",
         gasFees: "Gas Fees:",
         gasFeesResponsibility:
           "Investors are responsible for blockchain network fees",
@@ -437,7 +437,7 @@ export const en = {
         signatureAdded: "Signature added",
         signAbove: "Sign above to continue",
         digitalAccess:
-          "A copy of this signed Agreement will be available in your Token Fleet platform profile for future reference. For legal purposes in Dubai, the contract will be generated in English.",
+          "A copy of this signed Agreement will be available in your Web3 Boilerplate platform profile for future reference. For legal purposes in Dubai, the contract will be generated in English.",
         pleaseReadContract: "Please read the entire contract",
         pleaseSignContract: "Please sign the contract",
         generatingContract: "Generating Contract...",
@@ -470,7 +470,7 @@ export const en = {
         increaseReturns: "Increase Your Returns",
         bonusPercentage: "{{percentage}}% Bonus",
         referralDescription:
-          "Earn extra returns by inviting friends to Token Fleet. You'll receive {{percentage}}% of our platform earnings from:",
+          "Earn extra returns by inviting friends to Web3 Boilerplate. You'll receive {{percentage}}% of our platform earnings from:",
         referralBenefits: {
           fees: "Investment fees we collect",
           rentalIncome: "Our share of rental income",
@@ -784,7 +784,7 @@ export const en = {
       },
       steps: {
         step0: {
-          title: "Welcome to Token Fleet",
+          title: "Welcome to Web3 Boilerplate",
           description:
             "Discover the future of car fleet investments in Dubai's thriving market! Start building your portfolio with as little as $100 and earn passive income through our secure, transparent, and regulated platform.",
         },
@@ -801,7 +801,7 @@ export const en = {
         step3: {
           title: "Create Your Portfolio NFT",
           description:
-            "Get your unique Portfolio NFT that will securely hold all your car share investments. This NFT represents your stake in the Token Fleet ecosystem.",
+            "Get your unique Portfolio NFT that will securely hold all your car share investments. This NFT represents your stake in the Web3 Boilerplate ecosystem.",
         },
         step4: {
           title: "Browse Investment Opportunities",
@@ -811,12 +811,12 @@ export const en = {
         step5: {
           title: "Invest & Track Performance",
           description:
-            "Every investment is secured by a legal contract between you and Token Fleet, accessible from your profile. Your portfolio NFT holds your fleet shares, representing your ownership. Monitor your investments' performance, verify documentation, and track earnings in real-time through your dashboard.",
+            "Every investment is secured by a legal contract between you and Web3 Boilerplate, accessible from your profile. Your portfolio NFT holds your fleet shares, representing your ownership. Monitor your investments' performance, verify documentation, and track earnings in real-time through your dashboard.",
         },
         step6: {
           title: "Start Investing Now",
           description:
-            "Your journey to earning passive income through Dubai's premium car rental market starts here. Join Token Fleet today and transform the way you invest!",
+            "Your journey to earning passive income through Dubai's premium car rental market starts here. Join Web3 Boilerplate today and transform the way you invest!",
         },
       },
     },
@@ -1413,7 +1413,7 @@ export const en = {
   footer: {
     backToTop: "Back to top",
     tagline:
-      "Invest in cars, earn from each rental. Token Fleet lets you own a share and earn every time the wheels turn.",
+      "Invest in cars, earn from each rental. Web3 Boilerplate lets you own a share and earn every time the wheels turn.",
     about: "About",
     aboutLinks: {
       mission: "Our Mission",
@@ -1433,7 +1433,7 @@ export const en = {
   howItWorks: {
     title: "How It Works",
     subtitle:
-      "Join Token Fleet and start earning passive income through Dubai's premium car rental market. Our blockchain-powered platform makes investing in vehicle fleets accessible, secure, and transparent.",
+      "Join Web3 Boilerplate and start earning passive income through Dubai's premium car rental market. Our blockchain-powered platform makes investing in vehicle fleets accessible, secure, and transparent.",
     investmentJourney: "Your Investment Journey",
     platformFeatures: "Platform Features",
     benefitsOfInvesting: "Benefits of Investing",
@@ -1471,7 +1471,7 @@ export const en = {
       {
         title: "Receive Your Portfolio NFT",
         description:
-          "Get your unique Portfolio NFT that securely holds all your car share investments, representing your stake in the Token Fleet ecosystem.",
+          "Get your unique Portfolio NFT that securely holds all your car share investments, representing your stake in the Web3 Boilerplate ecosystem.",
         details: [
           "Unique portfolio identifier",
           "Secure ownership record",
@@ -1529,7 +1529,7 @@ export const en = {
         highlight: "Get test tokens",
       },
       {
-        text: "Test Token Fleet with free tokens",
+        text: "Test Web3 Boilerplate with free tokens",
         highlight: "Join Telegram",
       },
     ],
@@ -1595,7 +1595,7 @@ export const en = {
       bridging: {
         title: "Bridging Traditional and Digital Finance",
         description:
-          "Token Fleet stands at the intersection of traditional asset management and blockchain innovation. We're pioneering the tokenization of real-world assets, starting with vehicles, to create a new standard for transparent, efficient, and accessible investment opportunities.",
+          "Web3 Boilerplate stands at the intersection of traditional asset management and blockchain innovation. We're pioneering the tokenization of real-world assets, starting with vehicles, to create a new standard for transparent, efficient, and accessible investment opportunities.",
       },
     },
     difference: {
@@ -1603,7 +1603,7 @@ export const en = {
       ownership: {
         title: "True Asset Ownership",
         description:
-          "Unlike traditional investment vehicles, Token Fleet provides direct ownership in our car fleet. Each token represents a real stake in physical assets, backed by smart contracts and legal frameworks that ensure your investment is secure and tangible.",
+          "Unlike traditional investment vehicles, Web3 Boilerplate provides direct ownership in our car fleet. Each token represents a real stake in physical assets, backed by smart contracts and legal frameworks that ensure your investment is secure and tangible.",
       },
       transparency: {
         title: "Blockchain-Powered Transparency",
@@ -1656,37 +1656,37 @@ export const en = {
   team: {
     title: "Meet Our Team",
     subtitle:
-      "The driving force behind Token Fleet combines deep expertise in automotive, blockchain technology, and financial markets. Our diverse team is united by a single mission: revolutionizing car ownership through innovative investment solutions.",
+      "The driving force behind Web3 Boilerplate combines deep expertise in automotive, blockchain technology, and financial markets. Our diverse team is united by a single mission: revolutionizing car ownership through innovative investment solutions.",
     members: [
       {
         name: "Marcos Maceo",
         position: "Chief Executive Officer",
-        bio: "With extensive experience in blockchain technology and automotive industry, Marcos leads Token Fleet's vision of revolutionizing car investments through innovative blockchain solutions.",
-        imageUrl: "https://tokenfleet.io/images/image-5.webp",
+        bio: "With extensive experience in blockchain technology and automotive industry, Marcos leads Web3 Boilerplate's vision of revolutionizing car investments through innovative blockchain solutions.",
+        imageUrl: "/images/team/ceo.webp",
       },
       {
         name: "Daniela Suárez",
         position: "Chief Marketing Officer",
-        bio: "Daniela brings strategic marketing expertise to Token Fleet, driving our brand growth and market presence while ensuring our innovative investment platform reaches the right audience.",
-        imageUrl: "https://tokenfleet.io/images/daniela.jpeg",
+        bio: "Daniela brings strategic marketing expertise to Web3 Boilerplate, driving our brand growth and market presence while ensuring our innovative investment platform reaches the right audience.",
+        imageUrl: "/images/team/cmo.jpeg",
       },
       {
         name: "Andy Ledesma",
         position: "Chief Technology Officer",
-        bio: "Andy leads Token Fleet's technical innovation, bringing extensive blockchain development expertise to ensure our platform remains at the cutting edge of technology.",
-        imageUrl: "https://tokenfleet.io/images/andy.jpeg",
+        bio: "Andy leads Web3 Boilerplate's technical innovation, bringing extensive blockchain development expertise to ensure our platform remains at the cutting edge of technology.",
+        imageUrl: "/images/team/cto.jpeg",
       },
       {
         name: "Muhamed Syfian",
         position: "Head of Operations",
         bio: "With deep experience in fleet management, Muhamed ensures optimal performance of our vehicle portfolio and maintenance systems, maximizing value for our investors.",
-        imageUrl: "https://tokenfleet.io/images/image-8.webp",
+        imageUrl: "/images/team/operations.webp",
       },
       {
         name: "Antonio Bermudez",
         position: "Head of Design",
-        bio: "Antonio crafts Token Fleet's user experience and visual identity, ensuring our platform is both beautiful and intuitive while maintaining the highest standards of design excellence.",
-        imageUrl: "https://tokenfleet.io/images/image-7.webp",
+        bio: "Antonio crafts Web3 Boilerplate's user experience and visual identity, ensuring our platform is both beautiful and intuitive while maintaining the highest standards of design excellence.",
+        imageUrl: "/images/team/design.webp",
       },
     ],
   },
@@ -1696,12 +1696,12 @@ export const en = {
       acceptance: {
         title: "1. Acceptance of Terms",
         content:
-          'By accessing and using the Token Fleet platform ("Platform"), you agree to be bound by these Terms and Conditions ("Terms"). These Terms constitute a legally binding agreement between you ("User", "Investor") and Token Fleet, operated by Reliable Route Car Rentals LLC ("Company", "we", "us", "our").',
+          'By accessing and using the Web3 Boilerplate platform ("Platform"), you agree to be bound by these Terms and Conditions ("Terms"). These Terms constitute a legally binding agreement between you ("User", "Investor") and Web3 Boilerplate, operated by Reliable Route Car Rentals LLC ("Company", "we", "us", "our").',
       },
       definitions: {
         title: "2. Definitions",
         items: [
-          '"Platform" refers to the Token Fleet investment platform.',
+          '"Platform" refers to the Web3 Boilerplate investment platform.',
           '"Investment Share" refers to the fractional ownership stake in a vehicle.',
           '"Investment Period" refers to the standard 4-year term of investment.',
           '"Rental Income" refers to the revenue generated from renting the vehicle.',
@@ -1727,7 +1727,7 @@ export const en = {
         period: {
           title: "4.2 Investment Period",
           content:
-            "The standard Investment Period is 4 years from the date of vehicle acquisition. While direct redemptions before the end of the period are not supported, Token Fleet is developing a secondary liquidity market that will enable investors to trade their positions with others before maturity.",
+            "The standard Investment Period is 4 years from the date of vehicle acquisition. While direct redemptions before the end of the period are not supported, Web3 Boilerplate is developing a secondary liquidity market that will enable investors to trade their positions with others before maturity.",
         },
       },
       fees: {
@@ -1810,7 +1810,7 @@ export const en = {
         address1: "Rasis Business Center, 4th Floor, Office 75",
         address2: "Al Barsha, Dubai, UAE",
         phone: "Phone/WhatsApp: +971521703229",
-        email: "Email: info@tokenfleet.io",
+        email: "Email: info@yourapp.com",
       },
       lastUpdated: "Last updated: January 17, 2025",
     },
@@ -1821,7 +1821,7 @@ export const en = {
       introduction: {
         title: "1. Introduction",
         content:
-          'Token Fleet, operated by Reliable Route Car Rentals LLC ("we," "our," or "us"), is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.',
+          'Web3 Boilerplate, operated by Reliable Route Car Rentals LLC ("we," "our," or "us"), is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.',
       },
       information: {
         title: "2. Information We Collect",
@@ -1901,17 +1901,17 @@ export const en = {
         address1: "Rasis Business Center, 4th Floor, Office 75",
         address2: "Al Barsha, Dubai, UAE",
         phone: "Phone/WhatsApp: +971521703229",
-        email: "Email: info@tokenfleet.io",
+        email: "Email: info@yourapp.com",
       },
       lastUpdated: "Last updated: January 17, 2025",
     },
   },
   referee: {
-    title: "Join Token Fleet",
+    title: "Join Web3 Boilerplate",
     connectWallet: {
       title: "Ready to Start Your Journey?",
       description:
-        "Connect your wallet to unlock exclusive benefits with Token Fleet",
+        "Connect your wallet to unlock exclusive benefits with Web3 Boilerplate",
       referralCode: "Referral Code:",
       buttonLabel: "Connect Wallet",
     },
@@ -1924,13 +1924,13 @@ export const en = {
     },
     loading: {
       title: "Almost There!",
-      description: "We're setting up your Token Fleet membership",
+      description: "We're setting up your Web3 Boilerplate membership",
       referralCode: "Referral Code:",
     },
     success: {
       title: "Welcome Aboard! 🎉",
-      description: "You're now officially part of Token Fleet",
-      buttonLabel: "Explore Token Fleet",
+      description: "You're now officially part of Web3 Boilerplate",
+      buttonLabel: "Explore Web3 Boilerplate",
     },
     error: {
       title: "Oops! Something's Not Right",
@@ -1971,7 +1971,7 @@ export const es = {
         "¡Felicidades! Tu NFT {{name}} ha sido reclamado exitosamente.",
       shareButton: "Compartir en X",
       shareOnXContent:
-        "¡Acabo de reclamar mi {{name}} NFT en @tokenfleet_io! 🚗\n",
+        "¡Acabo de reclamar mi {{name}} NFT en @yourapp! 🚗\n",
       addToWalletButton: "Añadir a Billetera",
       addingToWalletButton: "Añadiendo a Billetera...",
       mainButton: "Ir a la Página Principal",
@@ -2302,7 +2302,7 @@ export const es = {
         rewardAvailability:
           "Las recompensas no reclamadas permanecen disponibles hasta que se reclamen",
         rewardDistributions:
-          "Distribuciones de ingresos disponibles en su cuenta de la plataforma Token Fleet",
+          "Distribuciones de ingresos disponibles en su cuenta de la plataforma Web3 Boilerplate",
         gasFees: "Tarifas de Gas:",
         gasFeesResponsibility:
           "Los inversores son responsables de las tarifas de la red blockchain",
@@ -2377,7 +2377,7 @@ export const es = {
         signatureAdded: "Firma añadida",
         signAbove: "Firme arriba para continuar",
         digitalAccess:
-          "Una copia de este Acuerdo firmado estará disponible en su perfil de la plataforma Token Fleet para referencia futura. Por motivos legales en Dubai, el contrato se generará en inglés.",
+          "Una copia de este Acuerdo firmado estará disponible en su perfil de la plataforma Web3 Boilerplate para referencia futura. Por motivos legales en Dubai, el contrato se generará en inglés.",
         pleaseReadContract: "Por favor lea todo el contrato",
         pleaseSignContract: "Por favor firme el contrato",
         generatingContract: "Generando Contrato...",
@@ -2410,7 +2410,7 @@ export const es = {
         increaseReturns: "Aumenta Tus Rendimientos",
         bonusPercentage: "{{percentage}}% de Bonificación",
         referralDescription:
-          "Gana rendimientos adicionales invitando a amigos a Token Fleet. Recibirás el {{percentage}}% de nuestras ganancias de plataforma de:",
+          "Gana rendimientos adicionales invitando a amigos a Web3 Boilerplate. Recibirás el {{percentage}}% de nuestras ganancias de plataforma de:",
         referralBenefits: {
           fees: "Comisiones de inversión que cobramos",
           rentalIncome: "Nuestra parte de los ingresos por alquiler",
@@ -3053,7 +3053,7 @@ export const es = {
       },
       steps: {
         step0: {
-          title: "Bienvenido a Token Fleet",
+          title: "Bienvenido a Web3 Boilerplate",
           description:
             "¡Descubre el futuro de las inversiones en flotas de autos en el próspero mercado de Dubái! Comienza a construir tu cartera con tan solo $100 y genera ingresos pasivos a través de nuestra plataforma segura, transparente y regulada.",
         },
@@ -3070,7 +3070,7 @@ export const es = {
         step3: {
           title: "Crea tu NFT de Cartera",
           description:
-            "Obtén tu NFT de Cartera único que mantendrá de forma segura todas tus inversiones en acciones de autos. Este NFT representa tu participación en el ecosistema Token Fleet.",
+            "Obtén tu NFT de Cartera único que mantendrá de forma segura todas tus inversiones en acciones de autos. Este NFT representa tu participación en el ecosistema Web3 Boilerplate.",
         },
         step4: {
           title: "Explora Oportunidades de Inversión",
@@ -3080,12 +3080,12 @@ export const es = {
         step5: {
           title: "Invierte y Monitorea el Rendimiento",
           description:
-            "Cada inversión está respaldada por un contrato legal entre tú y Token Fleet, accesible desde tu perfil. Tu NFT de cartera contiene tus acciones de flota, representando tu propiedad. Monitorea el rendimiento de tus inversiones, verifica la documentación y realiza un seguimiento de las ganancias en tiempo real a través de tu panel.",
+            "Cada inversión está respaldada por un contrato legal entre tú y Web3 Boilerplate, accesible desde tu perfil. Tu NFT de cartera contiene tus acciones de flota, representando tu propiedad. Monitorea el rendimiento de tus inversiones, verifica la documentación y realiza un seguimiento de las ganancias en tiempo real a través de tu panel.",
         },
         step6: {
           title: "Comienza a Invertir Ahora",
           description:
-            "Tu viaje para generar ingresos pasivos a través del mercado premium de alquiler de autos de Dubái comienza aquí. ¡Únete a Token Fleet hoy y transforma tu forma de invertir!",
+            "Tu viaje para generar ingresos pasivos a través del mercado premium de alquiler de autos de Dubái comienza aquí. ¡Únete a Web3 Boilerplate hoy y transforma tu forma de invertir!",
         },
       },
     },
@@ -3366,7 +3366,7 @@ export const es = {
   footer: {
     backToTop: "Volver arriba",
     tagline:
-      "Invierte en coches y gana con cada alquiler. Token Fleet te permite ser propietario de una parte y ganar cada vez que las ruedas giran.",
+      "Invierte en coches y gana con cada alquiler. Web3 Boilerplate te permite ser propietario de una parte y ganar cada vez que las ruedas giran.",
     about: "Acerca de",
     aboutLinks: {
       mission: "Nuestra Misión",
@@ -3386,7 +3386,7 @@ export const es = {
   howItWorks: {
     title: "Cómo Funciona",
     subtitle:
-      "Únete a Token Fleet y comienza a generar ingresos pasivos a través del mercado premium de alquiler de coches de Dubái. Nuestra plataforma basada en blockchain hace que la inversión en flotas de vehículos sea accesible, segura y transparente.",
+      "Únete a Web3 Boilerplate y comienza a generar ingresos pasivos a través del mercado premium de alquiler de coches de Dubái. Nuestra plataforma basada en blockchain hace que la inversión en flotas de vehículos sea accesible, segura y transparente.",
     investmentJourney: "Tu Recorrido de Inversión",
     platformFeatures: "Características de la Plataforma",
     benefitsOfInvesting: "Beneficios de Invertir",
@@ -3424,7 +3424,7 @@ export const es = {
       {
         title: "Recibe Tu NFT de Cartera",
         description:
-          "Obtén tu NFT de Cartera único que mantendrá de forma segura todas tus inversiones en acciones de coches. Este NFT representa tu participación en el ecosistema Token Fleet.",
+          "Obtén tu NFT de Cartera único que mantendrá de forma segura todas tus inversiones en acciones de coches. Este NFT representa tu participación en el ecosistema Web3 Boilerplate.",
         details: [
           "Identificador único de cartera",
           "Registro seguro de propiedad",
@@ -3482,7 +3482,7 @@ export const es = {
         highlight: "Obtén tokens de prueba",
       },
       {
-        text: "Prueba Token Fleet con tokens gratuitos",
+        text: "Prueba Web3 Boilerplate con tokens gratuitos",
         highlight: "Únete a Telegram",
       },
     ],
@@ -3548,7 +3548,7 @@ export const es = {
       bridging: {
         title: "Uniendo las Finanzas Tradicionales y Digitales",
         description:
-          "Token Fleet se encuentra en la intersección de la gestión tradicional de activos y la innovación blockchain. Estamos siendo pioneros en la tokenización de activos del mundo real, comenzando con vehículos, para crear un nuevo estándar de oportunidades de inversión transparentes, eficientes y accesibles.",
+          "Web3 Boilerplate se encuentra en la intersección de la gestión tradicional de activos y la innovación blockchain. Estamos siendo pioneros en la tokenización de activos del mundo real, comenzando con vehículos, para crear un nuevo estándar de oportunidades de inversión transparentes, eficientes y accesibles.",
       },
     },
     difference: {
@@ -3556,7 +3556,7 @@ export const es = {
       ownership: {
         title: "Propiedad Real de Activos",
         description:
-          "A diferencia de los vehículos de inversión tradicionales, Token Fleet proporciona propiedad directa en nuestra flota de coches. Cada token representa una participación real en activos físicos, respaldados por contratos inteligentes y marcos legales que aseguran que tu inversión sea segura y tangible.",
+          "A diferencia de los vehículos de inversión tradicionales, Web3 Boilerplate proporciona propiedad directa en nuestra flota de coches. Cada token representa una participación real en activos físicos, respaldados por contratos inteligentes y marcos legales que aseguran que tu inversión sea segura y tangible.",
       },
       transparency: {
         title: "Transparencia Impulsada por Blockchain",
@@ -3609,37 +3609,37 @@ export const es = {
   team: {
     title: "Conoce a Nuestro Equipo",
     subtitle:
-      "La fuerza impulsora detrás de Token Fleet combina una profunda experiencia en automóviles, tecnología blockchain y mercados financieros. Nuestro diverso equipo está unido por una sola misión: revolucionar la propiedad de coches a través de soluciones de inversión innovadoras.",
+      "La fuerza impulsora detrás de Web3 Boilerplate combina una profunda experiencia en automóviles, tecnología blockchain y mercados financieros. Nuestro diverso equipo está unido por una sola misión: revolucionar la propiedad de coches a través de soluciones de inversión innovadoras.",
     members: [
       {
         name: "Marcos Maceo",
         position: "Director Ejecutivo",
-        bio: "Con amplia experiencia en tecnología blockchain y la industria automotriz, Marcos lidera la visión de Token Fleet de revolucionar las inversiones en coches a través de soluciones blockchain innovadoras.",
-        imageUrl: "https://tokenfleet.io/images/image-5.webp",
+        bio: "Con amplia experiencia en tecnología blockchain y la industria automotriz, Marcos lidera la visión de Web3 Boilerplate de revolucionar las inversiones en coches a través de soluciones blockchain innovadoras.",
+        imageUrl: "/images/team/ceo.webp",
       },
       {
         name: "Daniela Suárez",
         position: "Directora de Marketing",
-        bio: "Daniela aporta experiencia en marketing estratégico a Token Fleet, impulsando el crecimiento de nuestra marca y presencia en el mercado, asegurando que nuestra plataforma de inversión innovadora llegue a la audiencia adecuada.",
-        imageUrl: "https://tokenfleet.io/images/daniela.jpeg",
+        bio: "Daniela aporta experiencia en marketing estratégico a Web3 Boilerplate, impulsando el crecimiento de nuestra marca y presencia en el mercado, asegurando que nuestra plataforma de inversión innovadora llegue a la audiencia adecuada.",
+        imageUrl: "/images/team/cmo.jpeg",
       },
       {
         name: "Andy Ledesma",
         position: "Director de Tecnología",
-        bio: "Andy lidera la innovación técnica de Token Fleet, aportando amplia experiencia en desarrollo blockchain para garantizar que nuestra plataforma se mantenga a la vanguardia de la tecnología.",
-        imageUrl: "https://tokenfleet.io/images/andy.jpeg",
+        bio: "Andy lidera la innovación técnica de Web3 Boilerplate, aportando amplia experiencia en desarrollo blockchain para garantizar que nuestra plataforma se mantenga a la vanguardia de la tecnología.",
+        imageUrl: "/images/team/cto.jpeg",
       },
       {
         name: "Muhamed Syfian",
         position: "Jefe de Operaciones",
         bio: "Con profunda experiencia en gestión de flotas, Muhamed asegura el rendimiento óptimo de nuestra cartera de vehículos y sistemas de mantenimiento, maximizando el valor para nuestros inversores.",
-        imageUrl: "https://tokenfleet.io/images/image-8.webp",
+        imageUrl: "/images/team/operations.webp",
       },
       {
         name: "Antonio Bermudez",
         position: "Jefe de Diseño",
-        bio: "Antonio crea la experiencia de usuario y la identidad visual de Token Fleet, asegurando que nuestra plataforma sea tanto hermosa como intuitiva, manteniendo los más altos estándares de excelencia en diseño.",
-        imageUrl: "https://tokenfleet.io/images/image-7.webp",
+        bio: "Antonio crea la experiencia de usuario y la identidad visual de Web3 Boilerplate, asegurando que nuestra plataforma sea tanto hermosa como intuitiva, manteniendo los más altos estándares de excelencia en diseño.",
+        imageUrl: "/images/team/design.webp",
       },
     ],
   },
@@ -3649,12 +3649,12 @@ export const es = {
       acceptance: {
         title: "1. Aceptación de Términos",
         content:
-          'Al acceder y utilizar la plataforma Token Fleet ("Plataforma"), acepta estar sujeto a estos Términos y Condiciones ("Términos"). Estos Términos constituyen un acuerdo legalmente vinculante entre usted ("Usuario", "Inversor") y Token Fleet, operado por Reliable Route Car Rentals LLC ("Compañía", "nosotros", "nos", "nuestro").',
+          'Al acceder y utilizar la plataforma Web3 Boilerplate ("Plataforma"), acepta estar sujeto a estos Términos y Condiciones ("Términos"). Estos Términos constituyen un acuerdo legalmente vinculante entre usted ("Usuario", "Inversor") y Web3 Boilerplate, operado por Reliable Route Car Rentals LLC ("Compañía", "nosotros", "nos", "nuestro").',
       },
       definitions: {
         title: "2. Definiciones",
         items: [
-          '"Plataforma" se refiere a la plataforma de inversión Token Fleet.',
+          '"Plataforma" se refiere a la plataforma de inversión Web3 Boilerplate.',
           '"Participación de Inversión" se refiere a la participación de propiedad fraccionada en un vehículo.',
           '"Período de Inversión" se refiere al plazo estándar de inversión de 4 años.',
           '"Ingresos por Alquiler" se refiere a los ingresos generados por el alquiler del vehículo.',
@@ -3680,7 +3680,7 @@ export const es = {
         period: {
           title: "4.2 Período de Inversión",
           content:
-            "El Período de Inversión estándar es de 4 años desde la fecha de adquisición del vehículo. Si bien no se permiten rescates directos antes del final del período, Token Fleet está desarrollando un mercado secundario de liquidez que permitirá a los inversores negociar sus posiciones con otros antes del vencimiento.",
+            "El Período de Inversión estándar es de 4 años desde la fecha de adquisición del vehículo. Si bien no se permiten rescates directos antes del final del período, Web3 Boilerplate está desarrollando un mercado secundario de liquidez que permitirá a los inversores negociar sus posiciones con otros antes del vencimiento.",
         },
       },
       fees: {
@@ -3763,7 +3763,7 @@ export const es = {
         address1: "Rasis Business Center, 4º Piso, Oficina 75",
         address2: "Al Barsha, Dubái, EAU",
         phone: "Teléfono/WhatsApp: +971521703229",
-        email: "Correo electrónico: info@tokenfleet.io",
+        email: "Correo electrónico: info@yourapp.com",
       },
       lastUpdated: "Última actualización: 17 de enero de 2025",
     },
@@ -3774,7 +3774,7 @@ export const es = {
       introduction: {
         title: "1. Introducción",
         content:
-          'Token Fleet, operado por Reliable Route Car Rentals LLC ("nosotros," "nuestro," o "nos"), está comprometido a proteger su privacidad. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y protegemos su información cuando utiliza nuestra plataforma.',
+          'Web3 Boilerplate, operado por Reliable Route Car Rentals LLC ("nosotros," "nuestro," o "nos"), está comprometido a proteger su privacidad. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y protegemos su información cuando utiliza nuestra plataforma.',
       },
       information: {
         title: "2. Información que Recopilamos",
@@ -3855,17 +3855,17 @@ export const es = {
         address1: "Rasis Business Center, 4º Piso, Oficina 75",
         address2: "Al Barsha, Dubái, EAU",
         phone: "Teléfono/WhatsApp: +971521703229",
-        email: "Correo electrónico: info@tokenfleet.io",
+        email: "Correo electrónico: info@yourapp.com",
       },
       lastUpdated: "Última actualización: 17 de enero de 2025",
     },
   },
   referee: {
-    title: "Únete a Token Fleet",
+    title: "Únete a Web3 Boilerplate",
     connectWallet: {
       title: "¿Listo para Comenzar tu Viaje?",
       description:
-        "Conecta tu billetera para desbloquear beneficios exclusivos con Token Fleet",
+        "Conecta tu billetera para desbloquear beneficios exclusivos con Web3 Boilerplate",
       referralCode: "Código de Referencia:",
       buttonLabel: "Conectar Billetera",
     },
@@ -3878,13 +3878,13 @@ export const es = {
     },
     loading: {
       title: "¡Casi Listo!",
-      description: "Estamos configurando tu membresía de Token Fleet",
+      description: "Estamos configurando tu membresía de Web3 Boilerplate",
       referralCode: "Código de Referencia:",
     },
     success: {
       title: "¡Bienvenido a Bordo! 🎉",
-      description: "Ahora eres oficialmente parte de Token Fleet",
-      buttonLabel: "Explorar Token Fleet",
+      description: "Ahora eres oficialmente parte de Web3 Boilerplate",
+      buttonLabel: "Explorar Web3 Boilerplate",
     },
     error: {
       title: "¡Ups! Algo No Está Bien",

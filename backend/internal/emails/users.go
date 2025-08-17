@@ -13,10 +13,10 @@ func (e *EmailServer) SendWelcomeEmail(users []structs.User) error {
 		}
 
 		// Define necessary fields
-		actionURL := "https://app.tokenfleet.io/" // Adjust according to your platform
-		supportEmail := "info@tokenfleet.io"
+		actionURL := "https://yourapp.com/" // Adjust according to your platform
+		supportEmail := "info@yourapp.com"
 		liveChatURL := "https://tawk.to/chat/6714c45a4304e3196ad4afd3/1iakhu0s1"
-		helpURL := "https://docs.tokenfleet.io/"
+		helpURL := "https://docs.yourapp.com/"
 		senderName := "Marcos Maceo"
 
 		// Prepare the data to send to Postmark template
@@ -27,7 +27,7 @@ func (e *EmailServer) SendWelcomeEmail(users []structs.User) error {
 			"support_email": supportEmail,
 			"live_chat_url": liveChatURL,
 			"sender_name":   senderName,
-			"product_name":  "Token Fleet",
+			"product_name":  "Web3 Boilerplate",
 			"help_url":      helpURL,
 			"name":          name,
 		}

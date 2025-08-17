@@ -11,7 +11,7 @@ import (
 var EmailServerInstance *EmailServer
 
 // TODO: Change AdminsEmails to be configurable
-var AdminsEmails = []string{"admin@tokenfleet.io", "admin@reliableroute.rentals", "marcosmaceowork@gmail.com"}
+var AdminsEmails = []string{"admin@yourapp.com", "admin@yourcompany.com", "admin@example.com"}
 
 type EmailServer struct {
 	FromTransactional string
@@ -37,15 +37,15 @@ func NewEmailServer(fromTransactional, fromNews, fromUpdates, token string) *Ema
 
 func (e *EmailServer) addUnsubscribeURL(templateBody map[string]interface{}, emails []string) {
 	if len(emails) > 0 {
-		templateBody["unsubscribe_url"] = "https://app.tokenfleet.io/profile?tab=notifications"
+		templateBody["unsubscribe_url"] = "https://yourapp.com/profile?tab=notifications"
 		templateBody["unsubscribe_message"] = "To unsubscribe from these emails, please log in to your account and visit your notification settings."
 	}
 }
 
 func (e *EmailServer) SendTransactionalEmail(to []string, templateID int, templateBody map[string]interface{}) error {
-	templateBody["company_name"] = "Token Fleet, from Reliable Route Car Rentals LLC"
+	templateBody["company_name"] = "Web3 Boilerplate, from Your Company LLC"
 	templateBody["company_address"] = "Rasis Business Center, Office 75, 4th Floor, Al Barsha, Dubai, UAE"
-	templateBody["product_name"] = "Token Fleet"
+	templateBody["product_name"] = "Web3 Boilerplate"
 
 	e.addUnsubscribeURL(templateBody, to)
 
@@ -55,7 +55,7 @@ func (e *EmailServer) SendTransactionalEmail(to []string, templateID int, templa
 		Tag:           "transactional",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@tokenfleet.io",
+		ReplyTo:       "info@yourapp.com",
 		MessageStream: "outbound",
 	}
 
@@ -74,9 +74,9 @@ func (e *EmailServer) SendTransactionalEmail(to []string, templateID int, templa
 }
 
 func (e *EmailServer) SendUpdatesEmail(to []string, templateID int, templateBody map[string]interface{}) error {
-	templateBody["company_name"] = "Token Fleet, from Reliable Route Car Rentals LLC"
+	templateBody["company_name"] = "Web3 Boilerplate, from Your Company LLC"
 	templateBody["company_address"] = "Rasis Business Center, Office 75, 4th Floor, Al Barsha, Dubai, UAE"
-	templateBody["product_name"] = "Token Fleet"
+	templateBody["product_name"] = "Web3 Boilerplate"
 
 	e.addUnsubscribeURL(templateBody, to)
 
@@ -86,7 +86,7 @@ func (e *EmailServer) SendUpdatesEmail(to []string, templateID int, templateBody
 		Tag:           "updates",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@tokenfleet.io",
+		ReplyTo:       "info@yourapp.com",
 		MessageStream: "broadcast",
 	}
 
@@ -105,9 +105,9 @@ func (e *EmailServer) SendUpdatesEmail(to []string, templateID int, templateBody
 }
 
 func (e *EmailServer) SendNewsEmail(to []string, templateID int, templateBody map[string]interface{}) error {
-	templateBody["company_name"] = "Token Fleet, from Reliable Route Car Rentals LLC"
+	templateBody["company_name"] = "Web3 Boilerplate, from Your Company LLC"
 	templateBody["company_address"] = "Rasis Business Center, Office 75, 4th Floor, Al Barsha, Dubai, UAE"
-	templateBody["product_name"] = "Token Fleet"
+	templateBody["product_name"] = "Web3 Boilerplate"
 
 	e.addUnsubscribeURL(templateBody, to)
 
@@ -117,7 +117,7 @@ func (e *EmailServer) SendNewsEmail(to []string, templateID int, templateBody ma
 		Tag:           "news",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@tokenfleet.io",
+		ReplyTo:       "info@yourapp.com",
 		MessageStream: "news-broadcast-stream",
 	}
 
@@ -137,9 +137,9 @@ func (e *EmailServer) SendNewsEmail(to []string, templateID int, templateBody ma
 
 func (e *EmailServer) SendAdminEmail(templateID int, templateBody map[string]interface{}) error {
 
-	templateBody["company_name"] = "Token Fleet, from Reliable Route Car Rentals LLC"
+	templateBody["company_name"] = "Web3 Boilerplate, from Your Company LLC"
 	templateBody["company_address"] = "Rasis Business Center, Office 75, 4th Floor, Al Barsha, Dubai, UAE"
-	templateBody["product_name"] = "Token Fleet"
+	templateBody["product_name"] = "Web3 Boilerplate"
 
 	e.addUnsubscribeURL(templateBody, AdminsEmails)
 
@@ -149,7 +149,7 @@ func (e *EmailServer) SendAdminEmail(templateID int, templateBody map[string]int
 		Tag:           "admin",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@tokenfleet.io",
+		ReplyTo:       "info@yourapp.com",
 		MessageStream: "admin-notifications",
 	}
 

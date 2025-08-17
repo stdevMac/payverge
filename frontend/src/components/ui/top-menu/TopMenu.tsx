@@ -94,8 +94,8 @@ export const TopMenu = () => {
           >
             <div className="relative w-20 h-6 sm:w-32 sm:h-8 md:w-40 md:h-10">
               <Image
-                src="/images/TokenFleetLogo-01.svg"
-                alt={t('app.name', {}, 'Token Fleet')}
+                src="/images/Web3BoilerplateLogo-01.svg"
+                alt={t('app.name', {}, 'Web3 Boilerplate')}
                 fill
                 sizes="(max-width: 640px) 80px, (max-width: 768px) 128px, 160px"
                 className="object-contain"
@@ -121,8 +121,8 @@ export const TopMenu = () => {
         >
           <div className="relative w-20 h-6 sm:w-32 sm:h-8 md:w-40 md:h-10">
             <Image
-              src="/images/TokenFleetLogo-01.svg"
-              alt="Token Fleet"
+              src="/images/Web3BoilerplateLogo-01.svg"
+              alt="Web3 Boilerplate"
               fill
               sizes="(max-width: 640px) 80px, (max-width: 768px) 128px, 160px"
               className="object-contain"
