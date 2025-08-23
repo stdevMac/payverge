@@ -58,7 +58,7 @@ func CheckAndTopUp(c *gin.Context) {
 }
 
 func CreateCode(c *gin.Context) {
-	var code database.Codes
+	var code database.Code
 
 	if err := c.ShouldBindJSON(&code); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid data"})
@@ -101,7 +101,7 @@ func GetCode(c *gin.Context) {
 }
 
 func UpdateCode(c *gin.Context) {
-	var code database.Codes
+	var code database.Code
 
 	if err := c.BindJSON(&code); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})

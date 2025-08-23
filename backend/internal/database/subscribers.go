@@ -1,61 +1,52 @@
 package database
 
 import (
-	"context"
-	"time"
-
 	"web3-boilerplate/internal/structs"
-	"go.mongodb.org/mongo-driver/bson"
+	"gorm.io/gorm"
+	"errors"
 )
 
 func AddSubscriber(sub structs.Subscriber) error {
-	collection := mongoClient.Database(dbName).Collection("subscribers")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	// Check if subscriber already exists
-	var existingSub structs.Subscriber
-	err := collection.FindOne(ctx, bson.M{"email": sub.Email}).Decode(&existingSub)
-	if err == nil {
+	var existingSub Subscriber
+	result := db.Where("email = ?", sub.Email).First(&existingSub)
+	if result.Error == nil {
 		// Subscriber already exists
 		return nil
 	}
 
-	// Insert new subscriber
-	_, err = collection.InsertOne(ctx, sub)
-	if err != nil {
-		return err
+	// Only proceed if the error is "record not found"
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return result.Error
 	}
 
-	return nil
+	// Insert new subscriber
+	dbSub := Subscriber{
+		Email: sub.Email,
+	}
+	
+	result = db.Create(&dbSub)
+	return result.Error
 }
 
 func GetSubscribers() ([]structs.Subscriber, error) {
-	collection := mongoClient.Database(dbName).Collection("subscribers")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		return nil, err
+	var dbSubscribers []Subscriber
+	result := db.Find(&dbSubscribers)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	var subscribers []structs.Subscriber
-	if err = cursor.All(ctx, &subscribers); err != nil {
-		return nil, err
+	subscribers := make([]structs.Subscriber, len(dbSubscribers))
+	for i, dbSub := range dbSubscribers {
+		subscribers[i] = structs.Subscriber{
+			Email: dbSub.Email,
+		}
 	}
 
 	return subscribers, nil
 }
 
 func UnSubscribe(email string) error {
-	collection := mongoClient.Database(dbName).Collection("subscribers")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := collection.DeleteOne(ctx, bson.M{"email": email})
-	return err
+	result := db.Where("email = ?", email).Delete(&Subscriber{})
+	return result.Error
 }

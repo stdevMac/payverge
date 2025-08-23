@@ -1,6 +1,9 @@
 # Use the official Golang image
 FROM golang:1.22.2-alpine AS builder
 
+# Install build dependencies for SQLite
+RUN apk add --no-cache gcc musl-dev sqlite-dev
+
 # Set the working directory
 WORKDIR /app
 
@@ -13,8 +16,8 @@ RUN go mod download
 # Copy the source from the current directory to the working Directory inside the container
 COPY . .
 
-# Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/app/main.go
+# Build the Go app with CGO enabled for SQLite
+RUN CGO_ENABLED=1 GOOS=linux go build -a -o server ./cmd/app/main.go
 
 # Start a new stage from scratch
 FROM alpine:latest
@@ -27,15 +30,13 @@ WORKDIR /root/
 COPY --from=builder /app/server .
 
 # Create necessary directories
-RUN mkdir -p metadata images/nft
+RUN mkdir -p metadata images/nft data
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
 # Define arguments with default values
-ARG PASSWORD=password
-ARG USERNAME=admin
-ARG URI=mongodb://localhost:27017
+ARG DATABASE_PATH=./data/app.db
 ARG AWS_ACCESS_KEY=aws_access_key
 ARG AWS_SECRET_KEY=aws_secret_key
 ARG AWS_REGION=us-east-1

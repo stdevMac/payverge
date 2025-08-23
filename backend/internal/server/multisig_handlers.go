@@ -5,14 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"web3-boilerplate/internal/database"
-	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
 )
 
 // GetMultisigTx handles the GET request for multisig transaction information
 func GetMultisigTx(c *gin.Context) {
 	data, err := database.GetMultisigTx()
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "No transaction data found"})
 			return
 		}
@@ -43,7 +43,7 @@ func PutMultisigTx(c *gin.Context) {
 func DeleteMultisigTx(c *gin.Context) {
 	data, err := database.GetMultisigTx()
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "No transaction data found"})
 			return
 		}
@@ -75,7 +75,7 @@ func PatchMultisigTx(c *gin.Context) {
 
 	data, err := database.GetMultisigTx()
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "No transaction data found"})
 			return
 		}

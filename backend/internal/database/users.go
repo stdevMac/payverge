@@ -1,94 +1,89 @@
 package database
 
 import (
-	"context"
 	"log"
-	"time"
 
 	"web3-boilerplate/internal/structs"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func RegisterUser(user structs.User) error {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
+	dbUser := User{
+		Address:                 user.Address,
+		ReferralCode:           user.ReferralCode,
+		NotificationPreferences: user.NotificationPreferences,
+	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := collection.InsertOne(ctx, user)
-	return err
+	result := db.Create(&dbUser)
+	return result.Error
 }
 
 func GetUserByAddress(address string) (structs.User, error) {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user structs.User
-	err := collection.FindOne(ctx, bson.M{"address": address}).Decode(&user)
-	if err != nil {
-		return structs.User{}, err
+	var dbUser User
+	result := db.Where("address = ?", address).First(&dbUser)
+	if result.Error != nil {
+		return structs.User{}, result.Error
 	}
 
-	return user, nil
+	return structs.User{
+		Address:                 dbUser.Address,
+		ReferralCode:           dbUser.ReferralCode,
+		NotificationPreferences: dbUser.NotificationPreferences,
+	}, nil
 }
 
 func GetUserByReferralCode(referralCode string) (structs.User, error) {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user structs.User
-	err := collection.FindOne(ctx, bson.M{"referral_code": referralCode}).Decode(&user)
-	if err != nil {
-		return structs.User{}, err
+	var dbUser User
+	result := db.Where("referral_code = ?", referralCode).First(&dbUser)
+	if result.Error != nil {
+		return structs.User{}, result.Error
 	}
 
-	return user, nil
+	return structs.User{
+		Address:                 dbUser.Address,
+		ReferralCode:           dbUser.ReferralCode,
+		NotificationPreferences: dbUser.NotificationPreferences,
+	}, nil
 }
 
 func GetUserByTokenId(tokenId string) (structs.User, error) {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user structs.User
-	err := collection.FindOne(ctx, bson.M{"token_id": tokenId}).Decode(&user)
-	if err != nil {
-		return structs.User{}, err
+	var dbUser User
+	result := db.Where("token_id = ?", tokenId).First(&dbUser)
+	if result.Error != nil {
+		return structs.User{}, result.Error
 	}
 
-	return user, nil
-
+	return structs.User{
+		Address:                 dbUser.Address,
+		ReferralCode:           dbUser.ReferralCode,
+		NotificationPreferences: dbUser.NotificationPreferences,
+	}, nil
 }
 
 func UpdateUser(user structs.User) error {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
+	dbUser := User{
+		Address:                 user.Address,
+		ReferralCode:           user.ReferralCode,
+		NotificationPreferences: user.NotificationPreferences,
+	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := collection.ReplaceOne(ctx, bson.M{"address": user.Address}, user)
-	return err
+	result := db.Where("address = ?", user.Address).Updates(&dbUser)
+	return result.Error
 }
 
 func GetAllUsers() ([]structs.User, error) {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		return nil, err
+	var dbUsers []User
+	result := db.Find(&dbUsers)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	var users []structs.User
-	if err = cursor.All(ctx, &users); err != nil {
-		return nil, err
+	users := make([]structs.User, len(dbUsers))
+	for i, dbUser := range dbUsers {
+		users[i] = structs.User{
+			Address:                 dbUser.Address,
+			ReferralCode:           dbUser.ReferralCode,
+				NotificationPreferences: dbUser.NotificationPreferences,
+		}
 	}
 
 	return users, nil
@@ -96,14 +91,11 @@ func GetAllUsers() ([]structs.User, error) {
 
 func UpdateNotificationPreferences(user structs.User, preferences structs.NotificationPreferences) error {
 	user.NotificationPreferences = preferences
-
 	return UpdateUser(user)
 }
 
 // SetDefaultNotificationPreferences sets default notification preferences for all users that don't have them set
 func SetDefaultNotificationPreferences() error {
-	collection := mongoClient.Database(dbName).Collection(usersCollectionName)
-
 	// Default notification preferences with all fields set to true
 	defaultPreferences := structs.NotificationPreferences{
 		EmailEnabled:         true,
@@ -115,22 +107,23 @@ func SetDefaultNotificationPreferences() error {
 		StatisticsEnabled:    true,
 	}
 
-	// Update all users that don't have notification preferences set
-	withoutNotificationPreferences := bson.M{
-		"notification_preferences": bson.M{"$exists": false},
+	// Update all users that have empty notification preferences
+	result := db.Model(&User{}).
+		Where("notification_preferences_email_enabled = ? OR notification_preferences_email_enabled IS NULL", false).
+		Updates(map[string]interface{}{
+			"notification_preferences_email_enabled":         defaultPreferences.EmailEnabled,
+			"notification_preferences_news_enabled":          defaultPreferences.NewsEnabled,
+			"notification_preferences_updates_enabled":       defaultPreferences.UpdatesEnabled,
+			"notification_preferences_transactional_enabled": defaultPreferences.TransactionalEnabled,
+			"notification_preferences_security_enabled":      defaultPreferences.SecurityEnabled,
+			"notification_preferences_reports_enabled":       defaultPreferences.ReportsEnabled,
+			"notification_preferences_statistics_enabled":    defaultPreferences.StatisticsEnabled,
+		})
+
+	if result.Error != nil {
+		return result.Error
 	}
 
-	update := bson.M{
-		"$set": bson.M{
-			"notification_preferences": defaultPreferences,
-		},
-	}
-
-	result, err := collection.UpdateMany(context.Background(), withoutNotificationPreferences, update)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("Updated notification preferences for %d users", result.ModifiedCount)
+	log.Printf("Updated notification preferences for %d users", result.RowsAffected)
 	return nil
 }

@@ -1,65 +1,67 @@
 package database
 
 import (
-	"context"
 	"log"
-	"time"
+	"os"
+	"path/filepath"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type DbConfig struct {
-	URI      string `json:"uri"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	DatabasePath string `json:"database_path"`
 }
 
-func NewConfig(uri, username, password string) *DbConfig {
+func NewConfig(databasePath string) *DbConfig {
 	return &DbConfig{
-		URI:      uri,
-		Username: username,
-		Password: password,
+		DatabasePath: databasePath,
 	}
 }
 
-type DBClient *mongo.Client
-
 var (
-	dbName                   = "database"
-	usersCollectionName      = "users"
-	operationsCollectionName = "operations"
-	errorLogsCollectionName  = "error_logs"
-	subscribersCollectionName = "subscribers"
-
-	mongoClient *mongo.Client
+	db *gorm.DB
 )
 
 func InitDB(config *DbConfig) {
-	clientOptions := options.Client().ApplyURI(config.URI)
-
-	// Add the authentication credentials
-	clientOptions.Auth = &options.Credential{
-		Username: config.Username,
-		Password: config.Password,
+	// Ensure the directory exists
+	dir := filepath.Dir(config.DatabasePath)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Fatal("Failed to create database directory:", err)
 	}
-	client, err := mongo.Connect(context.Background(), clientOptions)
+
+	// Open SQLite database
+	database, err := gorm.Open(sqlite.Open(config.DatabasePath), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to connect to database:", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	db = database
 
-	if err = client.Ping(ctx, readpref.Primary()); err != nil {
-		log.Fatal(err)
+	// Auto-migrate all models
+	if err := autoMigrate(); err != nil {
+		log.Fatal("Failed to migrate database:", err)
 	}
 
-	mongoClient = client
+	log.Println("Database connected and migrated successfully")
 }
 
-// GetClient returns the MongoDB client instance
-func GetClient() *mongo.Client {
-	return mongoClient
+// GetDB returns the GORM database instance
+func GetDB() *gorm.DB {
+	return db
+}
+
+// autoMigrate creates all necessary tables
+func autoMigrate() error {
+	return db.AutoMigrate(
+		&User{},
+		&Code{},
+		&ErrorLog{},
+		&FaucetTransaction{},
+		&Subscriber{},
+		&MultisigTx{},
+	)
 }

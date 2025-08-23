@@ -30,9 +30,7 @@ import (
 func main() {
 	// Get flags and initialize the database
 	var (
-		uriFlag                = flag.String("uri", "", "Database URI")
-		usernameFlag           = flag.String("username", "", "Database username")
-		passwordFlag           = flag.String("password", "", "Database password")
+		databasePath           = flag.String("database-path", "./data/app.db", "SQLite database file path")
 		production             = flag.Bool("production", false, "Production mode")
 		faucetPrivateKey       = flag.String("faucet-private-key", "", "Private key for Faucet Address")
 		rpcUrl                 = flag.String("rpc-url", "", "RPC URL for the Ethereum node")
@@ -94,7 +92,7 @@ func main() {
 	}
 
 	// Initialize the database
-	config := database.NewConfig(*uriFlag, *usernameFlag, *passwordFlag)
+	config := database.NewConfig(*databasePath)
 	database.InitDB(config)
 
 	// Initialize S3
@@ -150,8 +148,8 @@ func main() {
 	publicRoutes := r.Group("/api/v1/")
 	{
 		// Health check endpoints
-		publicRoutes.GET("/health", health.Handler(database.GetClient(), "1.0.0"))
-		publicRoutes.GET("/health/ready", health.ReadinessHandler(database.GetClient()))
+		publicRoutes.GET("/health", health.Handler(database.GetDB(), "1.0.0"))
+		publicRoutes.GET("/health/ready", health.ReadinessHandler(database.GetDB()))
 		publicRoutes.GET("/health/live", health.LivenessHandler())
 
 		// Telegram webhook

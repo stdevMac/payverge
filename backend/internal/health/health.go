@@ -1,13 +1,11 @@
 package health
 
 import (
-	"context"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"gorm.io/gorm"
 )
 
 // HealthCheck represents the health status of a service component
@@ -30,15 +28,15 @@ type HealthResponse struct {
 var startTime = time.Now()
 
 // Handler returns a health check handler
-func Handler(mongoClient *mongo.Client, version string) gin.HandlerFunc {
+func Handler(db *gorm.DB, version string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		checks := []HealthCheck{}
 		overallStatus := "healthy"
 
-		// Check MongoDB connection
-		mongoCheck := checkMongoDB(mongoClient)
-		checks = append(checks, mongoCheck)
-		if mongoCheck.Status != "healthy" {
+		// Check SQLite database connection
+		dbCheck := checkDatabase(db)
+		checks = append(checks, dbCheck)
+		if dbCheck.Status != "healthy" {
 			overallStatus = "unhealthy"
 		}
 
@@ -69,12 +67,12 @@ func Handler(mongoClient *mongo.Client, version string) gin.HandlerFunc {
 }
 
 // ReadinessHandler returns a readiness check handler
-func ReadinessHandler(mongoClient *mongo.Client) gin.HandlerFunc {
+func ReadinessHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check if all critical services are ready
-		mongoCheck := checkMongoDB(mongoClient)
+		dbCheck := checkDatabase(db)
 		
-		if mongoCheck.Status != "healthy" {
+		if dbCheck.Status != "healthy" {
 			c.JSON(http.StatusServiceUnavailable, gin.H{
 				"status": "not ready",
 				"reason": "database not available",
@@ -98,26 +96,33 @@ func LivenessHandler() gin.HandlerFunc {
 	}
 }
 
-// checkMongoDB checks MongoDB connection health
-func checkMongoDB(client *mongo.Client) HealthCheck {
-	if client == nil {
+// checkDatabase checks SQLite database connection health
+func checkDatabase(db *gorm.DB) HealthCheck {
+	if db == nil {
 		return HealthCheck{
-			Service: "mongodb",
+			Service: "sqlite",
 			Status:  "unhealthy",
-			Message: "client not initialized",
+			Message: "database not initialized",
 		}
 	}
 
 	start := time.Now()
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	sqlDB, err := db.DB()
+	if err != nil {
+		return HealthCheck{
+			Service: "sqlite",
+			Status:  "unhealthy",
+			Message: err.Error(),
+			Latency: time.Since(start).String(),
+		}
+	}
 
-	err := client.Ping(ctx, readpref.Primary())
+	err = sqlDB.Ping()
 	latency := time.Since(start)
 
 	if err != nil {
 		return HealthCheck{
-			Service: "mongodb",
+			Service: "sqlite",
 			Status:  "unhealthy",
 			Message: err.Error(),
 			Latency: latency.String(),
@@ -130,7 +135,7 @@ func checkMongoDB(client *mongo.Client) HealthCheck {
 	}
 
 	return HealthCheck{
-		Service: "mongodb",
+		Service: "sqlite",
 		Status:  status,
 		Latency: latency.String(),
 	}
