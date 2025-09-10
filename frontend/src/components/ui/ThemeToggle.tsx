@@ -5,23 +5,20 @@ import { Button } from '@nextui-org/react';
 import { useTheme } from '@/context/ThemeContext';
 import { 
   HiSun, 
-  HiMoon, 
 } from 'react-icons/hi';
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const themes = [
     { value: 'light', icon: HiSun, label: 'Light' },
-    { value: 'dark', icon: HiMoon, label: 'Dark' },
   ] as const;
 
   const currentTheme = themes.find(t => t.value === theme) || themes[0];
 
-  const cycleTheme = () => {
-    const currentIndex = themes.findIndex(t => t.value === theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex].value);
+  // No cycling needed since we only have light theme
+  const handleClick = () => {
+    // Theme is always light, no action needed
   };
 
   return (
@@ -29,9 +26,9 @@ export function ThemeToggle() {
       isIconOnly
       variant="ghost"
       size="sm"
-      onClick={cycleTheme}
+      onClick={handleClick}
       className="transition-all duration-200 hover:scale-105"
-      aria-label={`Switch to ${themes[(themes.findIndex(t => t.value === theme) + 1) % themes.length].label} theme`}
+      aria-label="Light theme"
     >
       <currentTheme.icon className="h-5 w-5" />
     </Button>
@@ -39,11 +36,10 @@ export function ThemeToggle() {
 }
 
 export function ThemeDropdown() {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const themes = [
     { value: 'light', icon: HiSun, label: 'Light' },
-    { value: 'dark', icon: HiMoon, label: 'Dark' },
   ] as const;
 
   return (
@@ -55,7 +51,7 @@ export function ThemeDropdown() {
             key={themeOption.value}
             variant={theme === themeOption.value ? "flat" : "light"}
             size="sm"
-            onClick={() => setTheme(themeOption.value)}
+            onClick={() => {}} // No action needed for light-only theme
             className="justify-start gap-2 w-full"
           >
             <Icon className="h-4 w-4" />
