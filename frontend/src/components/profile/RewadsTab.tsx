@@ -5,9 +5,33 @@ import {
   readContract,
 } from "wagmi/actions";
 import { config } from "@/config";
-import DealManagerABI from "@/artifacts/DealManager.json";
-import DealABI from "@/artifacts/Deal.json";
-import PortfolioABI from "@/artifacts/Portfolio.json";
+// Placeholder ABIs - replace with actual contract ABIs when available
+const DealManagerABI = [
+  {
+    "type": "function",
+    "name": "treasury",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "address"}]
+  }
+];
+
+const DealABI = [
+  {
+    "type": "function",
+    "name": "dealId",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "string"}]
+  }
+];
+
+const PortfolioABI = [
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "address"}]
+  }
+];
 import { UserInterface } from "@/interface";
 import {
   IoCashOutline,

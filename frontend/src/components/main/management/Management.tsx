@@ -4,10 +4,96 @@ import { Button, Input, Card, CardBody, CardHeader, Spinner, Tabs, Tab, Table, T
 import { MultisigTransaction } from "@/components/MultisigTransaction";
 import { writeContract, readContract } from "wagmi/actions";
 import { config } from "@/config";
-import DealManagerABI from "@/artifacts/DealManager.json";
-import PortfolioManagerABI from "@/artifacts/PortfolioManager.json";
-import PortfolioABI from "@/artifacts/Portfolio.json";
-import MultisigCallerABI from "@/artifacts/MultisigCaller.json";
+// Placeholder ABIs - replace with actual contract ABIs when available
+const DealManagerABI = [
+  {
+    "type": "function",
+    "name": "treasury",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "address"}]
+  },
+  {
+    "type": "function",
+    "name": "setTreasury",
+    "inputs": [{"name": "_treasury", "type": "address"}],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "setReferralRewardsPercent",
+    "inputs": [
+      {"name": "dealId", "type": "string"},
+      {"name": "percent", "type": "uint256"}
+    ],
+    "outputs": []
+  }
+];
+
+const PortfolioManagerABI = [
+  {
+    "type": "function",
+    "name": "whitelistSigner",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "address"}]
+  },
+  {
+    "type": "function",
+    "name": "setWhitelistSigner",
+    "inputs": [{"name": "_signer", "type": "address"}],
+    "outputs": []
+  }
+];
+
+const MultisigCallerABI = [
+  {
+    "type": "function",
+    "name": "requiredApprovals",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256"}]
+  },
+  {
+    "type": "function",
+    "name": "APPROVER_ROLE",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "bytes32"}]
+  },
+  {
+    "type": "function",
+    "name": "getRoleMemberCount",
+    "inputs": [{"name": "role", "type": "bytes32"}],
+    "outputs": [{"name": "", "type": "uint256"}]
+  },
+  {
+    "type": "function",
+    "name": "getRoleMembers",
+    "inputs": [{"name": "role", "type": "bytes32"}],
+    "outputs": [{"name": "", "type": "address[]"}]
+  },
+  {
+    "type": "function",
+    "name": "grantRole",
+    "inputs": [
+      {"name": "role", "type": "bytes32"},
+      {"name": "account", "type": "address"}
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "revokeRole",
+    "inputs": [
+      {"name": "role", "type": "bytes32"},
+      {"name": "account", "type": "address"}
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "setRequiredApprovals",
+    "inputs": [{"name": "_required", "type": "uint256"}],
+    "outputs": []
+  }
+];
 import { MULTISIG_CALLER_ADDRESS } from "@/api/multisig";
 import { useTransactionState } from "@/hooks/useTransactionState";
 import toast from "react-hot-toast";

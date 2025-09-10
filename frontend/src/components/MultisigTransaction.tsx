@@ -5,7 +5,52 @@ import { Link } from "@nextui-org/link";
 import { toast } from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { writeContract, readContract } from "wagmi/actions";
-import MultisigCallerABI from "../artifacts/MultisigCaller.json";
+// Placeholder ABI - replace with actual MultisigCaller ABI when available
+const MultisigCallerABI = [
+  {
+    "type": "function",
+    "name": "transactions",
+    "inputs": [{"name": "txId", "type": "uint256"}],
+    "outputs": [
+      {"name": "target", "type": "address"},
+      {"name": "value", "type": "uint256"},
+      {"name": "data", "type": "bytes"},
+      {"name": "executed", "type": "bool"},
+      {"name": "approvals", "type": "uint256"}
+    ]
+  },
+  {
+    "type": "function",
+    "name": "requiredApprovals",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "uint256"}]
+  },
+  {
+    "type": "function",
+    "name": "approvals",
+    "inputs": [
+      {"name": "txId", "type": "uint256"},
+      {"name": "owner", "type": "address"}
+    ],
+    "outputs": [{"name": "", "type": "bool"}]
+  },
+  {
+    "type": "function",
+    "name": "submitTransaction",
+    "inputs": [
+      {"name": "target", "type": "address"},
+      {"name": "value", "type": "uint256"},
+      {"name": "data", "type": "bytes"}
+    ],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "approveTransaction",
+    "inputs": [{"name": "txId", "type": "uint256"}],
+    "outputs": []
+  }
+];
 import { decodeFunctionData, encodeFunctionData } from "viem";
 import { config } from "@/config";
 import {

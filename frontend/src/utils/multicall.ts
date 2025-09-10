@@ -1,5 +1,32 @@
 import { encodeFunctionData } from "viem";
-import MultiCall3ABI from "@/artifacts/Multicall3.json";
+// Placeholder ABI - replace with actual Multicall3 ABI when available
+const MultiCall3ABI = [
+  {
+    "type": "function",
+    "name": "aggregate3",
+    "inputs": [
+      {
+        "name": "calls",
+        "type": "tuple[]",
+        "components": [
+          {"name": "target", "type": "address"},
+          {"name": "allowFailure", "type": "bool"},
+          {"name": "callData", "type": "bytes"}
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "returnData",
+        "type": "tuple[]",
+        "components": [
+          {"name": "success", "type": "bool"},
+          {"name": "returnData", "type": "bytes"}
+        ]
+      }
+    ]
+  }
+];
 import { waitForTransactionReceipt, writeContract } from "wagmi/actions";
 import { CHAIN_ID } from "./network";
 import { config } from "@/config";

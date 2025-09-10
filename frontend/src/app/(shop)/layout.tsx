@@ -24,13 +24,13 @@ export default function RootLayout({
       <TranslationProvider>
         <UserProvider>
           <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 transition-colors duration-200">
-            <TopMenu />
+            {/* <TopMenu /> */}
             {/* {getNetwork().id === baseSepolia.id && <InvestmentBanner />} */}
-            <Sidebar />
+            {/* <Sidebar /> */}
             <div className="px-5 sm:px-10 flex-1">{children}</div>
-            <Footer />
-            <OnboardingWrapper />
-            <FloatingLanguageSwitcher />
+            {/* <Footer /> */}
+            {/* <OnboardingWrapper /> */}
+            {/* <FloatingLanguageSwitcher /> */}
             {/* <ShareBar /> */}
           </main>
         </UserProvider>

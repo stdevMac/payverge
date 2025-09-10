@@ -136,12 +136,12 @@ export const TopMenu = () => {
       {/* Right Side Menu */}
       <div className="flex items-center gap-1 sm:gap-2">
         {/* Theme Toggle */}
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
         
         {/* Language Switcher - hidden on mobile */}
-        <div className="hidden md:block">
+        {/* <div className="hidden md:block">
           <LanguageSwitcher />
-        </div>
+        </div> */}
         
         {/* Web3 button - Always visible */}
         <Web3Button />

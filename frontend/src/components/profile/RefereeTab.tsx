@@ -7,7 +7,30 @@ import {
   waitForTransactionReceipt,
 } from "wagmi/actions";
 import { config } from "@/config";
-import DealManagerABI from "@/artifacts/DealManager.json";
+// Placeholder ABI - replace with actual DealManager ABI when available
+const DealManagerABI = [
+  {
+    "type": "function",
+    "name": "treasury",
+    "inputs": [],
+    "outputs": [{"name": "", "type": "address"}]
+  },
+  {
+    "type": "function",
+    "name": "setTreasury",
+    "inputs": [{"name": "_treasury", "type": "address"}],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "setReferralRewardsPercent",
+    "inputs": [
+      {"name": "dealId", "type": "string"},
+      {"name": "percent", "type": "uint256"}
+    ],
+    "outputs": []
+  }
+];
 import {
   IoPeopleOutline,
   IoWalletOutline,
