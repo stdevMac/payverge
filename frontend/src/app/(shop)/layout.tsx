@@ -9,9 +9,9 @@ import { LanguageProvider } from "@/i18n/useLanguage";
 import FloatingLanguageSwitcher from "@/components/FloatingLanguageSwitcher";
 
 export const metadata: Metadata = {
-  title: "Base App Builder",
+  title: "Payverge",
   description:
-    "Base App Builder",
+    "Payverge, the future of crypto payments for hospitality!",
 };
 
 export default function RootLayout({
