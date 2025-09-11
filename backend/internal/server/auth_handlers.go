@@ -11,11 +11,11 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/logic"
-	"web3-boilerplate/internal/metrics"
-	"web3-boilerplate/internal/structs"
-	"web3-boilerplate/internal/utils"
+	"payverge/internal/database"
+	"payverge/internal/logic"
+	"payverge/internal/metrics"
+	"payverge/internal/structs"
+	"payverge/internal/utils"
 )
 
 var ChallengeStore *logic.ChallengeStore

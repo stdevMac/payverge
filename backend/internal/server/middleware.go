@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/metrics"
+	"payverge/internal/metrics"
 	"net/http"
 	"strings"
 )

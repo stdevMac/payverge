@@ -1,0 +1,274 @@
+package handlers
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"payverge/internal/database"
+	"payverge/internal/splitting"
+)
+
+// SplittingHandler handles bill splitting requests
+type SplittingHandler struct {
+	db       *database.DB
+	splitter *splitting.SplittingService
+}
+
+// NewSplittingHandler creates a new splitting handler
+func NewSplittingHandler(db *database.DB) *SplittingHandler {
+	return &SplittingHandler{
+		db:       db,
+		splitter: splitting.NewSplittingService(db),
+	}
+}
+
+// CalculateEqualSplit calculates equal split for a bill
+// POST /api/v1/bills/:id/split/equal
+func (h *SplittingHandler) CalculateEqualSplit(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req splitting.EqualSplitRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Override bill ID from URL parameter
+	req.BillID = uint(billID)
+
+	// Validate number of people
+	if req.NumPeople <= 0 || req.NumPeople > 20 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Number of people must be between 1 and 20"})
+		return
+	}
+
+	result, err := h.splitter.CalculateEqualSplit(req.BillID, req.NumPeople)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"result":  result,
+	})
+}
+
+// CalculateCustomSplit calculates custom split for a bill
+// POST /api/v1/bills/:id/split/custom
+func (h *SplittingHandler) CalculateCustomSplit(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req splitting.CustomSplitRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Override bill ID from URL parameter
+	req.BillID = uint(billID)
+
+	// Validate amounts
+	if len(req.Amounts) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Amounts cannot be empty"})
+		return
+	}
+
+	if len(req.Amounts) > 20 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot split between more than 20 people"})
+		return
+	}
+
+	result, err := h.splitter.CalculateCustomSplit(req.BillID, req.Amounts, req.People)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"result":  result,
+	})
+}
+
+// CalculateItemSplit calculates item-based split for a bill
+// POST /api/v1/bills/:id/split/items
+func (h *SplittingHandler) CalculateItemSplit(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req splitting.ItemSplitRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Override bill ID from URL parameter
+	req.BillID = uint(billID)
+
+	// Validate item selections
+	if len(req.ItemSelections) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Item selections cannot be empty"})
+		return
+	}
+
+	if len(req.ItemSelections) > 20 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot split between more than 20 people"})
+		return
+	}
+
+	result, err := h.splitter.CalculateItemSplit(req.BillID, req.ItemSelections, req.People)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"result":  result,
+	})
+}
+
+// GetBillSplitOptions returns available split options for a bill
+// GET /api/v1/bills/:id/split/options
+func (h *SplittingHandler) GetBillSplitOptions(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	// Get bill from database
+	bill, err := h.db.GetBill(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	// Get bill items
+	billItems, err := h.db.GetBillItems(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get bill items"})
+		return
+	}
+
+	// Calculate remaining amount to be paid
+	remainingAmount := bill.TotalAmount - bill.PaidAmount
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"bill": gin.H{
+			"id":               bill.ID,
+			"bill_number":      bill.BillNumber,
+			"total_amount":     bill.TotalAmount,
+			"paid_amount":      bill.PaidAmount,
+			"remaining_amount": remainingAmount,
+			"subtotal":         bill.Subtotal,
+			"tax_amount":       bill.TaxAmount,
+			"service_fee_amount": bill.ServiceFeeAmount,
+			"status":           bill.Status,
+		},
+		"items": billItems,
+		"split_options": gin.H{
+			"equal": gin.H{
+				"available":    true,
+				"description":  "Split the bill equally among all people",
+				"min_people":   1,
+				"max_people":   20,
+			},
+			"custom": gin.H{
+				"available":    true,
+				"description":  "Specify custom amounts for each person",
+				"min_people":   1,
+				"max_people":   20,
+			},
+			"items": gin.H{
+				"available":    len(billItems) > 0,
+				"description":  "Split based on which items each person ordered",
+				"min_people":   1,
+				"max_people":   20,
+				"total_items":  len(billItems),
+			},
+		},
+	})
+}
+
+// ValidateSplit validates a split calculation without saving
+// POST /api/v1/bills/:id/split/validate
+func (h *SplittingHandler) ValidateSplit(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req struct {
+		Method          string                     `json:"method"`
+		NumPeople       int                        `json:"num_people,omitempty"`
+		Amounts         map[string]float64         `json:"amounts,omitempty"`
+		ItemSelections  map[string][]string        `json:"item_selections,omitempty"`
+		People          map[string]string          `json:"people,omitempty"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var result *splitting.SplitResult
+
+	switch req.Method {
+	case "equal":
+		if req.NumPeople <= 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Number of people is required for equal split"})
+			return
+		}
+		result, err = h.splitter.CalculateEqualSplit(uint(billID), req.NumPeople)
+	case "custom":
+		if len(req.Amounts) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Amounts are required for custom split"})
+			return
+		}
+		result, err = h.splitter.CalculateCustomSplit(uint(billID), req.Amounts, req.People)
+	case "items":
+		if len(req.ItemSelections) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Item selections are required for item split"})
+			return
+		}
+		result, err = h.splitter.CalculateItemSplit(uint(billID), req.ItemSelections, req.People)
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid split method. Must be 'equal', 'custom', or 'items'"})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"valid":   true,
+		"result":  result,
+	})
+}

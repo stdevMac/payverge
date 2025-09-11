@@ -18,12 +18,13 @@ ENV NEXT_PUBLIC_PROJECT_ID=$NEXT_PUBLIC_PROJECT_ID
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-# Install build dependencies
-RUN apk add --no-cache \
+# Install build dependencies with insecure flag as workaround
+RUN apk add --no-cache --allow-untrusted \
     python3 \
     make \
     g++ \
-    linux-headers
+    linux-headers \
+    ca-certificates
 
 # Set the working directory
 WORKDIR /app
@@ -52,11 +53,12 @@ WORKDIR /app
 
 # Install sharp and its dependencies
 COPY --from=builder /app/package*.json ./
-RUN apk add --no-cache \
+RUN apk add --no-cache --allow-untrusted \
     python3 \
     make \
     g++ \
-    linux-headers && \
+    linux-headers \
+    ca-certificates && \
     npm install --omit=dev sharp && \
     apk del python3 make g++ linux-headers
 

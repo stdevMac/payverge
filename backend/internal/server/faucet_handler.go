@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"web3-boilerplate/internal/database"
+	"payverge/internal/database"
 
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/faucet"
+	"payverge/internal/faucet"
 )
 
 // CheckAndTopUp handles requests to check an Ethereum address balance and top it up if needed

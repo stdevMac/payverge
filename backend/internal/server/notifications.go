@@ -1,8 +1,8 @@
 package server
 
 import (
-	"web3-boilerplate/internal/notifications"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/notifications"
+	"payverge/internal/structs"
 )
 
 var notificationManager *notifications.NotificationManager

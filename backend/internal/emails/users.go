@@ -1,7 +1,7 @@
 package emails
 
 import (
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 	"strings"
 )
 

@@ -13,10 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"web3-boilerplate/internal/logic"
-	"web3-boilerplate/internal/middleware"
-	"web3-boilerplate/internal/server"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/logic"
+	"payverge/internal/middleware"
+	"payverge/internal/server"
+	"payverge/internal/structs"
 )
 
 type IntegrationTestSuite struct {

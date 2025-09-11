@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"web3-boilerplate/internal/emails"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/emails"
+	"payverge/internal/structs"
 )
 
 const (

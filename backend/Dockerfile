@@ -1,8 +1,13 @@
-# Use the official Golang image
-FROM golang:1.22.2-alpine AS builder
+# Use the official Golang image with Ubuntu base to avoid Alpine SSL issues
+FROM golang:1.22.2-bullseye AS builder
 
 # Install build dependencies for SQLite
-RUN apk add --no-cache gcc musl-dev sqlite-dev
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libc6-dev \
+    libsqlite3-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /app
@@ -20,9 +25,11 @@ COPY . .
 RUN CGO_ENABLED=1 GOOS=linux go build -a -o server ./cmd/app/main.go
 
 # Start a new stage from scratch
-FROM alpine:latest
+FROM debian:bullseye-slim
 
-RUN apk --no-cache add ca-certificates
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root/
 
@@ -50,6 +57,8 @@ ARG FAUCET_PRIVATE_KEY=faucet_private_key
 ARG RPC_URL=rpc_url
 ARG CHAIN_ID=chain_id
 ARG USDC_CONTRACT=usdc_contract
+ARG PAYVERGE_CONTRACT=payverge_contract
+ARG TELEGRAM_TOKEN=telegram_token
 
 # Command to run the executable
 ENTRYPOINT ["./server"]

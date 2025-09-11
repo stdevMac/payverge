@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/metrics"
-	"web3-boilerplate/internal/structs"
-	"web3-boilerplate/internal/utils"
+	"payverge/internal/database"
+	"payverge/internal/metrics"
+	"payverge/internal/structs"
+	"payverge/internal/utils"
 
 	"math/big"
 )

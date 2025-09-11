@@ -1,8 +1,8 @@
 package notifications
 
 import (
-	"web3-boilerplate/internal/emails"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/emails"
+	"payverge/internal/structs"
 )
 
 // NotificationManager handles routing notifications to the appropriate dispatcher

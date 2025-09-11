@@ -2,7 +2,7 @@ package migrations
 
 import (
 	"fmt"
-	"web3-boilerplate/internal/database"
+	"payverge/internal/database"
 )
 
 // SetDefaultNotificationPreferences sets all notification preference fields to true for existing users

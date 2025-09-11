@@ -2,7 +2,7 @@ import { base, baseSepolia } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { getNetwork } from "../network";
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID;
 
 if (!projectId) throw new Error("Project ID is not defined");
 

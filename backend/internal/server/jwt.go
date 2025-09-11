@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 	"time"
 )
 

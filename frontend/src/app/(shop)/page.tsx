@@ -538,8 +538,8 @@ export default function Home() {
                 Welcome to the future! 🚀
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Thanks for joining our waitlist! We're building something amazing for crypto hospitality payments. 
-                You'll be among the first to know when we launch.
+                Thanks for joining our waitlist! We&apos;re building something amazing for crypto hospitality payments. 
+                You&apos;ll be among the first to know when we launch.
               </p>
               
               {/* Share section */}

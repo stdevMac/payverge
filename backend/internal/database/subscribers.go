@@ -1,7 +1,7 @@
 package database
 
 import (
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 	"gorm.io/gorm"
 	"errors"
 )

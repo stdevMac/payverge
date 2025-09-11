@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/database"
+	"payverge/internal/database"
 )
 
 // ErrorLogPayload represents the structure of the error log received from the frontend

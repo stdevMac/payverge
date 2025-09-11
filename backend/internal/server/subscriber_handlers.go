@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/metrics"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/database"
+	"payverge/internal/metrics"
+	"payverge/internal/structs"
 )
 
 // Subscribe it's a function for subscribing our emails to our newsletter

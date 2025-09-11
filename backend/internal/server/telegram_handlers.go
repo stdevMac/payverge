@@ -8,9 +8,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/metrics"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/database"
+	"payverge/internal/metrics"
+	"payverge/internal/structs"
 )
 
 var bot *tgbotapi.BotAPI

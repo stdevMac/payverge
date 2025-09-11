@@ -13,8 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"web3-boilerplate/internal/logic"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/logic"
+	"payverge/internal/structs"
 )
 
 type AuthHandlersTestSuite struct {

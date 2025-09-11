@@ -3,7 +3,7 @@ package emails
 import (
 	"log"
 
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 )
 
 // EmailServerDispatcher wraps the EmailServer to implement NotificationDispatcher

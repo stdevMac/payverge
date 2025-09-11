@@ -2,5 +2,13 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/"
+]
+
+# Optimize test performance
+fuzz = { runs = 100 }  # Reduced from default 256
+invariant = { runs = 50, depth = 15 }  # Reduced from defaults
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

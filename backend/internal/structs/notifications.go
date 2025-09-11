@@ -3,7 +3,7 @@ package structs
 import (
 	"time"
 
-	"web3-boilerplate/internal/utils"
+	"payverge/internal/utils"
 )
 
 type Notification struct {

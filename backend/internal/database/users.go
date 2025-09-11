@@ -3,7 +3,7 @@ package database
 import (
 	"log"
 
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 )
 
 func RegisterUser(user structs.User) error {

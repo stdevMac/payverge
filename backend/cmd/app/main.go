@@ -11,20 +11,23 @@ import (
 	"syscall"
 	"time"
 
-	"web3-boilerplate/internal/faucet"
-	"web3-boilerplate/internal/health"
-	"web3-boilerplate/internal/logger"
-	"web3-boilerplate/internal/middleware"
-	"web3-boilerplate/internal/s3"
+	"payverge/internal/blockchain"
+	"payverge/internal/faucet"
+	"payverge/internal/handlers"
+	"payverge/internal/health"
+	"payverge/internal/logger"
+	"payverge/internal/middleware"
+	"payverge/internal/s3"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/emails"
-	"web3-boilerplate/internal/metrics"
-	"web3-boilerplate/internal/notifications"
-	"web3-boilerplate/internal/server"
-	"web3-boilerplate/internal/telegram"
+	"payverge/internal/database"
+	"payverge/internal/emails"
+	"payverge/internal/metrics"
+	"payverge/internal/notifications"
+	"payverge/internal/server"
+	"payverge/internal/telegram"
+	"payverge/internal/websocket"
 )
 
 func main() {
@@ -36,6 +39,7 @@ func main() {
 		rpcUrl                 = flag.String("rpc-url", "", "RPC URL for the Ethereum node")
 		chainId                = flag.Int64("chain-id", 1, "Chain ID for the Ethereum network")
 		usdcContractAddress    = flag.String("usdc-contract", "", "USDC token contract address")
+		payvergeContractAddr   = flag.String("payverge-contract", "", "Payverge smart contract address")
 		telegramToken          = flag.String("telegram-token", "", "Telegram token")
 		s3Bucket               = flag.String("s3-bucket", "", "AWS S3 bucket name")
 		awsAccessKey           = flag.String("aws-access-key", "", "AWS Access Key ID")
@@ -94,6 +98,26 @@ func main() {
 	// Initialize the database
 	config := database.NewConfig(*databasePath)
 	database.InitDB(config)
+
+	// Initialize database wrapper and blockchain service
+	db := database.GetDBWrapper()
+	blockchainService, err := blockchain.NewBlockchainService(*rpcUrl, *payvergeContractAddr, *faucetPrivateKey)
+	if err != nil {
+		log.Fatalf("Failed to initialize blockchain service: %v", err)
+	}
+
+	// Initialize WebSocket Hub
+	wsHub := websocket.NewHub()
+	go wsHub.Run()
+
+	// Initialize Payment Monitor
+	paymentMonitor := websocket.NewPaymentMonitor(wsHub, db, blockchainService)
+	if err := paymentMonitor.Start(); err != nil {
+		log.Printf("Warning: Failed to start payment monitor: %v", err)
+	}
+
+	// Initialize payment handler
+	paymentHandler := handlers.NewPaymentHandler(db, blockchainService)
 
 	// Initialize S3
 	if err := s3.InitS3(*s3Bucket, *awsAccessKey, *awsSecretKey, *awsRegion, *s3EndpointURL); err != nil {
@@ -164,6 +188,27 @@ func main() {
 
 		// Error logging endpoint
 		publicRoutes.POST("/logs/error", server.LogError)
+
+		// Payverge public routes (for guests)
+		publicRoutes.GET("/table/:code", server.GetTableByCode)
+		
+		// Phase 3: Public guest table API endpoints
+		publicRoutes.GET("/guest/table/:code", server.GetTableByCodePublic)
+		publicRoutes.GET("/guest/table/:code/bill", server.GetOpenBillByTableCode)
+		publicRoutes.GET("/guest/table/:code/business", server.GetBusinessByTableCode)
+		publicRoutes.GET("/guest/table/:code/menu", server.GetMenuByTableCode)
+		publicRoutes.GET("/guest/table/:code/status", server.GetTableStatusByCode)
+		publicRoutes.GET("/guest/bill/:bill_number", server.GetBillByNumberPublic)
+		
+		// Phase 4: Payment processing endpoints
+		publicRoutes.POST("/payments/process", paymentHandler.CreateBillPayment)
+		publicRoutes.GET("/payments/history/:bill_id", paymentHandler.GetBillPayments)
+		publicRoutes.GET("/payments/:payment_id", paymentHandler.GetPaymentDetails)
+		publicRoutes.GET("/payments/total/:bill_id", paymentHandler.GetBillTotalPaid)
+		publicRoutes.POST("/payments/webhook", paymentHandler.WebhookPaymentConfirmation)
+		
+		// WebSocket endpoint for real-time updates
+		publicRoutes.GET("/ws", gin.WrapH(http.HandlerFunc(wsHub.ServeWS)))
 	}
 
 	// Protected routes (require authentication)
@@ -190,6 +235,47 @@ func main() {
 		// User settings routes
 		protectedRoutes.PUT("/settings/notifications", server.UpdateNotificationPreferences)
 		protectedRoutes.GET("/settings/notifications", server.GetNotificationPreferences)
+
+		// Payverge Business routes
+		protectedRoutes.POST("/businesses", server.CreateBusiness)
+		protectedRoutes.GET("/businesses", server.GetMyBusinesses)
+		protectedRoutes.GET("/businesses/:id", server.GetBusiness)
+		protectedRoutes.PUT("/businesses/:id", server.UpdateBusiness)
+		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
+
+		// Menu routes
+		protectedRoutes.POST("/businesses/:businessId/menu", server.CreateMenu)
+		protectedRoutes.GET("/businesses/:businessId/menu", server.GetMenu)
+
+		// Phase 2: Enhanced Menu Management routes
+		protectedRoutes.POST("/businesses/:id/menu/categories", server.AddMenuCategory)
+		protectedRoutes.PUT("/businesses/:business_id/menu/categories/:category_index", server.UpdateMenuCategory)
+		protectedRoutes.DELETE("/businesses/:business_id/menu/categories/:category_index", server.DeleteMenuCategory)
+		protectedRoutes.POST("/businesses/:business_id/menu/items", server.AddMenuItem)
+		protectedRoutes.PUT("/businesses/:business_id/menu/items", server.UpdateMenuItem)
+		protectedRoutes.DELETE("/businesses/:business_id/menu/categories/:category_index/items/:item_index", server.DeleteMenuItem)
+
+		// Table routes
+		protectedRoutes.POST("/businesses/:businessId/tables", server.CreateTable)
+		protectedRoutes.GET("/businesses/:businessId/tables", server.GetTables)
+		protectedRoutes.GET("/businesses/:businessId/tables/:tableId", server.GetTable)
+		protectedRoutes.PUT("/businesses/:businessId/tables/:tableId", server.UpdateTable)
+		protectedRoutes.DELETE("/businesses/:businessId/tables/:tableId", server.DeleteTable)
+
+		// Phase 2: Enhanced Table Management routes
+		protectedRoutes.POST("/businesses/:id/tables", server.CreateTableWithQR)
+		protectedRoutes.GET("/businesses/:id/tables", server.GetBusinessTables)
+		protectedRoutes.PUT("/tables/:id", server.UpdateTableDetails)
+		protectedRoutes.DELETE("/tables/:id", server.DeleteTableSoft)
+
+		// Phase 3: Bill Management routes
+		protectedRoutes.POST("/businesses/:business_id/bills", server.CreateBill)
+		protectedRoutes.GET("/businesses/:business_id/bills", server.GetBusinessBills)
+		protectedRoutes.GET("/bills/:bill_id", server.GetBill)
+		protectedRoutes.PUT("/bills/:bill_id", server.UpdateBill)
+		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
+		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
+		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
 	}
 
 	// Admin routes (require authentication and admin role)
@@ -246,6 +332,9 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down server...")
+
+	// Stop payment monitor
+	paymentMonitor.Stop()
 
 	// The context is used to inform the server it has 5 seconds to finish
 	// the request it is currently handling

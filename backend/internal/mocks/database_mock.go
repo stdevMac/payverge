@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/stretchr/testify/mock"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/structs"
 )
 
 // MockDatabase provides a mock implementation for database operations

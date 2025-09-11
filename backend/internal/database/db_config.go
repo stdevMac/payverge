@@ -24,6 +24,21 @@ var (
 	db *gorm.DB
 )
 
+// DB wraps the GORM database instance
+type DB struct {
+	conn *gorm.DB
+}
+
+// NewDB creates a new DB instance
+func NewDB() *DB {
+	return &DB{conn: db}
+}
+
+// InitTestDB initializes the database for testing
+func InitTestDB(testDB *gorm.DB) {
+	db = testDB
+}
+
 func InitDB(config *DbConfig) {
 	// Ensure the directory exists
 	dir := filepath.Dir(config.DatabasePath)
@@ -54,6 +69,48 @@ func GetDB() *gorm.DB {
 	return db
 }
 
+// GetDBWrapper returns a DB wrapper instance
+func GetDBWrapper() *DB {
+	return &DB{conn: db}
+}
+
+// Database methods for the DB wrapper
+
+// GetBill retrieves a bill by ID
+func (d *DB) GetBill(id uint) (*Bill, error) {
+	bill, _, err := GetBillByID(id)
+	return bill, err
+}
+
+// UpdateBill updates a bill
+func (d *DB) UpdateBill(bill *Bill) error {
+	return UpdateBill(bill, []BillItem{})
+}
+
+// GetTable retrieves a table by ID
+func (d *DB) GetTable(id uint) (*Table, error) {
+	return GetTableByID(id)
+}
+
+// GetBillsByStatus retrieves bills by status
+func (d *DB) GetBillsByStatus(status BillStatus) ([]*Bill, error) {
+	var bills []Bill
+	if err := d.conn.Where("status = ?", status).Find(&bills).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*Bill, len(bills))
+	for i := range bills {
+		result[i] = &bills[i]
+	}
+	return result, nil
+}
+
+// GetBillItems retrieves bill items by bill ID
+func (d *DB) GetBillItems(billID uint) ([]BillItem, error) {
+	_, items, err := GetBillByID(billID)
+	return items, err
+}
+
 // autoMigrate creates all necessary tables
 func autoMigrate() error {
 	return db.AutoMigrate(
@@ -63,5 +120,11 @@ func autoMigrate() error {
 		&FaucetTransaction{},
 		&Subscriber{},
 		&MultisigTx{},
+		// Payverge models
+		&Business{},
+		&Menu{},
+		&Table{},
+		&Bill{},
+		&Payment{},
 	)
 }

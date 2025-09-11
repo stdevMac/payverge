@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"web3-boilerplate/internal/database"
+	"payverge/internal/database"
 )
 
 // GetAllUsers Serve all users information

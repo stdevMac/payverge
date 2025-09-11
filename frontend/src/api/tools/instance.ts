@@ -3,7 +3,6 @@ import { parseCookies } from "nookies";
 
 // Debug logging to trace the actual API URL being used
 console.log("🔍 NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
-console.log("🔍 All NEXT_PUBLIC env vars:", Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
 
 export const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,

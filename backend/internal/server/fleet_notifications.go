@@ -3,9 +3,9 @@ package server
 import (
 	"log"
 
-	"web3-boilerplate/internal/database"
-	"web3-boilerplate/internal/emails"
-	"web3-boilerplate/internal/structs"
+	"payverge/internal/database"
+	"payverge/internal/emails"
+	"payverge/internal/structs"
 )
 
 func getTemplateLanguage(templateId int, language string) int {
