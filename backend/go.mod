@@ -23,6 +23,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.26.0
 	golang.org/x/image v0.23.0
+	golang.org/x/time v0.5.0
 	gorm.io/driver/sqlite v1.5.4
 	gorm.io/gorm v1.25.5
 )

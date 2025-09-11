@@ -9,10 +9,11 @@ import {
   Divider,
   Button,
 } from '@nextui-org/react';
-import { Receipt, Clock, CreditCard, Wallet } from 'lucide-react';
+import { Receipt, Clock, CreditCard, Wallet, Users } from 'lucide-react';
 import { BillResponse } from '../../api/bills';
 import { Business } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
+import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
 
 interface GuestBillProps {
   bill: BillResponse;
@@ -30,6 +31,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   compact = false,
 }) => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isSplittingModalOpen, setIsSplittingModalOpen] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2)}`;
@@ -53,6 +55,30 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   };
 
   const remainingAmount = bill.bill.total_amount - bill.bill.paid_amount;
+
+  // Convert bill data for splitting component
+  const billData: BillData = {
+    id: bill.bill.id,
+    billNumber: bill.bill.bill_number,
+    subtotal: bill.bill.subtotal,
+    taxAmount: bill.bill.tax_amount,
+    serviceFeeAmount: bill.bill.service_fee_amount,
+    totalAmount: bill.bill.total_amount,
+    items: bill.items.map(item => ({
+      id: item.id?.toString() || `item_${Math.random()}`,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      subtotal: item.subtotal
+    }))
+  };
+
+  const handleSplitPaymentInitiate = (personId: string, amount: number, tipAmount: number) => {
+    // Close splitting modal and open payment processor with split amount
+    setIsSplittingModalOpen(false);
+    setIsPaymentModalOpen(true);
+    // Note: PaymentProcessor will need to be updated to handle split payments
+  };
 
   return (
     <div className="space-y-4">
@@ -190,7 +216,15 @@ export const GuestBill: React.FC<GuestBillProps> = ({
                   className="flex-1 sm:flex-none"
                   onPress={() => setIsPaymentModalOpen(true)}
                 >
-                  Pay with Crypto
+                  Pay Full Amount
+                </Button>
+                <Button
+                  color="secondary"
+                  startContent={<Users className="w-4 h-4" />}
+                  className="flex-1 sm:flex-none"
+                  onPress={() => setIsSplittingModalOpen(true)}
+                >
+                  Split Bill
                 </Button>
                 <Button
                   color="primary"
@@ -250,6 +284,17 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           setIsPaymentModalOpen(false);
           onPaymentComplete();
         }}
+      />
+
+      {/* Bill Splitting Modal */}
+      <BillSplittingFlow
+        bill={billData}
+        businessName={business.name}
+        businessAddress={typeof business.address === 'string' ? business.address : business.address?.street}
+        tableNumber={tableCode}
+        isOpen={isSplittingModalOpen}
+        onClose={() => setIsSplittingModalOpen(false)}
+        onPaymentInitiate={handleSplitPaymentInitiate}
       />
     </div>
   );

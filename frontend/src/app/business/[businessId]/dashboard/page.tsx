@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
 import { Building2, Menu, Users, Receipt, Settings, BarChart3 } from 'lucide-react';
 import { useParams } from 'next/navigation';
@@ -24,21 +24,20 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
   const businessId = parseInt(params.businessId);
 
-  useEffect(() => {
-    loadBusiness();
-  }, [businessId]);
-
-  const loadBusiness = async () => {
+  const loadBusiness = useCallback(async () => {
     try {
       setLoading(true);
       const businessData = await getBusiness(businessId);
       setBusiness(businessData);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load business');
-    } finally {
+    } catch (error) {
+      console.error('Error loading business:', error);
       setLoading(false);
     }
-  };
+  }, [businessId]);
+
+  useEffect(() => {
+    loadBusiness();
+  }, [loadBusiness]);
 
   if (loading) {
     return (

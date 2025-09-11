@@ -276,6 +276,23 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
+		
+		// Phase 5: Bill Splitting routes
+		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper())
+		protectedRoutes.GET("/bills/:id/split/options", splittingHandler.GetBillSplitOptions)
+		protectedRoutes.POST("/bills/:id/split/equal", splittingHandler.CalculateEqualSplit)
+		protectedRoutes.POST("/bills/:id/split/custom", splittingHandler.CalculateCustomSplit)
+		protectedRoutes.POST("/bills/:id/split/items", splittingHandler.CalculateItemSplit)
+		protectedRoutes.POST("/bills/:id/split/validate", splittingHandler.ValidateSplit)
+		
+		// Phase 6: Analytics and Dashboard routes
+		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())
+		protectedRoutes.GET("/businesses/:id/analytics/sales", analyticsHandler.GetSalesAnalytics)
+		protectedRoutes.GET("/businesses/:id/analytics/tips", analyticsHandler.GetTipAnalytics)
+		protectedRoutes.GET("/businesses/:id/analytics/items", analyticsHandler.GetItemAnalytics)
+		protectedRoutes.GET("/businesses/:id/analytics/dashboard", analyticsHandler.GetDashboardSummary)
+		protectedRoutes.GET("/businesses/:id/analytics/live-bills", analyticsHandler.GetLiveBills)
+		protectedRoutes.GET("/businesses/:id/reports/export", analyticsHandler.ExportSalesData)
 	}
 
 	// Admin routes (require authentication and admin role)

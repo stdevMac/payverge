@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -106,9 +107,53 @@ func (d *DB) GetBillsByStatus(status BillStatus) ([]*Bill, error) {
 }
 
 // GetBillItems retrieves bill items by bill ID
-func (d *DB) GetBillItems(billID uint) ([]BillItem, error) {
-	_, items, err := GetBillByID(billID)
+func (db *DB) GetBillItems(billID uint) ([]BillItem, error) {
+	var items []BillItem
+	err := db.conn.Where("bill_id = ?", billID).Find(&items).Error
 	return items, err
+}
+
+// GetBillsByDateRange retrieves bills for a business within a date range
+func (db *DB) GetBillsByDateRange(businessID uint, startDate, endDate time.Time) ([]Bill, error) {
+	var bills []Bill
+	err := db.conn.Where("business_id = ? AND created_at >= ? AND created_at < ?", 
+		businessID, startDate, endDate).Find(&bills).Error
+	return bills, err
+}
+
+// GetBillsByBusinessAndStatus gets bills by business ID and status
+func (db *DB) GetBillsByBusinessAndStatus(businessID uint, status BillStatus) ([]Bill, error) {
+	var bills []Bill
+	err := db.conn.Where("business_id = ? AND status = ?", businessID, status).Find(&bills).Error
+	return bills, err
+}
+
+// GetPaymentsByDateRange retrieves payments for a business within a date range
+func (db *DB) GetPaymentsByDateRange(businessID uint, startDate, endDate time.Time) ([]Payment, error) {
+	var payments []Payment
+	err := db.conn.Joins("JOIN bills ON payments.bill_id = bills.id").
+		Where("bills.business_id = ? AND payments.created_at >= ? AND payments.created_at < ?", 
+			businessID, startDate, endDate).
+		Find(&payments).Error
+	return payments, err
+}
+
+// GetBusinessByID retrieves a business by its ID
+func (db *DB) GetBusinessByID(id uint) (*Business, error) {
+	var business Business
+	if err := db.conn.First(&business, id).Error; err != nil {
+		return nil, err
+	}
+	return &business, nil
+}
+
+// GetTableByID retrieves a table by its ID
+func (db *DB) GetTableByID(id uint) (*Table, error) {
+	var table Table
+	if err := db.conn.First(&table, id).Error; err != nil {
+		return nil, err
+	}
+	return &table, nil
 }
 
 // autoMigrate creates all necessary tables

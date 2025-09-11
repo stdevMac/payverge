@@ -152,7 +152,7 @@ export default function PaymentProcessor({
     }
   };
 
-  const handlePayment = async () => {
+  const handlePayment = React.useCallback(async () => {
     setPaymentStep('payment');
     setError('');
     
@@ -179,14 +179,31 @@ export default function PaymentProcessor({
       setError('Payment transaction failed');
       setPaymentStep('error');
     }
-  };
+  }, [writePayverge, billId, amount, tipValue, businessAddress, tipAddress]);
+
+  const notifyBackend = React.useCallback(async () => {
+    try {
+      await fetch('/api/v1/payments/webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transaction_hash: paymentHash,
+          bill_id: billId.toString(),
+          amount: Math.round(Number(amount) * 100), // Convert to cents
+          tip_amount: Math.round(Number(tipValue) * 100), // Convert to cents
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to notify backend:', err);
+    }
+  }, [paymentHash, billId, amount, tipValue]);
 
   // Watch for transaction confirmations
   React.useEffect(() => {
-    if (approvalHash && !isApprovalConfirming) {
-      handlePayment();
+    if (transactionHash && paymentStep !== 'success') {
+      handlePayment()
     }
-  }, [approvalHash, isApprovalConfirming]);
+  }, [transactionHash, paymentStep, handlePayment]);
 
   React.useEffect(() => {
     if (isPaymentSuccess) {
@@ -194,9 +211,9 @@ export default function PaymentProcessor({
       // Notify backend about the payment
       notifyBackend();
     }
-  }, [isPaymentSuccess]);
+  }, [isPaymentSuccess, notifyBackend]);
 
-  const notifyBackend = async () => {
+  const oldNotifyBackend = async () => {
     try {
       await fetch('/api/v1/payments/webhook', {
         method: 'POST',
