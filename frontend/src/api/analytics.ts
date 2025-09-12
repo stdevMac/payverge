@@ -92,7 +92,7 @@ export const analyticsApi = {
     if (date) params.append('date', date)
     
     const response = await axiosInstance.get(
-      `/api/v1/inside/businesses/${businessId}/analytics/sales?${params.toString()}`
+      `/inside/businesses/${businessId}/analytics/sales?${params.toString()}`
     )
     return response.data
   },
@@ -103,7 +103,7 @@ export const analyticsApi = {
     period: string = 'week'
   ): Promise<TipAnalytics> => {
     const response = await axiosInstance.get(
-      `/api/v1/inside/businesses/${businessId}/analytics/tips?period=${period}`
+      `/inside/businesses/${businessId}/analytics/tips?period=${period}`
     )
     return response.data
   },
@@ -114,7 +114,7 @@ export const analyticsApi = {
     period: string = 'week'
   ): Promise<ItemStats[]> => {
     const response = await axiosInstance.get(
-      `/api/v1/inside/businesses/${businessId}/analytics/items?period=${period}`
+      `/inside/businesses/${businessId}/analytics/items?period=${period}`
     )
     return response.data
   },
@@ -122,7 +122,7 @@ export const analyticsApi = {
   // Get live bills for real-time monitoring
   getLiveBills: async (businessId: string): Promise<LiveBill[]> => {
     const response = await axiosInstance.get(
-      `/api/v1/inside/businesses/${businessId}/analytics/live-bills`
+      `/inside/businesses/${businessId}/analytics/live-bills`
     )
     return response.data
   },
@@ -130,7 +130,7 @@ export const analyticsApi = {
   // Get dashboard summary with key metrics
   getDashboardSummary: async (businessId: string): Promise<DashboardSummary> => {
     const response = await axiosInstance.get(
-      `/api/v1/inside/businesses/${businessId}/analytics/dashboard`
+      `/inside/businesses/${businessId}/analytics/dashboard`
     )
     return response.data
   },
@@ -142,7 +142,7 @@ export const analyticsApi = {
     format: 'csv' | 'json' = 'csv'
   ): Promise<Blob> => {
     const response = await fetch(
-      `/api/v1/inside/businesses/${businessId}/reports/export?period=${period}&format=${format}`,
+      `/inside/businesses/${businessId}/reports/export?period=${period}&format=${format}`,
       {
         credentials: 'include',
       }

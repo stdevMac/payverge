@@ -69,7 +69,7 @@ const getAuthHeaders = () => {
 
 // Create a new business
 export const createBusiness = async (businessData: CreateBusinessRequest): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses`, {
+  const response = await fetch(`${API_BASE}/inside/businesses`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(businessData),
@@ -85,7 +85,7 @@ export const createBusiness = async (businessData: CreateBusinessRequest): Promi
 
 // Get all businesses owned by the authenticated user
 export const getMyBusinesses = async (): Promise<Business[]> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses`, {
+  const response = await fetch(`${API_BASE}/inside/businesses`, {
     method: 'GET',
     headers: getAuthHeaders(),
   });
@@ -100,7 +100,7 @@ export const getMyBusinesses = async (): Promise<Business[]> => {
 
 // Get a specific business by ID
 export const getBusiness = async (businessId: number): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
     method: 'GET',
     headers: getAuthHeaders(),
   });
@@ -115,7 +115,7 @@ export const getBusiness = async (businessId: number): Promise<Business> => {
 
 // Update a business
 export const updateBusiness = async (businessId: number, businessData: UpdateBusinessRequest): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify(businessData),
@@ -131,7 +131,7 @@ export const updateBusiness = async (businessId: number, businessData: UpdateBus
 
 // Delete a business
 export const deleteBusiness = async (businessId: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
@@ -170,7 +170,7 @@ export interface Menu {
 
 // Get menu for a business
 export const getMenu = async (businessId: number): Promise<Menu> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu`, {
     method: 'GET',
     headers: getAuthHeaders(),
   });
@@ -185,7 +185,7 @@ export const getMenu = async (businessId: number): Promise<Menu> => {
 
 // Add a new category to menu
 export const addMenuCategory = async (businessId: number, category: MenuCategory): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/categories`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(category),
@@ -199,7 +199,7 @@ export const addMenuCategory = async (businessId: number, category: MenuCategory
 
 // Update a menu category
 export const updateMenuCategory = async (businessId: number, categoryIndex: number, category: MenuCategory): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify(category),
@@ -213,7 +213,7 @@ export const updateMenuCategory = async (businessId: number, categoryIndex: numb
 
 // Delete a menu category
 export const deleteMenuCategory = async (businessId: number, categoryIndex: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
@@ -226,7 +226,7 @@ export const deleteMenuCategory = async (businessId: number, categoryIndex: numb
 
 // Add a menu item to a category
 export const addMenuItem = async (businessId: number, categoryIndex: number, item: MenuItem): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/items`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/items`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -243,7 +243,7 @@ export const addMenuItem = async (businessId: number, categoryIndex: number, ite
 
 // Update a menu item
 export const updateMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number, item: MenuItem): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/items`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/items`, {
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify({
@@ -261,7 +261,7 @@ export const updateMenuItem = async (businessId: number, categoryIndex: number, 
 
 // Delete a menu item
 export const deleteMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/menu/categories/${categoryIndex}/items/${itemIndex}`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}/items/${itemIndex}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
@@ -297,7 +297,7 @@ export interface UpdateTableRequest {
 
 // Get all tables for a business
 export const getBusinessTables = async (businessId: number): Promise<{ tables: Table[] }> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/tables`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/tables`, {
     method: 'GET',
     headers: getAuthHeaders(),
   });
@@ -312,7 +312,7 @@ export const getBusinessTables = async (businessId: number): Promise<{ tables: T
 
 // Create a new table with QR code
 export const createTableWithQR = async (businessId: number, tableData: CreateTableRequest): Promise<Table> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/businesses/${businessId}/tables`, {
+  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/tables`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify(tableData),
@@ -328,7 +328,7 @@ export const createTableWithQR = async (businessId: number, tableData: CreateTab
 
 // Update table details
 export const updateTableDetails = async (tableId: number, tableData: UpdateTableRequest): Promise<Table> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/tables/${tableId}`, {
+  const response = await fetch(`${API_BASE}/inside/tables/${tableId}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
     body: JSON.stringify(tableData),
@@ -344,7 +344,7 @@ export const updateTableDetails = async (tableId: number, tableData: UpdateTable
 
 // Delete a table (soft delete)
 export const deleteTable = async (tableId: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/api/v1/inside/tables/${tableId}`, {
+  const response = await fetch(`${API_BASE}/inside/tables/${tableId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });

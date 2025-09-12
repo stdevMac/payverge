@@ -81,7 +81,7 @@ export class SplittingAPI {
    * Get split options for a bill
    */
   static async getSplitOptions(billId: number): Promise<SplitOptions> {
-    const response = await apiClient.get(`/api/v1/bills/${billId}/split/options`);
+    const response = await apiClient.get(`/bills/${billId}/split/options`);
     return response.data.result;
   }
 
@@ -89,7 +89,7 @@ export class SplittingAPI {
    * Calculate equal split
    */
   static async calculateEqualSplit(request: EqualSplitRequest): Promise<SplitResult> {
-    const response = await apiClient.post(`/api/v1/bills/${request.bill_id}/split/equal`, request);
+    const response = await apiClient.post(`/bills/${request.bill_id}/split/equal`, request);
     return response.data.result;
   }
 
@@ -97,7 +97,7 @@ export class SplittingAPI {
    * Calculate custom split
    */
   static async calculateCustomSplit(request: CustomSplitRequest): Promise<SplitResult> {
-    const response = await apiClient.post(`/api/v1/bills/${request.bill_id}/split/custom`, request);
+    const response = await apiClient.post(`/bills/${request.bill_id}/split/custom`, request);
     return response.data.result;
   }
 
@@ -105,7 +105,7 @@ export class SplittingAPI {
    * Calculate item-based split
    */
   static async calculateItemSplit(request: ItemSplitRequest): Promise<SplitResult> {
-    const response = await apiClient.post(`/api/v1/bills/${request.bill_id}/split/items`, request);
+    const response = await apiClient.post(`/bills/${request.bill_id}/split/items`, request);
     return response.data.result;
   }
 
@@ -113,7 +113,7 @@ export class SplittingAPI {
    * Validate a split configuration
    */
   static async validateSplit(request: SplitValidationRequest): Promise<SplitValidationResult> {
-    const response = await apiClient.post(`/api/v1/bills/${request.bill_id}/split/validate`, request);
+    const response = await apiClient.post(`/bills/${request.bill_id}/split/validate`, request);
     return response.data.result;
   }
 }
