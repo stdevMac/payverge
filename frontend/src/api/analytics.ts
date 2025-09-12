@@ -135,24 +135,21 @@ export const analyticsApi = {
     return response.data
   },
 
-  // Export sales data in CSV or JSON format
-  exportSalesData: async (
+  // Export sales data in CSV or JSON 
+  exportAnalyticsData: async (
     businessId: string,
     period: string = 'week',
     format: 'csv' | 'json' = 'csv'
   ): Promise<Blob> => {
-    const response = await fetch(
-      `/inside/businesses/${businessId}/reports/export?period=${period}&format=${format}`,
+    const response = await axiosInstance.get(
+      `/inside/businesses/${businessId}/reports/export`,
       {
-        credentials: 'include',
+        params: { period, format },
+        responseType: 'blob'
       }
     )
     
-    if (!response.ok) {
-      throw new Error('Failed to export data')
-    }
-    
-    return response.blob()
+    return response.data
   },
 }
 

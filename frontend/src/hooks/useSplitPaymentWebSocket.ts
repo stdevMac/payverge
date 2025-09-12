@@ -59,11 +59,10 @@ export function useSplitPaymentWebSocket({
     }
 
     try {
-      const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws';
+      const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/api/v1/ws';
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('Split Payment WebSocket connected');
         setIsConnected(true);
         reconnectAttempts.current = 0;
 
@@ -126,18 +125,16 @@ export function useSplitPaymentWebSocket({
               break;
           }
         } catch (error) {
-          console.error('Failed to parse Split Payment WebSocket message:', error);
+          // Silently handle parse errors
         }
       };
 
       wsRef.current.onclose = (event) => {
-        console.log('Split Payment WebSocket disconnected:', event.code, event.reason);
         setIsConnected(false);
 
         // Attempt to reconnect if not a normal closure
         if (event.code !== 1000 && reconnectAttempts.current < maxReconnectAttempts) {
           const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
-          console.log(`Attempting to reconnect in ${delay}ms...`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttempts.current++;
@@ -147,11 +144,11 @@ export function useSplitPaymentWebSocket({
       };
 
       wsRef.current.onerror = (error) => {
-        console.error('Split Payment WebSocket error:', error);
+        // Handle WebSocket errors silently
       };
 
     } catch (error) {
-      console.error('Failed to create Split Payment WebSocket connection:', error);
+      // Handle connection errors silently
     }
   };
 

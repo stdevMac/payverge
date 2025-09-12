@@ -21,7 +21,7 @@ export const useBillWebSocket = ({
   onItemAdded,
   onItemRemoved
 }: UseBillWebSocketOptions) => {
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws';
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/api/v1/ws';
 
   const handleMessage = useCallback((message: WebSocketMessage) => {
     switch (message.type) {

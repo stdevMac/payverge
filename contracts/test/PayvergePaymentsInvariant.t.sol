@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
 import "forge-std/StdInvariant.sol";
-import "../src/PayvergePaymentsV2.sol";
+import "../src/PayvergePayments.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
  * @dev Property-based testing to ensure contract invariants hold under all conditions
  */
 contract PayvergePaymentsInvariantTest is StdInvariant, Test {
-    PayvergePaymentsV2 public payverge;
+    PayvergePayments public payverge;
     MockUSDC public usdc;
     PayvergeHandler public handler;
 
@@ -24,17 +24,17 @@ contract PayvergePaymentsInvariantTest is StdInvariant, Test {
         
         // Deploy contracts
         usdc = new MockUSDC();
-        PayvergePaymentsV2 implementation = new PayvergePaymentsV2();
+        PayvergePayments implementation = new PayvergePayments();
         
         bytes memory initData = abi.encodeWithSelector(
-            PayvergePaymentsV2.initialize.selector,
+            PayvergePayments.initialize.selector,
             address(usdc),
             platformTreasury,
             250 // 2.5% fee
         );
         
         ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
-        payverge = PayvergePaymentsV2(address(proxy));
+        payverge = PayvergePayments(address(proxy));
         
         vm.stopPrank();
 
@@ -77,7 +77,7 @@ contract PayvergePaymentsInvariantTest is StdInvariant, Test {
         bytes32[] memory bills = handler.getCreatedBills();
         for (uint i = 0; i < bills.length; i++) {
             if (handler.billExists(bills[i])) {
-                PayvergePaymentsV2.Bill memory bill = payverge.getBill(bills[i]);
+                PayvergePayments.Bill memory bill = payverge.getBill(bills[i]);
                 assertTrue(
                     bill.paidAmount <= bill.totalAmount,
                     "Bill paid amount exceeds total amount"
@@ -132,15 +132,15 @@ contract PayvergePaymentsInvariantTest is StdInvariant, Test {
         bytes32[] memory bills = handler.getCreatedBills();
         for (uint i = 0; i < bills.length; i++) {
             if (handler.billExists(bills[i])) {
-                PayvergePaymentsV2.Bill memory bill = payverge.getBill(bills[i]);
+                PayvergePayments.Bill memory bill = payverge.getBill(bills[i]);
                 
                 // If bill is paid, paid amount should equal total amount
-                if (bill.status == PayvergePaymentsV2.BillStatus.Paid) {
+                if (bill.status == PayvergePayments.BillStatus.Paid) {
                     assertEq(bill.paidAmount, bill.totalAmount, "Paid bill amount mismatch");
                 }
                 
                 // Active bills should have paid amount less than total
-                if (bill.status == PayvergePaymentsV2.BillStatus.Active) {
+                if (bill.status == PayvergePayments.BillStatus.Active) {
                     assertTrue(bill.paidAmount < bill.totalAmount, "Active bill should not be fully paid");
                 }
             }
@@ -219,7 +219,7 @@ contract PayvergePaymentsInvariantTest is StdInvariant, Test {
  * @dev Handler contract for invariant testing that tracks state and provides controlled interactions
  */
 contract PayvergeHandler is Test {
-    PayvergePaymentsV2 public payverge;
+    PayvergePayments public payverge;
     MockUSDC public usdc;
     address public owner;
     address public platformTreasury;
@@ -257,7 +257,7 @@ contract PayvergeHandler is Test {
     uint256 public constant MAX_BUSINESSES = 5;
 
     constructor(
-        PayvergePaymentsV2 _payverge,
+        PayvergePayments _payverge,
         MockUSDC _usdc,
         address _owner,
         address _platformTreasury
@@ -323,8 +323,8 @@ contract PayvergeHandler is Test {
 
         address user = _getOrCreateUser(userSeed);
         
-        PayvergePaymentsV2.Bill memory bill = payverge.getBill(billId);
-        if (bill.status != PayvergePaymentsV2.BillStatus.Active) return;
+        PayvergePayments.Bill memory bill = payverge.getBill(billId);
+        if (bill.status != PayvergePayments.BillStatus.Active) return;
 
         uint256 remainingAmount = bill.totalAmount - bill.paidAmount;
         if (remainingAmount == 0) return;

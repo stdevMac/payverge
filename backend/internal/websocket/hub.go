@@ -2,8 +2,9 @@ package websocket
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -29,9 +30,10 @@ type Hub struct {
 
 // Client represents a websocket client connection
 type Client struct {
-	hub  *Hub
-	conn *websocket.Conn
-	send chan []byte
+	hub    *Hub
+	conn   *websocket.Conn
+	send   chan []byte
+	userID string
 }
 
 var upgrader = websocket.Upgrader{
@@ -58,7 +60,6 @@ func (h *Hub) Run() {
 			h.mutex.Lock()
 			h.clients[client] = true
 			h.mutex.Unlock()
-			log.Println("Client registered")
 
 		case client := <-h.unregister:
 			h.mutex.Lock()
@@ -67,7 +68,6 @@ func (h *Hub) Run() {
 				close(client.send)
 			}
 			h.mutex.Unlock()
-			log.Println("Client unregistered")
 
 		case message := <-h.broadcast:
 			h.mutex.RLock()
@@ -88,7 +88,6 @@ func (h *Hub) Run() {
 func (h *Hub) BroadcastJSON(message interface{}) {
 	data, err := json.Marshal(message)
 	if err != nil {
-		log.Printf("Failed to marshal message: %v", err)
 		return
 	}
 	h.broadcast <- data
@@ -100,18 +99,42 @@ func (h *Hub) BroadcastToRoom(room string, message interface{}) {
 	h.BroadcastJSON(message)
 }
 
-// ServeWS handles websocket requests from clients
+// AuthenticateWebSocket validates JWT token from query parameter or header
+func AuthenticateWebSocket(r *http.Request, verifyTokenFunc func(string) (map[string]interface{}, error)) (map[string]interface{}, error) {
+	// Try to get token from query parameter first (for WebSocket connections)
+	token := r.URL.Query().Get("token")
+	
+	// If not in query, try Authorization header
+	if token == "" {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader != "" {
+			tokenParts := strings.Split(authHeader, " ")
+			if len(tokenParts) == 2 && tokenParts[0] == "Bearer" {
+				token = strings.Trim(tokenParts[1], "\"")
+			}
+		}
+	}
+	
+	if token == "" {
+		return nil, fmt.Errorf("no authentication token provided")
+	}
+	
+	// Use the provided token verification function
+	return verifyTokenFunc(token)
+}
+
+// ServeWS handles websocket requests from clients (authentication disabled for now)
 func (h *Hub) ServeWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Printf("WebSocket upgrade failed: %v", err)
 		return
 	}
 
 	client := &Client{
-		hub:  h,
-		conn: conn,
-		send: make(chan []byte, 256),
+		hub:    h,
+		conn:   conn,
+		send:   make(chan []byte, 256),
+		userID: "guest", // Default for now since authentication is disabled
 	}
 
 	client.hub.register <- client
@@ -131,9 +154,6 @@ func (c *Client) readPump() {
 	for {
 		_, _, err := c.conn.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("WebSocket error: %v", err)
-			}
 			break
 		}
 	}
@@ -152,7 +172,6 @@ func (c *Client) writePump() {
 			}
 
 			if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
-				log.Printf("WebSocket write error: %v", err)
 				return
 			}
 		}

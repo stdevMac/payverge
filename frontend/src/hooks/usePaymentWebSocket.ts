@@ -45,11 +45,10 @@ export function usePaymentWebSocket({
     }
 
     try {
-      const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/ws';
+      const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080/api/v1/ws';
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('Payment WebSocket connected');
         setIsConnected(true);
         reconnectAttempts.current = 0;
 
@@ -91,18 +90,16 @@ export function usePaymentWebSocket({
               break;
           }
         } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
+          // Silently handle parse errors
         }
       };
 
       wsRef.current.onclose = (event) => {
-        console.log('Payment WebSocket disconnected:', event.code, event.reason);
         setIsConnected(false);
 
         // Attempt to reconnect if not a normal closure
         if (event.code !== 1000 && reconnectAttempts.current < maxReconnectAttempts) {
           const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
-          console.log(`Attempting to reconnect in ${delay}ms...`);
           
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttempts.current++;
@@ -112,11 +109,11 @@ export function usePaymentWebSocket({
       };
 
       wsRef.current.onerror = (error) => {
-        console.error('Payment WebSocket error:', error);
+        // Handle WebSocket errors silently
       };
 
     } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
+      // Handle connection errors silently
     }
   };
 

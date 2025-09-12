@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { uploadFile } from '@/api/uploads';
 import {
   Button,
   Card,
@@ -46,25 +47,10 @@ export default function ImageUpload({ onImageUploaded, currentImage, isLoading =
       setError(null);
       setUploadProgress(0);
 
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('file', file);
-
       // Upload to backend S3 endpoint
-      const response = await fetch('/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-
-      const result = await response.json();
-      onImageUploaded(result.url);
+      const result = await uploadFile(file, 'business-logo');
+      const imageUrl = result.url;
+      onImageUploaded(imageUrl);
       setUploadProgress(100);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload image');

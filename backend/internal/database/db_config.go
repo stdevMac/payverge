@@ -28,6 +28,12 @@ var (
 // DB wraps the GORM database instance
 type DB struct {
 	conn *gorm.DB
+	BusinessService *BusinessService
+	TableService    *TableService
+	BillService     *BillService
+	PaymentService  *PaymentService
+	MenuService     *MenuService
+	CodeService     *CodeService
 }
 
 // NewDB creates a new DB instance
@@ -72,7 +78,15 @@ func GetDB() *gorm.DB {
 
 // GetDBWrapper returns a DB wrapper instance
 func GetDBWrapper() *DB {
-	return &DB{conn: db}
+	return &DB{
+		conn: db,
+		BusinessService: NewBusinessService(),
+		TableService: NewTableService(),
+		BillService: NewBillService(),
+		PaymentService: NewPaymentService(),
+		MenuService: NewMenuService(),
+		CodeService: NewCodeService(),
+	}
 }
 
 // Database methods for the DB wrapper

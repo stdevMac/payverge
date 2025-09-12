@@ -1,3 +1,5 @@
+import { axiosInstance } from './index';
+
 // Business API utilities
 export interface BusinessAddress {
   street: string;
@@ -48,98 +50,33 @@ export interface UpdateBusinessRequest {
   service_inclusive?: boolean;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
-// Get JWT token from localStorage
-const getAuthToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('jwt_token');
-  }
-  return null;
-};
-
-// Create headers with authentication
-const getAuthHeaders = () => {
-  const token = getAuthToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` }),
-  };
-};
-
 // Create a new business
 export const createBusiness = async (businessData: CreateBusinessRequest): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/inside/businesses`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(businessData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to create business');
-  }
-
-  return response.json();
+  const response = await axiosInstance.post<Business>('/inside/businesses', businessData);
+  return response.data;
 };
 
 // Get all businesses owned by the authenticated user
 export const getMyBusinesses = async (): Promise<Business[]> => {
-  const response = await fetch(`${API_BASE}/inside/businesses`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch businesses');
-  }
-
-  return response.json();
+  const response = await axiosInstance.get<Business[]>('/inside/businesses');
+  return response.data;
 };
 
 // Get a specific business by ID
 export const getBusiness = async (businessId: number): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch business');
-  }
-
-  return response.json();
+  const response = await axiosInstance.get<Business>(`/inside/businesses/${businessId}`);
+  return response.data;
 };
 
 // Update a business
 export const updateBusiness = async (businessId: number, businessData: UpdateBusinessRequest): Promise<Business> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(businessData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to update business');
-  }
-
-  return response.json();
+  const response = await axiosInstance.put<Business>(`/inside/businesses/${businessId}`, businessData);
+  return response.data;
 };
 
 // Delete a business
 export const deleteBusiness = async (businessId: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete business');
-  }
+  await axiosInstance.delete(`/inside/businesses/${businessId}`);
 };
 
 // Menu Management Types
@@ -170,106 +107,45 @@ export interface Menu {
 
 // Get menu for a business
 export const getMenu = async (businessId: number): Promise<Menu> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch menu');
-  }
-
-  return response.json();
+  const response = await axiosInstance.get<Menu>(`/inside/businesses/${businessId}/menu`);
+  return response.data;
 };
 
 // Add a new category to menu
 export const addMenuCategory = async (businessId: number, category: MenuCategory): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(category),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to add category');
-  }
+  await axiosInstance.post(`/inside/businesses/${businessId}/menu/categories`, category);
 };
 
 // Update a menu category
 export const updateMenuCategory = async (businessId: number, categoryIndex: number, category: MenuCategory): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(category),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to update category');
-  }
+  await axiosInstance.put(`/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, category);
 };
 
 // Delete a menu category
 export const deleteMenuCategory = async (businessId: number, categoryIndex: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete category');
-  }
+  await axiosInstance.delete(`/inside/businesses/${businessId}/menu/categories/${categoryIndex}`);
 };
 
 // Add a menu item to a category
 export const addMenuItem = async (businessId: number, categoryIndex: number, item: MenuItem): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/items`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({
-      category_index: categoryIndex,
-      item: item,
-    }),
+  await axiosInstance.post(`/inside/businesses/${businessId}/menu/items`, {
+    category_index: categoryIndex,
+    item: item,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to add menu item');
-  }
 };
 
 // Update a menu item
 export const updateMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number, item: MenuItem): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/items`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({
-      category_index: categoryIndex,
-      item_index: itemIndex,
-      item: item,
-    }),
+  await axiosInstance.put(`/inside/businesses/${businessId}/menu/items`, {
+    category_index: categoryIndex,
+    item_index: itemIndex,
+    item: item,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to update menu item');
-  }
 };
 
 // Delete a menu item
 export const deleteMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/menu/categories/${categoryIndex}/items/${itemIndex}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete menu item');
-  }
+  await axiosInstance.delete(`/inside/businesses/${businessId}/menu/categories/${categoryIndex}/items/${itemIndex}`);
 };
 
 // Table Management Types
@@ -297,62 +173,25 @@ export interface UpdateTableRequest {
 
 // Get all tables for a business
 export const getBusinessTables = async (businessId: number): Promise<{ tables: Table[] }> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/tables`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch tables');
-  }
-
-  return response.json();
+  const response = await axiosInstance.get<{ tables: Table[] }>(`/inside/businesses/${businessId}/tables`);
+  return response.data;
 };
 
 // Create a new table with QR code
 export const createTableWithQR = async (businessId: number, tableData: CreateTableRequest): Promise<Table> => {
-  const response = await fetch(`${API_BASE}/inside/businesses/${businessId}/tables`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(tableData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to create table');
-  }
-
-  return response.json();
+  const response = await axiosInstance.post<Table>(`/inside/businesses/${businessId}/tables`, tableData);
+  return response.data;
 };
 
 // Update table details
 export const updateTableDetails = async (tableId: number, tableData: UpdateTableRequest): Promise<Table> => {
-  const response = await fetch(`${API_BASE}/inside/tables/${tableId}`, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(tableData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to update table');
-  }
-
-  return response.json();
+  const response = await axiosInstance.put<Table>(`/inside/tables/${tableId}`, tableData);
+  return response.data;
 };
 
 // Delete a table (soft delete)
 export const deleteTable = async (tableId: number): Promise<void> => {
-  const response = await fetch(`${API_BASE}/inside/tables/${tableId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders(),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete table');
-  }
+  await axiosInstance.delete(`/inside/tables/${tableId}`);
 };
 
 // Export all functions as businessApi object

@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-	"log"
 	"strconv"
 	"time"
 
@@ -57,8 +56,6 @@ func NewPaymentMonitor(hub *Hub, db *database.DB, blockchain *blockchain.Blockch
 
 // Start begins monitoring for payment events
 func (pm *PaymentMonitor) Start() error {
-	log.Println("Starting payment monitor...")
-
 	// Start blockchain event monitoring
 	err := pm.blockchain.MonitorPayments(pm.handlePaymentEvent)
 	if err != nil {
@@ -68,31 +65,25 @@ func (pm *PaymentMonitor) Start() error {
 	// Start periodic bill status checks
 	go pm.startPeriodicChecks()
 
-	log.Println("Payment monitor started successfully")
 	return nil
 }
 
 // Stop stops the payment monitor
 func (pm *PaymentMonitor) Stop() {
-	log.Println("Stopping payment monitor...")
 	close(pm.stopCh)
 }
 
 // handlePaymentEvent processes incoming payment events from the blockchain
 func (pm *PaymentMonitor) handlePaymentEvent(payment blockchain.Payment) {
-	log.Printf("Received payment event: %+v", payment)
-
 	// Parse bill ID
 	billID, err := strconv.ParseUint(payment.BillID, 10, 32)
 	if err != nil {
-		log.Printf("Invalid bill ID in payment event: %s", payment.BillID)
 		return
 	}
 
 	// Get bill from database
 	bill, err := pm.db.GetBill(uint(billID))
 	if err != nil {
-		log.Printf("Failed to get bill %d: %v", billID, err)
 		return
 	}
 
@@ -110,7 +101,6 @@ func (pm *PaymentMonitor) handlePaymentEvent(payment blockchain.Payment) {
 	// Save updated bill
 	err = pm.db.UpdateBill(bill)
 	if err != nil {
-		log.Printf("Failed to update bill %d: %v", billID, err)
 		return
 	}
 
@@ -138,8 +128,6 @@ func (pm *PaymentMonitor) sendPaymentNotification(payment blockchain.Payment, bi
 	// Send to business dashboard room
 	businessRoom := "business_" + strconv.FormatUint(uint64(bill.BusinessID), 10)
 	pm.sendToRoom(businessRoom, notification)
-
-	log.Printf("Sent payment notification to business %d", bill.BusinessID)
 }
 
 // sendBillUpdateNotification sends a bill update notification to guests
@@ -160,7 +148,6 @@ func (pm *PaymentMonitor) sendBillUpdateNotification(bill *database.Bill) {
 	// Send to table room (for guests)
 	table, err := pm.db.GetTable(bill.TableID)
 	if err != nil {
-		log.Printf("Failed to get table %d: %v", bill.TableID, err)
 		return
 	}
 
@@ -170,15 +157,12 @@ func (pm *PaymentMonitor) sendBillUpdateNotification(bill *database.Bill) {
 	// Also send to bill-specific room
 	billRoom := "bill_" + strconv.FormatUint(uint64(bill.ID), 10)
 	pm.sendToRoom(billRoom, notification)
-
-	log.Printf("Sent bill update notification for bill %d", bill.ID)
 }
 
 // sendToRoom sends a message to all clients in a specific room
 func (pm *PaymentMonitor) sendToRoom(room string, data interface{}) {
 	message, err := json.Marshal(data)
 	if err != nil {
-		log.Printf("Failed to marshal notification: %v", err)
 		return
 	}
 
@@ -205,7 +189,6 @@ func (pm *PaymentMonitor) checkPendingPayments() {
 	// Get bills with partial or open status
 	bills, err := pm.db.GetBillsByStatus(database.BillStatusOpen)
 	if err != nil {
-		log.Printf("Failed to get pending bills: %v", err)
 		return
 	}
 
@@ -213,7 +196,6 @@ func (pm *PaymentMonitor) checkPendingPayments() {
 		// Check blockchain for latest payment status
 		totalPaid, err := pm.blockchain.GetBillTotalPaid(strconv.FormatUint(uint64(bill.ID), 10))
 		if err != nil {
-			log.Printf("Failed to get total paid for bill %d: %v", bill.ID, err)
 			continue
 		}
 
@@ -229,7 +211,6 @@ func (pm *PaymentMonitor) checkPendingPayments() {
 			}
 
 			if err := pm.db.UpdateBill(bill); err != nil {
-				log.Printf("Failed to update bill %d: %v", bill.ID, err)
 				continue
 			}
 
@@ -243,7 +224,6 @@ func (pm *PaymentMonitor) checkPendingPayments() {
 func (pm *PaymentMonitor) NotifyPaymentConfirmation(billID uint, txHash string) {
 	bill, err := pm.db.GetBill(billID)
 	if err != nil {
-		log.Printf("Failed to get bill %d for confirmation: %v", billID, err)
 		return
 	}
 

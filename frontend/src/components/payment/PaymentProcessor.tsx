@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { notifyPaymentWebhook } from '@/api/payments';
 import {
   Modal,
   ModalContent,
@@ -183,15 +184,13 @@ export default function PaymentProcessor({
 
   const notifyBackend = React.useCallback(async () => {
     try {
-      await fetch('/payments/webhook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          transaction_hash: paymentHash,
-          bill_id: billId.toString(),
-          amount: Math.round(Number(amount) * 100), // Convert to cents
-          tip_amount: Math.round(Number(tipValue) * 100), // Convert to cents
-        }),
+      await notifyPaymentWebhook({
+        billId: parseInt(billId.toString()),
+        transactionHash: paymentHash || '',
+        amount: Math.round(Number(amount) * 100), // Convert to cents
+        tipAmount: Math.round(Number(tipValue) * 100), // Convert to cents
+        payerAddress: address || '',
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('Failed to notify backend:', err);
@@ -213,23 +212,6 @@ export default function PaymentProcessor({
     }
   }, [isPaymentSuccess, notifyBackend]);
 
-  const oldNotifyBackend = async () => {
-    try {
-      await fetch('/payments/webhook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          transaction_hash: paymentHash,
-          bill_id: billId.toString(),
-          amount: Math.round(amount * 100), // Convert to cents
-          tip_amount: Math.round(tipValue * 100),
-          status: 'confirmed'
-        })
-      });
-    } catch (error) {
-      console.error('Failed to notify backend:', error);
-    }
-  };
 
   const handleClose = () => {
     setPaymentStep('amount');

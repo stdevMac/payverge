@@ -2,10 +2,10 @@
 pragma solidity ^0.8.19;
 
 import "forge-std/Script.sol";
-import "../src/PayvergePaymentsV2.sol";
+import "../src/PayvergePayments.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
-contract DeployPayvergePaymentsV2 is Script {
+contract DeployPayvergePayments is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
@@ -23,12 +23,12 @@ contract DeployPayvergePaymentsV2 is Script {
         vm.startBroadcast(deployerPrivateKey);
         
         // Deploy implementation contract
-        PayvergePaymentsV2 implementation = new PayvergePaymentsV2();
+        PayvergePayments implementation = new PayvergePayments();
         console.log("Implementation deployed at:", address(implementation));
         
         // Prepare initialization data
         bytes memory initData = abi.encodeWithSelector(
-            PayvergePaymentsV2.initialize.selector,
+            PayvergePayments.initialize.selector,
             usdcToken,
             platformFeeRecipient,
             platformFeeBps
@@ -43,11 +43,11 @@ contract DeployPayvergePaymentsV2 is Script {
         console.log("Proxy deployed at:", address(proxy));
         
         // Verify the deployment
-        PayvergePaymentsV2 payvergeContract = PayvergePaymentsV2(address(proxy));
+        PayvergePayments payvergeContract = PayvergePayments(address(proxy));
         console.log("Contract version:", payvergeContract.version());
         console.log("USDC token address:", address(payvergeContract.usdcToken()));
-        console.log("Platform fee recipient:", payvergeContract.platformFeeRecipient());
-        console.log("Platform fee BPS:", payvergeContract.platformFeeBps());
+        console.log("Platform treasury:", payvergeContract.platformTreasury());
+        console.log("Platform fee rate:", payvergeContract.platformFeeRate());
         
         vm.stopBroadcast();
         

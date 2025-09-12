@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
-import "../src/PayvergePaymentsV2.sol";
+import "../src/PayvergePayments.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
@@ -12,8 +12,8 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
  * @dev Comprehensive security tests including attack vectors, edge cases, and invariants
  */
 contract PayvergePaymentsSecurityTest is Test {
-    PayvergePaymentsV2 public payverge;
-    PayvergePaymentsV2 public implementation;
+    PayvergePayments public payverge;
+    PayvergePayments public implementation;
     MockUSDC public usdc;
     ERC1967Proxy public proxy;
     
@@ -38,17 +38,17 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Deploy contracts
         usdc = new MockUSDC();
-        implementation = new PayvergePaymentsV2();
+        implementation = new PayvergePayments();
         
         bytes memory initData = abi.encodeWithSelector(
-            PayvergePaymentsV2.initialize.selector,
+            PayvergePayments.initialize.selector,
             address(usdc),
             platformTreasury,
             PLATFORM_FEE_RATE
         );
         
         proxy = new ERC1967Proxy(address(implementation), initData);
-        payverge = PayvergePaymentsV2(address(proxy));
+        payverge = PayvergePayments(address(proxy));
         
         vm.stopPrank();
 
@@ -211,7 +211,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.processPayment(billId, BILL_AMOUNT / 2, 0);
         
         // Both should succeed as partial payments are allowed
-        PayvergePaymentsV2.Bill memory bill = payverge.getBill(billId);
+        PayvergePayments.Bill memory bill = payverge.getBill(billId);
         assertEq(bill.paidAmount, BILL_AMOUNT);
     }
 
@@ -252,7 +252,7 @@ contract PayvergePaymentsSecurityTest is Test {
         vm.prank(customer);
         payverge.processPayment(billId, BILL_AMOUNT, 0);
         
-        PayvergePaymentsV2.Bill memory bill = payverge.getBill(billId);
+        PayvergePayments.Bill memory bill = payverge.getBill(billId);
         assertEq(bill.paidAmount, BILL_AMOUNT);
     }
 
@@ -267,7 +267,7 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Should not be able to process payments
         vm.prank(customer);
-        vm.expectRevert(PayvergePaymentsV2.CircuitBreakerActive.selector);
+        vm.expectRevert(PayvergePayments.CircuitBreakerActive.selector);
         payverge.processPayment(billId, BILL_AMOUNT, 0);
         
         // Attacker should not be able to reset circuit breaker
@@ -320,7 +320,7 @@ contract PayvergePaymentsSecurityTest is Test {
         vm.prank(customer);
         payverge.processPayment(billId, BILL_AMOUNT, 0);
         
-        PayvergePaymentsV2.Bill memory bill = payverge.getBill(billId);
+        PayvergePayments.Bill memory bill = payverge.getBill(billId);
         assertTrue(bill.paidAmount <= bill.totalAmount);
     }
 
@@ -352,15 +352,15 @@ contract PayvergePaymentsSecurityTest is Test {
 
     function testZeroAddressProtection() public {
         vm.prank(owner);
-        vm.expectRevert(PayvergePaymentsV2.ZeroAddress.selector);
+        vm.expectRevert(PayvergePayments.ZeroAddress.selector);
         payverge.verifyBusiness(address(0), "Zero Business", paymentAddress, tippingAddress);
         
         vm.prank(owner);
-        vm.expectRevert(PayvergePaymentsV2.ZeroAddress.selector);
+        vm.expectRevert(PayvergePayments.ZeroAddress.selector);
         payverge.verifyBusiness(business, "Test", address(0), tippingAddress);
         
         vm.prank(owner);
-        vm.expectRevert(PayvergePaymentsV2.ZeroAddress.selector);
+        vm.expectRevert(PayvergePayments.ZeroAddress.selector);
         payverge.emergencyWithdraw(address(usdc), 100, address(0));
     }
 
@@ -395,11 +395,11 @@ contract PayvergePaymentsSecurityTest is Test {
 // ==================== ATTACK CONTRACTS ====================
 
 contract ReentrantAttacker {
-    PayvergePaymentsV2 public payverge;
+    PayvergePayments public payverge;
     MockUSDC public usdc;
     bool public attacking = false;
     
-    constructor(PayvergePaymentsV2 _payverge, MockUSDC _usdc) {
+    constructor(PayvergePayments _payverge, MockUSDC _usdc) {
         payverge = _payverge;
         usdc = _usdc;
     }
@@ -420,10 +420,10 @@ contract ReentrantAttacker {
 }
 
 contract FlashLoanAttacker {
-    PayvergePaymentsV2 public payverge;
+    PayvergePayments public payverge;
     MockUSDC public usdc;
     
-    constructor(PayvergePaymentsV2 _payverge, MockUSDC _usdc) {
+    constructor(PayvergePayments _payverge, MockUSDC _usdc) {
         payverge = _payverge;
         usdc = _usdc;
     }
@@ -441,9 +441,9 @@ contract FlashLoanAttacker {
 }
 
 contract GriefingAttacker {
-    PayvergePaymentsV2 public payverge;
+    PayvergePayments public payverge;
     
-    constructor(PayvergePaymentsV2 _payverge) {
+    constructor(PayvergePayments _payverge) {
         payverge = _payverge;
     }
     
@@ -456,7 +456,7 @@ contract GriefingAttacker {
     }
 }
 
-contract MaliciousImplementation is PayvergePaymentsV2 {
+contract MaliciousImplementation is PayvergePayments {
     // Malicious implementation that tries to steal funds
     function stealFunds() external {
         // This function would not exist in legitimate implementation

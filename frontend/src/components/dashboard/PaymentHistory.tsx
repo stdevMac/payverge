@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { getPaymentHistory, exportPayments } from '@/api/payments'
 import { 
   Card, 
   CardBody, 
@@ -61,20 +62,8 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/inside/businesses/${businessId}/payments`, {
-        credentials: 'include',
-      })
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch payments')
-      }
-      
-      const result = await response.json()
-      if (result.success) {
-        setPayments(result.data || [])
-      } else {
-        throw new Error(result.error || 'Failed to fetch payments')
-      }
+      const data = await getPaymentHistory(parseInt(businessId))
+      setPayments(data || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -150,23 +139,17 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 
-  const exportPayments = async () => {
+  const handleExportPayments = async () => {
     try {
-      const response = await fetch(`/inside/businesses/${businessId}/reports/export?period=custom&format=csv`, {
-        credentials: 'include',
-      })
-      
-      if (response.ok) {
-        const blob = await response.blob()
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `payments-${businessId}-${new Date().toISOString().split('T')[0]}.csv`
-        document.body.appendChild(a)
-        a.click()
-        window.URL.revokeObjectURL(url)
-        document.body.removeChild(a)
-      }
+      const blob = await exportPayments(parseInt(businessId), 'custom', 'csv')
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `payments-${businessId}-${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
     } catch (err) {
       console.error('Failed to export payments:', err)
     }
@@ -205,7 +188,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
           color="primary"
           variant="flat"
           startContent={<Download className="w-4 h-4" />}
-          onPress={exportPayments}
+          onPress={handleExportPayments}
         >
           Export
         </Button>

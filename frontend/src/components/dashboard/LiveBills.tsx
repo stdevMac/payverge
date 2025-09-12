@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { getLiveBills } from '@/api/dashboard'
 import { Card, CardBody, CardHeader, Divider, Spinner, Badge, Button, Chip } from '@nextui-org/react'
 import { Clock, DollarSign, Users, RefreshCw, Eye } from 'lucide-react'
 import { useWebSocket } from '@/hooks/useWebSocket'
@@ -43,21 +44,9 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/inside/businesses/${businessId}/analytics/live-bills`, {
-        credentials: 'include',
-      })
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch live bills')
-      }
-      
-      const result = await response.json()
-      if (result.success) {
-        setBills(result.data || [])
-        setLastUpdated(new Date())
-      } else {
-        throw new Error(result.error || 'Failed to fetch live bills')
-      }
+      const data = await getLiveBills(parseInt(businessId))
+      setBills(data || [])
+      setLastUpdated(new Date())
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {

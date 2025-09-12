@@ -46,7 +46,6 @@ export const useWebSocket = ({
       ws.current = new WebSocket(wsUrl.toString());
 
       ws.current.onopen = () => {
-        console.log('WebSocket connected');
         setIsConnected(true);
         setReconnectAttempts(0);
         onConnect?.();
@@ -57,30 +56,27 @@ export const useWebSocket = ({
           const message: WebSocketMessage = JSON.parse(event.data);
           onMessage?.(message);
         } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
+          // Silently handle parse errors
         }
       };
 
-      ws.current.onclose = () => {
-        console.log('WebSocket disconnected');
+      ws.current.onclose = (event) => {
         setIsConnected(false);
         onDisconnect?.();
 
-        // Attempt to reconnect if within limits
-        if (reconnectAttempts < maxReconnectAttempts) {
-          reconnectTimeoutRef.current = setTimeout(() => {
-            setReconnectAttempts(prev => prev + 1);
-            connect();
-          }, reconnectInterval);
-        }
+        const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+        reconnectTimeoutRef.current = setTimeout(() => {
+          setReconnectAttempts(prev => prev + 1);
+          connect();
+        }, delay);
       };
 
       ws.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        // Handle WebSocket errors silently
         onError?.(error);
       };
     } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
+      // Handle connection errors silently
     }
   }, [url, tableCode, billId, onMessage, onConnect, onDisconnect, onError, reconnectInterval, maxReconnectAttempts, reconnectAttempts]);
 
