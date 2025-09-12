@@ -3,19 +3,19 @@ import { axiosInstance } from './tools/instance';
 // Backend API endpoints for Phase 3 (actual implementation)
 export const PUBLIC_ENDPOINTS = {
   // Table information - using actual backend routes
-  getTableInfo: (tableCode: string) => `/api/v1/guest/table/${tableCode}`,
-  getTableBusiness: (tableCode: string) => `/api/v1/guest/table/${tableCode}/business`,
-  getTableMenu: (tableCode: string) => `/api/v1/guest/table/${tableCode}/menu`,
-  getTableStatus: (tableCode: string) => `/api/v1/guest/table/${tableCode}/status`,
+  getTableInfo: (tableCode: string) => `/guest/table/${tableCode}`,
+  getTableBusiness: (tableCode: string) => `/guest/table/${tableCode}/business`,
+  getTableMenu: (tableCode: string) => `/guest/table/${tableCode}/menu`,
+  getTableStatus: (tableCode: string) => `/guest/table/${tableCode}/status`,
   
   // Bill information  
-  getCurrentBill: (tableCode: string) => `/api/v1/guest/table/${tableCode}/bill`,
-  getBillByNumber: (billNumber: string) => `/api/v1/guest/bill/${billNumber}`,
+  getCurrentBill: (tableCode: string) => `/guest/table/${tableCode}/bill`,
+  getBillByNumber: (billNumber: string) => `/guest/bill/${billNumber}`,
 } as const;
 
 // Legacy endpoints for backward compatibility
 export const LEGACY_ENDPOINTS = {
-  getTableByCode: (tableCode: string) => `/api/v1/table/${tableCode}`,
+  getTableByCode: (tableCode: string) => `/table/${tableCode}`,
 } as const;
 
 // Helper function to get the appropriate endpoint

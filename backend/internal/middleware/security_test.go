@@ -27,7 +27,7 @@ func TestSecurityMiddlewareTestSuite(t *testing.T) {
 
 // Test Rate Limiting Middleware
 func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_AllowsNormalRequests() {
-	rateLimiter := NewRateLimiter(10) // 10 requests per minute
+	rateLimiter := NewSimpleRateLimiter(10) // 10 requests per minute
 	suite.router.Use(rateLimiter.RateLimit())
 	suite.router.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
@@ -43,7 +43,7 @@ func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_AllowsNormalRequests()
 }
 
 func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_BlocksExcessiveRequests() {
-	rateLimiter := NewRateLimiter(2) // 2 requests per minute for testing
+	rateLimiter := NewSimpleRateLimiter(2) // 2 requests per minute for testing
 	suite.router.Use(rateLimiter.RateLimit())
 	suite.router.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
@@ -71,7 +71,7 @@ func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_BlocksExcessiveRequest
 }
 
 func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_DifferentIPsIndependent() {
-	rateLimiter := NewRateLimiter(2) // 2 requests per minute to allow both IPs
+	rateLimiter := NewSimpleRateLimiter(2) // 2 requests per minute to allow both IPs
 	suite.router.Use(rateLimiter.RateLimit())
 	suite.router.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
@@ -200,7 +200,7 @@ func (suite *SecurityMiddlewareTestSuite) TestJSONSizeLimit_BlocksLargeRequests(
 
 // Test Rate Limiter Internal Structure
 func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_InternalState() {
-	rateLimiter := NewRateLimiter(10)
+	rateLimiter := NewSimpleRateLimiter(10)
 	
 	// Make a request to create a visitor
 	suite.router.Use(rateLimiter.RateLimit())
@@ -228,7 +228,7 @@ func (suite *SecurityMiddlewareTestSuite) TestRateLimiter_InternalState() {
 func BenchmarkRateLimiter(b *testing.B) {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	rateLimiter := NewRateLimiter(1000)
+	rateLimiter := NewSimpleRateLimiter(1000)
 	router.Use(rateLimiter.RateLimit())
 	router.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})

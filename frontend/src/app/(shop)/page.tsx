@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/i18n/useTranslation";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { t } = useTranslation();
+  const router = useRouter();
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export default function Home() {
   };
 
   const handleShareOnX = () => {
-    const tweetText = encodeURIComponent("Just joined the waitlist for https://payverge.io - the future of crypto payments for hospitality! 🚀 Can't wait to see what they're building.");
+    const tweetText = encodeURIComponent("Just signed up for updates from https://payverge.io - the future of crypto payments for hospitality! 🚀 Excited to see what they're building.");
     const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
     window.open(tweetUrl, '_blank');
   };
@@ -53,7 +55,7 @@ export default function Home() {
             {/* Floating badge */}
             <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full text-sm text-gray-600 mb-8 hover:bg-gray-100 transition-colors duration-200">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              Now in development
+              Now live and ready to use
             </div>
             
             <h1 className="text-4xl lg:text-6xl font-light text-gray-900 mb-6 tracking-wide leading-tight">
@@ -65,17 +67,39 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
-                onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => router.push('/business/register')}
                 className="group bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 relative overflow-hidden tracking-wide"
               >
-                <span className="relative z-10 tracking-wide">Join Waitlist</span>
+                <span className="relative z-10 tracking-wide">Start Your Business</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
               </button>
               <button 
-                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                onClick={() => router.push('/scan')}
+                className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide"
               >
-                Learn More
+                Scan QR Code
+              </button>
+            </div>
+            
+            {/* Quick Access Links */}
+            <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+              <button 
+                onClick={() => router.push('/dashboard')}
+                className="hover:text-gray-700 transition-colors underline decoration-dotted underline-offset-4"
+              >
+                Business Dashboard
+              </button>
+              <button 
+                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                className="hover:text-gray-700 transition-colors underline decoration-dotted underline-offset-4"
+              >
+                How it works
+              </button>
+              <button 
+                onClick={() => document.getElementById('updates')?.scrollIntoView({ behavior: 'smooth' })}
+                className="hover:text-gray-700 transition-colors underline decoration-dotted underline-offset-4"
+              >
+                Get Updates
               </button>
             </div>
           </div>
@@ -103,110 +127,129 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Comparison Cards */}
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Comparison Layout */}
+            <div className="grid lg:grid-cols-2 gap-16 items-start">
               {/* Traditional Payments - Problem */}
               <div className="relative">
                 <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-medium text-gray-900">Traditional payments</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">3–5% fees</p>
-                        <p className="text-sm text-gray-600">Plus hidden processing costs</p>
-                      </div>
+                  <div className="space-y-8">
+                    <div className="space-y-4">
+                      <h3 className="text-2xl lg:text-3xl font-light text-gray-900 leading-tight">
+                        The problem with <br />
+                        <span className="italic">traditional payments</span>
+                      </h3>
+                      <p className="text-lg text-gray-600 leading-relaxed">
+                        Restaurants lose money to high processing fees, delayed settlements, and complex bill splitting that frustrates customers.
+                      </p>
                     </div>
                     
-                    <div className="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">High processing fees</h4>
+                          <p className="text-gray-600">Credit card fees eat into already thin margins</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">2-7 day settlements</p>
-                        <p className="text-sm text-gray-600">Cash flow problems for businesses</p>
+                      
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Delayed settlements</h4>
+                          <p className="text-gray-600">Wait days for payment processing and bank transfers</p>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-red-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">Zero transparency</p>
-                        <p className="text-sm text-gray-600">Black box processing with hidden fees</p>
+                      
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Complex bill splitting</h4>
+                          <p className="text-gray-600">Manual calculations and multiple payment methods create friction</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Payverge - Solution */}
+              {/* Payverge Solution */}
               <div className="relative">
                 {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-2xl blur-xl"></div>
                 
                 <div className="relative bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                  <div className="space-y-8">
+                    <div className="space-y-4">
+                      <h3 className="text-2xl lg:text-3xl font-light text-gray-900 leading-tight">
+                        The <span className="italic">Payverge</span> <br />
+                        solution
+                      </h3>
+                      <p className="text-lg text-gray-600 leading-relaxed">
+                        Instant USDC settlements, transparent fees, and seamless bill splitting that delights your customers.
+                      </p>
                     </div>
-                    <h3 className="text-xl font-medium text-gray-900">Payverge</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
+                    
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Instant settlements</h4>
+                          <p className="text-gray-600">Receive USDC payments immediately with blockchain transparency</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">Flat 2% fee</p>
-                        <p className="text-sm text-gray-600">No hidden costs, ever</p>
+                      
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Lower fees</h4>
+                          <p className="text-gray-600">Transparent 2% platform fee with no hidden charges</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 mt-1">
+                          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-1">Smart bill splitting</h4>
+                          <p className="text-gray-600">Automatic calculations with flexible splitting options</p>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    {/* Call to Action */}
+                    <div className="pt-4">
+                      <button 
+                        onClick={() => router.push('/business/register')}
+                        className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors group"
+                      >
+                        Get started today
+                        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                      </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">Instant settlement</p>
-                        <p className="text-sm text-gray-600">USDC in your wallet immediately</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-green-50/50 rounded-lg">
-                      <div className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0">
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-gray-700 font-medium">Complete transparency</p>
-                        <p className="text-sm text-gray-600">Every transaction recorded onchain</p>
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -216,7 +259,7 @@ export default function Home() {
             {/* Bottom CTA */}
             <div className="text-center mt-16">
               <p className="text-gray-600 font-light">
-                Ready to make the switch? <a href="#waitlist" className="text-gray-900 underline underline-offset-4 hover:no-underline transition-all">Join the waitlist</a>
+                Ready to make the switch? <a href="#updates" className="text-gray-900 underline underline-offset-4 hover:no-underline transition-all">Get started today</a>
               </p>
             </div>
           </div>
@@ -417,15 +460,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Early Access Section */}
-      <section id="waitlist" className="py-16 bg-gray-900 text-white">
+      {/* Updates Section */}
+      <section id="updates" className="py-16 bg-gray-900 text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl lg:text-4xl font-light mb-6 tracking-wide">
-              Ready to modernize your payments?
+              Stay updated on Payverge
             </h2>
             <p className="text-lg text-gray-300 mb-12 font-light leading-relaxed">
-              Join the waitlist to get early access and priority onboarding
+              Get updates on new features, improvements, and crypto payment insights
             </p>
             
             <form onSubmit={handleWaitlistSubmit} className="max-w-sm mx-auto space-y-4">
@@ -538,8 +581,7 @@ export default function Home() {
                 Welcome to the future! 🚀
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Thanks for joining our waitlist! We&apos;re building something amazing for crypto hospitality payments. 
-                You&apos;ll be among the first to know when we launch.
+                Thanks for subscribing to updates! We&apos;ll keep you informed about new features, improvements, and insights about crypto payments in hospitality.
               </p>
               
               {/* Share section */}

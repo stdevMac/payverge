@@ -43,7 +43,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/api/v1/inside/businesses/${businessId}/analytics/live-bills`, {
+      const response = await fetch(`/inside/businesses/${businessId}/analytics/live-bills`, {
         credentials: 'include',
       })
       

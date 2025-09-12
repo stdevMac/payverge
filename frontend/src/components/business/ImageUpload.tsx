@@ -51,7 +51,7 @@ export default function ImageUpload({ onImageUploaded, currentImage, isLoading =
       formData.append('file', file);
 
       // Upload to backend S3 endpoint
-      const response = await fetch('/api/v1/upload', {
+      const response = await fetch('/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

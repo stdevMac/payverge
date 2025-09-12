@@ -38,7 +38,7 @@ func (suite *IntegrationTestSuite) SetupSuite() {
 	suite.router.Use(middleware.SecurityHeaders())
 	suite.router.Use(middleware.InputValidation())
 	
-	rateLimiter := middleware.NewRateLimiter(100) // Higher limit for testing
+	rateLimiter := middleware.NewSimpleRateLimiter(100) // Higher limit for testing
 	suite.router.Use(rateLimiter.RateLimit())
 	suite.router.Use(middleware.JSONSizeLimit(10 << 20)) // 10MB limit
 	

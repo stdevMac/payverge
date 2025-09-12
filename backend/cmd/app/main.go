@@ -142,7 +142,7 @@ func main() {
 	}
 
 	// Create rate limiter (60 requests per minute)
-	rateLimiter := middleware.NewRateLimiter(60)
+	rateLimiter := middleware.NewSimpleRateLimiter(60)
 
 	r := gin.Default()
 	r.Use(gin.Recovery())

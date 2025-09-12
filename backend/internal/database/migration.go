@@ -1,12 +1,8 @@
 package database
 
 import (
-	"database/sql"
 	"embed"
 	"fmt"
-	"io/fs"
-	"path/filepath"
-	"sort"
 	"strings"
 )
 
@@ -28,7 +24,7 @@ func (db *DB) ApplyIndexes() error {
 			continue
 		}
 
-		if _, err := db.db.Exec(stmt); err != nil {
+		if err := db.conn.Exec(stmt).Error; err != nil {
 			// Log warning but don't fail if index already exists
 			fmt.Printf("Warning: Failed to create index: %v\n", err)
 		}
@@ -47,7 +43,7 @@ func (db *DB) OptimizeDatabase() error {
 	// Analyze tables for query optimization
 	tables := []string{"bills", "payments", "businesses", "tables"}
 	for _, table := range tables {
-		if _, err := db.db.Exec(fmt.Sprintf("ANALYZE %s", table)); err != nil {
+		if err := db.conn.Exec(fmt.Sprintf("ANALYZE %s", table)).Error; err != nil {
 			fmt.Printf("Warning: Failed to analyze table %s: %v\n", table, err)
 		}
 	}

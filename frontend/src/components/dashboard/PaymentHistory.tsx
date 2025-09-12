@@ -61,7 +61,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch(`/api/v1/inside/businesses/${businessId}/payments`, {
+      const response = await fetch(`/inside/businesses/${businessId}/payments`, {
         credentials: 'include',
       })
       
@@ -152,7 +152,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
 
   const exportPayments = async () => {
     try {
-      const response = await fetch(`/api/v1/inside/businesses/${businessId}/reports/export?period=custom&format=csv`, {
+      const response = await fetch(`/inside/businesses/${businessId}/reports/export?period=custom&format=csv`, {
         credentials: 'include',
       })
       

@@ -183,7 +183,7 @@ export default function PaymentProcessor({
 
   const notifyBackend = React.useCallback(async () => {
     try {
-      await fetch('/api/v1/payments/webhook', {
+      await fetch('/payments/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -215,7 +215,7 @@ export default function PaymentProcessor({
 
   const oldNotifyBackend = async () => {
     try {
-      await fetch('/api/v1/payments/webhook', {
+      await fetch('/payments/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RateLimiter represents a simple in-memory rate limiter
-type RateLimiter struct {
+// SimpleRateLimiter represents a simple in-memory rate limiter
+type SimpleRateLimiter struct {
 	visitors map[string]*Visitor
 	mu       sync.RWMutex
 	rate     int           // requests per minute
@@ -22,9 +22,9 @@ type Visitor struct {
 	mu       sync.Mutex
 }
 
-// NewRateLimiter creates a new rate limiter
-func NewRateLimiter(requestsPerMinute int) *RateLimiter {
-	rl := &RateLimiter{
+// NewSimpleRateLimiter creates a new simple rate limiter
+func NewSimpleRateLimiter(requestsPerMinute int) *SimpleRateLimiter {
+	rl := &SimpleRateLimiter{
 		visitors: make(map[string]*Visitor),
 		rate:     requestsPerMinute,
 		window:   time.Minute,
@@ -37,7 +37,7 @@ func NewRateLimiter(requestsPerMinute int) *RateLimiter {
 }
 
 // RateLimit middleware function
-func (rl *RateLimiter) RateLimit() gin.HandlerFunc {
+func (rl *SimpleRateLimiter) RateLimit() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ip := c.ClientIP()
 		
@@ -55,7 +55,7 @@ func (rl *RateLimiter) RateLimit() gin.HandlerFunc {
 }
 
 // isAllowed checks if the request is within rate limits
-func (rl *RateLimiter) isAllowed(ip string) bool {
+func (rl *SimpleRateLimiter) isAllowed(ip string) bool {
 	rl.mu.Lock()
 	visitor, exists := rl.visitors[ip]
 	if !exists {
@@ -92,7 +92,7 @@ func (rl *RateLimiter) isAllowed(ip string) bool {
 }
 
 // cleanupVisitors removes old visitors to prevent memory leaks
-func (rl *RateLimiter) cleanupVisitors() {
+func (rl *SimpleRateLimiter) cleanupVisitors() {
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
 
