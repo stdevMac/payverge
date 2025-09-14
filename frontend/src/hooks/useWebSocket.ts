@@ -78,7 +78,7 @@ export const useWebSocket = ({
     } catch (error) {
       // Handle connection errors silently
     }
-  }, [url, tableCode, billId, onMessage, onConnect, onDisconnect, onError, reconnectInterval, maxReconnectAttempts, reconnectAttempts]);
+  }, [url, tableCode, billId, onMessage, onConnect, onDisconnect, onError, reconnectAttempts]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {

@@ -180,7 +180,7 @@ export default function PaymentProcessor({
       setError('Payment transaction failed');
       setPaymentStep('error');
     }
-  }, [writePayverge, billId, amount, tipValue, businessAddress, tipAddress]);
+  }, [writePayverge, billId, businessAddress, tipAddress, PAYVERGE_ADDRESS, amountUSDC, tipAmountUSDC, paymentHash]);
 
   const notifyBackend = React.useCallback(async () => {
     try {
@@ -195,7 +195,7 @@ export default function PaymentProcessor({
     } catch (err) {
       console.error('Failed to notify backend:', err);
     }
-  }, [paymentHash, billId, amount, tipValue]);
+  }, [paymentHash, billId, amount, tipValue, address]);
 
   // Watch for transaction confirmations
   React.useEffect(() => {

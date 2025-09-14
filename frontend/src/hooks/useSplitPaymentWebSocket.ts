@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface SplitPaymentNotification {
   type: 'split_payment_received' | 'split_payment_update' | 'bill_update';
@@ -53,7 +53,7 @@ export function useSplitPaymentWebSocket({
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
-  const connect = () => {
+  const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -150,7 +150,7 @@ export function useSplitPaymentWebSocket({
     } catch (error) {
       // Handle connection errors silently
     }
-  };
+  }, [billId, splitId, tableCode, businessId, onSplitPaymentReceived, onSplitPaymentUpdate, onBillUpdate]);
 
   const disconnect = () => {
     if (reconnectTimeoutRef.current) {
@@ -214,7 +214,7 @@ export function useSplitPaymentWebSocket({
   useEffect(() => {
     connect();
     return disconnect;
-  }, [billId, splitId, tableCode, businessId]);
+  }, [billId, splitId, tableCode, businessId, connect]);
 
   return {
     isConnected,

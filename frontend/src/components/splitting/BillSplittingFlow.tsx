@@ -113,7 +113,7 @@ export default function BillSplittingFlow({
     } finally {
       setLoading(false);
     }
-  }, [bill.id]);
+  }, [bill.id, splittingAPI]);
 
   useEffect(() => {
     if (isOpen && bill.id) {

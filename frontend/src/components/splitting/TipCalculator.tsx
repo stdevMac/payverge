@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardBody,
@@ -44,14 +44,14 @@ export default function TipCalculator({
   const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
 
   // Calculate tip amount based on percentage
-  const calculateTipFromPercentage = (percentage: number) => {
+  const calculateTipFromPercentage = useCallback((percentage: number) => {
     return (subtotal * percentage) / 100;
-  };
+  }, [subtotal]);
 
   // Calculate tip percentage based on amount
-  const calculatePercentageFromTip = (amount: number) => {
+  const calculatePercentageFromTip = useCallback((amount: number) => {
     return subtotal > 0 ? (amount / subtotal) * 100 : 0;
-  };
+  }, [subtotal]);
 
   // Update tip amount when percentage changes
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function TipCalculator({
       setTipAmount(newTipAmount);
       onTipChange(newTipAmount, tipPercentage);
     }
-  }, [tipPercentage, tipMethod, subtotal, onTipChange]);
+  }, [tipPercentage, tipMethod, subtotal, onTipChange, calculateTipFromPercentage]);
 
   // Update tip percentage when amount changes
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function TipCalculator({
       setTipPercentage(newTipPercentage);
       onTipChange(tipAmount, newTipPercentage);
     }
-  }, [tipAmount, tipMethod, subtotal, onTipChange]);
+  }, [tipAmount, tipMethod, subtotal, onTipChange, calculatePercentageFromTip]);
 
   const handlePresetPercentage = (percentage: number) => {
     setTipMethod('percentage');

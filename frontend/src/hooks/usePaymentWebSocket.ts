@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface PaymentNotification {
   type: 'payment_received' | 'bill_update';
@@ -39,7 +39,7 @@ export function usePaymentWebSocket({
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
-  const connect = () => {
+  const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -115,7 +115,7 @@ export function usePaymentWebSocket({
     } catch (error) {
       // Handle connection errors silently
     }
-  };
+  }, [billId, tableCode, businessId, onPaymentReceived, onBillUpdate]);
 
   const disconnect = () => {
     if (reconnectTimeoutRef.current) {
@@ -139,7 +139,7 @@ export function usePaymentWebSocket({
   useEffect(() => {
     connect();
     return disconnect;
-  }, [billId, tableCode, businessId]);
+  }, [billId, tableCode, businessId, connect]);
 
   return {
     isConnected,
