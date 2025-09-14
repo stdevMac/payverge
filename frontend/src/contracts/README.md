@@ -46,16 +46,19 @@ function PaymentComponent({ billId }: { billId: string }) {
 - `useBill(billId)` - Get bill details
 - `useBillPayments(billId)` - Get all payments for a bill
 - `useBusinessInfo(address)` - Get business information
-- `useBusinessBills(address)` - Get all bills for a business
-- `useBusinessEarnings(address)` - Get business earnings
+- `useBusinessBillCount(address)` - Get total bill count for a business
+- `useClaimableBalance(address)` - Get claimable payments and tips
 - `usePlatformFeeRate()` - Get current platform fee rate
 - `useDailyPaymentLimit(address?)` - Get daily payment limit
 - `useRemainingDailyLimit(address?)` - Get remaining daily limit
 
 ### Write Hooks
-- `useCreateBill()` - Create a new bill
+- `useCreateBill()` - Create a new bill (admin-controlled bill creator only)
 - `useProcessPayment()` - Process a payment
-- `useVerifyBusiness()` - Verify a business (admin only)
+- `useRegisterBusiness()` - Register a new business
+- `useUpdateBusinessPaymentAddress()` - Update business payment address
+- `useUpdateBusinessTippingAddress()` - Update business tipping address
+- `useClaimEarnings()` - Claim accumulated earnings
 
 ### USDC Hooks
 - `useUsdcBalance(address?)` - Get USDC balance
@@ -65,7 +68,7 @@ function PaymentComponent({ billId }: { billId: string }) {
 ### Event Watching Hooks
 - `useWatchBillCreated(callback, businessAddress?)` - Watch for new bills
 - `useWatchPaymentProcessed(callback, billId?)` - Watch for payments
-- `useWatchBusinessVerified(callback, businessAddress?)` - Watch for business verification
+- `useWatchBusinessRegistered(callback, businessAddress?)` - Watch for business registration
 
 ## Configuration
 
@@ -85,7 +88,7 @@ NEXT_PUBLIC_USDC_ADDRESS=0x... # Optional, defaults to chain-specific USDC
 
 ## Usage Examples
 
-### Creating a Bill
+### Creating a Bill (Admin-Controlled)
 ```typescript
 function CreateBillComponent() {
   const { createBill } = useCreateBill();
@@ -93,8 +96,25 @@ function CreateBillComponent() {
   const handleCreateBill = async () => {
     await createBill({
       billId: '0x1234...', // Generate unique bill ID
+      businessAddress: '0xabc...', // Target business address
       totalAmount: parseUsdcAmount('25.99'),
-      metadata: JSON.stringify({ tableNumber: 5, items: [...] })
+      metadata: JSON.stringify({ tableNumber: 5, items: [...] }),
+      nonce: '0x5678...' // Unique nonce for this operation
+    });
+  };
+}
+```
+
+### Registering a Business
+```typescript
+function RegisterBusinessComponent() {
+  const { registerBusiness } = useRegisterBusiness();
+  
+  const handleRegister = async () => {
+    await registerBusiness({
+      name: 'My Restaurant',
+      paymentAddress: '0xpayment...', // Address to receive payments
+      tippingAddress: '0xtipping...' // Address to receive tips
     });
   };
 }
@@ -145,22 +165,64 @@ function LiveBillMonitor({ businessAddress }: { businessAddress: Address }) {
 }
 ```
 
+### Claiming Business Earnings
+```typescript
+function ClaimEarningsComponent({ businessAddress }: { businessAddress: Address }) {
+  const { data: claimableBalance } = useClaimableBalance(businessAddress);
+  const { claimEarnings } = useClaimEarnings();
+  
+  const handleClaim = async () => {
+    await claimEarnings();
+  };
+  
+  return (
+    <div>
+      <p>Claimable Payments: ${formatUsdcAmount(claimableBalance?.payments || 0n)}</p>
+      <p>Claimable Tips: ${formatUsdcAmount(claimableBalance?.tips || 0n)}</p>
+      <button onClick={handleClaim}>Claim Earnings</button>
+    </div>
+  );
+}
+```
+
 ## Type Safety
 
 All hooks are fully typed with TypeScript interfaces:
 
 ```typescript
 interface Bill {
-  id: string;
   businessAddress: string;
-  tippingAddress: string;
-  totalAmount: bigint;
-  paidAmount: bigint;
-  tipAmount: bigint;
+  isPaid: boolean;
+  isCancelled: boolean;
   createdAt: bigint;
   lastPaymentAt: bigint;
-  status: BillStatus;
-  metadata: string;
+  totalAmount: bigint;
+  paidAmount: bigint;
+  nonce: string;
+}
+
+interface Payment {
+  id: string;
+  billId: string;
+  payer: string;
+  timestamp: bigint;
+  amount: bigint;
+  tipAmount: bigint;
+  platformFee: bigint;
+}
+
+interface BusinessInfo {
+  paymentAddress: string;
+  tippingAddress: string;
+  isActive: boolean;
+  registrationDate: bigint;
+  totalVolume: bigint;
+  totalTips: bigint;
+}
+
+interface ClaimableAmounts {
+  payments: bigint;
+  tips: bigint;
 }
 
 enum BillStatus {

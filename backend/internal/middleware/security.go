@@ -29,10 +29,10 @@ func NewSimpleRateLimiter(requestsPerMinute int) *SimpleRateLimiter {
 		rate:     requestsPerMinute,
 		window:   time.Minute,
 	}
-	
+
 	// Clean up old visitors every 5 minutes
 	go rl.cleanupVisitors()
-	
+
 	return rl
 }
 
@@ -40,16 +40,16 @@ func NewSimpleRateLimiter(requestsPerMinute int) *SimpleRateLimiter {
 func (rl *SimpleRateLimiter) RateLimit() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ip := c.ClientIP()
-		
+
 		if !rl.isAllowed(ip) {
 			c.JSON(http.StatusTooManyRequests, gin.H{
-				"error": "Rate limit exceeded. Please try again later.",
+				"error":       "Rate limit exceeded. Please try again later.",
 				"retry_after": 60,
 			})
 			c.Abort()
 			return
 		}
-		
+
 		c.Next()
 	}
 }
@@ -99,7 +99,7 @@ func (rl *SimpleRateLimiter) cleanupVisitors() {
 	for range ticker.C {
 		rl.mu.Lock()
 		cutoff := time.Now().Add(-10 * time.Minute)
-		
+
 		for ip, visitor := range rl.visitors {
 			visitor.mu.Lock()
 			if len(visitor.requests) == 0 || visitor.requests[len(visitor.requests)-1].Before(cutoff) {
@@ -116,24 +116,24 @@ func SecurityHeaders() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Prevent clickjacking
 		c.Header("X-Frame-Options", "DENY")
-		
+
 		// Prevent MIME type sniffing
 		c.Header("X-Content-Type-Options", "nosniff")
-		
+
 		// XSS protection
 		c.Header("X-XSS-Protection", "1; mode=block")
-		
+
 		// Referrer policy
 		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
-		
+
 		// Content Security Policy
 		c.Header("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'")
-		
+
 		// Strict Transport Security (HTTPS only)
 		if c.Request.TLS != nil {
 			c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
-		
+
 		c.Next()
 	}
 }
@@ -142,14 +142,14 @@ func SecurityHeaders() gin.HandlerFunc {
 func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
-		
+
 		// Allow specific origins in production, all in development
 		allowedOrigins := []string{
 			"http://localhost:3000",
-			"http://localhost:3001", 
-			"https://yourapp.com", // Replace with your production domain
+			"http://localhost:3001",
+			"https://payverge.io", // Replace with your production domain
 		}
-		
+
 		allowed := false
 		for _, allowedOrigin := range allowedOrigins {
 			if origin == allowedOrigin {
@@ -157,21 +157,21 @@ func CORS() gin.HandlerFunc {
 				break
 			}
 		}
-		
+
 		if allowed {
 			c.Header("Access-Control-Allow-Origin", origin)
 		}
-		
+
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Max-Age", "86400")
-		
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
-		
+
 		c.Next()
 	}
 }

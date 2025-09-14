@@ -10,7 +10,8 @@ import {
   BusinessInfo, 
   CreateBillParams, 
   ProcessPaymentParams, 
-  VerifyBusinessParams 
+  RegisterBusinessParams,
+  ClaimableAmounts 
 } from './types';
 
 // Hook to get contract configuration for current chain
@@ -53,24 +54,24 @@ export const useBusinessInfo = (businessAddress: Address) => {
   });
 };
 
-export const useBusinessBills = (businessAddress: Address) => {
+export const useBusinessBillCount = (businessAddress: Address) => {
   const config = useContractConfig();
   
   return useReadContract({
     address: config.address,
     abi: PAYVERGE_PAYMENTS_ABI,
-    functionName: 'getBusinessBills',
+    functionName: 'businessBillCount',
     args: [businessAddress],
   });
 };
 
-export const useBusinessEarnings = (businessAddress: Address) => {
+export const useClaimableBalance = (businessAddress: Address) => {
   const config = useContractConfig();
   
   return useReadContract({
     address: config.address,
     abi: PAYVERGE_PAYMENTS_ABI,
-    functionName: 'businessEarnings',
+    functionName: 'claimableBalance',
     args: [businessAddress],
   });
 };
@@ -139,8 +140,10 @@ export const useCreateBill = () => {
       functionName: 'createBill',
       args: [
         params.billId as `0x${string}`,
+        params.businessAddress,
         params.totalAmount,
         params.metadata,
+        params.nonce as `0x${string}`,
       ],
     });
   };
@@ -168,25 +171,71 @@ export const useProcessPayment = () => {
   return { processPayment };
 };
 
-export const useVerifyBusiness = () => {
+export const useRegisterBusiness = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
   
-  const verifyBusiness = (params: VerifyBusinessParams) => {
+  const registerBusiness = (params: RegisterBusinessParams) => {
     return writeContract({
       address: config.address,
       abi: PAYVERGE_PAYMENTS_ABI,
-      functionName: 'verifyBusiness',
+      functionName: 'registerBusiness',
       args: [
-        params.businessAddress as Address,
         params.name,
-        params.paymentAddress as Address,
-        params.tippingAddress as Address,
+        params.paymentAddress,
+        params.tippingAddress,
       ],
     });
   };
   
-  return { verifyBusiness };
+  return { registerBusiness };
+};
+
+export const useUpdateBusinessPaymentAddress = () => {
+  const config = useContractConfig();
+  const { writeContract } = useWriteContract();
+  
+  const updatePaymentAddress = (newPaymentAddress: Address) => {
+    return writeContract({
+      address: config.address,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'updateBusinessPaymentAddress',
+      args: [newPaymentAddress],
+    });
+  };
+  
+  return { updatePaymentAddress };
+};
+
+export const useUpdateBusinessTippingAddress = () => {
+  const config = useContractConfig();
+  const { writeContract } = useWriteContract();
+  
+  const updateTippingAddress = (newTippingAddress: Address) => {
+    return writeContract({
+      address: config.address,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'updateBusinessTippingAddress',
+      args: [newTippingAddress],
+    });
+  };
+  
+  return { updateTippingAddress };
+};
+
+export const useClaimEarnings = () => {
+  const config = useContractConfig();
+  const { writeContract } = useWriteContract();
+  
+  const claimEarnings = () => {
+    return writeContract({
+      address: config.address,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'claimEarnings',
+    });
+  };
+  
+  return { claimEarnings };
 };
 
 // Event watching hooks
@@ -220,8 +269,8 @@ export const useWatchPaymentProcessed = (
   });
 };
 
-export const useWatchBusinessVerified = (
-  onBusinessVerified: (log: any) => void,
+export const useWatchBusinessRegistered = (
+  onBusinessRegistered: (log: any) => void,
   businessAddress?: Address
 ) => {
   const config = useContractConfig();
@@ -229,9 +278,9 @@ export const useWatchBusinessVerified = (
   return useWatchContractEvent({
     address: config.address,
     abi: PAYVERGE_PAYMENTS_ABI,
-    eventName: 'BusinessVerified',
+    eventName: 'BusinessRegistered',
     args: businessAddress ? { businessAddress } : undefined,
-    onLogs: onBusinessVerified,
+    onLogs: onBusinessRegistered,
   });
 };
 

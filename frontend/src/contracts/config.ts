@@ -48,11 +48,12 @@ export const getContractConfig = (chainId: number): ContractConfig => {
   return config;
 };
 
-// Contract constants
+// Contract constants - Updated to match new contract
 export const CONTRACT_CONSTANTS = {
   FEE_DENOMINATOR: BigInt(10000), // 100.00% = 10000
   MAX_PLATFORM_FEE: BigInt(1000), // 10.00% = 1000
-  MAX_TIP_PERCENTAGE: BigInt(10000), // 100.00% = 10000
-  MIN_PAYMENT_AMOUNT: BigInt(1000000), // 1 USDC (6 decimals)
-  MAX_PAYMENT_AMOUNT: BigInt(1000000000000), // 1M USDC (6 decimals)
+  MIN_PAYMENT_AMOUNT: BigInt(100), // Minimum payment amount to prevent dust attacks
+  MAX_BILL_AMOUNT: BigInt(1000000 * 1000000), // $1M max per bill (6 decimals)
+  RATE_LIMIT_WINDOW: BigInt(60), // 1 minute rate limit window
+  FEE_UPDATE_DELAY: BigInt(24 * 60 * 60), // 24 hours for fee updates
 } as const;

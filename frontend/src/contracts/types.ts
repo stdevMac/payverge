@@ -1,38 +1,32 @@
-// TypeScript interfaces for PayvergePayments smart contract
+// TypeScript interfaces for PayvergePayments smart contract - Updated for new contract
 export interface Bill {
-  id: string;
   businessAddress: string;
-  tippingAddress: string;
-  totalAmount: bigint;
-  paidAmount: bigint;
-  tipAmount: bigint;
+  isPaid: boolean;
+  isCancelled: boolean;
   createdAt: bigint;
   lastPaymentAt: bigint;
-  status: BillStatus;
-  metadata: string;
+  totalAmount: bigint;
+  paidAmount: bigint;
+  nonce: string;
 }
 
 export interface Payment {
   id: string;
   billId: string;
   payer: string;
+  timestamp: bigint;
   amount: bigint;
   tipAmount: bigint;
   platformFee: bigint;
-  timestamp: bigint;
-  status: PaymentStatus;
-  transactionHash: string;
 }
 
 export interface BusinessInfo {
-  name: string;
-  owner: string;
   paymentAddress: string;
   tippingAddress: string;
-  registrationTime: bigint;
   isActive: boolean;
+  registrationDate: bigint;
   totalVolume: bigint;
-  totalPayments: bigint;
+  totalTips: bigint;
 }
 
 export enum BillStatus {
@@ -49,11 +43,13 @@ export enum PaymentStatus {
   REFUNDED = 3
 }
 
-// Contract interaction parameters
+// Contract interaction parameters - Updated for new contract
 export interface CreateBillParams {
   billId: string;
+  businessAddress: string;
   totalAmount: bigint;
   metadata: string;
+  nonce: string;
 }
 
 export interface ProcessPaymentParams {
@@ -62,11 +58,15 @@ export interface ProcessPaymentParams {
   tipAmount: bigint;
 }
 
-export interface VerifyBusinessParams {
-  businessAddress: string;
+export interface RegisterBusinessParams {
   name: string;
   paymentAddress: string;
   tippingAddress: string;
+}
+
+export interface ClaimableAmounts {
+  payments: bigint;
+  tips: bigint;
 }
 
 // Event types
@@ -86,9 +86,11 @@ export interface PaymentProcessedEvent {
   platformFee: bigint;
 }
 
-export interface BusinessVerifiedEvent {
+export interface BusinessRegisteredEvent {
   businessAddress: string;
-  owner: string;
+  name: string;
+  paymentAddress: string;
+  tippingAddress: string;
 }
 
 // Contract configuration is defined in config.ts
