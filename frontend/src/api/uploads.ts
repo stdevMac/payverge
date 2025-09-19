@@ -11,7 +11,7 @@ export const uploadFile = async (file: File, type: 'business-logo' | 'menu-item'
   formData.append('file', file);
   formData.append('type', type);
 
-  const response = await axiosInstance.post<UploadResponse>('/upload', formData, {
+  const response = await axiosInstance.post<UploadResponse>('/inside/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -22,5 +22,5 @@ export const uploadFile = async (file: File, type: 'business-logo' | 'menu-item'
 
 // Delete uploaded file
 export const deleteFile = async (filename: string): Promise<void> => {
-  await axiosInstance.delete(`/upload/${filename}`);
+  await axiosInstance.delete(`/inside/upload/${filename}`);
 };

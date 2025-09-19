@@ -189,6 +189,9 @@ func main() {
 		// Error logging endpoint
 		publicRoutes.POST("/logs/error", server.LogError)
 
+		// File serving endpoint (for uploaded files)
+		publicRoutes.GET("/files/:filename", server.ServeUploadedFile)
+
 		// Payverge public routes (for guests)
 		publicRoutes.GET("/table/:code", server.GetTableByCode)
 		
@@ -219,11 +222,10 @@ func main() {
 		protectedRoutes.POST("/faucet", server.CheckAndTopUp)
 		protectedRoutes.GET("/faucet/check/:address", server.CheckFaucetAvailability)
 
-		// File upload endpoint
-		protectedRoutes.POST("/upload", server.UploadFile)
-
-		// File upload endpoint
-		protectedRoutes.POST("/upload_protected", server.UploadFileProtected)
+		// File upload endpoints
+		// protectedRoutes.POST("/upload", server.UploadFile) // S3 upload - commented for now
+		// protectedRoutes.POST("/upload_protected", server.UploadFileProtected) // S3 upload - commented for now
+		protectedRoutes.POST("/upload", server.UploadFileLocal)
 
 		// User routes
 		protectedRoutes.GET("/get_user/:address", server.GetUser)
@@ -244,33 +246,27 @@ func main() {
 		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
 
 		// Menu routes
-		protectedRoutes.POST("/businesses/:businessId/menu", server.CreateMenu)
-		protectedRoutes.GET("/businesses/:businessId/menu", server.GetMenu)
+		protectedRoutes.POST("/businesses/:id/menu", server.CreateMenu)
+		protectedRoutes.GET("/businesses/:id/menu", server.GetMenu)
 
 		// Phase 2: Enhanced Menu Management routes
 		protectedRoutes.POST("/businesses/:id/menu/categories", server.AddMenuCategory)
-		protectedRoutes.PUT("/businesses/:business_id/menu/categories/:category_index", server.UpdateMenuCategory)
-		protectedRoutes.DELETE("/businesses/:business_id/menu/categories/:category_index", server.DeleteMenuCategory)
-		protectedRoutes.POST("/businesses/:business_id/menu/items", server.AddMenuItem)
-		protectedRoutes.PUT("/businesses/:business_id/menu/items", server.UpdateMenuItem)
-		protectedRoutes.DELETE("/businesses/:business_id/menu/categories/:category_index/items/:item_index", server.DeleteMenuItem)
+		protectedRoutes.PUT("/businesses/:id/menu/categories/:category_index", server.UpdateMenuCategory)
+		protectedRoutes.DELETE("/businesses/:id/menu/categories/:category_index", server.DeleteMenuCategory)
+		protectedRoutes.POST("/businesses/:id/menu/items", server.AddMenuItem)
+		protectedRoutes.PUT("/businesses/:id/menu/items", server.UpdateMenuItem)
+		protectedRoutes.DELETE("/businesses/:id/menu/categories/:category_index/items/:item_index", server.DeleteMenuItem)
 
-		// Table routes
-		protectedRoutes.POST("/businesses/:businessId/tables", server.CreateTable)
-		protectedRoutes.GET("/businesses/:businessId/tables", server.GetTables)
-		protectedRoutes.GET("/businesses/:businessId/tables/:tableId", server.GetTable)
-		protectedRoutes.PUT("/businesses/:businessId/tables/:tableId", server.UpdateTable)
-		protectedRoutes.DELETE("/businesses/:businessId/tables/:tableId", server.DeleteTable)
-
-		// Phase 2: Enhanced Table Management routes
+		// Table routes (Phase 2: Enhanced Table Management)
 		protectedRoutes.POST("/businesses/:id/tables", server.CreateTableWithQR)
 		protectedRoutes.GET("/businesses/:id/tables", server.GetBusinessTables)
+		protectedRoutes.GET("/businesses/:id/tables/:tableId", server.GetTable)
 		protectedRoutes.PUT("/tables/:id", server.UpdateTableDetails)
 		protectedRoutes.DELETE("/tables/:id", server.DeleteTableSoft)
 
 		// Phase 3: Bill Management routes
-		protectedRoutes.POST("/businesses/:business_id/bills", server.CreateBill)
-		protectedRoutes.GET("/businesses/:business_id/bills", server.GetBusinessBills)
+		protectedRoutes.POST("/businesses/:id/bills", server.CreateBill)
+		protectedRoutes.GET("/businesses/:id/bills", server.GetBusinessBills)
 		protectedRoutes.GET("/bills/:bill_id", server.GetBill)
 		protectedRoutes.PUT("/bills/:bill_id", server.UpdateBill)
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
@@ -279,11 +275,11 @@ func main() {
 		
 		// Phase 5: Bill Splitting routes
 		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper())
-		protectedRoutes.GET("/bills/:id/split/options", splittingHandler.GetBillSplitOptions)
-		protectedRoutes.POST("/bills/:id/split/equal", splittingHandler.CalculateEqualSplit)
-		protectedRoutes.POST("/bills/:id/split/custom", splittingHandler.CalculateCustomSplit)
-		protectedRoutes.POST("/bills/:id/split/items", splittingHandler.CalculateItemSplit)
-		protectedRoutes.POST("/bills/:id/split/validate", splittingHandler.ValidateSplit)
+		protectedRoutes.GET("/bills/:bill_id/split/options", splittingHandler.GetBillSplitOptions)
+		protectedRoutes.POST("/bills/:bill_id/split/equal", splittingHandler.CalculateEqualSplit)
+		protectedRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
+		protectedRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
+		protectedRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
 		
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())

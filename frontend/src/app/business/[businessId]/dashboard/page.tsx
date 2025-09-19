@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3 } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { useAppKitAccount } from '@reown/appkit/react';
 import { Business, getBusiness } from '../../../../api/business';
 import MenuBuilder from '../../../../components/business/MenuBuilder';
 import TableManager from '../../../../components/business/TableManager';
@@ -22,22 +23,79 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
+  const router = useRouter();
+  const { address, isConnected } = useAppKitAccount();
   const businessId = parseInt(params.businessId);
 
+  // All hooks must be called before any early returns
   const loadBusiness = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Check if user is connected before making API call
+      if (!isConnected || !address) {
+        throw new Error('Please connect your wallet to access business dashboard');
+      }
+      
       const businessData = await getBusiness(businessId);
       setBusiness(businessData);
+      setLoading(false);
     } catch (error) {
       console.error('Error loading business:', error);
+      let errorMessage = 'Failed to load business';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null && 'status' in error) {
+        const status = (error as any).status;
+        if (status === 401) {
+          errorMessage = 'Authentication required. Please connect your wallet and sign in.';
+        } else if (status === 403) {
+          errorMessage = 'Access denied. You may not own this business.';
+        } else if (status === 404) {
+          errorMessage = 'Business not found.';
+        }
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
-  }, [businessId]);
+  }, [businessId, isConnected, address]);
 
   useEffect(() => {
-    loadBusiness();
-  }, [loadBusiness]);
+    // Only load business if we have a valid businessId
+    if (!isNaN(businessId)) {
+      loadBusiness();
+    }
+    
+    // Set a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (loading && !business && !error) {
+        setError('Loading timeout. Please check your connection and try again.');
+        setLoading(false);
+      }
+    }, 15000); // 15 second timeout
+    
+    return () => clearTimeout(timeout);
+  }, [loadBusiness, businessId, loading, business, error]);
+
+  // Check if businessId is valid - moved after all hooks
+  if (isNaN(businessId)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardBody className="text-center">
+            <AlertCircle className="mx-auto mb-4 text-danger-600" size={48} />
+            <p className="text-danger-600 mb-4">Invalid business ID</p>
+            <Button color="primary" onPress={() => router.push('/dashboard')}>
+              Back to Dashboard
+            </Button>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -50,17 +108,35 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
     );
   }
 
-  if (error || !business) {
+  if (error || (!loading && !business)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="max-w-md">
           <CardBody className="text-center">
+            <AlertCircle className="mx-auto mb-4 text-danger-600" size={48} />
             <p className="text-danger-600 mb-4">{error || 'Business not found'}</p>
-            <Button color="primary" href="/dashboard">
-              Back to Dashboard
-            </Button>
+            <div className="flex gap-2 justify-center">
+              <Button color="primary" variant="flat" onPress={loadBusiness}>
+                Try Again
+              </Button>
+              <Button color="primary" onPress={() => router.push('/dashboard')}>
+                Back to Dashboard
+              </Button>
+            </div>
           </CardBody>
         </Card>
+      </div>
+    );
+  }
+
+  // Type guard: At this point, we know business is not null
+  if (!business) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Spinner size="lg" />
+          <p className="text-gray-600 mt-4">Loading business dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -150,22 +226,22 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Settlement Address</h4>
                     <p className="font-mono text-sm text-gray-600 break-all">
-                      {business.settlement_address}
+                      {business?.settlement_address || 'Not set'}
                     </p>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Tipping Address</h4>
                     <p className="font-mono text-sm text-gray-600 break-all">
-                      {business.tipping_address}
+                      {business?.tipping_address || 'Not set'}
                     </p>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Tax Rate</h4>
-                    <p className="text-gray-600">{business.tax_rate}%</p>
+                    <p className="text-gray-600">{business?.tax_rate || 0}%</p>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Service Fee</h4>
-                    <p className="text-gray-600">{business.service_fee_rate}%</p>
+                    <p className="text-gray-600">{business?.service_fee_rate || 0}%</p>
                   </div>
                 </div>
               </CardBody>

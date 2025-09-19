@@ -10,8 +10,8 @@ export default function ComingSoon() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-gray-50 to-blue-100">
       <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 mb-6 sm:mb-8 max-w-lg text-center hover:shadow-blue-200 transition-shadow duration-300">
         <Image
-          src="/footer-icons/Web3BoilerplateLogo-01.svg"
-          alt="Web3 Boilerplate Logo"
+          src="/footer-icons/PayvergeLogo.svg"
+          alt="Payverge Logo"
           width={128}
           height={128}
           className="h-auto mb-6 mx-auto hover:scale-110 transition-transform duration-300"

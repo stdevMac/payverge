@@ -95,8 +95,8 @@ export const TopMenu = () => {
           >
             <div className="relative w-20 h-6 sm:w-32 sm:h-8 md:w-40 md:h-10">
               <Image
-                src="/images/Web3BoilerplateLogo-01.svg"
-                alt={t('app.name', {}, 'Web3 Boilerplate')}
+                src="/images/PayvergeLogo.svg"
+                alt={t('app.name', {}, 'Payverge')}
                 fill
                 sizes="(max-width: 640px) 80px, (max-width: 768px) 128px, 160px"
                 className="object-contain"
@@ -122,8 +122,8 @@ export const TopMenu = () => {
         >
           <div className="relative w-20 h-6 sm:w-32 sm:h-8 md:w-40 md:h-10">
             <Image
-              src="/images/Web3BoilerplateLogo-01.svg"
-              alt="Web3 Boilerplate"
+              src="/images/PayvergeLogo.svg"
+              alt="Payverge"
               fill
               sizes="(max-width: 640px) 80px, (max-width: 768px) 128px, 160px"
               className="object-contain"

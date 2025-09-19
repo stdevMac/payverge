@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardHeader, Button, Input, Checkbox, Divider } from '@nextui-org/react';
 import { ArrowLeft, Building2, Wallet, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createBusiness, CreateBusinessRequest } from '../../../api/business';
+import BusinessTutorialModal from '../../../components/business/BusinessTutorialModal';
 
 export default function BusinessRegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
   const [formData, setFormData] = useState<CreateBusinessRequest>({
     name: "",
     logo: "",
@@ -28,6 +31,17 @@ export default function BusinessRegisterPage() {
     tax_inclusive: false,
     service_inclusive: false,
   });
+
+  // Update settlement address when wallet is connected
+  useEffect(() => {
+    if (connectedWallet) {
+      setFormData(prev => ({
+        ...prev,
+        settlement_address: connectedWallet,
+        tipping_address: connectedWallet, // Default to same address, user can change
+      }));
+    }
+  }, [connectedWallet]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,9 +75,26 @@ export default function BusinessRegisterPage() {
     }));
   };
 
+  const handleTutorialComplete = (walletAddress: string) => {
+    setConnectedWallet(walletAddress);
+    setShowTutorial(false);
+  };
+
+  const handleTutorialClose = () => {
+    setShowTutorial(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <>
+      {/* Tutorial Modal */}
+      <BusinessTutorialModal
+        isOpen={showTutorial}
+        onClose={handleTutorialClose}
+        onComplete={handleTutorialComplete}
+      />
+
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-2xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard">
@@ -272,7 +303,8 @@ export default function BusinessRegisterPage() {
             </Button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

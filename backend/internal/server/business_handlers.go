@@ -252,7 +252,7 @@ func CreateMenu(c *gin.Context) {
 		return
 	}
 
-	businessIDStr := c.Param("businessId")
+	businessIDStr := c.Param("id")
 	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
@@ -315,7 +315,7 @@ func CreateMenu(c *gin.Context) {
 
 // GetMenu retrieves a menu for a business
 func GetMenu(c *gin.Context) {
-	businessIDStr := c.Param("businessId")
+	businessIDStr := c.Param("id")
 	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
@@ -325,7 +325,15 @@ func GetMenu(c *gin.Context) {
 	menu, categories, err := database.GetMenuByBusinessID(uint(businessID))
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Menu not found"})
+			// Return empty menu structure instead of error
+			c.JSON(http.StatusOK, gin.H{
+				"id":          0,
+				"business_id": businessID,
+				"categories":  []interface{}{},
+				"is_active":   true,
+				"created_at":  "",
+				"updated_at":  "",
+			})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve menu"})
@@ -437,7 +445,7 @@ func UpdateMenuCategory(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -489,7 +497,7 @@ func DeleteMenuCategory(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -529,7 +537,7 @@ func AddMenuItem(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -569,7 +577,7 @@ func UpdateMenuItem(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -609,7 +617,7 @@ func DeleteMenuItem(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -677,7 +685,7 @@ func CreateBill(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
@@ -768,7 +776,7 @@ func GetBusinessBills(c *gin.Context) {
 		return
 	}
 
-	businessID, err := strconv.ParseUint(c.Param("business_id"), 10, 32)
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return

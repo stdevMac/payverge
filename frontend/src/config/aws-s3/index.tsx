@@ -2,15 +2,17 @@ import { base, baseSepolia } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { getNetwork } from "../network";
 
-export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID;
+export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dummy-project-id";
 
-if (!projectId) throw new Error("Project ID is not defined");
+if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID && !process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
+  console.warn("NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not defined, using dummy value for build");
+}
 
 export const metadata = {
-  name: "Web3 Boilerplate",
+  name: "Payverge",
   description:
-    "Web3 Boilerplate - A comprehensive starter template for Web3 applications with authentication and wallet integration",
-  url: "https://yourapp.com",
+    "Payverge, the future of crypto payments for hospitality!",
+  url: "https://payverge.io",
   icons: ["/images/logo.svg"],
 };
 

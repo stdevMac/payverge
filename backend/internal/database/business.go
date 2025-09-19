@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -109,11 +110,26 @@ func UpdateMenu(menu *Menu, categories []MenuCategory) error {
 	return nil
 }
 
-// AddMenuCategory adds a new category to an existing menu
+// AddMenuCategory adds a new category to an existing menu, creating the menu if it doesn't exist
 func AddMenuCategory(businessID uint, category MenuCategory) error {
 	menu, categories, err := GetMenuByBusinessID(businessID)
 	if err != nil {
-		return fmt.Errorf("failed to get menu: %w", err)
+		// If menu doesn't exist, create a new one
+		if strings.Contains(err.Error(), "menu not found") {
+			newMenu := &Menu{
+				BusinessID: businessID,
+				Categories: "",
+				IsActive:   true,
+			}
+			emptyCategories := []MenuCategory{}
+			if err := CreateMenu(newMenu, emptyCategories); err != nil {
+				return fmt.Errorf("failed to create new menu: %w", err)
+			}
+			menu = newMenu
+			categories = emptyCategories
+		} else {
+			return fmt.Errorf("failed to get menu: %w", err)
+		}
 	}
 	
 	// Add new category

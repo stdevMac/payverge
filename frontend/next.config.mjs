@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  experimental: {
+    esmExternals: "loose",
+  },
+  // Disable static optimization to prevent build issues
+  trailingSlash: false,
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
+  // Force all pages to be dynamic
+  async rewrites() {
+    return []
+  },
+  // Disable static optimization completely
+  staticPageGenerationTimeout: 0,
   images: {
     remotePatterns: [
       {

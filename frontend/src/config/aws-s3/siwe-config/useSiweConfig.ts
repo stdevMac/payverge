@@ -37,17 +37,17 @@ export const siweConfig = () => {
                 ? address.split(':').pop() 
                 : address;
             
-            return `🚗 Welcome to TokenFleet!
+            return `🍽️ Welcome to Payverge!
 
-Sign to verify your wallet ownership and login. No gas fees.
+Sign to verify your wallet ownership and authenticate with our platform. No gas fees required.
 
-🔐 Details:
+🔐 Authentication Details:
 Wallet: ${cleanAddress}
 Verification: ${nonce}
 Network: Base #${chainId}
 Time: ${timestamp}
 
-By signing, you accept TokenFleet's terms of service.`;
+By signing, you accept Payverge's terms of service and confirm ownership of this wallet.`;
         },
         getNonce: async (address) => {
             const nonce = await getCsrfToken({ address });

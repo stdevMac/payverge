@@ -1,0 +1,2 @@
+# This file ensures the uploads directory is tracked by git
+# Files uploaded here will be stored locally and served via /api/v1/files/:filename
