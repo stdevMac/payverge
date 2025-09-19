@@ -10,7 +10,7 @@ type User struct {
 	ID                      uint                             `gorm:"primaryKey" json:"id"`
 	Address                 string                           `gorm:"uniqueIndex;not null" json:"address"`
 	ReferralCode           string                           `gorm:"uniqueIndex" json:"referral_code"`
-	TokenID                string                           `gorm:"uniqueIndex" json:"token_id"`
+	TokenID                *string                          `json:"token_id"`
 	NotificationPreferences structs.NotificationPreferences `gorm:"embedded" json:"notification_preferences"`
 	CreatedAt              time.Time                        `json:"created_at"`
 	UpdatedAt              time.Time                        `json:"updated_at"`

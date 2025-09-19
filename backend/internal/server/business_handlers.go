@@ -381,13 +381,13 @@ type UpdateCategoryRequest struct {
 
 // Menu item request structures
 type AddMenuItemRequest struct {
-	CategoryIndex int                 `json:"category_index" binding:"required"`
+	CategoryIndex int                 `json:"category_index" binding:"min=0"`
 	Item          database.MenuItem   `json:"item" binding:"required"`
 }
 
 type UpdateMenuItemRequest struct {
-	CategoryIndex int                 `json:"category_index" binding:"required"`
-	ItemIndex     int                 `json:"item_index" binding:"required"`
+	CategoryIndex int                 `json:"category_index" binding:"min=0"`
+	ItemIndex     int                 `json:"item_index" binding:"min=0"`
 	Item          database.MenuItem   `json:"item" binding:"required"`
 }
 

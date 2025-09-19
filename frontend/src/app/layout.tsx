@@ -1,5 +1,5 @@
 // RootLayout.tsx
-import { config, titleFont } from "@/config";
+import {config, titleFont} from "@/config";
 import { Providers } from "./providers";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -11,15 +11,11 @@ import Web3ModalProvider from "@/context";
 import { Toaster } from "react-hot-toast";
 import WithMaintenance from "@/components/WithMaintenance";
 import WithComingSoon from "@/components/WithComingSoon";
-import { LanguageProvider } from "@/i18n/useLanguage";
-import { TranslationProvider } from "@/i18n/TranslationContext";
-import { UserProvider } from "@/providers/UserProvider";
-import { TopMenu } from "@/components";
 
 export const metadata: Metadata = {
-  title: "Payverge",
+  title: "Web3 Boilerplate",
   description:
-    "Payverge, the future of crypto payments for hospitality!",
+    "A comprehensive, production-ready boilerplate for building Web3 applications with modern authentication, blockchain integration, and scalable architecture",
 };
 
 export default function RootLayout({
@@ -28,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const initialState = cookieToInitialState(config.wagmiConfig, headers().get("cookie"));
-
+  
   // Get language from cookie or default to 'en'
   const cookies = headers().get('cookie') || '';
   const langCookie = cookies.split(';').find(c => c.trim().startsWith('NEXT_LOCALE='));
@@ -39,30 +35,13 @@ export default function RootLayout({
       <body className={titleFont.className} suppressHydrationWarning={true}>
         {/* <WithMaintenance>
           <WithComingSoon> */}
-        <Toaster position="top-right" />
-        <StoreContextProvider>
-          <Web3ModalProvider initialState={initialState}>
-            <Providers>
-              <LanguageProvider>
-                <TranslationProvider>
-                  <UserProvider>
-                    <main className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 transition-colors duration-200">
-                      <TopMenu />
-                      {/* {getNetwork().id === baseSepolia.id && <InvestmentBanner />} */}
-                      {/* <Sidebar /> */}
-                      <div className="px-5 sm:px-10 flex-1">{children}</div>
-                      {/* <Footer /> */}
-                      {/* <OnboardingWrapper /> */}
-                      {/* <FloatingLanguageSwitcher /> */}
-                      {/* <ShareBar /> */}
-                    </main>
-                  </UserProvider>
-                </TranslationProvider>
-              </LanguageProvider>
-            </Providers>
-          </Web3ModalProvider>
-        </StoreContextProvider>
-        {/* </WithComingSoon>
+            <Toaster position="top-right" />
+            <StoreContextProvider>
+              <Web3ModalProvider initialState={initialState}>
+                <Providers>{children}</Providers>
+              </Web3ModalProvider>
+            </StoreContextProvider>
+          {/* </WithComingSoon>
         </WithMaintenance> */}
       </body>
     </html>

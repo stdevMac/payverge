@@ -5,8 +5,9 @@ import { Card, CardBody, CardHeader, Button, Input, Checkbox, Divider } from '@n
 import { ArrowLeft, Building2, Wallet, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createBusiness, CreateBusinessRequest } from '../../../api/business';
-import BusinessTutorialModal from '../../../components/business/BusinessTutorialModal';
+import { createBusiness, CreateBusinessRequest } from '../../../../api/business';
+import BusinessTutorialModal from '../../../../components/business/BusinessTutorialModal';
+
 
 export default function BusinessRegisterPage() {
   const router = useRouter();

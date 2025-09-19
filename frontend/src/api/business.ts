@@ -128,18 +128,48 @@ export const deleteMenuCategory = async (businessId: number, categoryIndex: numb
 
 // Add a menu item to a category
 export const addMenuItem = async (businessId: number, categoryIndex: number, item: MenuItem): Promise<void> => {
+  // Transform the item to match backend expectations
+  const backendItem = {
+    id: '', // Backend will generate ID
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    currency: 'USD', // Default currency
+    image: item.image || '',
+    options: [],
+    allergens: [],
+    dietary_tags: [],
+    is_available: item.isAvailable,
+    sort_order: 0,
+  };
+
   await axiosInstance.post(`/inside/businesses/${businessId}/menu/items`, {
     category_index: categoryIndex,
-    item: item,
+    item: backendItem,
   });
 };
 
 // Update a menu item
 export const updateMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number, item: MenuItem): Promise<void> => {
+  // Transform the item to match backend expectations
+  const backendItem = {
+    id: '', // Backend will handle ID
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    currency: 'USD', // Default currency
+    image: item.image || '',
+    options: [],
+    allergens: [],
+    dietary_tags: [],
+    is_available: item.isAvailable,
+    sort_order: 0,
+  };
+
   await axiosInstance.put(`/inside/businesses/${businessId}/menu/items`, {
     category_index: categoryIndex,
     item_index: itemIndex,
-    item: item,
+    item: backendItem,
   });
 };
 

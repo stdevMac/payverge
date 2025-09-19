@@ -5,11 +5,11 @@ import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-
 import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAppKitAccount } from '@reown/appkit/react';
-import { Business, getBusiness } from '../../../../api/business';
-import MenuBuilder from '../../../../components/business/MenuBuilder';
-import TableManager from '../../../../components/business/TableManager';
-import { BillManager } from '../../../../components/business/BillManager';
-import BusinessSettings from '../../../../components/business/BusinessSettings';
+import { Business, getBusiness } from '../../../../../api/business';
+import MenuBuilder from '../../../../../components/business/MenuBuilder';
+import TableManager from '../../../../../components/business/TableManager';
+import { BillManager } from '../../../../../components/business/BillManager';
+import BusinessSettings from '../../../../../components/business/BusinessSettings';
 
 interface BusinessDashboardProps {
   params: {

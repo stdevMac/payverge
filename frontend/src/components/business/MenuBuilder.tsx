@@ -17,8 +17,8 @@ import {
   Chip,
   Divider,
 } from '@nextui-org/react';
-import { businessApi } from '@/api/business';
-import { PrimarySpinner } from '@/components/ui/spinners/PrimarySpinner';
+import { businessApi } from '../../api/business';
+import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
 
 interface MenuItem {
