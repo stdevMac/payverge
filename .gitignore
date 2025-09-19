@@ -137,7 +137,7 @@ backend/static/*.jpg
 backend/static/*.jpeg
 
 # Docker
-.dockerignore
+# .dockerignore
 
 # Hardhat files
 cache

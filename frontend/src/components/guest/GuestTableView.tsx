@@ -4,40 +4,32 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardBody,
-  CardHeader,
   Button,
   Chip,
   Spinner,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Image,
+  Divider,
 } from '@nextui-org/react';
 import {
-  Users,
-  QrCode,
-  Receipt,
   Menu,
-  Eye,
-  DollarSign,
-  Store,
+  Receipt,
+  QrCode,
   MapPin,
-  ShoppingCart
+  Clock,
+  Users,
+  ChevronRight,
 } from 'lucide-react';
 import {
   getTableByCode,
-  getTableStatusByCode,
   getOpenBillByTableCode,
   BillResponse,
 } from '../../api/bills';
 import { Business, MenuCategory } from '../../api/business';
-import GuestMenu from './GuestMenu';
-import GuestBill from './GuestBill';
 import { useBillWebSocket } from '../../hooks/useBillWebSocket';
 import PaymentNotification from '../notifications/PaymentNotification';
 import BillUpdateNotification from '../notifications/BillUpdateNotification';
+import { PersistentGuestNav } from '../navigation/PersistentGuestNav';
+import Link from 'next/link';
 
 interface Table {
   id: number;
@@ -66,8 +58,6 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
   const [tableData, setTableData] = useState<TableData | null>(null);
   const [currentBill, setCurrentBill] = useState<BillResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'menu' | 'bill'>('menu');
-  const [showBillModal, setShowBillModal] = useState(false);
   const [paymentNotification, setPaymentNotification] = useState<any>(null);
   const [billUpdateNotification, setBillUpdateNotification] = useState<any>(null);
 
@@ -98,31 +88,6 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
   }, [tableCode]);
 
   // Handler functions
-  const handleAddToBill = useCallback(async (itemName: string, price: number, quantity: number = 1) => {
-    if (!currentBill || !businessData) return;
-    
-    try {
-      // Add item to existing bill
-      const { addBillItem } = await import('../../api/bills');
-      
-      const addItemRequest = {
-        menu_item_id: itemName, // Using name as ID since MenuItem interface doesn't have id
-        name: itemName,
-        price: price,
-        quantity,
-        options: []
-      };
-      
-      await addBillItem(currentBill.bill.id, addItemRequest);
-      
-      // Reload bill data
-      const billResponse = await getOpenBillByTableCode(tableCode);
-      setCurrentBill(billResponse);
-    } catch (error) {
-      console.error('Error adding item to bill:', error);
-    }
-  }, [currentBill, businessData, tableCode]);
-
   const handlePaymentComplete = useCallback(async () => {
     try {
       // Reload table data after payment
@@ -185,12 +150,6 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
     loadTableData();
   }, [loadTableData]);
 
-  const handleViewBill = () => {
-    if (currentBill) {
-      setShowBillModal(true);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -217,148 +176,169 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
   const { table, business, categories } = tableData;
 
   return (
-    <div className="min-h-screen bg-default-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {business.logo && (
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Subtle animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-50 to-blue-50 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full blur-3xl opacity-15 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Clean Header */}
+      <section className="relative py-16 lg:py-24">
+        <div className="container mx-auto px-6 relative">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Floating status badge */}
+            <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full text-sm text-gray-600 mb-8 hover:bg-gray-100 transition-colors duration-200">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              Table {table.name} 
+            </div>
+
+            {/* Business Logo */}
+            {business.logo && (
+              <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                 <Image
                   src={business.logo}
                   alt={business.name}
-                  className="w-12 h-12 rounded-lg"
+                  className="w-full h-full object-cover"
                 />
-              )}
-              <div>
-                <p className="text-default-600">Welcome to &quot;{business.name}&quot;</p>
-                <div className="flex items-center gap-2 text-sm text-default-500">
-                  <Store className="w-4 h-4" />
-                  <span>Don&apos;t have a bill yet? Ask your server to create one.</span>
-                </div>
               </div>
-            </div>
-            {currentBill && (
-              <Button
-                color="primary"
-                variant="flat"
-                startContent={<Receipt className="w-4 h-4" />}
-                onPress={handleViewBill}
-              >
-                View Bill
-              </Button>
+            )}
+            
+            {/* Business Name */}
+            <h1 className="text-4xl lg:text-6xl font-light text-gray-900 mb-6 tracking-wide leading-tight">
+              {business.name}
+            </h1>
+            
+            {/* Address */}
+            {business.address && (
+              <div className="inline-flex items-center gap-3 text-gray-600 mb-12">
+                <MapPin className="w-5 h-5" />
+                <span className="text-lg font-light">
+                  {business.address.street}, {business.address.city}
+                </span>
+              </div>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Business Info */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <Card className="mb-6">
-          <CardBody>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {business.address && (
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-default-400 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm">Address</p>
-                    <p className="text-sm text-default-600">
-                      {business.address.street}<br />
-                      {business.address.city}, {business.address.state} {business.address.postal_code}
-                    </p>
+      {/* Main Actions */}
+      <section className="relative pb-24">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Menu Card */}
+              <Link href={`/t/${tableCode}/menu`}>
+                <div className="group bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                  {/* Subtle gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                  
+                  <div className="relative z-10 text-center space-y-6">
+                    {/* Icon */}
+                    <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-blue-50 transition-colors duration-300">
+                      <Menu className="w-8 h-8 text-gray-600 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-2xl font-light text-gray-900 tracking-wide">
+                        Browse Menu
+                      </h3>
+                      <p className="text-gray-600 font-light leading-relaxed">
+                        Explore our carefully curated selection of dishes and beverages
+                      </p>
+                    </div>
+                    
+                    {/* Arrow */}
+                    <div className="flex items-center justify-center gap-2 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
+                      <span className="text-sm font-medium tracking-wide">Get Started</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+
+              {/* Current Bill Card */}
+              {currentBill ? (
+                <Link href={`/t/${tableCode}/bill`}>
+                  <div className="group bg-white border border-green-200 rounded-2xl p-8 hover:shadow-xl hover:border-green-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    {/* Subtle gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-emerald-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div className="relative z-10 text-center space-y-6">
+                      {/* Icon */}
+                      <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-green-100 transition-colors duration-300">
+                        <Receipt className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-center gap-3">
+                          <h3 className="text-2xl font-light text-gray-900 tracking-wide">
+                            Current Bill
+                          </h3>
+                          <Chip 
+                            size="sm" 
+                            className="bg-green-100 text-green-700 border-green-200"
+                            variant="bordered"
+                          >
+                            Active
+                          </Chip>
+                        </div>
+                        <p className="text-green-600 font-medium text-lg">
+                          ${currentBill.bill.total_amount.toFixed(2)} • {currentBill.items.length} items
+                        </p>
+                      </div>
+                      
+                      {/* Arrow */}
+                      <div className="flex items-center justify-center gap-2 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
+                        <span className="text-sm font-medium tracking-wide">View & Pay</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center hover:border-gray-300 transition-colors duration-300">
+                  <div className="space-y-6">
+                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto">
+                      <Receipt className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className="text-2xl font-light text-gray-700 tracking-wide">
+                        No Active Bill Yet
+                      </h3>
+                      <p className="text-gray-500 font-light leading-relaxed">
+                        Your server will create a bill once you&apos;re ready to order
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
-          </CardBody>
-        </Card>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6">
-          <Button
-            variant={activeTab === 'menu' ? 'solid' : 'light'}
-            color={activeTab === 'menu' ? 'primary' : 'default'}
-            startContent={<ShoppingCart className="w-4 h-4" />}
-            onPress={() => setActiveTab('menu')}
-          >
-            Menu
-          </Button>
-          <Button
-            variant={activeTab === 'bill' ? 'solid' : 'light'}
-            color={activeTab === 'bill' ? 'primary' : 'default'}
-            startContent={<Receipt className="w-4 h-4" />}
-            onPress={() => setActiveTab('bill')}
-            isDisabled={!currentBill}
-          >
-            Current Bill {currentBill && `($${currentBill.bill.total_amount.toFixed(2)})`}
-          </Button>
-        </div>
-
-        {/* Content */}
-        {activeTab === 'menu' && (
-          <GuestMenu
-            categories={menuCategories}
-            business={business}
-            tableCode={tableCode}
-            currentBill={currentBill}
-            onAddToBill={handleAddToBill}
-          />
-        )}
-
-        {activeTab === 'bill' && currentBill && (
-          <GuestBill
-            bill={currentBill}
-            business={business!}
-            tableCode={tableCode}
-            onPaymentComplete={handlePaymentComplete}
-          />
-        )}
-
-        {activeTab === 'bill' && !currentBill && (
-          <Card>
-            <CardBody className="text-center py-8">
-              <Receipt className="w-12 h-12 mx-auto text-default-300 mb-4" />
-              <h3 className="text-lg font-medium text-default-500 mb-2">No Active Bill</h3>
-              <p className="text-default-400">
-                There&apos;s no active bill for this table yet.
+            {/* Bottom Actions */}
+            <div className="mt-16 pt-12 border-t border-gray-100 text-center space-y-6">
+              <Link href="/scan">
+                <button className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                    <span>Scan New QR Code</span>
+                  </div>
+                </button>
+              </Link>
+              <p className="text-sm text-gray-400 font-light tracking-wide">
+                Powered by Payverge • Secure USDC Payments
               </p>
-            </CardBody>
-          </Card>
-        )}
-      </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Bill Modal */}
-      {currentBill && (
-        <Modal
-          isOpen={showBillModal}
-          onClose={() => setShowBillModal(false)}
-          size="2xl"
-          scrollBehavior="inside"
-        >
-          <ModalContent>
-            <ModalHeader>
-              <div className="flex items-center gap-2">
-                <Receipt className="w-5 h-5" />
-                Bill - {currentBill.bill.bill_number}
-              </div>
-            </ModalHeader>
-            <ModalBody>
-              <GuestBill
-                bill={currentBill}
-                business={business!}
-                tableCode={tableCode}
-                onPaymentComplete={handlePaymentComplete}
-                compact
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="light" onPress={() => setShowBillModal(false)}>
-                Close
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
+      {/* Enhanced Persistent Navigation */}
+      <PersistentGuestNav 
+        tableCode={tableCode}
+        currentBill={currentBill}
+      />
 
       {/* Notifications */}
       <PaymentNotification

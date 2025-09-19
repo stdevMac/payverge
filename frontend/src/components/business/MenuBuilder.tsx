@@ -150,109 +150,137 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   };
 
   if (isLoading) {
-    return <PrimarySpinner />;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">Loading menu...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Menu Builder</h2>
-        <Button color="primary" onPress={onAddCategoryOpen}>
+        <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
+        <button
+          onClick={onAddCategoryOpen}
+          className="bg-gray-900 text-white px-6 py-3 text-sm font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-md hover:shadow-lg"
+        >
           Add Category
-        </Button>
+        </button>
       </div>
 
       {error && (
-        <Card className="border-danger">
-          <CardBody>
-            <p className="text-danger">{error}</p>
-            <Button size="sm" color="danger" variant="light" onPress={() => setError(null)}>
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <svg className="h-6 w-6 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-red-900 tracking-wide">Error</h3>
+                <p className="text-red-700 font-light">{error}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-600 hover:text-red-800 transition-colors duration-200"
+            >
               Dismiss
-            </Button>
-          </CardBody>
-        </Card>
+            </button>
+          </div>
+        </div>
       )}
 
       {menu.length === 0 ? (
-        <Card>
-          <CardBody className="text-center py-8">
-            <p className="text-default-500 mb-4">No categories yet. Add your first category to get started!</p>
-          </CardBody>
-        </Card>
+        <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+            <svg className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No menu categories yet</h3>
+          <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
+            Create your first menu category to start building your restaurant menu.
+          </p>
+          <button
+            onClick={onAddCategoryOpen}
+            className="bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
+          >
+            Add Your First Category
+          </button>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-8">
           {menu.map((category, categoryIndex) => (
-            <Card key={categoryIndex}>
-              <CardHeader>
-                <div className="flex justify-between items-start w-full">
-                  <div>
-                    <h3 className="text-lg font-semibold">{category.name}</h3>
-                    {category.description && (
-                      <p className="text-default-600 text-sm">{category.description}</p>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      color="primary"
-                      variant="light"
-                      onPress={() => {
-                        setSelectedCategoryIndex(categoryIndex);
-                        onAddItemOpen();
-                      }}
-                    >
-                      Add Item
-                    </Button>
-                    <Button
-                      size="sm"
-                      color="danger"
-                      variant="light"
-                      onPress={() => handleDeleteCategory(categoryIndex)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+            <div key={categoryIndex} className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-2">{category.name}</h3>
+                  {category.description && (
+                    <p className="text-gray-600 font-light leading-relaxed">{category.description}</p>
+                  )}
                 </div>
-              </CardHeader>
-              <CardBody>
-                {category.items.length === 0 ? (
-                  <p className="text-default-500 text-center py-4">No items in this category yet.</p>
-                ) : (
-                  <div className="space-y-3">
-                    {category.items.map((item, itemIndex) => (
-                      <div key={itemIndex} className="border rounded-lg p-4 bg-default-50">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-medium">{item.name}</h4>
-                              <Chip color="success" size="sm">
-                                ${item.price.toFixed(2)}
-                              </Chip>
-                              {!item.isAvailable && (
-                                <Chip color="danger" size="sm" variant="flat">
-                                  Unavailable
-                                </Chip>
-                              )}
-                            </div>
-                            {item.description && (
-                              <p className="text-default-600 text-sm">{item.description}</p>
-                            )}
-                          </div>
-                          <Button
-                            size="sm"
-                            color="danger"
-                            variant="light"
-                            onPress={() => handleDeleteItem(categoryIndex, itemIndex)}
-                          >
-                            Delete
-                          </Button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setSelectedCategoryIndex(categoryIndex);
+                      onAddItemOpen();
+                    }}
+                    className="bg-gray-100 text-gray-700 px-4 py-2 text-sm font-medium hover:bg-gray-200 transition-all duration-200 tracking-wide rounded-lg"
+                  >
+                    Add Item
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCategory(categoryIndex)}
+                    className="text-red-600 hover:text-red-800 px-4 py-2 text-sm font-medium transition-colors duration-200 tracking-wide"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              
+              {category.items.length === 0 ? (
+                <div className="bg-gray-50 border border-gray-100 rounded-xl p-8 text-center">
+                  <p className="text-gray-500 font-light">No items in this category yet</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {category.items.map((item, itemIndex) => (
+                    <div key={itemIndex} className="group bg-gray-50 border border-gray-100 rounded-xl p-6 hover:bg-white hover:border-gray-200 hover:shadow-md transition-all duration-200">
+                      <div className="flex justify-between items-start mb-4">
+                        <h4 className="font-medium text-gray-900 tracking-wide">{item.name}</h4>
+                        <div className={`px-3 py-1 rounded-xl text-xs font-medium tracking-wide ${
+                          item.isAvailable 
+                            ? 'bg-green-100 text-green-700 border border-green-200' 
+                            : 'bg-gray-100 text-gray-700 border border-gray-200'
+                        }`}>
+                          {item.isAvailable ? 'Available' : 'Unavailable'}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+                      {item.description && (
+                        <p className="text-sm text-gray-600 font-light mb-4 leading-relaxed">{item.description}</p>
+                      )}
+                      <div className="flex justify-between items-center">
+                        <span className="text-xl font-light text-gray-900 tracking-wide">${item.price.toFixed(2)}</span>
+                        <button
+                          onClick={() => handleDeleteItem(categoryIndex, itemIndex)}
+                          className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

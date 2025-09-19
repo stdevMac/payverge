@@ -1,16 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardBody, CardHeader, Button, Spinner, Chip } from '@nextui-org/react';
-import { ArrowLeft, Plus, ShoppingCart } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { Card, CardBody, Button, Spinner, Image } from '@nextui-org/react';
+import { ArrowLeft, MapPin } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import GuestMenu from '../../../../components/guest/GuestMenu';
-import GuestNavigation from '../../../../components/navigation/GuestNavigation';
-import { axiosInstance } from '../../../../api/tools/instance';
-import { addBillItem, BillResponse, getTableByCode, getOpenBillByTableCode } from '../../../../api/bills';
+import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
+import { BillResponse, getTableByCode, getOpenBillByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
-import { getTableInfoEndpoint, getCurrentBillEndpoint } from '../../../../api/standardizedEndpoints';
 
 interface Table {
   id: number;
@@ -111,13 +109,51 @@ export default function GuestMenuPage() {
   const { business, categories } = tableData;
 
   return (
-    <div className="min-h-screen bg-default-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Subtle animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-50 to-blue-50 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      {/* Clean Header */}
+      <div className="relative z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-6 py-6">
+          <div className="flex items-center gap-6">
+            <Link href={`/t/${tableCode}`}>
+              <Button
+                isIconOnly
+                variant="light"
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-gray-200 rounded-xl"
+                size="lg"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </Button>
+            </Link>
+            
+            <div className="flex items-center gap-4 flex-1">
+              {business.logo && (
+                <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                  <Image
+                    src={business.logo}
+                    alt={business.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div>
+                <h1 className="text-2xl font-light text-gray-900 tracking-wide">
+                  {business.name}
+                </h1>
+                <p className="text-gray-500 font-light">Menu</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Menu Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">
         <GuestMenu
           categories={categories}
           business={business}
@@ -126,6 +162,12 @@ export default function GuestMenuPage() {
           onAddToBill={handleAddToBill}
         />
       </div>
+
+      {/* Persistent Navigation */}
+      <PersistentGuestNav 
+        tableCode={tableCode}
+        currentBill={currentBill}
+      />
     </div>
   );
 }

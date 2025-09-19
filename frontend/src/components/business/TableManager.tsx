@@ -106,106 +106,120 @@ export default function TableManager({ businessId }: TableManagerProps) {
   };
 
   if (isLoading) {
-    return <PrimarySpinner />;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">Loading tables...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Table Management</h2>
-        <Button color="primary" onPress={onCreateOpen}>
+        <h2 className="text-3xl font-light text-gray-900 tracking-wide">Table Management</h2>
+        <button
+          onClick={onCreateOpen}
+          className="bg-gray-900 text-white px-6 py-3 text-sm font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-md hover:shadow-lg"
+        >
           Add Table
-        </Button>
+        </button>
       </div>
 
       {error && (
-        <Card className="border-danger">
-          <CardBody>
-            <p className="text-danger">{error}</p>
-            <Button size="sm" color="danger" variant="light" onPress={() => setError(null)}>
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <svg className="h-6 w-6 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-red-900 tracking-wide">Error</h3>
+                <p className="text-red-700 font-light">{error}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-600 hover:text-red-800 transition-colors duration-200"
+            >
               Dismiss
-            </Button>
-          </CardBody>
-        </Card>
+            </button>
+          </div>
+        </div>
       )}
 
       {tables.length === 0 ? (
-        <Card>
-          <CardBody className="text-center py-8">
-            <p className="text-default-500 mb-4">No tables created yet</p>
-            <Button color="primary" onPress={onCreateOpen}>
-              Create Your First Table
-            </Button>
-          </CardBody>
-        </Card>
+        <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+            <svg className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No tables created yet</h3>
+          <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
+            Create your first table to start managing customer seating and orders.
+          </p>
+          <button
+            onClick={onCreateOpen}
+            className="bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
+          >
+            Create Your First Table
+          </button>
+        </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {tables.map((table) => (
-            <Card key={table.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start w-full">
-                  <div>
-                    <h3 className="text-lg font-semibold">{table.name}</h3>
-                    <p className="text-sm text-default-600">Code: {table.table_code}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      color="primary"
-                      variant="light"
-                      onPress={() => handleEditTable(table)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      color="danger"
-                      variant="light"
-                      onPress={() => handleDeleteTable(table.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+            <div key={table.id} className="group bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-xl font-light text-gray-900 tracking-wide mb-1">{table.name}</h3>
+                  <p className="text-sm text-gray-500 font-light">Table ID: {table.id}</p>
                 </div>
-              </CardHeader>
-              <CardBody>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Status:</span>
-                    <Chip color={table.is_active ? "success" : "default"} size="sm">
-                      {table.is_active ? "Active" : "Inactive"}
-                    </Chip>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Created:</span>
-                    <span className="text-sm text-default-600">
-                      {new Date(table.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="space-y-2 pt-2">
-                    <Button
-                      size="sm"
-                      color="primary"
-                      variant="flat"
-                      className="w-full"
-                      onPress={() => copyQRUrl(table)}
-                    >
-                      Copy QR URL
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="bordered"
-                      className="w-full"
-                      as="a"
-                      href={table.qr_url}
-                      target="_blank"
-                    >
-                      View Guest Page
-                    </Button>
-                  </div>
+                <div className={`px-3 py-1 rounded-xl text-xs font-medium tracking-wide ${
+                  table.is_active 
+                    ? 'bg-green-100 text-green-700 border border-green-200' 
+                    : 'bg-gray-100 text-gray-700 border border-gray-200'
+                }`}>
+                  {table.is_active ? 'Active' : 'Inactive'}
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <p className="text-sm font-medium text-gray-900 tracking-wide mb-2">QR Code URL</p>
+                  <p className="text-xs text-gray-600 font-mono break-all leading-relaxed">
+                    {window.location.origin}{table.qr_url}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => copyQRUrl(table)}
+                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all duration-200 text-center tracking-wide"
+                >
+                  Copy URL
+                </button>
+                <button
+                  onClick={() => handleEditTable(table)}
+                  className="flex-1 bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all duration-200 text-center tracking-wide group-hover:shadow-lg"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteTable(table.id)}
+                  className="text-red-600 hover:text-red-800 px-4 py-3 text-sm font-medium transition-colors duration-200 tracking-wide"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       )}

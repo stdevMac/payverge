@@ -13,9 +13,9 @@ import WithMaintenance from "@/components/WithMaintenance";
 import WithComingSoon from "@/components/WithComingSoon";
 
 export const metadata: Metadata = {
-  title: "Web3 Boilerplate",
+  title: "Payverge",
   description:
-    "A comprehensive, production-ready boilerplate for building Web3 applications with modern authentication, blockchain integration, and scalable architecture",
+    "Payverge, the hospitality solution for the crypto space",
 };
 
 export default function RootLayout({
