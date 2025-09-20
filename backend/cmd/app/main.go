@@ -19,8 +19,6 @@ import (
 	"payverge/internal/middleware"
 	"payverge/internal/s3"
 
-	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"payverge/internal/database"
 	"payverge/internal/emails"
 	"payverge/internal/metrics"
@@ -28,6 +26,9 @@ import (
 	"payverge/internal/server"
 	"payverge/internal/telegram"
 	"payverge/internal/websocket"
+
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -189,12 +190,9 @@ func main() {
 		// Error logging endpoint
 		publicRoutes.POST("/logs/error", server.LogError)
 
-		// File serving endpoint (for uploaded files)
-		publicRoutes.GET("/files/:filename", server.ServeUploadedFile)
-
 		// Payverge public routes (for guests)
 		publicRoutes.GET("/table/:code", server.GetTableByCode)
-		
+
 		// Phase 3: Public guest table API endpoints
 		publicRoutes.GET("/guest/table/:code", server.GetTableByCodePublic)
 		publicRoutes.GET("/guest/table/:code/bill", server.GetOpenBillByTableCode)
@@ -202,14 +200,14 @@ func main() {
 		publicRoutes.GET("/guest/table/:code/menu", server.GetMenuByTableCode)
 		publicRoutes.GET("/guest/table/:code/status", server.GetTableStatusByCode)
 		publicRoutes.GET("/guest/bill/:bill_number", server.GetBillByNumberPublic)
-		
+
 		// Phase 4: Payment processing endpoints
 		publicRoutes.POST("/payments/process", paymentHandler.CreateBillPayment)
 		publicRoutes.GET("/payments/history/:bill_id", paymentHandler.GetBillPayments)
 		publicRoutes.GET("/payments/:payment_id", paymentHandler.GetPaymentDetails)
 		publicRoutes.GET("/payments/total/:bill_id", paymentHandler.GetBillTotalPaid)
 		publicRoutes.POST("/payments/webhook", paymentHandler.WebhookPaymentConfirmation)
-		
+
 		// WebSocket endpoint for real-time updates
 		publicRoutes.GET("/ws", gin.WrapH(http.HandlerFunc(wsHub.ServeWS)))
 	}
@@ -223,9 +221,9 @@ func main() {
 		protectedRoutes.GET("/faucet/check/:address", server.CheckFaucetAvailability)
 
 		// File upload endpoints
-		// protectedRoutes.POST("/upload", server.UploadFile) // S3 upload - commented for now
+		protectedRoutes.POST("/upload", server.UploadFile) // S3 upload - commented for now
 		// protectedRoutes.POST("/upload_protected", server.UploadFileProtected) // S3 upload - commented for now
-		protectedRoutes.POST("/upload", server.UploadFileLocal)
+		// protectedRoutes.POST("/upload", server.UploadFileLocal)
 
 		// User routes
 		protectedRoutes.GET("/get_user/:address", server.GetUser)
@@ -272,7 +270,7 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
-		
+
 		// Phase 5: Bill Splitting routes
 		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper())
 		protectedRoutes.GET("/bills/:bill_id/split/options", splittingHandler.GetBillSplitOptions)
@@ -280,7 +278,7 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
 		protectedRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
 		protectedRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
-		
+
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())
 		protectedRoutes.GET("/businesses/:id/analytics/sales", analyticsHandler.GetSalesAnalytics)

@@ -14,9 +14,10 @@ interface ImageUploadProps {
   onImageUploaded: (imageUrl: string) => void;
   currentImage?: string;
   isLoading?: boolean;
+  businessId?: number;
 }
 
-export default function ImageUpload({ onImageUploaded, currentImage, isLoading = false }: ImageUploadProps) {
+export default function ImageUpload({ onImageUploaded, currentImage, isLoading = false, businessId }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -48,8 +49,8 @@ export default function ImageUpload({ onImageUploaded, currentImage, isLoading =
       setUploadProgress(0);
 
       // Upload to backend S3 endpoint
-      const result = await uploadFile(file, 'business-logo');
-      const imageUrl = result.url;
+      const result = await uploadFile(file, 'menu-item', businessId);
+      const imageUrl = result.url || result.location; // Use url if available, otherwise location
       onImageUploaded(imageUrl);
       setUploadProgress(100);
     } catch (err) {

@@ -113,10 +113,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       
       await businessApi.addMenuItem(businessId, selectedCategoryIndex, item);
       await loadMenu();
+      
+      // Clear form fields after successful addition
       setItemName('');
       setItemDescription('');
       setItemPrice('');
-      setItemImage('');
+      setItemImage(''); // This is fine to clear since the item has been saved
       setItemAvailable(true);
       onAddItemOpenChange();
     } catch (error) {
@@ -350,6 +352,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <ImageUpload
                   onImageUploaded={(url) => setItemImage(url)}
                   currentImage={itemImage}
+                  businessId={businessId}
                 />
                 <div className="flex items-center gap-2">
                   <input

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -67,7 +68,7 @@ func CreateMenu(menu *Menu, categories []MenuCategory) error {
 		return fmt.Errorf("failed to marshal categories: %w", err)
 	}
 	menu.Categories = string(categoriesJSON)
-	
+
 	if err := db.Create(menu).Error; err != nil {
 		return fmt.Errorf("failed to create menu: %w", err)
 	}
@@ -103,7 +104,7 @@ func UpdateMenu(menu *Menu, categories []MenuCategory) error {
 		return fmt.Errorf("failed to marshal categories: %w", err)
 	}
 	menu.Categories = string(categoriesJSON)
-	
+
 	if err := db.Save(menu).Error; err != nil {
 		return fmt.Errorf("failed to update menu: %w", err)
 	}
@@ -131,10 +132,10 @@ func AddMenuCategory(businessID uint, category MenuCategory) error {
 			return fmt.Errorf("failed to get menu: %w", err)
 		}
 	}
-	
+
 	// Add new category
 	categories = append(categories, category)
-	
+
 	// Update menu with new categories
 	return UpdateMenu(menu, categories)
 }
@@ -145,14 +146,14 @@ func UpdateMenuCategory(businessID uint, categoryIndex int, updatedCategory Menu
 	if err != nil {
 		return fmt.Errorf("failed to get menu: %w", err)
 	}
-	
+
 	if categoryIndex < 0 || categoryIndex >= len(categories) {
 		return fmt.Errorf("category index out of range")
 	}
-	
+
 	// Update the category
 	categories[categoryIndex] = updatedCategory
-	
+
 	// Update menu with modified categories
 	return UpdateMenu(menu, categories)
 }
@@ -163,14 +164,14 @@ func DeleteMenuCategory(businessID uint, categoryIndex int) error {
 	if err != nil {
 		return fmt.Errorf("failed to get menu: %w", err)
 	}
-	
+
 	if categoryIndex < 0 || categoryIndex >= len(categories) {
 		return fmt.Errorf("category index out of range")
 	}
-	
+
 	// Remove the category
 	categories = append(categories[:categoryIndex], categories[categoryIndex+1:]...)
-	
+
 	// Update menu with modified categories
 	return UpdateMenu(menu, categories)
 }
@@ -181,14 +182,14 @@ func AddMenuItem(businessID uint, categoryIndex int, item MenuItem) error {
 	if err != nil {
 		return fmt.Errorf("failed to get menu: %w", err)
 	}
-	
+
 	if categoryIndex < 0 || categoryIndex >= len(categories) {
 		return fmt.Errorf("category index out of range")
 	}
-	
+
 	// Add item to category
 	categories[categoryIndex].Items = append(categories[categoryIndex].Items, item)
-	
+
 	// Update menu with modified categories
 	return UpdateMenu(menu, categories)
 }
@@ -199,18 +200,18 @@ func UpdateMenuItem(businessID uint, categoryIndex, itemIndex int, updatedItem M
 	if err != nil {
 		return fmt.Errorf("failed to get menu: %w", err)
 	}
-	
+
 	if categoryIndex < 0 || categoryIndex >= len(categories) {
 		return fmt.Errorf("category index out of range")
 	}
-	
+
 	if itemIndex < 0 || itemIndex >= len(categories[categoryIndex].Items) {
 		return fmt.Errorf("item index out of range")
 	}
-	
+
 	// Update the item
 	categories[categoryIndex].Items[itemIndex] = updatedItem
-	
+
 	// Update menu with modified categories
 	return UpdateMenu(menu, categories)
 }
@@ -221,19 +222,19 @@ func DeleteMenuItem(businessID uint, categoryIndex, itemIndex int) error {
 	if err != nil {
 		return fmt.Errorf("failed to get menu: %w", err)
 	}
-	
+
 	if categoryIndex < 0 || categoryIndex >= len(categories) {
 		return fmt.Errorf("category index out of range")
 	}
-	
+
 	if itemIndex < 0 || itemIndex >= len(categories[categoryIndex].Items) {
 		return fmt.Errorf("item index out of range")
 	}
-	
+
 	// Remove the item
 	items := categories[categoryIndex].Items
 	categories[categoryIndex].Items = append(items[:itemIndex], items[itemIndex+1:]...)
-	
+
 	// Update menu with modified categories
 	return UpdateMenu(menu, categories)
 }
@@ -297,22 +298,35 @@ func DeleteTable(id uint) error {
 	return nil
 }
 
-// GenerateUniqueTableCode generates a unique table code for a business
+// GenerateUniqueTableCode generates a unique 10-character random table code for a business
 func GenerateUniqueTableCode(businessID uint, baseName string) (string, error) {
-	// Simple implementation - can be enhanced with better uniqueness logic
-	var count int64
-	db.Model(&Table{}).Where("business_id = ? AND is_active = ?", businessID, true).Count(&count)
-	
-	tableCode := fmt.Sprintf("%s_%d_%d", baseName, businessID, count+1)
-	
-	// Check if code already exists
-	var existing Table
-	if err := db.Where("table_code = ?", tableCode).First(&existing).Error; err == nil {
-		// Code exists, append timestamp
-		tableCode = fmt.Sprintf("%s_%d", tableCode, time.Now().Unix())
+	const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	const codeLength = 10
+
+	// Try up to 10 times to generate a unique code
+	for attempts := 0; attempts < 10; attempts++ {
+		// Generate random 10-character string
+		tableCode := make([]byte, codeLength)
+		for i := range tableCode {
+			tableCode[i] = charset[rand.Intn(len(charset))]
+		}
+
+		codeStr := string(tableCode)
+
+		// Check if code already exists
+		var existing Table
+		if err := db.Where("table_code = ?", codeStr).First(&existing).Error; err != nil {
+			// Code doesn't exist (GORM returns error when not found), so it's unique
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return codeStr, nil
+			}
+			// Some other database error occurred
+			return "", err
+		}
+		// Code exists, try again
 	}
-	
-	return tableCode, nil
+
+	return "", fmt.Errorf("failed to generate unique table code after 10 attempts")
 }
 
 // Bill operations
@@ -325,7 +339,7 @@ func CreateBill(bill *Bill, items []BillItem) error {
 		return fmt.Errorf("failed to marshal items: %w", err)
 	}
 	bill.Items = string(itemsJSON)
-	
+
 	if err := db.Create(bill).Error; err != nil {
 		return fmt.Errorf("failed to create bill: %w", err)
 	}
@@ -412,7 +426,7 @@ func UpdateBill(bill *Bill, items []BillItem) error {
 		return fmt.Errorf("failed to marshal items: %w", err)
 	}
 	bill.Items = string(itemsJSON)
-	
+
 	if err := db.Save(bill).Error; err != nil {
 		return fmt.Errorf("failed to update bill: %w", err)
 	}
