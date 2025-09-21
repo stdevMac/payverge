@@ -1,5 +1,8 @@
 interface DecodedToken {
   [key: string]: any;
+  exp?: number;
+  address?: string;
+  chainId?: number;
 }
 
 export function decodeJwt(token: string): DecodedToken {
@@ -16,5 +19,15 @@ export function decodeJwt(token: string): DecodedToken {
   } catch (error) {
     console.error('Error decoding JWT:', error);
     return {};
+  }
+}
+
+export function isTokenValid(token: string): boolean {
+  try {
+    const decoded = decodeJwt(token);
+    const now = Math.floor(Date.now() / 1000);
+    return decoded.exp ? decoded.exp > now : false;
+  } catch (error) {
+    return false;
   }
 }

@@ -56,6 +56,7 @@ axiosInstance.interceptors.request.use(
         const cookies = parseCookies();
         const token = cookies.session_token;
         if (token && config.headers) {
+            // Backend expects token wrapped in quotes
             config.headers["Authorization"] = `Bearer "${token}"`;
         }
         

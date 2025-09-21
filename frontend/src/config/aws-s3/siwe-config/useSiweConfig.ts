@@ -4,11 +4,12 @@ import {
     SIWECreateMessageArgs,
     SIWEVerifyMessageArgs,
 } from "@reown/appkit-siwe";
-import { setCookie } from "@/config/aws-s3/cookie-management/store.helpers";
+import { setCookie, getCookie } from "@/config/aws-s3/cookie-management/store.helpers";
 import { getCsrfToken, getSession, signIn, signOutFromSession } from "@/api";
 import { getNetworkId } from "@/config/network";
 import { emitSiweVerified } from "./siweEvents";
 import { destroyCookie } from "nookies";
+import { decodeJwt, isTokenValid } from "@/utils/jwt";
 
 const chains = [getNetworkId()];
 
@@ -55,9 +56,42 @@ By signing, you accept Payverge's terms of service and confirm ownership of this
             return nonce;
         },
         getSession: async () => {
-            const session = await getSession();
-            if (!session) throw new Error("Failed to get session!");
-            return session;
+            // First check for local session token
+            const token = getCookie("session_token");
+            if (!token) {
+                return null;
+            }
+
+            // Validate token using utility function
+            if (!isTokenValid(token)) {
+                // Token is expired or invalid, clear it
+                destroyCookie(null, "session_token", { path: "/" });
+                destroyCookie(null, "token", { path: "/" });
+                destroyCookie(null, "persist-web3-login", { path: "/" });
+                return null;
+            }
+
+            try {
+                // Token is valid, decode and return session data
+                const tokenData = decodeJwt(token);
+                
+                // Ensure we have a valid address
+                if (!tokenData.address) {
+                    throw new Error("No address in token");
+                }
+                
+                return {
+                    address: tokenData.address,
+                    chainId: tokenData.chainId || chains[0]
+                };
+            } catch (error) {
+                console.error("Error decoding session token:", error);
+                // If token is malformed, clear it
+                destroyCookie(null, "session_token", { path: "/" });
+                destroyCookie(null, "token", { path: "/" });
+                destroyCookie(null, "persist-web3-login", { path: "/" });
+                return null;
+            }
         },
         verifyMessage: async ({
             message,

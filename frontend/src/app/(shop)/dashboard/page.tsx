@@ -1,13 +1,102 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
+import { useUserStore } from "@/store/useUserStore";
+import { useAuth } from "@/hooks/useAuth";
+import { getCookie } from "@/config/aws-s3/cookie-management/store.helpers";
+import { isTokenValid, decodeJwt } from "@/utils/jwt";
+import { getUserProfile } from "@/api/users/profile";
 import { Business, getMyBusinesses, createBusiness, CreateBusinessRequest } from "@/api/business";
+import { UserInterface as User } from "@/interface/users/users-interface";
 
 export default function Dashboard() {
+  const { isConnected } = useAccount();
+  const { user } = useUserStore();
+  const { isAuthenticated } = useAuth();
+  
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  const retryLoadUser = async () => {
+    console.log('[Dashboard] Manual retry triggered');
+    (window as any).__dashboardLoadStart = Date.now();
+    setError(null);
+    setLoading(true);
+    setAuthChecked(false);
+    
+    // Try to fetch user data directly
+    await fetchUserDataDirectly();
+  };
+
+  const fetchUserDataDirectly = async () => {
+    try {
+      const token = getCookie("session_token");
+      
+      if (!token || !isTokenValid(token)) {
+        setError("Please sign in to continue.");
+        setLoading(false);
+        setAuthChecked(true);
+        return;
+      }
+
+      // Get address from token
+      const tokenData = decodeJwt(token);
+      
+      if (!tokenData.address) {
+        setError("Invalid session token.");
+        setLoading(false);
+        setAuthChecked(true);
+        return;
+      }
+
+      // Ensure address is lowercase to match backend format
+      const address = tokenData.address.toLowerCase();
+      
+      // Fetch user profile directly
+      const userData = await getUserProfile(address);
+      
+      if (userData) {
+        // Set user in store
+        userData.role = tokenData.role || 'user';
+        useUserStore.getState().setUser(userData);
+        
+        console.log('[Dashboard] User data loaded successfully:', userData.address);
+        setError(null);
+        setAuthChecked(true);
+        loadBusinesses();
+      } else {
+        console.log('[Dashboard] No user data returned from API - user may not exist in database');
+        // Fallback: If API returns null, create a temporary user profile from token
+        const tempUser: User = {
+          username: "",
+          email: "",
+          address: address,
+          role: tokenData.role || 'user',
+          joined_at: new Date().toISOString(),
+          language_selected: "en",
+          referral_code: "",
+          referrer: "",
+          referees: {},
+          notifications: [],
+        };
+        useUserStore.getState().setUser(tempUser);
+        console.warn('[Dashboard] API returned null for user, created temporary user from token:', tempUser.address);
+        setError(null);
+        setAuthChecked(true);
+        loadBusinesses();
+      }
+    } catch (error: any) {
+      console.error('[Dashboard] Error fetching user data directly:', error);
+      setError(`Failed to load user data: ${error}`);
+      setLoading(false);
+      setAuthChecked(true);
+    }
+  };
+
 
   // Form state
   const [formData, setFormData] = useState<CreateBusinessRequest>({
@@ -28,9 +117,78 @@ export default function Dashboard() {
     service_inclusive: false,
   });
 
+  // Simplified authentication check
   useEffect(() => {
-    loadBusinesses();
-  }, []);
+    // Mark when we started loading
+    if (!(window as any).__dashboardLoadStart) {
+      (window as any).__dashboardLoadStart = Date.now();
+    }
+    
+    // If we have a valid token but no user, try direct fetch immediately
+    const token = getCookie("session_token");
+    if (isConnected && token && isTokenValid(token) && !user) {
+      console.log('[Dashboard] Valid token found but no user, trying direct fetch immediately');
+      fetchUserDataDirectly();
+      return;
+    }
+    
+    const timer = setTimeout(async () => {
+      console.log('[Dashboard] Auth check after delay:', { 
+        isConnected, 
+        hasUser: !!user, 
+        userAddress: user?.address,
+        hasToken: !!getCookie("session_token"),
+        tokenValid: getCookie("session_token") ? isTokenValid(getCookie("session_token")!) : false
+      });
+
+      if (!isConnected) {
+        setError("Please connect your wallet to continue.");
+        setLoading(false);
+        setAuthChecked(true);
+        return;
+      }
+
+      // Check if we have a valid session token
+      const token = getCookie("session_token");
+      if (!token || !isTokenValid(token)) {
+        setError("Please sign in to continue.");
+        setLoading(false);
+        setAuthChecked(true);
+        return;
+      }
+
+      // If we have a valid token but no user yet, try to fetch directly
+      if (!user) {
+        // Check if this is the first time or if we've been waiting too long
+        const waitTime = Date.now() - (window as any).__dashboardLoadStart || 0;
+        if (waitTime > 5000) { // 5 seconds timeout, then try direct fetch
+          console.log('[Dashboard] Timeout waiting for UserProvider, trying direct fetch');
+          await fetchUserDataDirectly();
+          return;
+        }
+        
+        setError("Loading user data...");
+        setLoading(true);
+        setAuthChecked(false);
+        return;
+      }
+
+      // All good, load businesses
+      console.log('[Dashboard] All checks passed, loading businesses');
+      setError(null);
+      setAuthChecked(true);
+      loadBusinesses();
+    }, 500); // Give UserProvider 500ms to initialize
+
+    return () => clearTimeout(timer);
+  }, [isConnected, user]);
+
+  // Reload when user changes
+  useEffect(() => {
+    if (user && authChecked && !error) {
+      loadBusinesses();
+    }
+  }, [user?.address]);
 
   const loadBusinesses = async () => {
     try {
@@ -92,6 +250,70 @@ export default function Dashboard() {
               <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
             </div>
             <p className="text-gray-600 font-light tracking-wide">Loading your businesses...</p>
+            
+            {/* Action buttons */}
+            <div className="mt-6 space-y-3">
+              {error === "Loading user data..." && (
+                <button
+                  onClick={retryLoadUser}
+                  className="px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
+                >
+                  Retry Loading User
+                </button>
+              )}
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication error
+  if (error && (error.includes("sign in") || error.includes("connect your wallet"))) {
+    return (
+      <div className="min-h-screen bg-white relative overflow-hidden">
+        {/* Subtle animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-50 to-blue-50 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
+        
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-center max-w-md mx-auto">
+            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-100">
+              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">Authentication Required</h2>
+            <p className="text-gray-600 font-light tracking-wide mb-8">{error}</p>
+            
+            {!isConnected ? (
+              <div className="space-y-4">
+                <p className="text-sm text-gray-500">Connect your wallet to access the business dashboard.</p>
+                <w3m-button />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-gray-500">Sign the message in your wallet to authenticate.</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+            
+            <div className="mt-8">
+              <a 
+                href="/"
+                className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
+              >
+                ← Back to Home
+              </a>
+            </div>
           </div>
         </div>
       </div>
