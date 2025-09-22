@@ -103,25 +103,25 @@ export default function BillSplittingFlow({
     }
   });
 
-  const loadSplitOptions = useCallback(async () => {
-    try {
-      setLoading(true);
-      const options = await splittingAPI.getSplitOptions(bill.id);
-      setSplitOptions(options);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load split options');
-    } finally {
-      setLoading(false);
-    }
-  }, [bill.id, splittingAPI]);
-
   useEffect(() => {
+    const loadSplitOptions = async () => {
+      try {
+        setLoading(true);
+        const options = await splittingAPI.getSplitOptions(bill.id);
+        setSplitOptions(options);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load split options');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (isOpen && bill.id) {
       loadSplitOptions();
       // Generate unique split ID for this session
       setSplitId(`split_${bill.id}_${Date.now()}`);
     }
-  }, [isOpen, bill.id, loadSplitOptions]);
+  }, [isOpen, bill.id]); // Only depend on isOpen and bill.id
 
   // Update people when split result changes
   useEffect(() => {
