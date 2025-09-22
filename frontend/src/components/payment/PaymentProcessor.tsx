@@ -75,21 +75,21 @@ interface PaymentProcessorProps {
 
 type PaymentStep = 'amount' | 'wallet' | 'approval' | 'payment' | 'confirming' | 'success' | 'error';
 
-export default function PaymentProcessor({ 
-  isOpen, 
-  onClose, 
-  billId, 
-  amount, 
+export default function PaymentProcessor({
+  isOpen,
+  onClose,
+  billId,
+  amount,
   businessName,
   businessAddress,
   tipAddress,
-  onPaymentComplete 
+  onPaymentComplete
 }: PaymentProcessorProps) {
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('amount');
   const [tipAmount, setTipAmount] = useState<string>('0');
   const [error, setError] = useState<string>('');
   const [transactionHash, setTransactionHash] = useState<string>('');
-  
+
   const { isConnected, address } = useAccount();
 
   // Contract addresses (these should come from environment variables)
@@ -98,17 +98,17 @@ export default function PaymentProcessor({
 
   const { writeContract: writeUSDC, data: approvalHash } = useWriteContract();
   const { writeContract: writePayverge, data: paymentHash } = useWriteContract();
-  
+
   const { isLoading: isApprovalConfirming } = useWaitForTransactionReceipt({
     hash: approvalHash,
   });
-  
+
   const { isLoading: isPaymentConfirming, isSuccess: isPaymentSuccess } = useWaitForTransactionReceipt({
     hash: paymentHash,
   });
 
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
-  
+
   const tipPresets = [0, 0.15, 0.18, 0.20, 0.25];
   const tipValue = parseFloat(tipAmount) || 0;
   const totalAmount = amount + tipValue;
@@ -138,7 +138,7 @@ export default function PaymentProcessor({
   const handleApproval = async () => {
     setPaymentStep('approval');
     setError('');
-    
+
     try {
       // Approve USDC spending
       await writeUSDC({
@@ -156,11 +156,11 @@ export default function PaymentProcessor({
   const handlePayment = React.useCallback(async () => {
     setPaymentStep('payment');
     setError('');
-    
+
     try {
       // Convert bill ID to bytes32
       const billIdBytes32 = `0x${billId.toString(16).padStart(64, '0')}` as `0x${string}`;
-      
+
       await writePayverge({
         address: PAYVERGE_ADDRESS,
         abi: PAYVERGE_ABI,
@@ -173,7 +173,7 @@ export default function PaymentProcessor({
           tipAddress as `0x${string}`
         ],
       });
-      
+
       setTransactionHash(paymentHash || '');
       setPaymentStep('confirming');
     } catch (err) {
@@ -249,19 +249,17 @@ export default function PaymentProcessor({
                   <span className="text-gray-600 font-medium">Bill Amount</span>
                   <span className="text-xl font-bold text-gray-900">{formatCurrency(amount)}</span>
                 </div>
-                
-                {tipValue > 0 && (
-                  <>
-                    <Divider className="bg-gray-200" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 font-medium">Tip</span>
-                      <span className="text-lg font-semibold text-green-600">{formatCurrency(tipValue)}</span>
-                    </div>
-                  </>
-                )}
-                
+
+                <>
+                  <Divider className="bg-gray-200" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Tip</span>
+                    <span className="text-lg font-semibold text-green-600">{formatCurrency(tipValue)}</span>
+                  </div>
+                </>
+
                 <Divider className="bg-gray-300" />
-                
+
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
                   <span className="text-lg font-bold text-gray-900">Total</span>
                   <span className="text-2xl font-bold text-primary-600">{formatCurrency(totalAmount)}</span>
@@ -269,7 +267,7 @@ export default function PaymentProcessor({
               </div>
             </CardBody>
           </Card>
-          
+
           {/* Tip Selection */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -278,7 +276,7 @@ export default function PaymentProcessor({
                 Optional
               </Chip>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-3">
               {tipPresets.map((preset) => (
                 <Button
@@ -287,11 +285,10 @@ export default function PaymentProcessor({
                   variant={tipValue === amount * preset ? "solid" : "bordered"}
                   color={tipValue === amount * preset ? "primary" : "default"}
                   onPress={() => handleTipPreset(preset)}
-                  className={`h-14 font-semibold transition-all duration-200 ${
-                    tipValue === amount * preset 
-                      ? 'shadow-lg scale-105' 
+                  className={`h-14 font-semibold transition-all duration-200 ${tipValue === amount * preset
+                      ? 'shadow-lg scale-105'
                       : 'hover:scale-102 hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   <div className="text-center">
                     <div className="text-sm font-bold">
@@ -306,7 +303,7 @@ export default function PaymentProcessor({
                 </Button>
               ))}
             </div>
-            
+
             {/* Custom Tip Section */}
             <div className="mt-6 pt-4 border-t border-gray-200">
               <h5 className="text-sm font-medium text-gray-700 mb-3">Or enter a custom amount</h5>
@@ -335,16 +332,16 @@ export default function PaymentProcessor({
         </div>
       </ModalBody>
       <ModalFooter className="pt-6 pb-4">
-        <Button 
-          variant="light" 
+        <Button
+          variant="light"
           onPress={onClose}
           size="lg"
           className="font-semibold"
         >
           Cancel
         </Button>
-        <Button 
-          color="primary" 
+        <Button
+          color="primary"
           onPress={handleNext}
           size="lg"
           className="font-semibold px-8 shadow-lg"
@@ -378,12 +375,12 @@ export default function PaymentProcessor({
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure Payment</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Your payment will be processed securely using USDC on the blockchain. 
+                Your payment will be processed securely using USDC on the blockchain.
                 Connect your wallet to continue.
               </p>
             </CardBody>
           </Card>
-          
+
           <WalletConnector showBalance={true} showDisconnect={false} />
         </div>
       </ModalBody>
@@ -500,8 +497,8 @@ export default function PaymentProcessor({
   );
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={handleClose}
       size="md"
       closeButton={!['approval', 'payment', 'confirming'].includes(paymentStep)}

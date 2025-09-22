@@ -1,25 +1,30 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"payverge/internal/blockchain"
 	"payverge/internal/database"
 	"payverge/internal/splitting"
 )
 
 // SplittingHandler handles bill splitting requests
 type SplittingHandler struct {
-	db       *database.DB
-	splitter *splitting.SplittingService
+	db         *database.DB
+	splitter   *splitting.SplittingService
+	blockchain *blockchain.BlockchainService
 }
 
 // NewSplittingHandler creates a new splitting handler
-func NewSplittingHandler(db *database.DB) *SplittingHandler {
+func NewSplittingHandler(db *database.DB, blockchainService *blockchain.BlockchainService) *SplittingHandler {
 	return &SplittingHandler{
-		db:       db,
-		splitter: splitting.NewSplittingService(db),
+		db:         db,
+		splitter:   splitting.NewSplittingService(db),
+		blockchain: blockchainService,
 	}
 }
 
@@ -270,5 +275,138 @@ func (h *SplittingHandler) ValidateSplit(c *gin.Context) {
 		"success": true,
 		"valid":   true,
 		"result":  result,
+	})
+}
+
+// GetBillParticipants gets all participants who have paid for a bill from blockchain
+// GET /api/v1/bills/:id/participants
+func (h *SplittingHandler) GetBillParticipants(c *gin.Context) {
+	billIDStr := c.Param("id")
+	
+	if h.blockchain == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Blockchain service not available"})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	participants, err := h.blockchain.GetBillParticipants(ctx, billIDStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success":      true,
+		"participants": participants,
+		"count":        len(participants),
+	})
+}
+
+// GetParticipantInfo gets information about a specific participant
+// GET /api/v1/bills/:id/participants/:address
+func (h *SplittingHandler) GetParticipantInfo(c *gin.Context) {
+	billIDStr := c.Param("id")
+	participantAddress := c.Param("address")
+	
+	if h.blockchain == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Blockchain service not available"})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	info, err := h.blockchain.GetParticipantInfo(ctx, billIDStr, participantAddress)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"participant": info,
+	})
+}
+
+// GetBillSummaryWithParticipants gets bill summary including blockchain participant data
+// GET /api/v1/bills/:id/summary
+func (h *SplittingHandler) GetBillSummaryWithParticipants(c *gin.Context) {
+	billIDStr := c.Param("id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	// Get bill from database
+	bill, err := h.db.GetBill(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	response := gin.H{
+		"success": true,
+		"bill": gin.H{
+			"id":               bill.ID,
+			"bill_number":      bill.BillNumber,
+			"total_amount":     bill.TotalAmount,
+			"paid_amount":      bill.PaidAmount,
+			"remaining_amount": bill.TotalAmount - bill.PaidAmount,
+			"status":           bill.Status,
+		},
+	}
+
+	// Add blockchain data if service is available
+	if h.blockchain != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		// Get blockchain summary
+		blockchainSummary, err := h.blockchain.GetBillSummary(ctx, billIDStr)
+		if err == nil {
+			response["blockchain"] = blockchainSummary
+		}
+
+		// Get participants
+		participants, err := h.blockchain.GetBillParticipants(ctx, billIDStr)
+		if err == nil {
+			response["participants"] = participants
+			response["participant_count"] = len(participants)
+		}
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// ExecuteSplitPayment coordinates a split payment execution
+// POST /api/v1/bills/:id/split/execute
+func (h *SplittingHandler) ExecuteSplitPayment(c *gin.Context) {
+	billIDStr := c.Param("id")
+	
+	var req struct {
+		SplitResult *splitting.SplitResult `json:"split_result"`
+		PaymentInfo map[string]interface{} `json:"payment_info"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if req.SplitResult == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Split result is required"})
+		return
+	}
+
+	// Store split execution info (this would typically trigger payment processing)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Split payment execution initiated",
+		"bill_id": billIDStr,
+		"method":  req.SplitResult.Method,
+		"splits":  len(req.SplitResult.Splits),
 	})
 }

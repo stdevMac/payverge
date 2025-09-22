@@ -14,6 +14,7 @@ import { BillResponse } from '../../api/bills';
 import { Business } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
+import ParticipantTracker from '../blockchain/ParticipantTracker';
 
 interface GuestBillProps {
   bill: BillResponse;
@@ -47,12 +48,42 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         return 'success';
       case 'paid':
         return 'primary';
-      case 'closed':
-        return 'default';
+      case 'cancelled':
+        return 'danger';
       default:
         return 'default';
     }
   };
+
+  // Consolidate items by name and price, summing quantities
+  const consolidateItems = (items: any[]) => {
+    const itemMap = new Map();
+    
+    items.forEach(item => {
+      // Create a unique key based on name and price
+      const key = `${item.name}-${item.price}`;
+      
+      if (itemMap.has(key)) {
+        // Item already exists, add to quantity and subtotal
+        const existingItem = itemMap.get(key);
+        existingItem.quantity += item.quantity;
+        existingItem.subtotal += item.subtotal;
+      } else {
+        // New item, add to map
+        itemMap.set(key, {
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.subtotal,
+          menu_item_id: item.menu_item_id
+        });
+      }
+    });
+    
+    return Array.from(itemMap.values());
+  };
+
+  const consolidatedItems = consolidateItems(bill.items);
 
   const remainingAmount = bill.bill.total_amount - bill.bill.paid_amount;
 
@@ -119,11 +150,13 @@ export const GuestBill: React.FC<GuestBillProps> = ({
 
       {/* Items */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-xl font-light text-gray-900 tracking-wide mb-6">
-          Items ({bill.items.length})
-        </h3>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-light text-gray-900 tracking-wide">
+            Items
+          </h3>
+        </div>
         <div className="space-y-4">
-          {bill.items.map((item, index) => (
+          {consolidatedItems.map((item, index) => (
             <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
               <div className="flex-1">
                 <p className="font-medium text-gray-900 tracking-wide">{item.name}</p>
@@ -191,12 +224,22 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         </div>
       </div>
 
+      {/* Participant Tracker - Show real-time payment progress */}
+      {bill.bill.status === 'open' && (
+        <ParticipantTracker
+          billId={bill.bill.id}
+          totalAmount={bill.bill.total_amount * 1000000} // Convert to wei (6 decimals)
+          className="mb-6"
+          refreshInterval={5000} // Refresh every 5 seconds
+        />
+      )}
+
       {/* Payment Actions */}
-      {bill.bill.status === 'open' && remainingAmount > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-8 shadow-sm">
+      {bill.bill.status === 'open' && (
+        <div className="bg-blue-50 rounded-2xl p-8 shadow-sm">
           <div className="text-center space-y-6">
-            <div>
-              <h3 className="text-xl font-light text-gray-900 tracking-wide mb-3">Ready to Pay?</h3>
+            <div className="space-y-2">
+              <h3 className="text-2xl font-light text-gray-900 tracking-wide">Ready to Pay</h3>
               <p className="text-gray-600 font-light">
                 Amount due: <span className="font-medium text-2xl text-gray-900 tracking-wide">{formatCurrency(remainingAmount)}</span>
               </p>

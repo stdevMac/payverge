@@ -19,6 +19,7 @@ import SplitSelector, { SplitMethod } from './SplitSelector';
 import TipCalculator from './TipCalculator';
 import PaymentSummary, { PaymentPerson } from './PaymentSummary';
 import { useSplittingAPI, SplitResult, SplitOptions } from '../../api/splitting';
+import { useBlockchainAPI } from '../../api/blockchain';
 import { useSplitPaymentWebSocket } from '../../hooks/useSplitPaymentWebSocket';
 import { ReceiptGenerator, ReceiptData } from '../../utils/receiptGenerator';
 
@@ -72,8 +73,11 @@ export default function BillSplittingFlow({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [splitId, setSplitId] = useState<string>('');
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [participantDetails, setParticipantDetails] = useState<Record<string, any>>({});
 
   const splittingAPI = useSplittingAPI();
+  const blockchainAPI = useBlockchainAPI();
 
   // WebSocket for real-time split payment tracking
   const {
@@ -103,12 +107,41 @@ export default function BillSplittingFlow({
     }
   });
 
+  // Load blockchain participants
+  const loadBlockchainParticipants = useCallback(async () => {
+    try {
+      const participantsResponse = await blockchainAPI.getBillParticipants(bill.id);
+      if (participantsResponse.success) {
+        setParticipants(participantsResponse.participants);
+        
+        // Load details for each participant
+        const details: Record<string, any> = {};
+        for (const address of participantsResponse.participants) {
+          try {
+            const participantResponse = await blockchainAPI.getParticipantInfo(bill.id, address);
+            if (participantResponse.success) {
+              details[address] = participantResponse.participant;
+            }
+          } catch (error) {
+            console.error(`Error loading participant ${address}:`, error);
+          }
+        }
+        setParticipantDetails(details);
+      }
+    } catch (error) {
+      console.error('Error loading blockchain participants:', error);
+    }
+  }, [bill.id, blockchainAPI]);
+
   useEffect(() => {
     const loadSplitOptions = async () => {
       try {
         setLoading(true);
         const options = await splittingAPI.getSplitOptions(bill.id);
         setSplitOptions(options);
+        
+        // Also load current blockchain participants
+        await loadBlockchainParticipants();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load split options');
       } finally {
@@ -121,7 +154,7 @@ export default function BillSplittingFlow({
       // Generate unique split ID for this session
       setSplitId(`split_${bill.id}_${Date.now()}`);
     }
-  }, [isOpen, bill.id]); // Only depend on isOpen and bill.id
+  }, [isOpen, bill.id, loadBlockchainParticipants]);
 
   // Update people when split result changes
   useEffect(() => {
@@ -216,18 +249,43 @@ export default function BillSplittingFlow({
     }
   };
 
-  const handlePaymentInitiate = (personId: string) => {
+  const handlePaymentInitiate = async (personId: string) => {
     const person = people.find(p => p.id === personId);
     if (person) {
-      // Notify WebSocket that payment has started
-      notifyPaymentStarted(personId, person.name, person.amount, person.tipAmount);
-      
-      // Update person status to processing
-      setPeople(prev => prev.map(p => 
-        p.id === personId ? { ...p, status: 'processing' as const } : p
-      ));
-      
-      onPaymentInitiate(personId, person.amount, person.tipAmount);
+      try {
+        // Notify WebSocket that payment has started
+        notifyPaymentStarted(personId, person.name, person.amount, person.tipAmount);
+        
+        // Update person status to processing
+        setPeople(prev => prev.map(p => 
+          p.id === personId ? { ...p, status: 'processing' as const } : p
+        ));
+        
+        // Execute split payment coordination with backend
+        if (splitResult) {
+          await splittingAPI.executeSplitPayment(bill.id, splitResult, {
+            person_id: personId,
+            payment_method: 'blockchain',
+            initiated_at: new Date().toISOString()
+          });
+        }
+        
+        // Initiate the actual payment
+        onPaymentInitiate(personId, person.amount, person.tipAmount);
+        
+        // Refresh blockchain participants after payment initiation
+        setTimeout(() => {
+          loadBlockchainParticipants();
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Error initiating payment:', error);
+        // Update person status to failed
+        setPeople(prev => prev.map(p => 
+          p.id === personId ? { ...p, status: 'failed' as const } : p
+        ));
+        notifyPaymentFailed(personId, person.name);
+      }
     }
   };
 

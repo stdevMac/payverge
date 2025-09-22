@@ -18,14 +18,11 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-// PaymentRequest represents a payment request
+// PaymentRequest represents a payment request for the unified payment system
 type PaymentRequest struct {
-	BillID          string `json:"bill_id"`
-	Amount          int64  `json:"amount"`           // USDC amount in cents (6 decimals)
-	TipAmount       int64  `json:"tip_amount"`       // Tip amount in cents (6 decimals)
-	BusinessAddress string `json:"business_address"`
-	TipAddress      string `json:"tip_address"`
-	PayerAddress    string `json:"payer_address"`
+	BillID    string `json:"bill_id"`
+	Amount    int64  `json:"amount"`     // USDC amount in wei (6 decimals)
+	TipAmount int64  `json:"tip_amount"` // Tip amount in wei (6 decimals)
 }
 
 // PaymentResult represents the result of a payment transaction
@@ -44,11 +41,17 @@ type Payment struct {
 	Payer           string    `json:"payer"`
 	Amount          int64     `json:"amount"`
 	TipAmount       int64     `json:"tip_amount"`
-	BusinessAddress string    `json:"business_address"`
-	TipAddress      string    `json:"tip_address"`
 	PlatformFee     int64     `json:"platform_fee"`
 	Timestamp       time.Time `json:"timestamp"`
 	TransactionHash string    `json:"transaction_hash"`
+}
+
+// Participant represents a bill participant from the unified payment system
+type Participant struct {
+	Address      string `json:"address"`
+	PaidAmount   int64  `json:"paid_amount"`
+	PaymentCount int    `json:"payment_count"`
+	LastPayment  int64  `json:"last_payment"`
 }
 
 // BlockchainService handles blockchain interactions
@@ -60,14 +63,26 @@ type BlockchainService struct {
 	chainID         *big.Int
 }
 
-// PayvergePayments contract ABI (simplified for key functions)
+// PayvergePayments contract ABI (v5.0.0-unified-simple - key functions only)
 const PayvergePaymentsABI = `[
 	{
 		"inputs": [
 			{"internalType": "bytes32", "name": "billId", "type": "bytes32"},
+			{"internalType": "uint256", "name": "amount", "type": "uint256"},
+			{"internalType": "uint256", "name": "tipAmount", "type": "uint256"}
+		],
+		"name": "processPayment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{"internalType": "bytes32", "name": "billId", "type": "bytes32"},
 			{"internalType": "address", "name": "businessAddress", "type": "address"},
-			{"internalType": "address", "name": "tipAddress", "type": "address"},
-			{"internalType": "uint256", "name": "totalAmount", "type": "uint256"}
+			{"internalType": "uint256", "name": "totalAmount", "type": "uint256"},
+			{"internalType": "string", "name": "metadata", "type": "string"},
+			{"internalType": "bytes32", "name": "nonce", "type": "bytes32"}
 		],
 		"name": "createBill",
 		"outputs": [],
@@ -120,6 +135,45 @@ const PayvergePaymentsABI = `[
 		"name": "getBillTotalPaid",
 		"outputs": [
 			{"internalType": "uint256", "name": "", "type": "uint256"}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{"internalType": "bytes32", "name": "billId", "type": "bytes32"}
+		],
+		"name": "getBillParticipants",
+		"outputs": [
+			{"internalType": "address[]", "name": "", "type": "address[]"}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{"internalType": "bytes32", "name": "billId", "type": "bytes32"},
+			{"internalType": "address", "name": "participant", "type": "address"}
+		],
+		"name": "getParticipantInfo",
+		"outputs": [
+			{"internalType": "uint256", "name": "paidAmount", "type": "uint256"},
+			{"internalType": "uint32", "name": "paymentCount", "type": "uint32"},
+			{"internalType": "uint32", "name": "lastPaymentTime", "type": "uint32"}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{"internalType": "bytes32", "name": "billId", "type": "bytes32"}
+		],
+		"name": "getBillSummary",
+		"outputs": [
+			{"internalType": "uint256", "name": "totalAmount", "type": "uint256"},
+			{"internalType": "uint256", "name": "paidAmount", "type": "uint256"},
+			{"internalType": "uint8", "name": "participantCount", "type": "uint8"},
+			{"internalType": "bool", "name": "isPaid", "type": "bool"}
 		],
 		"stateMutability": "view",
 		"type": "function"
@@ -190,17 +244,19 @@ func NewBlockchainService(rpcURL, contractAddress, privateKeyHex string) (*Block
 	}, nil
 }
 
-// CreateBill creates a bill record on the blockchain
-func (s *BlockchainService) CreateBill(billID string, businessAddress, tipAddress string, totalAmount int64) (*PaymentResult, error) {
+// CreateBill creates a bill record on the blockchain (unified payment system)
+func (s *BlockchainService) CreateBill(billID string, businessAddress string, totalAmount int64, metadata string, nonce string) (*PaymentResult, error) {
 	// Convert bill ID to bytes32
 	billIDBytes := crypto.Keccak256Hash([]byte(billID))
 
-	// Convert addresses
+	// Convert business address
 	businessAddr := common.HexToAddress(businessAddress)
-	tipAddr := common.HexToAddress(tipAddress)
 
 	// Convert amount to wei (USDC has 6 decimals)
 	amountWei := big.NewInt(totalAmount)
+
+	// Convert nonce to bytes32
+	nonceBytes := crypto.Keccak256Hash([]byte(nonce))
 
 	// Get auth
 	auth, err := s.getAuth()
@@ -208,8 +264,8 @@ func (s *BlockchainService) CreateBill(billID string, businessAddress, tipAddres
 		return nil, fmt.Errorf("failed to get auth: %v", err)
 	}
 
-	// Pack function call
-	data, err := s.contractABI.Pack("createBill", billIDBytes, businessAddr, tipAddr, amountWei)
+	// Pack function call for unified payment system
+	data, err := s.contractABI.Pack("createBill", billIDBytes, businessAddr, amountWei, metadata, nonceBytes)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pack function call: %v", err)
 	}
@@ -405,8 +461,6 @@ func (s *BlockchainService) parsePaymentEvent(vLog types.Log) (Payment, error) {
 		Payer:           event.Payer.Hex(),
 		Amount:          event.Amount.Int64(),
 		TipAmount:       event.TipAmount.Int64(),
-		BusinessAddress: event.BusinessAddress.Hex(),
-		TipAddress:      event.TipAddress.Hex(),
 		PlatformFee:     event.PlatformFee.Int64(),
 		Timestamp:       time.Unix(event.Timestamp.Int64(), 0),
 		TransactionHash: vLog.TxHash.Hex(),
@@ -455,6 +509,111 @@ func (s *BlockchainService) waitForReceipt(txHash common.Hash) (*types.Receipt, 
 		time.Sleep(1 * time.Second)
 	}
 	return nil, fmt.Errorf("transaction receipt not found after 60 seconds")
+}
+
+// GetBillParticipants retrieves all participants for a bill
+func (s *BlockchainService) GetBillParticipants(ctx context.Context, billID string) ([]string, error) {
+	billIDBytes := crypto.Keccak256Hash([]byte(billID))
+	data, err := s.contractABI.Pack("getBillParticipants", billIDBytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to pack function call: %v", err)
+	}
+
+	result, err := s.client.CallContract(ctx, ethereum.CallMsg{
+		To:   &s.contractAddress,
+		Data: data,
+	}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call contract: %v", err)
+	}
+
+	var participants []common.Address
+	err = s.contractABI.UnpackIntoInterface(&participants, "getBillParticipants", result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unpack result: %v", err)
+	}
+
+	// Convert addresses to strings
+	participantStrings := make([]string, len(participants))
+	for i, addr := range participants {
+		participantStrings[i] = addr.Hex()
+	}
+
+	return participantStrings, nil
+}
+
+// GetParticipantInfo retrieves information about a specific participant
+func (s *BlockchainService) GetParticipantInfo(ctx context.Context, billID string, participant string) (*Participant, error) {
+	billIDBytes := crypto.Keccak256Hash([]byte(billID))
+	participantAddr := common.HexToAddress(participant)
+	
+	data, err := s.contractABI.Pack("getParticipantInfo", billIDBytes, participantAddr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to pack function call: %v", err)
+	}
+
+	result, err := s.client.CallContract(ctx, ethereum.CallMsg{
+		To:   &s.contractAddress,
+		Data: data,
+	}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call contract: %v", err)
+	}
+
+	var info struct {
+		PaidAmount   *big.Int
+		PaymentCount uint32
+		LastPayment  uint32
+	}
+	
+	err = s.contractABI.UnpackIntoInterface(&info, "getParticipantInfo", result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unpack result: %v", err)
+	}
+
+	return &Participant{
+		Address:      participant,
+		PaidAmount:   info.PaidAmount.Int64(),
+		PaymentCount: int(info.PaymentCount),
+		LastPayment:  int64(info.LastPayment),
+	}, nil
+}
+
+// GetBillSummary retrieves a summary of the bill including participant count and status
+func (s *BlockchainService) GetBillSummary(ctx context.Context, billID string) (map[string]interface{}, error) {
+	billIDBytes := crypto.Keccak256Hash([]byte(billID))
+	data, err := s.contractABI.Pack("getBillSummary", billIDBytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to pack function call: %v", err)
+	}
+
+	result, err := s.client.CallContract(ctx, ethereum.CallMsg{
+		To:   &s.contractAddress,
+		Data: data,
+	}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call contract: %v", err)
+	}
+
+	var summary struct {
+		TotalAmount      *big.Int
+		PaidAmount       *big.Int
+		ParticipantCount uint8
+		IsPaid           bool
+	}
+	
+	err = s.contractABI.UnpackIntoInterface(&summary, "getBillSummary", result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unpack result: %v", err)
+	}
+
+	return map[string]interface{}{
+		"total_amount":      summary.TotalAmount.Int64(),
+		"paid_amount":       summary.PaidAmount.Int64(),
+		"participant_count": int(summary.ParticipantCount),
+		"is_paid":           summary.IsPaid,
+		"remaining_amount":  summary.TotalAmount.Int64() - summary.PaidAmount.Int64(),
+	}, nil
 }
 
 // Close closes the blockchain service

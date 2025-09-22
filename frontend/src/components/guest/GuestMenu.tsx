@@ -10,8 +10,15 @@ import {
   Image,
   Divider,
   Badge,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@nextui-org/react';
-import { ShoppingCart, Plus, Eye } from 'lucide-react';
+import { ShoppingCart, Plus, Eye, Check, Info, X, Minus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { MenuCategory, MenuItem, Business } from '../../api/business';
 import { BillResponse } from '../../api/bills';
 
@@ -30,7 +37,13 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   currentBill,
   onAddToBill,
 }) => {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
+  const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set());
+  const { isOpen: isItemModalOpen, onOpen: onItemModalOpen, onClose: onItemModalClose } = useDisclosure();
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2)}`;
@@ -39,6 +52,60 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   const getTotalItems = () => {
     if (!currentBill) return 0;
     return currentBill.items.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const handleViewBillDetails = () => {
+    router.push(`/t/${tableCode}/bill`);
+  };
+
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    onItemModalOpen();
+  };
+
+  const getItemQuantity = (itemName: string) => {
+    return itemQuantities[itemName] || 1;
+  };
+
+  const setItemQuantity = (itemName: string, quantity: number) => {
+    setItemQuantities(prev => ({
+      ...prev,
+      [itemName]: Math.max(1, quantity)
+    }));
+  };
+
+  const handleAddToBill = (item: MenuItem, quantity?: number) => {
+    const finalQuantity = quantity || getItemQuantity(item.name);
+    onAddToBill(item.name, item.price, finalQuantity);
+    
+    // Stripe-like success animation
+    setAnimatingItems(prev => new Set(Array.from(prev).concat([item.name])));
+    setAddedItems(prev => new Set(Array.from(prev).concat([item.name])));
+    
+    // Remove animation and feedback after timing
+    setTimeout(() => {
+      setAnimatingItems(prev => {
+        const newSet = new Set(Array.from(prev));
+        newSet.delete(item.name);
+        return newSet;
+      });
+    }, 600); // Animation duration
+    
+    setTimeout(() => {
+      setAddedItems(prev => {
+        const newSet = new Set(Array.from(prev));
+        newSet.delete(item.name);
+        return newSet;
+      });
+    }, 2000); // Feedback duration
+  };
+
+  const isItemAdded = (itemName: string) => {
+    return addedItems.has(itemName);
+  };
+
+  const isItemAnimating = (itemName: string) => {
+    return animatingItems.has(itemName);
   };
 
   if (!categories || categories.length === 0) {
@@ -96,7 +163,10 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                 </p>
               </div>
             </div>
-            <button className="group border border-green-300 text-green-700 px-4 py-2 text-sm font-medium hover:border-green-400 hover:text-green-800 transition-all duration-200 tracking-wide rounded-lg">
+            <button 
+              onClick={handleViewBillDetails}
+              className="group border border-green-300 text-green-700 px-4 py-2 text-sm font-medium hover:border-green-400 hover:text-green-800 transition-all duration-200 tracking-wide rounded-lg"
+            >
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                 <span>View Details</span>
@@ -137,7 +207,8 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
               {Array.isArray(categories[selectedCategory]?.items) && categories[selectedCategory].items.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
-                  className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1"
+                  className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                  onClick={() => handleItemClick(item)}
                 >
                   <div className="flex gap-6">
                     {item.image && (
@@ -153,10 +224,24 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                     )}
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-xl font-light text-gray-900 tracking-wide mb-2">
-                            {item.name}
-                          </h3>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-light text-gray-900 tracking-wide">
+                              {item.name}
+                            </h3>
+                            <Button
+                              isIconOnly
+                              size="sm"
+                              variant="light"
+                              className="text-gray-400 hover:text-gray-600"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleItemClick(item);
+                              }}
+                            >
+                              <Info className="w-4 h-4" />
+                            </Button>
+                          </div>
                           {item.description && (
                             <p className="text-gray-600 font-light leading-relaxed">
                               {item.description}
@@ -170,20 +255,82 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         </div>
                       </div>
 
-                      {/* Add to order button */}
-                      <div className="flex justify-end">
-                        <button
-                          onClick={() => onAddToBill(item.name, item.price, 1)}
-                          disabled={!currentBill}
-                          className={`group flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all duration-200 tracking-wide rounded-lg ${
-                            currentBill
-                              ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
-                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          }`}
-                        >
-                          <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                          <span>{currentBill ? 'Add to Bill' : 'No Active Bill'}</span>
-                        </button>
+                      {/* Quantity selector and Add to order button */}
+                      <div className="flex items-center justify-between">
+                        {/* Quantity Selector */}
+                        {currentBill && (
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                            <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItemQuantity(item.name, getItemQuantity(item.name) - 1);
+                                }}
+                                disabled={getItemQuantity(item.name) <= 1}
+                                className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="w-8 text-center text-sm font-medium text-gray-900">
+                                {getItemQuantity(item.name)}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItemQuantity(item.name, getItemQuantity(item.name) + 1);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Add to Bill Button with Stripe-like Animation */}
+                        <div className="relative">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToBill(item);
+                            }}
+                            disabled={!currentBill}
+                            className={`group flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all duration-300 tracking-wide rounded-lg relative overflow-hidden ${
+                              isItemAdded(item.name)
+                                ? 'bg-green-500 text-white animate-success-pulse'
+                                : currentBill
+                                ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
+                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            {/* Stripe-like success animation overlay */}
+                            {isItemAnimating(item.name) && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-green-500 to-green-600 animate-pulse">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                              </div>
+                            )}
+                            
+                            <div className="relative z-10 flex items-center gap-3">
+                              {isItemAdded(item.name) ? (
+                                <>
+                                  <Check className="w-4 h-4" />
+                                  <span>Added {getItemQuantity(item.name)}!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+                                  <span>
+                                    {currentBill 
+                                      ? `Add ${getItemQuantity(item.name)} to Bill` 
+                                      : 'No Active Bill'
+                                    }
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -193,6 +340,149 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
           </>
         )}
       </div>
+
+      {/* Item Details Modal */}
+      <Modal 
+        isOpen={isItemModalOpen} 
+        onClose={onItemModalClose}
+        size="2xl"
+        scrollBehavior="inside"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-light text-gray-900 tracking-wide">
+                    {selectedItem?.name}
+                  </h2>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    onPress={onClose}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+                <p className="text-lg font-light text-gray-900 tracking-wide">
+                  {selectedItem && formatCurrency(selectedItem.price)}
+                </p>
+              </ModalHeader>
+              <ModalBody>
+                <div className="space-y-6">
+                  {selectedItem?.image && (
+                    <div className="w-full h-64 rounded-xl overflow-hidden border border-gray-200">
+                      <Image
+                        src={selectedItem.image}
+                        alt={selectedItem.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  
+                  {selectedItem?.description && (
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">Description</h3>
+                      <p className="text-gray-600 font-light leading-relaxed">
+                        {selectedItem.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Future expansion area */}
+                  <div className="bg-gray-50 rounded-xl p-6 text-center">
+                    <div className="text-gray-400 mb-2">
+                      <Info className="w-8 h-8 mx-auto" />
+                    </div>
+                    <p className="text-sm text-gray-500 font-light">
+                      More details coming soon - ingredients, allergens, customization options, and more!
+                    </p>
+                  </div>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <div className="flex flex-col gap-4 w-full">
+                  {/* Quantity Selector in Modal */}
+                  {currentBill && selectedItem && (
+                    <div className="flex items-center justify-center gap-4">
+                      <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                      <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-2">
+                        <button
+                          onClick={() => setItemQuantity(selectedItem.name, getItemQuantity(selectedItem.name) - 1)}
+                          disabled={getItemQuantity(selectedItem.name) <= 1}
+                          className="w-10 h-10 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="w-12 text-center text-lg font-medium text-gray-900">
+                          {getItemQuantity(selectedItem.name)}
+                        </span>
+                        <button
+                          onClick={() => setItemQuantity(selectedItem.name, getItemQuantity(selectedItem.name) + 1)}
+                          className="w-10 h-10 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        Total: {selectedItem && formatCurrency(selectedItem.price * getItemQuantity(selectedItem.name))}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 w-full">
+                    <Button 
+                      variant="light" 
+                      onPress={onClose}
+                      className="flex-1"
+                    >
+                      Close
+                    </Button>
+                    {currentBill && selectedItem && (
+                      <div className="flex-1 relative">
+                        <Button
+                          color="primary"
+                          onPress={() => {
+                            handleAddToBill(selectedItem);
+                            onClose();
+                          }}
+                          className={`w-full relative overflow-hidden ${
+                            isItemAdded(selectedItem.name)
+                              ? 'bg-green-500 text-white'
+                              : 'bg-gray-900 text-white'
+                          }`}
+                          startContent={
+                            isItemAdded(selectedItem.name) ? (
+                              <Check className="w-4 h-4" />
+                            ) : (
+                              <Plus className="w-4 h-4" />
+                            )
+                          }
+                        >
+                          {/* Stripe-like animation overlay for modal button */}
+                          {isItemAnimating(selectedItem.name) && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-green-500 to-green-600 animate-pulse">
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                            </div>
+                          )}
+                          <span className="relative z-10">
+                            {isItemAdded(selectedItem.name) 
+                              ? `Added ${getItemQuantity(selectedItem.name)} to Bill!` 
+                              : `Add ${getItemQuantity(selectedItem.name)} to Bill`
+                            }
+                          </span>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
 
     </div>
   );

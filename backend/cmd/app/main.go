@@ -272,12 +272,18 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
 
 		// Phase 5: Bill Splitting routes
-		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper())
+		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper(), blockchainService)
 		protectedRoutes.GET("/bills/:bill_id/split/options", splittingHandler.GetBillSplitOptions)
 		protectedRoutes.POST("/bills/:bill_id/split/equal", splittingHandler.CalculateEqualSplit)
 		protectedRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
 		protectedRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
 		protectedRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
+		
+		// Blockchain integration routes for split payments
+		protectedRoutes.GET("/bills/:bill_id/participants", splittingHandler.GetBillParticipants)
+		protectedRoutes.GET("/bills/:bill_id/participants/:address", splittingHandler.GetParticipantInfo)
+		protectedRoutes.GET("/bills/:bill_id/summary", splittingHandler.GetBillSummaryWithParticipants)
+		protectedRoutes.POST("/bills/:bill_id/split/execute", splittingHandler.ExecuteSplitPayment)
 
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())

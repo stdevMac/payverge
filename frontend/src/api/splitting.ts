@@ -85,6 +85,27 @@ export class SplittingAPI {
     return response.data.result;
   }
 
+  // Execute split payment coordination
+  static async executeSplitPayment(billId: number, splitResult: SplitResult, paymentInfo: any) {
+    const response = await apiClient.post(`/bills/${billId}/split/execute`, {
+      split_result: splitResult,
+      payment_info: paymentInfo,
+    });
+    return response.data;
+  }
+
+  // Get bill participants from blockchain
+  static async getBillParticipants(billId: number) {
+    const response = await apiClient.get(`/bills/${billId}/participants`);
+    return response.data;
+  }
+
+  // Get enhanced bill summary with blockchain data
+  static async getBillSummaryWithParticipants(billId: number) {
+    const response = await apiClient.get(`/bills/${billId}/summary`);
+    return response.data;
+  }
+
   /**
    * Calculate equal split
    */
@@ -165,12 +186,42 @@ export const useSplittingAPI = () => {
     }
   };
 
+  const executeSplitPayment = async (billId: number, splitResult: SplitResult, paymentInfo: any) => {
+    try {
+      return await SplittingAPI.executeSplitPayment(billId, splitResult, paymentInfo);
+    } catch (error) {
+      console.error('Failed to execute split payment:', error);
+      throw error;
+    }
+  };
+
+  const getBillParticipants = async (billId: number) => {
+    try {
+      return await SplittingAPI.getBillParticipants(billId);
+    } catch (error) {
+      console.error('Failed to get bill participants:', error);
+      throw error;
+    }
+  };
+
+  const getBillSummaryWithParticipants = async (billId: number) => {
+    try {
+      return await SplittingAPI.getBillSummaryWithParticipants(billId);
+    } catch (error) {
+      console.error('Failed to get bill summary:', error);
+      throw error;
+    }
+  };
+
   return {
     getSplitOptions,
     calculateEqualSplit,
     calculateCustomSplit,
     calculateItemSplit,
     validateSplit,
+    executeSplitPayment,
+    getBillParticipants,
+    getBillSummaryWithParticipants,
   };
 };
 
