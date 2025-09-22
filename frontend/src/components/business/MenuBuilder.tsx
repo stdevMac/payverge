@@ -16,24 +16,16 @@ import {
   useDisclosure,
   Chip,
   Divider,
+  Switch,
+  Select,
+  SelectItem,
+  Accordion,
+  AccordionItem,
 } from '@nextui-org/react';
-import { businessApi } from '../../api/business';
+import { businessApi, MenuItem, MenuCategory, MenuItemOption } from '../../api/business';
 import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
-
-interface MenuItem {
-  name: string;
-  description: string;
-  price: number;
-  image?: string;
-  isAvailable: boolean;
-}
-
-interface MenuCategory {
-  name: string;
-  description: string;
-  items: MenuItem[];
-}
+import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign } from 'lucide-react';
 
 interface MenuBuilderProps {
   businessId: number;
@@ -48,17 +40,37 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   
   // Modal states
   const { isOpen: isAddCategoryOpen, onOpen: onAddCategoryOpen, onOpenChange: onAddCategoryOpenChange } = useDisclosure();
+  const { isOpen: isEditCategoryOpen, onOpen: onEditCategoryOpen, onOpenChange: onEditCategoryOpenChange } = useDisclosure();
   const { isOpen: isAddItemOpen, onOpen: onAddItemOpen, onOpenChange: onAddItemOpenChange } = useDisclosure();
+  const { isOpen: isEditItemOpen, onOpen: onEditItemOpen, onOpenChange: onEditItemOpenChange } = useDisclosure();
+  
+  // Selection states
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+  const [editingCategory, setEditingCategory] = useState<MenuCategory | null>(null);
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
-  // Form states
+  // Category form states
   const [categoryName, setCategoryName] = useState('');
   const [categoryDescription, setCategoryDescription] = useState('');
+  
+  // Item form states
   const [itemName, setItemName] = useState('');
   const [itemDescription, setItemDescription] = useState('');
   const [itemPrice, setItemPrice] = useState('');
+  const [itemCurrency, setItemCurrency] = useState('USD');
   const [itemImage, setItemImage] = useState('');
   const [itemAvailable, setItemAvailable] = useState(true);
+  const [itemOptions, setItemOptions] = useState<MenuItemOption[]>([]);
+  const [itemAllergens, setItemAllergens] = useState<string[]>([]);
+  const [itemDietaryTags, setItemDietaryTags] = useState<string[]>([]);
+  const [itemSortOrder, setItemSortOrder] = useState(0);
+  
+  // Temporary input states
+  const [newAllergen, setNewAllergen] = useState('');
+  const [newDietaryTag, setNewDietaryTag] = useState('');
+  const [newOptionName, setNewOptionName] = useState('');
+  const [newOptionPrice, setNewOptionPrice] = useState('');
 
   const loadMenu = useCallback(async () => {
     try {
@@ -106,6 +118,50 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     loadMenu();
   }, [loadMenu]);
 
+  // Helper functions
+  const resetCategoryForm = () => {
+    setCategoryName('');
+    setCategoryDescription('');
+    setEditingCategory(null);
+  };
+
+  const resetItemForm = () => {
+    setItemName('');
+    setItemDescription('');
+    setItemPrice('');
+    setItemCurrency('USD');
+    setItemImage('');
+    setItemAvailable(true);
+    setItemOptions([]);
+    setItemAllergens([]);
+    setItemDietaryTags([]);
+    setItemSortOrder(0);
+    setEditingItem(null);
+    setNewAllergen('');
+    setNewDietaryTag('');
+    setNewOptionName('');
+    setNewOptionPrice('');
+  };
+
+  const populateItemForm = (item: MenuItem) => {
+    setItemName(item.name);
+    setItemDescription(item.description);
+    setItemPrice(item.price.toString());
+    setItemCurrency(item.currency || 'USD');
+    setItemImage(item.image || '');
+    setItemAvailable(item.is_available);
+    setItemOptions(item.options || []);
+    setItemAllergens(item.allergens || []);
+    setItemDietaryTags(item.dietary_tags || []);
+    setItemSortOrder(item.sort_order || 0);
+  };
+
+  const populateCategoryForm = (category: MenuCategory) => {
+    setCategoryName(category.name);
+    setCategoryDescription(category.description);
+  };
+
+  // Category CRUD operations
   const handleAddCategory = async () => {
     if (!categoryName.trim()) return;
     
@@ -116,8 +172,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         items: [] 
       });
       await loadMenu();
-      setCategoryName('');
-      setCategoryDescription('');
+      resetCategoryForm();
       onAddCategoryOpenChange();
     } catch (error) {
       console.error('Failed to add category:', error);
@@ -125,6 +180,47 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     }
   };
 
+  const handleEditCategory = (categoryIndex: number) => {
+    const category = menu[categoryIndex];
+    setEditingCategory(category);
+    setSelectedCategoryIndex(categoryIndex);
+    populateCategoryForm(category);
+    onEditCategoryOpen();
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!categoryName.trim() || selectedCategoryIndex === null) return;
+    
+    try {
+      const updatedCategory: MenuCategory = {
+        name: categoryName.trim(),
+        description: categoryDescription.trim(),
+        items: editingCategory?.items || []
+      };
+      
+      await businessApi.updateMenuCategory(businessId, selectedCategoryIndex, updatedCategory);
+      await loadMenu();
+      resetCategoryForm();
+      onEditCategoryOpenChange();
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      setError('Failed to update category');
+    }
+  };
+
+  const handleDeleteCategory = async (categoryIndex: number) => {
+    if (!confirm('Are you sure you want to delete this category and all its items?')) return;
+    
+    try {
+      await businessApi.deleteMenuCategory(businessId, categoryIndex);
+      await loadMenu();
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+      setError('Failed to delete category');
+    }
+  };
+
+  // Item CRUD operations
   const handleAddItem = async () => {
     if (!itemName.trim() || !itemPrice || selectedCategoryIndex === null) return;
     
@@ -133,19 +229,18 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         name: itemName.trim(),
         description: itemDescription.trim(),
         price: parseFloat(itemPrice),
+        currency: itemCurrency,
         image: itemImage || undefined,
-        isAvailable: itemAvailable,
+        is_available: itemAvailable,
+        options: itemOptions,
+        allergens: itemAllergens,
+        dietary_tags: itemDietaryTags,
+        sort_order: itemSortOrder,
       };
       
       await businessApi.addMenuItem(businessId, selectedCategoryIndex, item);
       await loadMenu();
-      
-      // Clear form fields after successful addition
-      setItemName('');
-      setItemDescription('');
-      setItemPrice('');
-      setItemImage(''); // This is fine to clear since the item has been saved
-      setItemAvailable(true);
+      resetItemForm();
       onAddItemOpenChange();
     } catch (error) {
       console.error('Failed to add item:', error);
@@ -153,15 +248,40 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     }
   };
 
-  const handleDeleteCategory = async (categoryIndex: number) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
+  const handleEditItem = (categoryIndex: number, itemIndex: number) => {
+    const item = menu[categoryIndex].items[itemIndex];
+    setEditingItem(item);
+    setSelectedCategoryIndex(categoryIndex);
+    setSelectedItemIndex(itemIndex);
+    populateItemForm(item);
+    onEditItemOpen();
+  };
+
+  const handleUpdateItem = async () => {
+    if (!itemName.trim() || !itemPrice || selectedCategoryIndex === null || selectedItemIndex === null) return;
     
     try {
-      await businessApi.deleteMenuCategory(businessId, categoryIndex);
+      const updatedItem: MenuItem = {
+        id: editingItem?.id,
+        name: itemName.trim(),
+        description: itemDescription.trim(),
+        price: parseFloat(itemPrice),
+        currency: itemCurrency,
+        image: itemImage || undefined,
+        is_available: itemAvailable,
+        options: itemOptions,
+        allergens: itemAllergens,
+        dietary_tags: itemDietaryTags,
+        sort_order: itemSortOrder,
+      };
+      
+      await businessApi.updateMenuItem(businessId, selectedCategoryIndex, selectedItemIndex, updatedItem);
       await loadMenu();
+      resetItemForm();
+      onEditItemOpenChange();
     } catch (error) {
-      console.error('Failed to delete category:', error);
-      setError('Failed to delete category');
+      console.error('Failed to update item:', error);
+      setError('Failed to update item');
     }
   };
 
@@ -175,6 +295,55 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       console.error('Failed to delete item:', error);
       setError('Failed to delete item');
     }
+  };
+
+  // Helper functions for managing item properties
+  const addOption = () => {
+    if (!newOptionName.trim() || !newOptionPrice) return;
+    
+    const price = parseFloat(newOptionPrice);
+    if (isNaN(price) || price < 0) return;
+    
+    const option: MenuItemOption = {
+      name: newOptionName.trim(),
+      price_change: price
+    };
+    
+    setItemOptions([...itemOptions, option]);
+    setNewOptionName('');
+    setNewOptionPrice('');
+  };
+
+  const removeOption = (index: number) => {
+    setItemOptions(itemOptions.filter((_, i) => i !== index));
+  };
+
+  const addAllergen = () => {
+    if (!newAllergen.trim()) return;
+    
+    const allergen = newAllergen.trim();
+    if (!itemAllergens.includes(allergen)) {
+      setItemAllergens([...itemAllergens, allergen]);
+    }
+    setNewAllergen('');
+  };
+
+  const removeAllergen = (allergen: string) => {
+    setItemAllergens(itemAllergens.filter(a => a !== allergen));
+  };
+
+  const addDietaryTag = () => {
+    if (!newDietaryTag.trim()) return;
+    
+    const tag = newDietaryTag.trim();
+    if (!itemDietaryTags.includes(tag)) {
+      setItemDietaryTags([...itemDietaryTags, tag]);
+    }
+    setNewDietaryTag('');
+  };
+
+  const removeDietaryTag = (tag: string) => {
+    setItemDietaryTags(itemDietaryTags.filter(t => t !== tag));
   };
 
   if (isLoading) {
@@ -192,14 +361,21 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
 
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
-        <button
-          onClick={onAddCategoryOpen}
-          className="bg-gray-900 text-white px-6 py-3 text-sm font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-md hover:shadow-lg"
+        <div>
+          <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
+          <p className="text-gray-600 font-light mt-2">Create and manage your restaurant menu</p>
+        </div>
+        <Button
+          onPress={onAddCategoryOpen}
+          color="primary"
+          size="lg"
+          startContent={<Plus className="w-5 h-5" />}
+          className="font-semibold shadow-lg"
         >
           Add Category
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -247,68 +423,159 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       ) : (
         <div className="space-y-8">
           {Array.isArray(menu) && menu.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-              <div className="flex justify-between items-start mb-8">
-                <div>
-                  <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-2">{category.name}</h3>
-                  {category.description && (
-                    <p className="text-gray-600 font-light leading-relaxed">{category.description}</p>
-                  )}
+            <Card key={categoryIndex} className="shadow-lg border-0">
+              <CardHeader className="pb-4">
+                <div className="flex justify-between items-start w-full">
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-2">{category.name}</h3>
+                    {category.description && (
+                      <p className="text-gray-600 font-light leading-relaxed">{category.description}</p>
+                    )}
+                    <Chip size="sm" variant="flat" color="primary" className="mt-2">
+                      {category.items.length} {category.items.length === 1 ? 'item' : 'items'}
+                    </Chip>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      color="primary"
+                      startContent={<Plus className="w-4 h-4" />}
+                      onPress={() => {
+                        setSelectedCategoryIndex(categoryIndex);
+                        resetItemForm();
+                        onAddItemOpen();
+                      }}
+                    >
+                      Add Item
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      color="default"
+                      startContent={<Edit className="w-4 h-4" />}
+                      onPress={() => handleEditCategory(categoryIndex)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      color="danger"
+                      startContent={<Trash2 className="w-4 h-4" />}
+                      onPress={() => handleDeleteCategory(categoryIndex)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setSelectedCategoryIndex(categoryIndex);
-                      onAddItemOpen();
-                    }}
-                    className="bg-gray-100 text-gray-700 px-4 py-2 text-sm font-medium hover:bg-gray-200 transition-all duration-200 tracking-wide rounded-lg"
-                  >
-                    Add Item
-                  </button>
-                  <button
-                    onClick={() => handleDeleteCategory(categoryIndex)}
-                    className="text-red-600 hover:text-red-800 px-4 py-2 text-sm font-medium transition-colors duration-200 tracking-wide"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-              
-              {category.items.length === 0 ? (
-                <div className="bg-gray-50 border border-gray-100 rounded-xl p-8 text-center">
-                  <p className="text-gray-500 font-light">No items in this category yet</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {category.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="group bg-gray-50 border border-gray-100 rounded-xl p-6 hover:bg-white hover:border-gray-200 hover:shadow-md transition-all duration-200">
-                      <div className="flex justify-between items-start mb-4">
-                        <h4 className="font-medium text-gray-900 tracking-wide">{item.name}</h4>
-                        <div className={`px-3 py-1 rounded-xl text-xs font-medium tracking-wide ${
-                          item.isAvailable 
-                            ? 'bg-green-100 text-green-700 border border-green-200' 
-                            : 'bg-gray-100 text-gray-700 border border-gray-200'
-                        }`}>
-                          {item.isAvailable ? 'Available' : 'Unavailable'}
-                        </div>
-                      </div>
-                      {item.description && (
-                        <p className="text-sm text-gray-600 font-light mb-4 leading-relaxed">{item.description}</p>
-                      )}
-                      <div className="flex justify-between items-center">
-                        <span className="text-xl font-light text-gray-900 tracking-wide">${item.price.toFixed(2)}</span>
-                        <button
-                          onClick={() => handleDeleteItem(categoryIndex, itemIndex)}
-                          className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors duration-200 opacity-0 group-hover:opacity-100"
-                        >
-                          Delete
-                        </button>
-                      </div>
+              </CardHeader>
+              <CardBody className="pt-0">
+                {category.items.length === 0 ? (
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                    <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Plus className="w-6 h-6 text-gray-500" />
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    <p className="text-gray-500 font-light mb-4">No items in this category yet</p>
+                    <Button
+                      size="sm"
+                      color="primary"
+                      variant="flat"
+                      onPress={() => {
+                        setSelectedCategoryIndex(categoryIndex);
+                        resetItemForm();
+                        onAddItemOpen();
+                      }}
+                    >
+                      Add First Item
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {category.items.map((item, itemIndex) => (
+                      <Card key={itemIndex} className="group hover:shadow-md transition-all duration-200 border-gray-200">
+                        <CardBody className="p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <h4 className="font-semibold text-gray-900 tracking-wide text-lg">{item.name}</h4>
+                            <Chip
+                              size="sm"
+                              color={item.is_available ? "success" : "default"}
+                              variant="flat"
+                            >
+                              {item.is_available ? 'Available' : 'Unavailable'}
+                            </Chip>
+                          </div>
+                          
+                          {item.description && (
+                            <p className="text-sm text-gray-600 font-light mb-3 leading-relaxed">{item.description}</p>
+                          )}
+                          
+                          <div className="flex items-center gap-2 mb-3">
+                            <DollarSign className="w-4 h-4 text-green-600" />
+                            <span className="text-xl font-semibold text-gray-900">{(item.price || 0).toFixed(2)}</span>
+                            {item.currency && item.currency !== 'USD' && (
+                              <span className="text-sm text-gray-500">{item.currency}</span>
+                            )}
+                          </div>
+
+                          {/* Additional item details */}
+                          <div className="space-y-2 mb-4">
+                            {item.allergens && item.allergens.length > 0 && (
+                              <div className="flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                                <div className="flex flex-wrap gap-1">
+                                  {item.allergens.map((allergen, idx) => (
+                                    <Chip key={idx} size="sm" color="warning" variant="flat" className="text-xs">
+                                      {allergen}
+                                    </Chip>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {item.dietary_tags && item.dietary_tags.length > 0 && (
+                              <div className="flex items-center gap-2">
+                                <Tag className="w-4 h-4 text-green-500" />
+                                <div className="flex flex-wrap gap-1">
+                                  {item.dietary_tags.map((tag, idx) => (
+                                    <Chip key={idx} size="sm" color="success" variant="flat" className="text-xs">
+                                      {tag}
+                                    </Chip>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <Button
+                              size="sm"
+                              variant="flat"
+                              color="default"
+                              startContent={<Edit className="w-3 h-3" />}
+                              onPress={() => handleEditItem(categoryIndex, itemIndex)}
+                              className="flex-1"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="flat"
+                              color="danger"
+                              startContent={<Trash2 className="w-3 h-3" />}
+                              onPress={() => handleDeleteItem(categoryIndex, itemIndex)}
+                              className="flex-1"
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </CardBody>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardBody>
+            </Card>
           ))}
         </div>
       )}
@@ -335,10 +602,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="danger" variant="light" onPress={() => {
+                  resetCategoryForm();
+                  onClose();
+                }}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={handleAddCategory}>
+                <Button color="primary" onPress={handleAddCategory} isDisabled={!categoryName.trim()}>
                   Add Category
                 </Button>
               </ModalFooter>
@@ -347,58 +617,525 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         </ModalContent>
       </Modal>
 
-      {/* Add Item Modal */}
-      <Modal isOpen={isAddItemOpen} onOpenChange={onAddItemOpenChange}>
+      {/* Edit Category Modal */}
+      <Modal isOpen={isEditCategoryOpen} onOpenChange={onEditCategoryOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Add New Item</ModalHeader>
+              <ModalHeader className="flex items-center gap-2">
+                <Edit className="w-5 h-5" />
+                Edit Category
+              </ModalHeader>
               <ModalBody>
                 <Input
-                  label="Item Name"
-                  placeholder="e.g., Caesar Salad"
-                  value={itemName}
-                  onValueChange={setItemName}
+                  label="Category Name"
+                  placeholder="e.g., Appetizers, Main Courses"
+                  value={categoryName}
+                  onValueChange={setCategoryName}
                   isRequired
                 />
                 <Textarea
                   label="Description"
-                  placeholder="Brief description of the item"
-                  value={itemDescription}
-                  onValueChange={setItemDescription}
+                  placeholder="Brief description of this category"
+                  value={categoryDescription}
+                  onValueChange={setCategoryDescription}
                 />
-                <Input
-                  label="Price ($)"
-                  type="number"
-                  placeholder="0.00"
-                  value={itemPrice}
-                  onValueChange={setItemPrice}
-                  isRequired
-                />
-                <ImageUpload
-                  onImageUploaded={(url) => setItemImage(url)}
-                  currentImage={itemImage}
-                  businessId={businessId}
-                />
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="item-available"
-                    checked={itemAvailable}
-                    onChange={(e) => setItemAvailable(e.target.checked)}
-                    className="rounded"
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={() => {
+                  resetCategoryForm();
+                  onClose();
+                }}>
+                  Cancel
+                </Button>
+                <Button color="primary" onPress={handleUpdateCategory} isDisabled={!categoryName.trim()}>
+                  Update Category
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Add Item Modal */}
+      <Modal isOpen={isAddItemOpen} onOpenChange={onAddItemOpenChange} size="2xl" scrollBehavior="inside">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex items-center gap-2">
+                <Plus className="w-5 h-5" />
+                Add New Item
+                {selectedCategoryIndex !== null && (
+                  <Chip size="sm" variant="flat" color="primary">
+                    {menu[selectedCategoryIndex]?.name}
+                  </Chip>
+                )}
+              </ModalHeader>
+              <ModalBody className="space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5" />
+                    Basic Information
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="Item Name"
+                      placeholder="e.g., Caesar Salad"
+                      value={itemName}
+                      onValueChange={setItemName}
+                      isRequired
+                    />
+                    <div className="flex gap-2">
+                      <Input
+                        label="Price"
+                        placeholder="0.00"
+                        value={itemPrice}
+                        onValueChange={setItemPrice}
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+                        isRequired
+                      />
+                      <Select
+                        label="Currency"
+                        selectedKeys={[itemCurrency]}
+                        onSelectionChange={(keys) => setItemCurrency(Array.from(keys)[0] as string)}
+                        className="w-32"
+                      >
+                        <SelectItem key="USD" value="USD">USD</SelectItem>
+                        <SelectItem key="EUR" value="EUR">EUR</SelectItem>
+                        <SelectItem key="GBP" value="GBP">GBP</SelectItem>
+                      </Select>
+                    </div>
+                  </div>
+                  <Textarea
+                    label="Description"
+                    placeholder="Describe this menu item..."
+                    value={itemDescription}
+                    onValueChange={setItemDescription}
+                    minRows={2}
                   />
-                  <label htmlFor="item-available" className="text-sm">
-                    Available for ordering
-                  </label>
+                  <div className="flex items-center gap-4">
+                    <Switch
+                      isSelected={itemAvailable}
+                      onValueChange={setItemAvailable}
+                      color="success"
+                    >
+                      Available for ordering
+                    </Switch>
+                    <Input
+                      label="Sort Order"
+                      placeholder="0"
+                      value={itemSortOrder.toString()}
+                      onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
+                      type="number"
+                      className="w-32"
+                    />
+                  </div>
+                </div>
+
+                <Divider />
+
+                {/* Image Upload */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5" />
+                    Image
+                  </h4>
+                  <ImageUpload
+                    onImageUploaded={setItemImage}
+                    currentImage={itemImage}
+                  />
+                </div>
+
+                <Divider />
+
+                {/* Options */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Options & Add-ons
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Option Name"
+                      placeholder="e.g., Extra Cheese"
+                      value={newOptionName}
+                      onValueChange={setNewOptionName}
+                    />
+                    <Input
+                      label="Price Change"
+                      placeholder="0.00"
+                      value={newOptionPrice}
+                      onValueChange={setNewOptionPrice}
+                      type="number"
+                      step="0.01"
+                      startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+                      className="w-32"
+                    />
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      onPress={addOption}
+                      isDisabled={!newOptionName.trim() || !newOptionPrice}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemOptions.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemOptions.map((option, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeOption(index)}
+                          variant="flat"
+                          color="primary"
+                        >
+                          {option.name} (+${(option.price_change || 0).toFixed(2)})
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Divider />
+
+                {/* Allergens */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5" />
+                    Allergens
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Allergen"
+                      placeholder="e.g., Nuts, Dairy, Gluten"
+                      value={newAllergen}
+                      onValueChange={setNewAllergen}
+                    />
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      onPress={addAllergen}
+                      isDisabled={!newAllergen.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemAllergens.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemAllergens.map((allergen, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeAllergen(allergen)}
+                          variant="flat"
+                          color="warning"
+                        >
+                          {allergen}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Divider />
+
+                {/* Dietary Tags */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <Tag className="w-5 h-5" />
+                    Dietary Tags
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Dietary Tag"
+                      placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
+                      value={newDietaryTag}
+                      onValueChange={setNewDietaryTag}
+                    />
+                    <Button
+                      color="success"
+                      variant="flat"
+                      onPress={addDietaryTag}
+                      isDisabled={!newDietaryTag.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemDietaryTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemDietaryTags.map((tag, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeDietaryTag(tag)}
+                          variant="flat"
+                          color="success"
+                        >
+                          {tag}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button color="danger" variant="light" onPress={() => {
+                  resetItemForm();
+                  onClose();
+                }}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={handleAddItem}>
+                <Button 
+                  color="primary" 
+                  onPress={handleAddItem}
+                  isDisabled={!itemName.trim() || !itemPrice}
+                >
                   Add Item
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Edit Item Modal */}
+      <Modal isOpen={isEditItemOpen} onOpenChange={onEditItemOpenChange} size="2xl" scrollBehavior="inside">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex items-center gap-2">
+                <Edit className="w-5 h-5" />
+                Edit Item
+                {selectedCategoryIndex !== null && (
+                  <Chip size="sm" variant="flat" color="primary">
+                    {menu[selectedCategoryIndex]?.name}
+                  </Chip>
+                )}
+              </ModalHeader>
+              <ModalBody className="space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5" />
+                    Basic Information
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="Item Name"
+                      placeholder="e.g., Caesar Salad"
+                      value={itemName}
+                      onValueChange={setItemName}
+                      isRequired
+                    />
+                    <div className="flex gap-2">
+                      <Input
+                        label="Price"
+                        placeholder="0.00"
+                        value={itemPrice}
+                        onValueChange={setItemPrice}
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+                        isRequired
+                      />
+                      <Select
+                        label="Currency"
+                        selectedKeys={[itemCurrency]}
+                        onSelectionChange={(keys) => setItemCurrency(Array.from(keys)[0] as string)}
+                        className="w-32"
+                      >
+                        <SelectItem key="USD" value="USD">USD</SelectItem>
+                        <SelectItem key="EUR" value="EUR">EUR</SelectItem>
+                        <SelectItem key="GBP" value="GBP">GBP</SelectItem>
+                      </Select>
+                    </div>
+                  </div>
+                  <Textarea
+                    label="Description"
+                    placeholder="Describe this menu item..."
+                    value={itemDescription}
+                    onValueChange={setItemDescription}
+                    minRows={2}
+                  />
+                  <div className="flex items-center gap-4">
+                    <Switch
+                      isSelected={itemAvailable}
+                      onValueChange={setItemAvailable}
+                      color="success"
+                    >
+                      Available for ordering
+                    </Switch>
+                    <Input
+                      label="Sort Order"
+                      placeholder="0"
+                      value={itemSortOrder.toString()}
+                      onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
+                      type="number"
+                      className="w-32"
+                    />
+                  </div>
+                </div>
+
+                <Divider />
+
+                {/* Image Upload */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5" />
+                    Image
+                  </h4>
+                  <ImageUpload
+                    onImageUploaded={setItemImage}
+                    currentImage={itemImage}
+                  />
+                </div>
+
+                <Divider />
+
+                {/* Options */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Options & Add-ons
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Option Name"
+                      placeholder="e.g., Extra Cheese"
+                      value={newOptionName}
+                      onValueChange={setNewOptionName}
+                    />
+                    <Input
+                      label="Price Change"
+                      placeholder="0.00"
+                      value={newOptionPrice}
+                      onValueChange={setNewOptionPrice}
+                      type="number"
+                      step="0.01"
+                      startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+                      className="w-32"
+                    />
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      onPress={addOption}
+                      isDisabled={!newOptionName.trim() || !newOptionPrice}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemOptions.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemOptions.map((option, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeOption(index)}
+                          variant="flat"
+                          color="primary"
+                        >
+                          {option.name} (+${(option.price_change || 0).toFixed(2)})
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Divider />
+
+                {/* Allergens */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5" />
+                    Allergens
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Allergen"
+                      placeholder="e.g., Nuts, Dairy, Gluten"
+                      value={newAllergen}
+                      onValueChange={setNewAllergen}
+                    />
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      onPress={addAllergen}
+                      isDisabled={!newAllergen.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemAllergens.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemAllergens.map((allergen, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeAllergen(allergen)}
+                          variant="flat"
+                          color="warning"
+                        >
+                          {allergen}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Divider />
+
+                {/* Dietary Tags */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <Tag className="w-5 h-5" />
+                    Dietary Tags
+                  </h4>
+                  <div className="flex gap-2">
+                    <Input
+                      label="Dietary Tag"
+                      placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
+                      value={newDietaryTag}
+                      onValueChange={setNewDietaryTag}
+                    />
+                    <Button
+                      color="success"
+                      variant="flat"
+                      onPress={addDietaryTag}
+                      isDisabled={!newDietaryTag.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {itemDietaryTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {itemDietaryTags.map((tag, index) => (
+                        <Chip
+                          key={index}
+                          onClose={() => removeDietaryTag(tag)}
+                          variant="flat"
+                          color="success"
+                        >
+                          {tag}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={() => {
+                  resetItemForm();
+                  onClose();
+                }}>
+                  Cancel
+                </Button>
+                <Button 
+                  color="primary" 
+                  onPress={handleUpdateItem}
+                  isDisabled={!itemName.trim() || !itemPrice}
+                >
+                  Update Item
                 </Button>
               </ModalFooter>
             </>

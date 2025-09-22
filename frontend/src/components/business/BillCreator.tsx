@@ -224,7 +224,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <Chip color="primary" variant="flat">
-                                      ${item.price.toFixed(2)}
+                                      ${(item.price || 0).toFixed(2)}
                                     </Chip>
                                     <Button
                                       isIconOnly
@@ -300,7 +300,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                               <div className="flex-1">
                                 <p className="font-medium text-sm">{item.name}</p>
                                 <p className="text-xs text-default-500">
-                                  ${item.price.toFixed(2)} each
+                                  ${(item.price || 0).toFixed(2)} each
                                 </p>
                               </div>
                               <div className="flex items-center gap-1">
@@ -342,10 +342,10 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                             </div>
                             <div className="flex justify-between items-center mt-1">
                               <span className="text-xs text-default-500">
-                                {item.quantity} × ${item.price.toFixed(2)}
+                                {item.quantity} × ${(item.price || 0).toFixed(2)}
                               </span>
                               <span className="font-medium text-sm">
-                                ${item.subtotal.toFixed(2)}
+                                ${(item.subtotal || 0).toFixed(2)}
                               </span>
                             </div>
                           </Card>
@@ -359,7 +359,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Subtotal:</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>${(subtotal || 0).toFixed(2)}</span>
                       </div>
                     </div>
                   </CardBody>

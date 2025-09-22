@@ -80,12 +80,25 @@ export const deleteBusiness = async (businessId: number): Promise<void> => {
 };
 
 // Menu Management Types
+export interface MenuItemOption {
+  id?: string;
+  name: string;
+  price_change: number;
+  is_required?: boolean;
+}
+
 export interface MenuItem {
+  id?: string;
   name: string;
   description: string;
   price: number;
+  currency?: string;
   image?: string;
-  isAvailable: boolean;
+  options?: MenuItemOption[];
+  allergens?: string[];
+  dietary_tags?: string[];
+  is_available: boolean;
+  sort_order?: number;
 }
 
 export interface MenuCategory {
@@ -130,17 +143,17 @@ export const deleteMenuCategory = async (businessId: number, categoryIndex: numb
 export const addMenuItem = async (businessId: number, categoryIndex: number, item: MenuItem): Promise<void> => {
   // Transform the item to match backend expectations
   const backendItem = {
-    id: '', // Backend will generate ID
+    id: item.id || '', // Backend will generate ID if empty
     name: item.name,
     description: item.description,
     price: item.price,
-    currency: 'USD', // Default currency
+    currency: item.currency || 'USD',
     image: item.image || '',
-    options: [],
-    allergens: [],
-    dietary_tags: [],
-    is_available: item.isAvailable,
-    sort_order: 0,
+    options: item.options || [],
+    allergens: item.allergens || [],
+    dietary_tags: item.dietary_tags || [],
+    is_available: item.is_available,
+    sort_order: item.sort_order || 0,
   };
 
   await axiosInstance.post(`/inside/businesses/${businessId}/menu/items`, {
@@ -153,17 +166,17 @@ export const addMenuItem = async (businessId: number, categoryIndex: number, ite
 export const updateMenuItem = async (businessId: number, categoryIndex: number, itemIndex: number, item: MenuItem): Promise<void> => {
   // Transform the item to match backend expectations
   const backendItem = {
-    id: '', // Backend will handle ID
+    id: item.id || '', // Backend will handle ID
     name: item.name,
     description: item.description,
     price: item.price,
-    currency: 'USD', // Default currency
+    currency: item.currency || 'USD',
     image: item.image || '',
-    options: [],
-    allergens: [],
-    dietary_tags: [],
-    is_available: item.isAvailable,
-    sort_order: 0,
+    options: item.options || [],
+    allergens: item.allergens || [],
+    dietary_tags: item.dietary_tags || [],
+    is_available: item.is_available,
+    sort_order: item.sort_order || 0,
   };
 
   await axiosInstance.put(`/inside/businesses/${businessId}/menu/items`, {

@@ -43,10 +43,11 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set());
+  const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set());
   const { isOpen: isItemModalOpen, onOpen: onItemModalOpen, onClose: onItemModalClose } = useDisclosure();
 
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
+  const formatCurrency = (amount: number | undefined | null) => {
+    return `$${(amount || 0).toFixed(2)}`;
   };
 
   const getTotalItems = () => {
@@ -58,8 +59,49 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
     router.push(`/t/${tableCode}/bill`);
   };
 
+  const toggleOption = (optionId: string) => {
+    setSelectedOptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(optionId)) {
+        newSet.delete(optionId);
+      } else {
+        newSet.add(optionId);
+      }
+      return newSet;
+    });
+  };
+
+  const calculateItemTotalPrice = (item: MenuItem) => {
+    let totalPrice = item.price || 0;
+    
+    if (item.options) {
+      item.options.forEach((option, index) => {
+        const optionId = `${item.name}-option-${index}`;
+        if (selectedOptions.has(optionId)) {
+          totalPrice += option.price_change || 0;
+        }
+      });
+    }
+    
+    return totalPrice;
+  };
+
+  const getSelectedOptionsForItem = (item: MenuItem) => {
+    if (!item.options) return [];
+    
+    return item.options.filter((option, index) => {
+      const optionId = `${item.name}-option-${index}`;
+      return selectedOptions.has(optionId);
+    });
+  };
+
+  const resetModalState = () => {
+    setSelectedOptions(new Set());
+  };
+
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
+    resetModalState(); // Clear any previous selections
     onItemModalOpen();
   };
 
@@ -76,28 +118,31 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
 
   const handleAddToBill = (item: MenuItem, quantity?: number) => {
     const finalQuantity = quantity || getItemQuantity(item.name);
-    onAddToBill(item.name, item.price, finalQuantity);
+    const totalPrice = calculateItemTotalPrice(item);
+    const selectedItemOptions = getSelectedOptionsForItem(item);
+    
+    // Create item name with options for uniqueness
+    const itemNameWithOptions = selectedItemOptions.length > 0 
+      ? `${item.name} (${selectedItemOptions.map(opt => opt.name).join(', ')})`
+      : item.name;
+    
+    onAddToBill(itemNameWithOptions, totalPrice, finalQuantity);
     
     // Stripe-like success animation
     setAnimatingItems(prev => new Set(Array.from(prev).concat([item.name])));
     setAddedItems(prev => new Set(Array.from(prev).concat([item.name])));
     
-    // Remove animation and feedback after timing
-    setTimeout(() => {
-      setAnimatingItems(prev => {
-        const newSet = new Set(Array.from(prev));
-        newSet.delete(item.name);
-        return newSet;
-      });
-    }, 600); // Animation duration
+    // Reset modal state and close
+    resetModalState();
+    onItemModalClose();
     
     setTimeout(() => {
-      setAddedItems(prev => {
-        const newSet = new Set(Array.from(prev));
+      setAnimatingItems(prev => {
+        const newSet = new Set(prev);
         newSet.delete(item.name);
         return newSet;
       });
-    }, 2000); // Feedback duration
+    }, 2000);
   };
 
   const isItemAdded = (itemName: string) => {
@@ -390,15 +435,125 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                     </div>
                   )}
 
-                  {/* Future expansion area */}
-                  <div className="bg-gray-50 rounded-xl p-6 text-center">
-                    <div className="text-gray-400 mb-2">
-                      <Info className="w-8 h-8 mx-auto" />
+                  {/* Item Details */}
+                  {selectedItem && (
+                    <div className="space-y-6">
+                      {/* Options & Add-ons */}
+                      {selectedItem.options && selectedItem.options.length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
+                            <Plus className="w-5 h-5" />
+                            Options & Add-ons
+                          </h3>
+                          <div className="space-y-2">
+                            {selectedItem.options.map((option, index) => {
+                              const optionId = `${selectedItem.name}-option-${index}`;
+                              const isSelected = selectedOptions.has(optionId);
+                              
+                              return (
+                                <div 
+                                  key={index} 
+                                  className={`flex justify-between items-center p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                                    isSelected 
+                                      ? 'bg-primary-50 border-primary-200 shadow-sm' 
+                                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                                  }`}
+                                  onClick={() => toggleOption(optionId)}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                                      isSelected 
+                                        ? 'bg-primary border-primary text-white' 
+                                        : 'border-gray-300 bg-white'
+                                    }`}>
+                                      {isSelected && <Check className="w-3 h-3" />}
+                                    </div>
+                                    <span className="text-gray-700 font-medium">{option.name}</span>
+                                  </div>
+                                  <span className={`font-semibold ${isSelected ? 'text-primary' : 'text-gray-600'}`}>
+                                    +${option.price_change ? option.price_change.toFixed(2) : '0.00'}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Allergens */}
+                      {selectedItem.allergens && selectedItem.allergens.length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
+                            <Info className="w-5 h-5 text-orange-500" />
+                            Allergen Information
+                          </h3>
+                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                            <p className="text-sm text-orange-800 font-medium mb-2">
+                              ⚠️ This item contains or may contain:
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedItem.allergens.map((allergen, index) => (
+                                <Chip
+                                  key={index}
+                                  size="sm"
+                                  color="warning"
+                                  variant="flat"
+                                  className="text-xs"
+                                >
+                                  {allergen}
+                                </Chip>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Dietary Tags */}
+                      {selectedItem.dietary_tags && selectedItem.dietary_tags.length > 0 && (
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
+                            <Check className="w-5 h-5 text-green-500" />
+                            Dietary Information
+                          </h3>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedItem.dietary_tags.map((tag, index) => (
+                              <Chip
+                                key={index}
+                                size="sm"
+                                color="success"
+                                variant="flat"
+                                className="text-xs"
+                              >
+                                {tag}
+                              </Chip>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Currency Info */}
+                      {selectedItem.currency && selectedItem.currency !== 'USD' && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <p className="text-sm text-blue-800">
+                            <Info className="w-4 h-4 inline mr-1" />
+                            Price shown in {selectedItem.currency}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Availability Status */}
+                      <div className="flex items-center justify-center">
+                        <Chip
+                          size="lg"
+                          color={selectedItem.is_available ? "success" : "default"}
+                          variant="flat"
+                          startContent={selectedItem.is_available ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                        >
+                          {selectedItem.is_available ? 'Available Now' : 'Currently Unavailable'}
+                        </Chip>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-500 font-light">
-                      More details coming soon - ingredients, allergens, customization options, and more!
-                    </p>
-                  </div>
+                  )}
                 </div>
               </ModalBody>
               <ModalFooter>
@@ -426,7 +581,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         </button>
                       </div>
                       <span className="text-sm text-gray-500">
-                        Total: {selectedItem && formatCurrency(selectedItem.price * getItemQuantity(selectedItem.name))}
+                        Total: {selectedItem && formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}
                       </span>
                     </div>
                   )}
@@ -470,7 +625,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                           <span className="relative z-10">
                             {isItemAdded(selectedItem.name) 
                               ? `Added ${getItemQuantity(selectedItem.name)} to Bill!` 
-                              : `Add ${getItemQuantity(selectedItem.name)} to Bill`
+                              : `Add ${getItemQuantity(selectedItem.name)} to Bill - ${formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}`
                             }
                           </span>
                         </Button>

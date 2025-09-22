@@ -241,7 +241,7 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
                       </p>
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-primary">
-                          ${item.price.toFixed(2)}
+                          ${(item.price || 0).toFixed(2)}
                         </span>
                         <Button
                           size="sm"
@@ -249,7 +249,7 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
                           variant="flat"
                           isIconOnly
                           onPress={() => handleAddItem(item)}
-                          isDisabled={!item.isAvailable}
+                          isDisabled={!item.is_available}
                         >
                           <Plus className="w-3 h-3" />
                         </Button>
@@ -280,7 +280,7 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
                       <div className="flex-1">
                         <p className="font-medium text-sm">{item.name}</p>
                         <p className="text-xs text-default-600">
-                          ${item.price.toFixed(2)} each
+                          ${(item.price || 0).toFixed(2)} each
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -332,7 +332,7 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
             isDisabled={selectedItems.length === 0}
             startContent={!isAddingItems && <ShoppingCart className="w-4 h-4" />}
           >
-            Add to Bill (${totalAmount.toFixed(2)})
+            Add to Bill (${(totalAmount || 0).toFixed(2)})
           </Button>
         </ModalFooter>
       </ModalContent>
