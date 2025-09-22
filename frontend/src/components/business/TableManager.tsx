@@ -18,6 +18,7 @@ import {
 } from '@nextui-org/react';
 import { businessApi, Table, CreateTableRequest, UpdateTableRequest } from '@/api/business';
 import { PrimarySpinner } from '@/components/ui/spinners/PrimarySpinner';
+import { QrCode, Download, Copy, Edit, Trash2, ExternalLink, Check } from 'lucide-react';
 
 interface TableManagerProps {
   businessId: number;
@@ -31,6 +32,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
   const [editingTable, setEditingTable] = useState<Table | null>(null);
   const [editName, setEditName] = useState('');
   const [editActive, setEditActive] = useState(false);
+  const [copiedUrls, setCopiedUrls] = useState<Record<number, boolean>>({});
 
   // Modal states
   const { isOpen: isCreateOpen, onOpen: onCreateOpen, onOpenChange: onCreateOpenChange } = useDisclosure();
@@ -100,9 +102,48 @@ export default function TableManager({ businessId }: TableManagerProps) {
     }
   };
 
-  const copyQRUrl = (table: Table) => {
-    const fullUrl = `${window.location.origin}${table.qr_url}`;
-    navigator.clipboard.writeText(fullUrl);
+  const copyQRUrl = async (table: Table) => {
+    try {
+      const fullUrl = `${window.location.origin}${table.qr_url}`;
+      await navigator.clipboard.writeText(fullUrl);
+      setCopiedUrls(prev => ({ ...prev, [table.id]: true }));
+      
+      // Reset the copied state after 2 seconds
+      setTimeout(() => {
+        setCopiedUrls(prev => ({ ...prev, [table.id]: false }));
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy URL: ', err);
+    }
+  };
+
+  const downloadQRCode = async (table: Table) => {
+    try {
+      const fullUrl = `${window.location.origin}${table.qr_url}`;
+      
+      // Create QR code using a QR code library (we'll use qrcode.js)
+      const QRCode = (await import('qrcode')).default;
+      
+      // Generate QR code as data URL
+      const qrDataUrl = await QRCode.toDataURL(fullUrl, {
+        width: 512,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = qrDataUrl;
+      link.download = `${table.name}-qr-code.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Failed to download QR code: ', err);
+    }
   };
 
   if (isLoading) {
@@ -190,34 +231,87 @@ export default function TableManager({ businessId }: TableManagerProps) {
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                  <p className="text-sm font-medium text-gray-900 tracking-wide mb-2">QR Code URL</p>
-                  <p className="text-xs text-gray-600 font-mono break-all leading-relaxed">
-                    {window.location.origin}{table.qr_url}
-                  </p>
+              {/* QR Code Section */}
+              <div className="space-y-6 mb-8">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <QrCode className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">QR Code Access</h4>
+                      <p className="text-sm text-gray-600">Guest table access point</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-xl p-4 border border-blue-100 mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Table URL</span>
+                      <button
+                        onClick={() => copyQRUrl(table)}
+                        className="p-1 hover:bg-gray-100 rounded-md transition-colors duration-200 group"
+                        title="Copy table URL"
+                      >
+                        {copiedUrls[table.id] ? (
+                          <Check className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-600 font-mono break-all leading-relaxed bg-gray-50 p-2 rounded-lg">
+                      {window.location.origin}{table.qr_url}
+                    </p>
+                  </div>
+
+                  {/* QR Code Actions */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      onClick={() => downloadQRCode(table)}
+                      variant="solid"
+                      color="primary"
+                      size="sm"
+                      startContent={<Download className="w-4 h-4" />}
+                      className="font-semibold"
+                    >
+                      Download QR
+                    </Button>
+                    <Button
+                      onClick={() => window.open(`${window.location.origin}${table.qr_url}`, '_blank')}
+                      variant="bordered"
+                      color="primary"
+                      size="sm"
+                      startContent={<ExternalLink className="w-4 h-4" />}
+                      className="font-semibold"
+                    >
+                      Preview
+                    </Button>
+                  </div>
                 </div>
               </div>
 
+              {/* Action Buttons */}
               <div className="flex gap-3">
-                <button
-                  onClick={() => copyQRUrl(table)}
-                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all duration-200 text-center tracking-wide"
-                >
-                  Copy URL
-                </button>
-                <button
+                <Button
                   onClick={() => handleEditTable(table)}
-                  className="flex-1 bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all duration-200 text-center tracking-wide group-hover:shadow-lg"
+                  variant="solid"
+                  color="default"
+                  size="md"
+                  startContent={<Edit className="w-4 h-4" />}
+                  className="flex-1 font-semibold bg-gray-900 text-white hover:bg-gray-800"
                 >
-                  Edit
-                </button>
-                <button
+                  Edit Table
+                </Button>
+                <Button
                   onClick={() => handleDeleteTable(table.id)}
-                  className="text-red-600 hover:text-red-800 px-4 py-3 text-sm font-medium transition-colors duration-200 tracking-wide"
+                  variant="light"
+                  color="danger"
+                  size="md"
+                  startContent={<Trash2 className="w-4 h-4" />}
+                  className="font-semibold"
                 >
                   Delete
-                </button>
+                </Button>
               </div>
             </div>
           ))}

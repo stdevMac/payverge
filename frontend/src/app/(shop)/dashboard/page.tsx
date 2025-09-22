@@ -8,6 +8,7 @@ import { isTokenValid, decodeJwt } from "@/utils/jwt";
 import { getUserProfile } from "@/api/users/profile";
 import { Business, getMyBusinesses, createBusiness, CreateBusinessRequest } from "@/api/business";
 import { UserInterface as User } from "@/interface/users/users-interface";
+import { Copy, Check } from "lucide-react";
 
 export default function Dashboard() {
   const { isConnected } = useAccount();
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [copiedAddresses, setCopiedAddresses] = useState<Record<string, boolean>>({});
 
   const retryLoadUser = async () => {
     console.log('[Dashboard] Manual retry triggered');
@@ -116,6 +118,22 @@ export default function Dashboard() {
     tax_inclusive: false,
     service_inclusive: false,
   });
+
+  // Copy address function
+  const copyToClipboard = async (text: string, addressType: string, businessId: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      const key = `${businessId}-${addressType}`;
+      setCopiedAddresses(prev => ({ ...prev, [key]: true }));
+      
+      // Reset the copied state after 2 seconds
+      setTimeout(() => {
+        setCopiedAddresses(prev => ({ ...prev, [key]: false }));
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   // Simplified authentication check
   useEffect(() => {
@@ -409,11 +427,37 @@ export default function Dashboard() {
                   
                   <div className="space-y-4 mb-8">
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                      <span className="text-sm font-medium text-gray-900 tracking-wide block mb-2">Settlement Address</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-900 tracking-wide">Settlement Address</span>
+                        <button
+                          onClick={() => copyToClipboard(business.settlement_address, 'settlement', business.id)}
+                          className="p-1 hover:bg-gray-200 rounded-md transition-colors duration-200 group"
+                          title="Copy settlement address"
+                        >
+                          {copiedAddresses[`${business.id}-settlement`] ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
+                          )}
+                        </button>
+                      </div>
                       <span className="font-mono text-xs text-gray-600">{business.settlement_address.slice(0, 10)}...{business.settlement_address.slice(-8)}</span>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                      <span className="text-sm font-medium text-gray-900 tracking-wide block mb-2">Tipping Address</span>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium text-gray-900 tracking-wide">Tipping Address</span>
+                        <button
+                          onClick={() => copyToClipboard(business.tipping_address, 'tipping', business.id)}
+                          className="p-1 hover:bg-gray-200 rounded-md transition-colors duration-200 group"
+                          title="Copy tipping address"
+                        >
+                          {copiedAddresses[`${business.id}-tipping`] ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
+                          )}
+                        </button>
+                      </div>
                       <span className="font-mono text-xs text-gray-600">{business.tipping_address.slice(0, 10)}...{business.tipping_address.slice(-8)}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -434,12 +478,6 @@ export default function Dashboard() {
                       className="flex-1 bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all duration-200 text-center tracking-wide group-hover:shadow-lg"
                     >
                       Manage
-                    </a>
-                    <a 
-                      href={`/business/${business.id}/dashboard?tab=settings`}
-                      className="flex-1 border border-gray-300 text-gray-700 px-6 py-3 rounded-xl text-sm font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 text-center tracking-wide"
-                    >
-                      Settings
                     </a>
                 </div>
               </div>
