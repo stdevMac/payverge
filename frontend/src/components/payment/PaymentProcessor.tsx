@@ -228,77 +228,129 @@ export default function PaymentProcessor({
 
   const renderAmountStep = () => (
     <>
-      <ModalHeader>
-        <div className="flex items-center gap-2">
-          <Wallet size={20} />
-          <span>Payment for {businessName}</span>
+      <ModalHeader className="flex flex-col gap-1 pb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+            <Wallet className="w-5 h-5 text-primary-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Payment Details</h2>
+            <p className="text-sm text-gray-500">{businessName}</p>
+          </div>
         </div>
       </ModalHeader>
-      <ModalBody>
-        <Card>
-          <CardBody className="space-y-4">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">Bill Amount</h3>
-              <p className="text-3xl font-bold text-primary">{formatCurrency(amount)}</p>
-            </div>
-
-            <Divider />
-
-            <div>
-              <h4 className="font-medium mb-3">Add Tip (Optional)</h4>
-              <div className="grid grid-cols-5 gap-2 mb-3">
-                {tipPresets.map((preset) => (
-                  <Button
-                    key={preset}
-                    size="sm"
-                    variant={tipValue === amount * preset ? "solid" : "bordered"}
-                    color={tipValue === amount * preset ? "primary" : "default"}
-                    onPress={() => handleTipPreset(preset)}
-                  >
-                    {preset === 0 ? 'No Tip' : `${(preset * 100).toFixed(0)}%`}
-                  </Button>
-                ))}
+      <ModalBody className="py-6">
+        <div className="space-y-6">
+          {/* Bill Summary Card */}
+          <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-0 shadow-sm">
+            <CardBody className="p-6">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Bill Amount</span>
+                  <span className="text-xl font-bold text-gray-900">{formatCurrency(amount)}</span>
+                </div>
+                
+                {tipValue > 0 && (
+                  <>
+                    <Divider className="bg-gray-200" />
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-medium">Tip</span>
+                      <span className="text-lg font-semibold text-green-600">{formatCurrency(tipValue)}</span>
+                    </div>
+                  </>
+                )}
+                
+                <Divider className="bg-gray-300" />
+                
+                <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+                  <span className="text-lg font-bold text-gray-900">Total</span>
+                  <span className="text-2xl font-bold text-primary-600">{formatCurrency(totalAmount)}</span>
+                </div>
               </div>
+            </CardBody>
+          </Card>
+          
+          {/* Tip Selection */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <h4 className="text-lg font-semibold text-gray-900">Add Tip</h4>
+              <Chip size="sm" variant="flat" color="success" className="text-xs">
+                Optional
+              </Chip>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-3">
+              {tipPresets.map((preset) => (
+                <Button
+                  key={preset}
+                  size="lg"
+                  variant={tipValue === amount * preset ? "solid" : "bordered"}
+                  color={tipValue === amount * preset ? "primary" : "default"}
+                  onPress={() => handleTipPreset(preset)}
+                  className={`h-14 font-semibold transition-all duration-200 ${
+                    tipValue === amount * preset 
+                      ? 'shadow-lg scale-105' 
+                      : 'hover:scale-102 hover:shadow-md'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-sm font-bold">
+                      {preset === 0 ? 'No Tip' : `${(preset * 100).toFixed(0)}%`}
+                    </div>
+                    {preset > 0 && (
+                      <div className="text-xs opacity-80">
+                        {formatCurrency(amount * preset)}
+                      </div>
+                    )}
+                  </div>
+                </Button>
+              ))}
+            </div>
+            
+            {/* Custom Tip Section */}
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <h5 className="text-sm font-medium text-gray-700 mb-3">Or enter a custom amount</h5>
               <Input
                 type="number"
                 label="Custom Tip Amount"
                 placeholder="0.00"
                 value={tipAmount}
-                onValueChange={setTipAmount}
-                startContent="$"
+                onChange={(e) => setTipAmount(e.target.value)}
+                startContent={
+                  <div className="pointer-events-none flex items-center">
+                    <span className="text-default-400 text-base font-medium">$</span>
+                  </div>
+                }
                 min="0"
                 step="0.01"
+                size="lg"
+                classNames={{
+                  input: "text-xl font-semibold",
+                  inputWrapper: "h-16 bg-gray-50 border-gray-200 hover:bg-gray-100 focus-within:bg-white transition-colors",
+                  label: "text-gray-600 font-medium"
+                }}
               />
             </div>
-
-            <Divider />
-
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Bill Amount:</span>
-                <span>{formatCurrency(amount)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tip:</span>
-                <span>{formatCurrency(tipValue)}</span>
-              </div>
-              <div className="flex justify-between font-semibold text-lg">
-                <span>Total:</span>
-                <span>{formatCurrency(totalAmount)}</span>
-              </div>
-              <div className="text-xs text-default-500">
-                <span>≈ {formatUnits(totalAmountUSDC, 6)} USDC</span>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </ModalBody>
-      <ModalFooter>
-        <Button variant="light" onPress={handleClose}>
+      <ModalFooter className="pt-6 pb-4">
+        <Button 
+          variant="light" 
+          onPress={onClose}
+          size="lg"
+          className="font-semibold"
+        >
           Cancel
         </Button>
-        <Button color="primary" onPress={handleNext}>
-          {isConnected ? 'Pay with USDC' : 'Connect Wallet'}
+        <Button 
+          color="primary" 
+          onPress={handleNext}
+          size="lg"
+          className="font-semibold px-8 shadow-lg"
+          endContent={<ExternalLink className="w-4 h-4" />}
+        >
+          Continue to Payment
         </Button>
       </ModalFooter>
     </>
@@ -306,20 +358,35 @@ export default function PaymentProcessor({
 
   const renderWalletStep = () => (
     <>
-      <ModalHeader>Connect Your Wallet</ModalHeader>
-      <ModalBody>
-        <WalletConnector showBalance={true} showDisconnect={false} />
+      <ModalHeader className="flex flex-col gap-1 pb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <Wallet className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Connect Your Wallet</h2>
+            <p className="text-sm text-gray-500">Choose a wallet to pay with USDC</p>
+          </div>
+        </div>
+      </ModalHeader>
+      <ModalBody className="py-6">
+        <div className="space-y-6">
+          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-0 shadow-sm">
+            <CardBody className="p-6 text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Wallet className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure Payment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Your payment will be processed securely using USDC on the blockchain. 
+                Connect your wallet to continue.
+              </p>
+            </CardBody>
+          </Card>
+          
+          <WalletConnector showBalance={true} showDisconnect={false} />
+        </div>
       </ModalBody>
-      <ModalFooter>
-        <Button variant="light" onPress={handleClose}>
-          Cancel
-        </Button>
-        {isConnected && (
-          <Button color="primary" onPress={handleNext}>
-            Continue to Payment
-          </Button>
-        )}
-      </ModalFooter>
     </>
   );
 
@@ -337,8 +404,8 @@ export default function PaymentProcessor({
             <Progress
               size="sm"
               isIndeterminate
-              className="mt-4"
               color="primary"
+              className="mt-4"
             />
           </div>
         </div>
