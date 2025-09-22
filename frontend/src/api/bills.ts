@@ -58,39 +58,39 @@ export interface BillResponse {
   items: BillItem[];
 }
 
-// Bill API functions
+// Bill API functions (Protected routes - require authentication)
 export const createBill = async (businessId: number, data: CreateBillRequest): Promise<BillResponse> => {
-  const response = await axiosInstance.post(`/businesses/${businessId}/bills`, data);
+  const response = await axiosInstance.post(`/inside/businesses/${businessId}/bills`, data);
   return response.data;
 };
 
 export const getBusinessBills = async (businessId: number): Promise<{ bills: Bill[] }> => {
-  const response = await axiosInstance.get(`/businesses/${businessId}/bills`);
+  const response = await axiosInstance.get(`/inside/businesses/${businessId}/bills`);
   return response.data;
 };
 
 export const getBill = async (billId: number): Promise<BillResponse> => {
-  const response = await axiosInstance.get(`/bills/${billId}`);
+  const response = await axiosInstance.get(`/inside/bills/${billId}`);
   return response.data;
 };
 
 export const updateBill = async (billId: number, data: UpdateBillRequest): Promise<BillResponse> => {
-  const response = await axiosInstance.post('/bills', data);
+  const response = await axiosInstance.put(`/inside/bills/${billId}`, data);
   return response.data;
 };
 
 export const addBillItem = async (billId: number, data: AddBillItemRequest): Promise<BillResponse> => {
-  const response = await axiosInstance.post(`/bills/${billId}/items`, data);
+  const response = await axiosInstance.post(`/inside/bills/${billId}/items`, data);
   return response.data;
 };
 
 export const removeBillItem = async (billId: number, itemId: string): Promise<BillResponse> => {
-  const response = await axiosInstance.delete(`/bills/${billId}/items/${itemId}`);
+  const response = await axiosInstance.delete(`/inside/bills/${billId}/items/${itemId}`);
   return response.data;
 };
 
 export const closeBill = async (billId: number): Promise<BillResponse> => {
-  const response = await axiosInstance.post(`/bills/${billId}/close`);
+  const response = await axiosInstance.post(`/inside/bills/${billId}/close`);
   return response.data;
 };
 
@@ -101,7 +101,7 @@ export const getTableByCode = async (code: string) => {
 };
 
 export const getOpenBillByTableCode = async (code: string): Promise<BillResponse> => {
-  const response = await axiosInstance.get(`/tables/${code}/bills`);
+  const response = await axiosInstance.get(`/guest/table/${code}/bill`);
   return response.data;
 };
 

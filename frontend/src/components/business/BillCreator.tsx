@@ -55,9 +55,36 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
         getMenu(businessId),
       ]);
       setTables(tablesResponse.tables || []);
-      setMenu(menuResponse || { categories: [] });
+      
+      // Safely handle menu response
+      if (menuResponse && menuResponse.categories) {
+        let categories;
+        
+        // Handle string or array categories
+        if (typeof menuResponse.categories === 'string') {
+          try {
+            categories = JSON.parse(menuResponse.categories);
+          } catch (parseError) {
+            console.error('Failed to parse menu categories:', parseError);
+            categories = [];
+          }
+        } else {
+          categories = menuResponse.categories;
+        }
+        
+        // Ensure categories is an array
+        if (Array.isArray(categories)) {
+          setMenu({ categories });
+        } else {
+          console.error('Menu categories is not an array:', categories);
+          setMenu({ categories: [] });
+        }
+      } else {
+        setMenu({ categories: [] });
+      }
     } catch (error) {
       console.error('Error loading data:', error);
+      setMenu({ categories: [] }); // Ensure safe fallback
     } finally {
       setLoadingData(false);
     }
@@ -176,7 +203,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                     <h3 className="text-lg font-semibold">Menu Items</h3>
                   </CardHeader>
                   <CardBody className="max-h-96 overflow-y-auto">
-                    {menu.categories.map((category, categoryIndex) => (
+                    {Array.isArray(menu.categories) && menu.categories.map((category, categoryIndex) => (
                       <div key={categoryIndex} className="mb-4">
                         <h4 className="font-medium text-medium mb-2">{category.name}</h4>
                         <div className="grid grid-cols-1 gap-2">
@@ -361,7 +388,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
         <ItemSelector
           isOpen={showItemSelector}
           onClose={() => setShowItemSelector(false)}
-          menu={menu.categories}
+          menu={Array.isArray(menu.categories) ? menu.categories : []}
           onItemsAdded={(selectedItems: { item: MenuItem; quantity: number }[]) => {
             selectedItems.forEach(({ item, quantity }: { item: MenuItem; quantity: number }) => {
               handleItemAdded(item, quantity);

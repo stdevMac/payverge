@@ -60,7 +60,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
       {/* Category Navigation */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex gap-3 overflow-x-auto pb-2">
-          {categories.map((category, index) => (
+          {Array.isArray(categories) && categories.map((category, index) => (
             <button
               key={index}
               onClick={() => setSelectedCategory(index)}
@@ -134,7 +134,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-              {categories[selectedCategory].items.map((item, itemIndex) => (
+              {Array.isArray(categories[selectedCategory]?.items) && categories[selectedCategory].items.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
                   className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1"

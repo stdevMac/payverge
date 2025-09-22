@@ -63,13 +63,39 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const loadMenu = useCallback(async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const menuData = await businessApi.getMenu(businessId);
+      
       if (menuData && menuData.categories) {
-        setMenu(typeof menuData.categories === 'string' ? JSON.parse(menuData.categories) : menuData.categories);
+        let categories;
+        
+        // Handle string or array categories
+        if (typeof menuData.categories === 'string') {
+          try {
+            categories = JSON.parse(menuData.categories);
+          } catch (parseError) {
+            console.error('Failed to parse menu categories:', parseError);
+            categories = [];
+          }
+        } else {
+          categories = menuData.categories;
+        }
+        
+        // Ensure categories is an array
+        if (Array.isArray(categories)) {
+          setMenu(categories);
+        } else {
+          console.error('Menu categories is not an array:', categories);
+          setMenu([]);
+        }
+      } else {
+        // No menu data, set empty array
+        setMenu([]);
       }
     } catch (error) {
       console.error('Failed to load menu:', error);
       setError('Failed to load menu data');
+      setMenu([]); // Ensure menu is always an array even on error
     } finally {
       setIsLoading(false);
     }
@@ -200,7 +226,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         </div>
       )}
 
-      {menu.length === 0 ? (
+      {!Array.isArray(menu) || menu.length === 0 ? (
         <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-sm">
           <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
             <svg className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,7 +246,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         </div>
       ) : (
         <div className="space-y-8">
-          {menu.map((category, categoryIndex) => (
+          {Array.isArray(menu) && menu.map((category, categoryIndex) => (
             <div key={categoryIndex} className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
               <div className="flex justify-between items-start mb-8">
                 <div>
