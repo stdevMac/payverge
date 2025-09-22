@@ -14,11 +14,15 @@ contract DeployPayvergePayments is Script {
         address usdcToken = vm.envAddress("USDC_TOKEN_ADDRESS");
         address platformFeeRecipient = vm.envAddress("PLATFORM_FEE_RECIPIENT");
         uint256 platformFeeBps = vm.envUint("PLATFORM_FEE_BPS"); // Default: 200 (2%)
+        address billCreator = vm.envAddress("BILL_CREATOR_ADDRESS");
+        uint256 registrationFee = vm.envUint("REGISTRATION_FEE"); // Default: 0 (free registration)
         
         console.log("Deployer:", deployer);
         console.log("USDC Token:", usdcToken);
         console.log("Platform Fee Recipient:", platformFeeRecipient);
         console.log("Platform Fee BPS:", platformFeeBps);
+        console.log("Bill Creator:", billCreator);
+        console.log("Registration Fee:", registrationFee);
         
         vm.startBroadcast(deployerPrivateKey);
         
@@ -31,7 +35,10 @@ contract DeployPayvergePayments is Script {
             PayvergePayments.initialize.selector,
             usdcToken,
             platformFeeRecipient,
-            platformFeeBps
+            platformFeeBps,
+            deployer, // admin
+            billCreator,
+            registrationFee
         );
         
         // Deploy proxy
@@ -48,6 +55,8 @@ contract DeployPayvergePayments is Script {
         console.log("USDC token address:", address(payvergeContract.usdcToken()));
         console.log("Platform treasury:", payvergeContract.platformTreasury());
         console.log("Platform fee rate:", payvergeContract.platformFeeRate());
+        console.log("Bill creator address:", payvergeContract.billCreatorAddress());
+        console.log("Registration fee:", payvergeContract.getRegistrationFee());
         
         vm.stopBroadcast();
         
@@ -55,6 +64,12 @@ contract DeployPayvergePayments is Script {
         console.log("\n=== DEPLOYMENT COMPLETE ===");
         console.log("Implementation:", address(implementation));
         console.log("Proxy (Main Contract):", address(proxy));
-        console.log("Use Proxy address for frontend integration");
+        console.log("Contract Version:", payvergeContract.version());
+        console.log("\n=== ENVIRONMENT VARIABLES NEEDED ===");
+        console.log("PAYVERGE_CONTRACT_ADDRESS=", address(proxy));
+        console.log("USDC_CONTRACT_ADDRESS=", usdcToken);
+        console.log("\n=== FRONTEND INTEGRATION ===");
+        console.log("Use Proxy address for all frontend interactions");
+        console.log("Contract supports unified payment system - single createBill() and processPayment() functions");
     }
 }

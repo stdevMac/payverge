@@ -111,7 +111,8 @@ contract PayvergePaymentsSecurityTest is Test {
             treasury,
             200, // 2% platform fee
             admin,
-            admin // bill creator address
+            admin, // bill creator address
+            0 // registration fee (free)
         );
         
         // Roles are already set up in initialize function
@@ -953,5 +954,893 @@ contract PayvergePaymentsSecurityTest is Test {
         uint256 businessBalanceAfter = usdc.balanceOf(businessOwner);
         
         assertEq(businessBalanceAfter - businessBalanceBefore, expectedBusinessPayments + totalTips);
+    }
+
+    // ============ UNIFIED PAYMENT SYSTEM TESTS ============
+
+    function testUnifiedPaymentSystem_SinglePayer() public {
+        bytes32 billId = keccak256("test_bill_single");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 61);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Single payer test", bytes32(uint256(1)));
+        
+        // Single customer pays full amount
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Verify bill completion
+        (uint8 participantCount, , uint256 paidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 1);
+        assertEq(paidAmount, BILL_AMOUNT);
+        assertTrue(isPaid);
+        
+        // Verify participant info
+        (uint256 participantPaid, uint32 paymentCount, ) = payverge.getParticipantInfo(billId, customer);
+        assertEq(participantPaid, BILL_AMOUNT);
+        assertEq(paymentCount, 1);
+    }
+
+    function testUnifiedPaymentSystem_MultipleParticipants() public {
+        bytes32 billId = keccak256("test_bill_multiple");
+        address customer2 = address(0x4);
+        address customer3 = address(0x5);
+        
+        // Fund and approve additional customers
+        usdc.mint(customer2, INITIAL_BALANCE);
+        usdc.mint(customer3, INITIAL_BALANCE);
+        vm.prank(customer2);
+        usdc.approve(address(payverge), type(uint256).max);
+        vm.prank(customer3);
+        usdc.approve(address(payverge), type(uint256).max);
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 122);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Multiple participants test", bytes32(uint256(2)));
+        
+        // Multiple customers pay different amounts
+        vm.prank(customer);
+        payverge.processPayment(billId, 40 * 10**6, 0); // 40 USDC
+        
+        vm.prank(customer2);
+        payverge.processPayment(billId, 35 * 10**6, 0); // 35 USDC
+        
+        vm.prank(customer3);
+        payverge.processPayment(billId, 25 * 10**6, 0); // 25 USDC
+        
+        // Verify bill completion
+        (uint8 participantCount, , uint256 paidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 3);
+        assertEq(paidAmount, BILL_AMOUNT);
+        assertTrue(isPaid);
+        
+        // Verify all participants
+        address[] memory participants = payverge.getBillParticipants(billId);
+        assertEq(participants.length, 3);
+        assertEq(participants[0], customer);
+        assertEq(participants[1], customer2);
+        assertEq(participants[2], customer3);
+        
+        // Verify individual participant amounts
+        (uint256 customer1Paid, , ) = payverge.getParticipantInfo(billId, customer);
+        (uint256 customer2Paid, , ) = payverge.getParticipantInfo(billId, customer2);
+        (uint256 customer3Paid, , ) = payverge.getParticipantInfo(billId, customer3);
+        
+        assertEq(customer1Paid, 40 * 10**6);
+        assertEq(customer2Paid, 35 * 10**6);
+        assertEq(customer3Paid, 25 * 10**6);
+    }
+
+    function testUnifiedPaymentSystem_MultiplePaymentsSamePerson() public {
+        bytes32 billId = keccak256("test_bill_multiple_payments");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 183);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Multiple payments test", bytes32(uint256(3)));
+        
+        // Same customer makes multiple payments
+        vm.prank(customer);
+        payverge.processPayment(billId, 30 * 10**6, 0); // First payment
+        
+        vm.prank(customer);
+        payverge.processPayment(billId, 40 * 10**6, 0); // Second payment
+        
+        vm.prank(customer);
+        payverge.processPayment(billId, 30 * 10**6, 0); // Third payment
+        
+        // Verify bill completion
+        (uint8 participantCount, , uint256 paidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 1); // Only one unique participant
+        assertEq(paidAmount, BILL_AMOUNT);
+        assertTrue(isPaid);
+        
+        // Verify participant made multiple payments
+        (uint256 participantPaid, uint32 paymentCount, ) = payverge.getParticipantInfo(billId, customer);
+        assertEq(participantPaid, BILL_AMOUNT);
+        assertEq(paymentCount, 3);
+    }
+
+    function testUnifiedPaymentSystem_PartialPayments() public {
+        bytes32 billId = keccak256("test_bill_partial");
+        address customer2 = address(0x4);
+        
+        // Fund and approve additional customer
+        usdc.mint(customer2, INITIAL_BALANCE);
+        vm.prank(customer2);
+        usdc.approve(address(payverge), type(uint256).max);
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 244);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Partial payments test", bytes32(uint256(4)));
+        
+        // Partial payments that don't complete the bill
+        vm.prank(customer);
+        payverge.processPayment(billId, 30 * 10**6, 0);
+        
+        vm.prank(customer2);
+        payverge.processPayment(billId, 20 * 10**6, 0);
+        
+        // Verify bill is not complete
+        (uint8 participantCount, , uint256 paidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 2);
+        assertEq(paidAmount, 50 * 10**6);
+        assertFalse(isPaid);
+        
+        // Complete the bill
+        vm.prank(customer);
+        payverge.processPayment(billId, 50 * 10**6, 0);
+        
+        // Verify completion
+        (, , paidAmount, isPaid) = payverge.getBillSummary(billId);
+        assertEq(paidAmount, BILL_AMOUNT);
+        assertTrue(isPaid);
+    }
+
+    function testUnifiedPaymentSystem_WithTips() public {
+        bytes32 billId = keccak256("test_bill_tips");
+        uint256 tipAmount = 10 * 10**6; // 10 USDC tip
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 305);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Tips test", bytes32(uint256(5)));
+        
+        // Pay with tip
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, tipAmount);
+        
+        // Verify bill completion
+        (uint8 participantCount, , uint256 paidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 1);
+        assertEq(paidAmount, BILL_AMOUNT);
+        assertTrue(isPaid);
+        
+        // Verify tip is claimable
+        (, uint256 claimableTips) = payverge.getClaimableAmounts(businessOwner, businessOwner);
+        assertEq(claimableTips, tipAmount);
+    }
+
+    // ============ EDGE CASES AND ATTACK VECTORS ============
+
+    function testEdgeCase_ExactPaymentAmount() public {
+        bytes32 billId = keccak256("test_exact_payment");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 366);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Exact payment test", bytes32(uint256(6)));
+        
+        // Pay exact amount
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Verify no overpayment possible (small amount hits minimum validation first)
+        vm.prank(customer);
+        vm.expectRevert("Amount too small");
+        payverge.processPayment(billId, 1, 0);
+        
+        // Test with valid amount - bill is completed so it's "not active"
+        vm.prank(customer);
+        vm.expectRevert("Bill not active");
+        payverge.processPayment(billId, 100, 0);
+    }
+
+    function testEdgeCase_MinimumPaymentAmount() public {
+        bytes32 billId = keccak256("test_min_payment");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 427);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Min payment test", bytes32(uint256(7)));
+        
+        // Try payment below minimum
+        vm.prank(customer);
+        vm.expectRevert("Amount too small");
+        payverge.processPayment(billId, 99, 0); // Below MIN_PAYMENT_AMOUNT (100)
+        
+        // Pay minimum amount
+        vm.prank(customer);
+        payverge.processPayment(billId, 100, 0); // Exactly MIN_PAYMENT_AMOUNT
+    }
+
+    function testEdgeCase_MaxParticipants() public {
+        bytes32 billId = keccak256("test_max_participants");
+        uint256 largeAmount = 2000 * 10**6; // 2000 USDC to allow many small payments
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 488);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, largeAmount, "Max participants test", bytes32(uint256(8)));
+        
+        // Create many participants (up to reasonable limit)
+        for (uint256 i = 0; i < 50; i++) {
+            address participant = address(uint160(0x1000 + i));
+            usdc.mint(participant, INITIAL_BALANCE);
+            vm.prank(participant);
+            usdc.approve(address(payverge), type(uint256).max);
+            
+            vm.prank(participant);
+            payverge.processPayment(billId, 100, 0); // Small payment from each
+        }
+        
+        // Verify all participants tracked
+        (uint8 participantCount, , , ) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 50);
+        
+        address[] memory participants = payverge.getBillParticipants(billId);
+        assertEq(participants.length, 50);
+    }
+
+    function testAttack_OverpaymentAttempt() public {
+        bytes32 billId = keccak256("test_overpayment_attack");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 549);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Overpayment attack test", bytes32(uint256(9)));
+        
+        // Attempt to overpay
+        vm.prank(customer);
+        vm.expectRevert("Excessive payment");
+        payverge.processPayment(billId, BILL_AMOUNT + 1, 0);
+        
+        // Pay partial amount
+        vm.prank(customer);
+        payverge.processPayment(billId, 50 * 10**6, 0);
+        
+        // Attempt to overpay remaining
+        vm.prank(customer);
+        vm.expectRevert("Excessive payment");
+        payverge.processPayment(billId, 51 * 10**6, 0);
+    }
+
+    function testAttack_PaymentToCompletedBill() public {
+        bytes32 billId = keccak256("test_completed_bill_attack");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 610);
+        
+        // Create and complete bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Completed bill attack test", bytes32(uint256(10)));
+        
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Verify bill is completed
+        (, , , bool isPaid) = payverge.getBillSummary(billId);
+        assertTrue(isPaid);
+        
+        // Attempt payment to completed bill (small amount hits minimum validation first)
+        vm.prank(customer);
+        vm.expectRevert("Amount too small");
+        payverge.processPayment(billId, 1, 0);
+        
+        // Test with valid amount - bill is completed so it's "not active"
+        vm.prank(customer);
+        vm.expectRevert("Bill not active");
+        payverge.processPayment(billId, 100, 0);
+    }
+
+    function testAttack_DustPaymentGriefing() public {
+        bytes32 billId = keccak256("test_dust_attack");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 671);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Dust attack test", bytes32(uint256(11)));
+        
+        // Make many dust payments (minimum amount)
+        for (uint256 i = 0; i < 10; i++) {
+            address dustAttacker = address(uint160(0x2000 + i));
+            usdc.mint(dustAttacker, INITIAL_BALANCE);
+            vm.prank(dustAttacker);
+            usdc.approve(address(payverge), type(uint256).max);
+            
+            vm.prank(dustAttacker);
+            payverge.processPayment(billId, 100, 0); // Minimum payment
+        }
+        
+        // Verify dust payments are tracked but don't break system
+        (uint8 participantCount, , uint256 paidAmount, ) = payverge.getBillSummary(billId);
+        assertEq(participantCount, 10);
+        assertEq(paidAmount, 1000); // 10 * 100
+        
+        // System should still function normally
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT - 1000, 0);
+        
+        (, , , bool isPaid) = payverge.getBillSummary(billId);
+        assertTrue(isPaid);
+    }
+
+    function testEdgeCase_ZeroTipAmount() public {
+        bytes32 billId = keccak256("test_zero_tip");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 732);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Zero tip test", bytes32(uint256(12)));
+        
+        // Pay with zero tip
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Verify no tip recorded
+        (uint256 claimablePayments, uint256 claimableTips) = payverge.getClaimableAmounts(businessOwner, businessOwner);
+        assertEq(claimableTips, 0);
+        assertTrue(claimablePayments > 0); // Should have business payment
+    }
+
+    function testEdgeCase_LargeTipAmount() public {
+        bytes32 billId = keccak256("test_large_tip");
+        uint256 largeTip = 1000 * 10**6; // 1000 USDC tip (larger than bill)
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 793);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Large tip test", bytes32(uint256(13)));
+        
+        // Pay with large tip
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, largeTip);
+        
+        // Verify large tip is handled correctly
+        (, uint256 claimableTips) = payverge.getClaimableAmounts(businessOwner, businessOwner);
+        assertEq(claimableTips, largeTip);
+    }
+
+    function testInvariant_ParticipantCountConsistency() public {
+        bytes32 billId = keccak256("test_participant_consistency");
+        address customer2 = address(0x4);
+        
+        // Fund additional customer
+        usdc.mint(customer2, INITIAL_BALANCE);
+        vm.prank(customer2);
+        usdc.approve(address(payverge), type(uint256).max);
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 854);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Participant consistency test", bytes32(uint256(14)));
+        
+        // Make payments from different participants
+        vm.prank(customer);
+        payverge.processPayment(billId, 30 * 10**6, 0);
+        
+        vm.prank(customer2);
+        payverge.processPayment(billId, 20 * 10**6, 0);
+        
+        vm.prank(customer); // Same participant again
+        payverge.processPayment(billId, 50 * 10**6, 0);
+        
+        // Verify participant count consistency
+        (uint8 participantCount, , , ) = payverge.getBillSummary(billId);
+        address[] memory participants = payverge.getBillParticipants(billId);
+        
+        assertEq(participantCount, 2); // Only 2 unique participants
+        assertEq(participants.length, 2);
+        
+        // Verify participation status
+        assertTrue(payverge.hasParticipatedInBill(billId, customer));
+        assertTrue(payverge.hasParticipatedInBill(billId, customer2));
+        assertFalse(payverge.hasParticipatedInBill(billId, address(0x999)));
+    }
+
+    function testInvariant_PaymentSumEqualsTotal() public {
+        bytes32 billId = keccak256("test_payment_sum");
+        address[] memory customers = new address[](5);
+        uint256[] memory amounts = new uint256[](5);
+        
+        // Setup multiple customers
+        for (uint256 i = 0; i < 5; i++) {
+            customers[i] = address(uint160(0x3000 + i));
+            amounts[i] = (i + 1) * 10 * 10**6; // 10, 20, 30, 40, 50 USDC
+            usdc.mint(customers[i], INITIAL_BALANCE);
+            vm.prank(customers[i]);
+            usdc.approve(address(payverge), type(uint256).max);
+        }
+        
+        uint256 totalExpected = 150 * 10**6; // Sum of amounts
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 915);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, totalExpected, "Payment sum test", bytes32(uint256(15)));
+        
+        // Make payments
+        uint256 totalPaid = 0;
+        for (uint256 i = 0; i < 5; i++) {
+            vm.prank(customers[i]);
+            payverge.processPayment(billId, amounts[i], 0);
+            totalPaid += amounts[i];
+        }
+        
+        // Verify invariant: sum of individual payments equals total paid
+        (, , uint256 billPaidAmount, bool isPaid) = payverge.getBillSummary(billId);
+        assertEq(billPaidAmount, totalPaid);
+        assertEq(totalPaid, totalExpected);
+        assertTrue(isPaid);
+        
+        // Verify individual participant amounts sum correctly
+        uint256 participantSum = 0;
+        for (uint256 i = 0; i < 5; i++) {
+            (uint256 participantPaid, , ) = payverge.getParticipantInfo(billId, customers[i]);
+            participantSum += participantPaid;
+        }
+        assertEq(participantSum, totalPaid);
+    }
+
+    // ============ ADMIN FUNCTION TESTS ============
+
+    function testPlatformFeeUpdateFlow() public {
+        uint256 newFeeRate = 300; // 3%
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 976);
+        
+        // Propose fee update
+        vm.prank(admin);
+        payverge.proposePlatformFeeUpdate(newFeeRate);
+        
+        // Try to execute before timelock expires
+        vm.prank(admin);
+        vm.expectRevert("Timelock not expired");
+        payverge.executePlatformFeeUpdate();
+        
+        // Wait for timelock to expire (24 hours + 1 second)
+        vm.warp(block.timestamp + 24 hours + 1);
+        
+        // Execute fee update
+        vm.prank(admin);
+        payverge.executePlatformFeeUpdate();
+        
+        // Verify fee was updated
+        assertEq(payverge.platformFeeRate(), newFeeRate);
+    }
+
+    function testPlatformFeeUpdateCancel() public {
+        uint256 newFeeRate = 250; // 2.5%
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1037);
+        
+        // Propose fee update
+        vm.prank(admin);
+        payverge.proposePlatformFeeUpdate(newFeeRate);
+        
+        // Cancel fee update
+        vm.prank(admin);
+        payverge.cancelPlatformFeeUpdate();
+        
+        // Try to execute cancelled update
+        vm.prank(admin);
+        vm.expectRevert("No pending fee update");
+        payverge.executePlatformFeeUpdate();
+        
+        // Verify original fee rate unchanged
+        assertEq(payverge.platformFeeRate(), PLATFORM_FEE_RATE);
+    }
+
+    function testPlatformFeeUpdateValidation() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1098);
+        
+        // Try to propose fee rate too high
+        vm.prank(admin);
+        vm.expectRevert("Fee too high");
+        payverge.proposePlatformFeeUpdate(1001); // > 10% (MAX_PLATFORM_FEE = 1000)
+        
+        // Try to propose with non-admin
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.proposePlatformFeeUpdate(300);
+    }
+
+    function testRegistrationFeeUpdateFlow() public {
+        uint256 newRegFee = 50 * 10**6; // 50 USDC
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1159);
+        
+        // Propose registration fee update
+        vm.prank(admin);
+        payverge.proposeRegistrationFeeUpdate(newRegFee);
+        
+        // Try to execute before timelock expires
+        vm.prank(admin);
+        vm.expectRevert("Timelock not expired");
+        payverge.executeRegistrationFeeUpdate();
+        
+        // Wait for timelock to expire
+        vm.warp(block.timestamp + 24 hours + 1);
+        
+        // Execute registration fee update
+        vm.prank(admin);
+        payverge.executeRegistrationFeeUpdate();
+        
+        // Verify fee was updated
+        assertEq(payverge.getRegistrationFee(), newRegFee);
+    }
+
+    function testRegistrationFeeUpdateCancel() public {
+        uint256 newRegFee = 25 * 10**6; // 25 USDC
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1220);
+        
+        // Propose registration fee update
+        vm.prank(admin);
+        payverge.proposeRegistrationFeeUpdate(newRegFee);
+        
+        // Cancel registration fee update
+        vm.prank(admin);
+        payverge.cancelRegistrationFeeUpdate();
+        
+        // Try to execute cancelled update
+        vm.prank(admin);
+        vm.expectRevert("No pending fee update");
+        payverge.executeRegistrationFeeUpdate();
+        
+        // Verify original fee unchanged (should be 0 from setup)
+        assertEq(payverge.getRegistrationFee(), 0);
+    }
+
+    function testRegistrationFeeUpdateValidation() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1281);
+        
+        // Try to propose fee too high
+        vm.prank(admin);
+        vm.expectRevert("Registration fee too high");
+        payverge.proposeRegistrationFeeUpdate(1001 * 10**6); // > $1000 max
+        
+        // Try to propose with non-admin
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.proposeRegistrationFeeUpdate(50 * 10**6);
+    }
+
+    function testFeeUpdateDelayManagement() public {
+        uint256 newDelay = 48 hours; // 2 days
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1342);
+        
+        // Update fee delay
+        vm.prank(admin);
+        payverge.setFeeUpdateDelay(newDelay);
+        
+        // Verify delay was updated
+        assertEq(payverge.feeUpdateDelay(), newDelay);
+        
+        // Test validation - delay too short
+        vm.prank(admin);
+        vm.expectRevert("Delay too short");
+        payverge.setFeeUpdateDelay(30 minutes);
+        
+        // Test validation - delay too long
+        vm.prank(admin);
+        vm.expectRevert("Delay too long");
+        payverge.setFeeUpdateDelay(31 days);
+        
+        // Test access control
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.setFeeUpdateDelay(12 hours);
+    }
+
+    function testBillCreatorManagement() public {
+        address newBillCreator = address(0x999);
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1403);
+        
+        // Update bill creator
+        vm.prank(admin);
+        payverge.setBillCreator(newBillCreator);
+        
+        // Verify bill creator was updated
+        assertEq(payverge.billCreatorAddress(), newBillCreator);
+        
+        // Test validation - zero address
+        vm.prank(admin);
+        vm.expectRevert("Zero address");
+        payverge.setBillCreator(address(0));
+        
+        // Test access control
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.setBillCreator(address(0x888));
+    }
+
+    function testPendingFeeInfoRetrieval() public {
+        uint256 newRegFee = 100 * 10**6; // 100 USDC
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1464);
+        
+        // Initially no pending fee
+        (uint256 pendingFee, uint256 executeAfter) = payverge.getPendingRegistrationFeeInfo();
+        assertEq(pendingFee, 0);
+        assertEq(executeAfter, 0);
+        
+        // Propose registration fee update
+        vm.prank(admin);
+        payverge.proposeRegistrationFeeUpdate(newRegFee);
+        
+        // Check pending fee info
+        (pendingFee, executeAfter) = payverge.getPendingRegistrationFeeInfo();
+        assertEq(pendingFee, newRegFee);
+        assertGt(executeAfter, block.timestamp); // Should be in the future
+    }
+
+    // ============ EMERGENCY FUNCTION TESTS ============
+
+    function testPauseUnpauseFlow() public {
+        bytes32 billId = keccak256("test_pause_bill");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1525);
+        
+        // Create bill while unpaused
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Pause test", bytes32(uint256(100)));
+        
+        // Pause contract
+        vm.prank(admin);
+        payverge.pause();
+        
+        // Try to create bill while paused (need to skip rate limit first)
+        vm.warp(block.timestamp + 61);
+        vm.prank(admin);
+        vm.expectRevert();
+        payverge.createBill(keccak256("paused_bill"), businessOwner, BILL_AMOUNT, "Should fail", bytes32(uint256(101)));
+        
+        // Try to process payment while paused
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Unpause contract
+        vm.prank(admin);
+        payverge.unpause();
+        
+        // Should work again after unpause
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 0);
+        
+        // Verify bill was completed
+        (, , , bool isPaid) = payverge.getBillSummary(billId);
+        assertTrue(isPaid);
+    }
+
+    function testPauseAccessControl() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1586);
+        
+        // Non-admin cannot pause
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.pause();
+        
+        // Non-admin cannot unpause
+        vm.prank(customer);
+        vm.expectRevert();
+        payverge.unpause();
+    }
+
+    // ============ VIEW FUNCTION TESTS ============
+
+    function testGetBusinessBillCount() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1647);
+        
+        // Initially zero bills
+        assertEq(payverge.getBusinessBillCount(businessOwner), 0);
+        
+        // Create multiple bills
+        for (uint256 i = 0; i < 3; i++) {
+            vm.warp(block.timestamp + 61); // Skip rate limit for each bill
+            bytes32 billId = keccak256(abi.encodePacked("test_bill_count", i));
+            vm.prank(admin);
+            payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Count test", bytes32(uint256(200 + i)));
+        }
+        
+        // Verify bill count
+        assertEq(payverge.getBusinessBillCount(businessOwner), 3);
+    }
+
+    function testGetBillFunction() public {
+        bytes32 billId = keccak256("test_get_bill");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1830);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Get bill test", bytes32(uint256(300)));
+        
+        // Get bill info
+        PayvergePayments.Bill memory bill = payverge.getBill(billId);
+        assertEq(bill.businessAddress, businessOwner);
+        assertEq(bill.totalAmount, BILL_AMOUNT);
+        assertEq(bill.paidAmount, 0);
+        assertFalse(bill.isPaid);
+        assertFalse(bill.isCancelled);
+        assertEq(bill.participantCount, 0);
+        
+        // Test non-existent bill
+        vm.expectRevert("Bill not found");
+        payverge.getBill(keccak256("non_existent"));
+    }
+
+    function testGetBusinessInfo() public {
+        // Get business info
+        PayvergePayments.BusinessInfo memory business = payverge.getBusinessInfo(businessOwner);
+        assertTrue(business.isActive);
+        assertEq(business.paymentAddress, businessOwner);
+        assertEq(business.tippingAddress, businessOwner);
+        assertGt(business.registrationDate, 0);
+        
+        // Test non-existent business
+        PayvergePayments.BusinessInfo memory nonExistent = payverge.getBusinessInfo(address(0x999));
+        assertFalse(nonExistent.isActive);
+        assertEq(nonExistent.paymentAddress, address(0));
+    }
+
+    function testGetBillPayments() public {
+        bytes32 billId = keccak256("test_get_payments");
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1891);
+        
+        // Create bill
+        vm.prank(admin);
+        payverge.createBill(billId, businessOwner, BILL_AMOUNT, "Payments test", bytes32(uint256(400)));
+        
+        // Initially no payments
+        PayvergePayments.Payment[] memory payments = payverge.getBillPayments(billId);
+        assertEq(payments.length, 0);
+        
+        // Make payment
+        vm.prank(customer);
+        payverge.processPayment(billId, BILL_AMOUNT, 10 * 10**6); // With tip
+        
+        // Get payments
+        payments = payverge.getBillPayments(billId);
+        assertEq(payments.length, 1);
+        assertEq(payments[0].payer, customer);
+        assertEq(payments[0].amount, BILL_AMOUNT);
+        assertEq(payments[0].tipAmount, 10 * 10**6);
+        assertGt(payments[0].platformFee, 0);
+    }
+
+    // ============ INTEGRATION TESTS ============
+
+    function testCompleteAdminWorkflow() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 1952);
+        
+        // 1. Update fee delay
+        vm.prank(admin);
+        payverge.setFeeUpdateDelay(12 hours);
+        
+        // 2. Propose platform fee update
+        vm.prank(admin);
+        payverge.proposePlatformFeeUpdate(250); // 2.5%
+        
+        // 3. Propose registration fee update
+        vm.prank(admin);
+        payverge.proposeRegistrationFeeUpdate(10 * 10**6); // 10 USDC
+        
+        // 4. Wait for timelock
+        vm.warp(block.timestamp + 12 hours + 1);
+        
+        // 5. Execute both updates
+        vm.prank(admin);
+        payverge.executePlatformFeeUpdate();
+        
+        vm.prank(admin);
+        payverge.executeRegistrationFeeUpdate();
+        
+        // 6. Verify all updates
+        assertEq(payverge.platformFeeRate(), 250);
+        assertEq(payverge.getRegistrationFee(), 10 * 10**6);
+        assertEq(payverge.feeUpdateDelay(), 12 hours);
+    }
+
+    function testVersionFunction() public {
+        string memory version = payverge.version();
+        assertEq(version, "5.0.0-unified-simple");
+    }
+
+    // ============ ERROR CONDITION TESTS ============
+
+    function testDoubleExecutionPrevention() public {
+        uint256 newFeeRate = 300;
+        
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 2013);
+        
+        // Propose and execute fee update
+        vm.prank(admin);
+        payverge.proposePlatformFeeUpdate(newFeeRate);
+        
+        vm.warp(block.timestamp + 24 hours + 1);
+        
+        vm.prank(admin);
+        payverge.executePlatformFeeUpdate();
+        
+        // Try to execute again
+        vm.prank(admin);
+        vm.expectRevert("No pending fee update");
+        payverge.executePlatformFeeUpdate();
+    }
+
+    function testCancelNonExistentUpdate() public {
+        // Skip time to avoid rate limiting
+        vm.warp(block.timestamp + 2074);
+        
+        // Try to cancel when no update is pending
+        vm.prank(admin);
+        vm.expectRevert("No pending fee update");
+        payverge.cancelPlatformFeeUpdate();
+        
+        vm.prank(admin);
+        vm.expectRevert("No pending fee update");
+        payverge.cancelRegistrationFeeUpdate();
     }
 }

@@ -373,3 +373,59 @@ export const formatUsdcAmount = (amount: bigint): string => {
 export const parseUsdcAmount = (amount: string): bigint => {
   return parseUnits(amount, 6); // USDC has 6 decimals
 };
+
+// New hooks for unified payment system features
+
+export const useBillParticipants = (billId: string) => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.address,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getBillParticipants',
+    args: [billId as `0x${string}`],
+  });
+};
+
+export const useParticipantInfo = (billId: string, participant: Address) => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.address,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getParticipantInfo',
+    args: [billId as `0x${string}`, participant],
+  });
+};
+
+export const useHasParticipated = (billId: string, participant: Address) => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.address,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'hasParticipatedInBill',
+    args: [billId as `0x${string}`, participant],
+  });
+};
+
+export const useBillSummary = (billId: string) => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.address,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getBillSummary',
+    args: [billId as `0x${string}`],
+  });
+};
+
+export const useRegistrationFee = () => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.address,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getRegistrationFee',
+  });
+};

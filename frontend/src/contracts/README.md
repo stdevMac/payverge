@@ -45,12 +45,15 @@ function PaymentComponent({ billId }: { billId: string }) {
 ### Read Hooks
 - `useBill(billId)` - Get bill details
 - `useBillPayments(billId)` - Get all payments for a bill
+- `useBillSummary(billId)` - Get bill summary with participant count and status
+- `useBillParticipants(billId)` - Get all participants who have paid
+- `useParticipantInfo(billId, address)` - Get specific participant's payment details
+- `useHasParticipated(billId, address)` - Check if address has participated in bill
 - `useBusinessInfo(address)` - Get business information
 - `useBusinessBillCount(address)` - Get total bill count for a business
 - `useClaimableBalance(address)` - Get claimable payments and tips
 - `usePlatformFeeRate()` - Get current platform fee rate
-- `useDailyPaymentLimit(address?)` - Get daily payment limit
-- `useRemainingDailyLimit(address?)` - Get remaining daily limit
+- `useRegistrationFee()` - Get current business registration fee
 
 ### Write Hooks
 - `useCreateBill()` - Create a new bill (admin-controlled bill creator only)
@@ -248,3 +251,58 @@ if (error) {
 ## Integration with Existing Payverge Components
 
 This module integrates seamlessly with existing Payverge components like `PaymentProcessor`, `BillCreator`, and analytics dashboards. Simply import the hooks and replace any direct ethers.js calls with the wagmi equivalents.
+
+### Unified Payment System Example
+
+```typescript
+function UnifiedBillPayment({ billId }: { billId: string }) {
+  const { data: billSummary } = useBillSummary(billId);
+  const { data: participants } = useBillParticipants(billId);
+  const { data: hasParticipated } = useHasParticipated(billId, address);
+  const { processPayment } = useProcessPayment();
+  
+  const handlePayment = async (amount: string) => {
+    await processPayment({
+      billId,
+      amount: parseUsdcAmount(amount),
+      tipAmount: 0n,
+    });
+  };
+  
+  return (
+    <div>
+      <h3>Bill Summary</h3>
+      <p>Total: ${formatUsdcAmount(billSummary?.totalAmount || 0n)}</p>
+      <p>Paid: ${formatUsdcAmount(billSummary?.paidAmount || 0n)}</p>
+      <p>Participants: {billSummary?.participantCount || 0}</p>
+      <p>Status: {billSummary?.isPaid ? 'Paid' : 'Open'}</p>
+      
+      <h4>Participants</h4>
+      {participants?.map((participant, index) => (
+        <ParticipantCard key={index} billId={billId} address={participant} />
+      ))}
+      
+      {!hasParticipated && (
+        <div>
+          <input type="number" placeholder="Amount to pay" />
+          <button onClick={() => handlePayment('10.00')}>
+            Contribute to Bill
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ParticipantCard({ billId, address }: { billId: string; address: Address }) {
+  const { data: participantInfo } = useParticipantInfo(billId, address);
+  
+  return (
+    <div>
+      <p>Address: {address}</p>
+      <p>Paid: ${formatUsdcAmount(participantInfo?.paidAmount || 0n)}</p>
+      <p>Payments: {participantInfo?.paymentCount || 0}</p>
+    </div>
+  );
+}
+```

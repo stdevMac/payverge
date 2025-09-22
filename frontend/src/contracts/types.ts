@@ -1,8 +1,9 @@
-// TypeScript interfaces for PayvergePayments smart contract - Updated for new contract
+// TypeScript interfaces for PayvergePayments smart contract - Updated for v5.0.0-unified-simple
 export interface Bill {
   businessAddress: string;
   isPaid: boolean;
   isCancelled: boolean;
+  participantCount: number;
   createdAt: bigint;
   lastPaymentAt: bigint;
   totalAmount: bigint;
@@ -18,6 +19,12 @@ export interface Payment {
   amount: bigint;
   tipAmount: bigint;
   platformFee: bigint;
+}
+
+export interface Participant {
+  paidAmount: bigint;
+  paymentCount: number;
+  lastPaymentTime: number;
 }
 
 export interface BusinessInfo {

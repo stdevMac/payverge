@@ -48,12 +48,14 @@ export const getContractConfig = (chainId: number): ContractConfig => {
   return config;
 };
 
-// Contract constants - Updated to match new contract
+// Contract constants - Updated to match PayvergePayments v5.0.0-unified-simple
 export const CONTRACT_CONSTANTS = {
   FEE_DENOMINATOR: BigInt(10000), // 100.00% = 10000
   MAX_PLATFORM_FEE: BigInt(1000), // 10.00% = 1000
-  MIN_PAYMENT_AMOUNT: BigInt(100), // Minimum payment amount to prevent dust attacks
+  MIN_PAYMENT_AMOUNT: BigInt(100000), // $0.10 minimum payment (6 decimals)
   MAX_BILL_AMOUNT: BigInt(1000000 * 1000000), // $1M max per bill (6 decimals)
+  MAX_REGISTRATION_FEE: BigInt(1000 * 1000000), // $1000 max registration fee (6 decimals)
   RATE_LIMIT_WINDOW: BigInt(60), // 1 minute rate limit window
   FEE_UPDATE_DELAY: BigInt(24 * 60 * 60), // 24 hours for fee updates
+  MAX_PARTICIPANTS: 20, // Maximum participants per bill
 } as const;
