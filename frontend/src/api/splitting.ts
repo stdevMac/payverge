@@ -82,7 +82,8 @@ export class SplittingAPI {
    */
   static async getSplitOptions(billId: number): Promise<SplitOptions> {
     const response = await apiClient.get(`/bills/${billId}/split/options`);
-    return response.data.result;
+    // Backend returns the data directly, not in a "result" field
+    return response.data;
   }
 
   // Execute split payment coordination
