@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { useUserStore } from "@/store/useUserStore";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,7 +34,19 @@ export default function Dashboard() {
     await fetchUserDataDirectly();
   };
 
-  const fetchUserDataDirectly = async () => {
+  const loadBusinesses = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getMyBusinesses();
+      setBusinesses(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchUserDataDirectly = useCallback(async () => {
     try {
       const token = getCookie("session_token");
       
@@ -97,7 +109,7 @@ export default function Dashboard() {
       setLoading(false);
       setAuthChecked(true);
     }
-  };
+  }, [loadBusinesses]);
 
 
   // Form state
@@ -199,26 +211,15 @@ export default function Dashboard() {
     }, 500); // Give UserProvider 500ms to initialize
 
     return () => clearTimeout(timer);
-  }, [isConnected, user]);
+  }, [isConnected, user, fetchUserDataDirectly]);
 
   // Reload when user changes
   useEffect(() => {
     if (user && authChecked && !error) {
       loadBusinesses();
     }
-  }, [user?.address]);
+  }, [user?.address, authChecked, error, loadBusinesses]);
 
-  const loadBusinesses = async () => {
-    try {
-      setLoading(true);
-      const data = await getMyBusinesses();
-      setBusinesses(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreateBusiness = async (e: React.FormEvent) => {
     e.preventDefault();

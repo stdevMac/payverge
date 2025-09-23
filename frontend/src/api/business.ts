@@ -93,7 +93,8 @@ export interface MenuItem {
   description: string;
   price: number;
   currency?: string;
-  image?: string;
+  image?: string;        // Keep for backward compatibility
+  images?: string[];     // New field for multiple images
   options?: MenuItemOption[];
   allergens?: string[];
   dietary_tags?: string[];
@@ -149,6 +150,7 @@ export const addMenuItem = async (businessId: number, categoryIndex: number, ite
     price: item.price,
     currency: item.currency || 'USD',
     image: item.image || '',
+    images: item.images || [],
     options: item.options || [],
     allergens: item.allergens || [],
     dietary_tags: item.dietary_tags || [],
@@ -172,6 +174,7 @@ export const updateMenuItem = async (businessId: number, categoryIndex: number, 
     price: item.price,
     currency: item.currency || 'USD',
     image: item.image || '',
+    images: item.images || [],
     options: item.options || [],
     allergens: item.allergens || [],
     dietary_tags: item.dietary_tags || [],

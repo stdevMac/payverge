@@ -17,10 +17,11 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@nextui-org/react';
-import { ShoppingCart, Plus, Eye, Check, Info, X, Minus } from 'lucide-react';
+import { ShoppingCart, Plus, Eye, Check, Info, Minus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { MenuCategory, MenuItem, Business } from '../../api/business';
 import { BillResponse } from '../../api/bills';
+import { ImageCarousel } from './ImageCarousel';
 
 interface GuestMenuProps {
   categories: MenuCategory[];
@@ -48,6 +49,22 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
 
   const formatCurrency = (amount: number | undefined | null) => {
     return `$${(amount || 0).toFixed(2)}`;
+  };
+
+  const getItemImages = (item: MenuItem): string[] => {
+    const images: string[] = [];
+    
+    // Add images from the new images array
+    if (item.images && Array.isArray(item.images)) {
+      images.push(...item.images.filter(img => img && img.trim() !== ''));
+    }
+    
+    // Add the single image for backward compatibility (if not already in images array)
+    if (item.image && item.image.trim() !== '' && !images.includes(item.image)) {
+      images.unshift(item.image); // Add to beginning for primary image
+    }
+    
+    return images;
   };
 
   const getTotalItems = () => {
@@ -252,21 +269,27 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
               {Array.isArray(categories[selectedCategory]?.items) && categories[selectedCategory].items.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
-                  className="group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                  className={`group bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 cursor-pointer relative ${!item.is_available ? 'opacity-60' : ''}`}
                   onClick={() => handleItemClick(item)}
                 >
+                  {!item.is_available && (
+                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                      Unavailable
+                    </div>
+                  )}
                   <div className="flex gap-6">
-                    {item.image && (
-                      <div className="flex-shrink-0">
-                        <div className="w-28 h-28 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
+                    <div className="relative">
+                      <ImageCarousel
+                        images={getItemImages(item)}
+                        itemName={item.name}
+                        size="md"
+                      />
+                      {getItemImages(item).length > 1 && (
+                        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-1.5 py-0.5 rounded-full">
+                          {getItemImages(item).length}
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
@@ -288,10 +311,47 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                             </Button>
                           </div>
                           {item.description && (
-                            <p className="text-gray-600 font-light leading-relaxed">
+                            <p className="text-gray-600 font-light leading-relaxed mb-3">
                               {item.description}
                             </p>
                           )}
+                          
+                          {/* Subtle Allergens and Dietary Tags */}
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            {item.allergens && item.allergens.length > 0 && (
+                              <div className="flex items-center gap-1">
+                                <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                                <span className="text-xs text-orange-600 font-medium">
+                                  Contains allergens
+                                </span>
+                              </div>
+                            )}
+                            {item.dietary_tags && item.dietary_tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {item.dietary_tags.slice(0, 2).map((tag, index) => (
+                                  <Chip
+                                    key={index}
+                                    size="sm"
+                                    variant="flat"
+                                    color="success"
+                                    className="text-xs h-5 px-2"
+                                  >
+                                    {tag}
+                                  </Chip>
+                                ))}
+                                {item.dietary_tags.length > 2 && (
+                                  <Chip
+                                    size="sm"
+                                    variant="flat"
+                                    color="default"
+                                    className="text-xs h-5 px-2"
+                                  >
+                                    +{item.dietary_tags.length - 2} more
+                                  </Chip>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="text-right ml-6">
                           <p className="text-2xl font-light text-gray-900 tracking-wide">
@@ -397,32 +457,29 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-light text-gray-900 tracking-wide">
-                    {selectedItem?.name}
-                  </h2>
-                  <Button
-                    isIconOnly
-                    variant="light"
-                    onPress={onClose}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-5 h-5" />
-                  </Button>
-                </div>
+                <h2 className="text-2xl font-light text-gray-900 tracking-wide">
+                  {selectedItem?.name}
+                </h2>
                 <p className="text-lg font-light text-gray-900 tracking-wide">
                   {selectedItem && formatCurrency(selectedItem.price)}
                 </p>
               </ModalHeader>
               <ModalBody>
                 <div className="space-y-6">
-                  {selectedItem?.image && (
-                    <div className="w-full h-64 rounded-xl overflow-hidden border border-gray-200">
-                      <Image
-                        src={selectedItem.image}
-                        alt={selectedItem.name}
-                        className="w-full h-full object-cover"
+                  {selectedItem && getItemImages(selectedItem).length > 0 && (
+                    <div className="flex justify-center">
+                      <ImageCarousel
+                        images={getItemImages(selectedItem)}
+                        itemName={selectedItem.name}
+                        size="lg"
+                        className="w-full max-w-lg"
                       />
+                      {/* Debug info - remove this after testing */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <div className="absolute top-4 left-4 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                          Debug: {getItemImages(selectedItem).length} images
+                        </div>
+                      )}
                     </div>
                   )}
                   
@@ -484,11 +541,11 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                       {selectedItem.allergens && selectedItem.allergens.length > 0 && (
                         <div>
                           <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
-                            <Info className="w-5 h-5 text-orange-500" />
+                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                             Allergen Information
                           </h3>
-                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                            <p className="text-sm text-orange-800 font-medium mb-2">
+                          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                            <p className="text-sm text-orange-800 mb-3 font-medium">
                               ⚠️ This item contains or may contain:
                             </p>
                             <div className="flex flex-wrap gap-2">
@@ -497,8 +554,8 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                                   key={index}
                                   size="sm"
                                   color="warning"
-                                  variant="flat"
-                                  className="text-xs"
+                                  variant="solid"
+                                  className="text-xs font-medium"
                                 >
                                   {allergen}
                                 </Chip>
@@ -512,21 +569,23 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                       {selectedItem.dietary_tags && selectedItem.dietary_tags.length > 0 && (
                         <div>
                           <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
-                            <Check className="w-5 h-5 text-green-500" />
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                             Dietary Information
                           </h3>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedItem.dietary_tags.map((tag, index) => (
-                              <Chip
-                                key={index}
-                                size="sm"
-                                color="success"
-                                variant="flat"
-                                className="text-xs"
-                              >
-                                {tag}
-                              </Chip>
-                            ))}
+                          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                            <div className="flex flex-wrap gap-2">
+                              {selectedItem.dietary_tags.map((tag, index) => (
+                                <Chip
+                                  key={index}
+                                  size="sm"
+                                  color="success"
+                                  variant="solid"
+                                  className="text-xs font-medium"
+                                >
+                                  {tag}
+                                </Chip>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       )}

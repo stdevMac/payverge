@@ -25,6 +25,7 @@ import {
 import { businessApi, MenuItem, MenuCategory, MenuItemOption } from '../../api/business';
 import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
+import MultipleImageUpload from './MultipleImageUpload';
 import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign } from 'lucide-react';
 
 interface MenuBuilderProps {
@@ -60,6 +61,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [itemPrice, setItemPrice] = useState('');
   const [itemCurrency, setItemCurrency] = useState('USD');
   const [itemImage, setItemImage] = useState('');
+  const [itemImages, setItemImages] = useState<string[]>([]);
   const [itemAvailable, setItemAvailable] = useState(true);
   const [itemOptions, setItemOptions] = useState<MenuItemOption[]>([]);
   const [itemAllergens, setItemAllergens] = useState<string[]>([]);
@@ -131,6 +133,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemPrice('');
     setItemCurrency('USD');
     setItemImage('');
+    setItemImages([]);
     setItemAvailable(true);
     setItemOptions([]);
     setItemAllergens([]);
@@ -149,6 +152,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemPrice(item.price.toString());
     setItemCurrency(item.currency || 'USD');
     setItemImage(item.image || '');
+    setItemImages(item.images || []);
     setItemAvailable(item.is_available);
     setItemOptions(item.options || []);
     setItemAllergens(item.allergens || []);
@@ -225,12 +229,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     if (!itemName.trim() || !itemPrice || selectedCategoryIndex === null) return;
     
     try {
-      const item: MenuItem = {
-        name: itemName.trim(),
-        description: itemDescription.trim(),
+      const newItem: MenuItem = {
+        name: itemName,
+        description: itemDescription,
         price: parseFloat(itemPrice),
         currency: itemCurrency,
-        image: itemImage || undefined,
+        image: itemImage,
+        images: itemImages,
         is_available: itemAvailable,
         options: itemOptions,
         allergens: itemAllergens,
@@ -238,7 +243,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         sort_order: itemSortOrder,
       };
       
-      await businessApi.addMenuItem(businessId, selectedCategoryIndex, item);
+      await businessApi.addMenuItem(businessId, selectedCategoryIndex, newItem);
       await loadMenu();
       resetItemForm();
       onAddItemOpenChange();
@@ -262,12 +267,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     
     try {
       const updatedItem: MenuItem = {
-        id: editingItem?.id,
-        name: itemName.trim(),
-        description: itemDescription.trim(),
+        ...editingItem,
+        name: itemName,
+        description: itemDescription,
         price: parseFloat(itemPrice),
         currency: itemCurrency,
-        image: itemImage || undefined,
+        image: itemImage,
+        images: itemImages,
         is_available: itemAvailable,
         options: itemOptions,
         allergens: itemAllergens,
@@ -738,17 +744,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
 
                 <Divider />
 
-                {/* Image Upload */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    Image
-                  </h4>
-                  <ImageUpload
-                    onImageUploaded={setItemImage}
-                    currentImage={itemImage}
-                  />
-                </div>
+                {/* Multiple Image Upload */}
+                <MultipleImageUpload
+                  images={itemImages}
+                  onImagesChange={setItemImages}
+                  maxImages={5}
+                  businessId={businessId}
+                />
 
                 <Divider />
 
@@ -788,7 +790,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemOptions.map((option, index) => (
                         <Chip
-                          key={index}
+                          key={`allergen-${option.name}-${index}`}
                           onClose={() => removeOption(index)}
                           variant="flat"
                           color="primary"
@@ -814,7 +816,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       placeholder="e.g., Nuts, Dairy, Gluten"
                       value={newAllergen}
                       onValueChange={setNewAllergen}
-                    />
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addAllergen();
+                        }
+                      }}
+                      />
                     <Button
                       color="warning"
                       variant="flat"
@@ -828,7 +836,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemAllergens.map((allergen, index) => (
                         <Chip
-                          key={index}
+                          key={`allergen-${allergen}-${index}`}
                           onClose={() => removeAllergen(allergen)}
                           variant="flat"
                           color="warning"
@@ -854,7 +862,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
                       value={newDietaryTag}
                       onValueChange={setNewDietaryTag}
-                    />
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addDietaryTag();
+                        }
+                      }}
+                      />
                     <Button
                       color="success"
                       variant="flat"
@@ -868,7 +882,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemDietaryTags.map((tag, index) => (
                         <Chip
-                          key={index}
+                          key={`dietary-${tag}-${index}`}
                           onClose={() => removeDietaryTag(tag)}
                           variant="flat"
                           color="success"
@@ -981,17 +995,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
 
                 <Divider />
 
-                {/* Image Upload */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    Image
-                  </h4>
-                  <ImageUpload
-                    onImageUploaded={setItemImage}
-                    currentImage={itemImage}
-                  />
-                </div>
+                {/* Multiple Image Upload */}
+                <MultipleImageUpload
+                  images={itemImages}
+                  onImagesChange={setItemImages}
+                  maxImages={5}
+                  businessId={businessId}
+                />
 
                 <Divider />
 
@@ -1031,7 +1041,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemOptions.map((option, index) => (
                         <Chip
-                          key={index}
+                          key={`allergen-${option.name}-${index}`}
                           onClose={() => removeOption(index)}
                           variant="flat"
                           color="primary"
@@ -1057,7 +1067,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       placeholder="e.g., Nuts, Dairy, Gluten"
                       value={newAllergen}
                       onValueChange={setNewAllergen}
-                    />
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addAllergen();
+                        }
+                      }}
+                      />
                     <Button
                       color="warning"
                       variant="flat"
@@ -1071,7 +1087,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemAllergens.map((allergen, index) => (
                         <Chip
-                          key={index}
+                          key={`allergen-${allergen}-${index}`}
                           onClose={() => removeAllergen(allergen)}
                           variant="flat"
                           color="warning"
@@ -1097,7 +1113,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
                       value={newDietaryTag}
                       onValueChange={setNewDietaryTag}
-                    />
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addDietaryTag();
+                        }
+                      }}
+                      />
                     <Button
                       color="success"
                       variant="flat"
@@ -1111,7 +1133,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="flex flex-wrap gap-2">
                       {itemDietaryTags.map((tag, index) => (
                         <Chip
-                          key={index}
+                          key={`dietary-${tag}-${index}`}
                           onClose={() => removeDietaryTag(tag)}
                           variant="flat"
                           color="success"

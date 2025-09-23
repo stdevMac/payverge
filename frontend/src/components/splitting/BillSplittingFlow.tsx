@@ -154,7 +154,7 @@ export default function BillSplittingFlow({
       // Generate unique split ID for this session
       setSplitId(`split_${bill.id}_${Date.now()}`);
     }
-  }, [isOpen, bill.id, loadBlockchainParticipants]);
+  }, [isOpen, bill.id, loadBlockchainParticipants, splittingAPI]);
 
   // Update people when split result changes
   useEffect(() => {

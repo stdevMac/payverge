@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardBody,
@@ -38,7 +38,7 @@ export const ParticipantTracker: React.FC<ParticipantTrackerProps> = ({
 
   const blockchainAPI = useBlockchainAPI();
 
-  const loadParticipants = async (showRefreshing = false) => {
+  const loadParticipants = useCallback(async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
     try {
       // Get participants list
@@ -72,7 +72,7 @@ export const ParticipantTracker: React.FC<ParticipantTrackerProps> = ({
       setLoading(false);
       if (showRefreshing) setRefreshing(false);
     }
-  };
+  }, [billId, blockchainAPI]);
 
   const handleRefresh = () => {
     loadParticipants(true);
@@ -89,7 +89,7 @@ export const ParticipantTracker: React.FC<ParticipantTrackerProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [billId, refreshInterval]);
+  }, [billId, refreshInterval, loadParticipants]);
 
   const progressPercentage = totalAmount > 0 ? (totalPaid / totalAmount) * 100 : 0;
   const remainingAmount = totalAmount - totalPaid;

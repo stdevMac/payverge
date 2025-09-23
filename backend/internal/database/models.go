@@ -124,7 +124,8 @@ type MenuItem struct {
 	Description string           `json:"description"`
 	Price       float64          `json:"price"`
 	Currency    string           `json:"currency"`
-	Image       string           `json:"image"`
+	Image       string           `json:"image"`       // Keep for backward compatibility
+	Images      []string         `json:"images"`      // New field for multiple images
 	Options     []MenuItemOption `json:"options"`
 	Allergens   []string         `json:"allergens"`
 	DietaryTags []string         `json:"dietary_tags"`
