@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { notifyPaymentWebhook } from '@/api/payments';
+import React, { useState } from 'react';
 import {
   Modal,
   ModalContent,
@@ -17,50 +16,6 @@ import {
   Progress,
 } from '@nextui-org/react';
 import { Wallet, AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseUnits, formatUnits } from 'viem';
-import WalletConnector from './WalletConnector';
-
-// PayvergePaymentsV2 ABI (key functions)
-const PAYVERGE_ABI = [
-  {
-    inputs: [
-      { name: "billId", type: "bytes32" },
-      { name: "amount", type: "uint256" },
-      { name: "tipAmount", type: "uint256" },
-      { name: "businessAddress", type: "address" },
-      { name: "tipAddress", type: "address" }
-    ],
-    name: "payBill",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  }
-] as const;
-
-// USDC ABI (for approval)
-const USDC_ABI = [
-  {
-    inputs: [
-      { name: "spender", type: "address" },
-      { name: "amount", type: "uint256" }
-    ],
-    name: "approve",
-    outputs: [{ name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [
-      { name: "owner", type: "address" },
-      { name: "spender", type: "address" }
-    ],
-    name: "allowance",
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function"
-  }
-] as const;
 
 interface PaymentProcessorProps {
   isOpen: boolean;
@@ -85,38 +40,22 @@ export default function PaymentProcessor({
   tipAddress,
   onPaymentComplete
 }: PaymentProcessorProps) {
+  console.log('PaymentProcessor: Rendering with props:', { isOpen, billId, amount });
+
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('amount');
   const [tipAmount, setTipAmount] = useState<string>('0');
   const [error, setError] = useState<string>('');
   const [transactionHash, setTransactionHash] = useState<string>('');
 
-  const { isConnected, address } = useAccount();
-
-  // Contract addresses (these should come from environment variables)
-  const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS as `0x${string}`;
-  const PAYVERGE_ADDRESS = process.env.NEXT_PUBLIC_PAYVERGE_ADDRESS as `0x${string}`;
-
-  const { writeContract: writeUSDC, data: approvalHash } = useWriteContract();
-  const { writeContract: writePayverge, data: paymentHash } = useWriteContract();
-
-  const { isLoading: isApprovalConfirming } = useWaitForTransactionReceipt({
-    hash: approvalHash,
-  });
-
-  const { isLoading: isPaymentConfirming, isSuccess: isPaymentSuccess } = useWaitForTransactionReceipt({
-    hash: paymentHash,
-  });
+  // Mock wagmi hooks for now
+  const isConnected = false;
+  const address = null;
 
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
 
   const tipPresets = [0, 0.15, 0.18, 0.20, 0.25];
   const tipValue = parseFloat(tipAmount) || 0;
   const totalAmount = amount + tipValue;
-
-  // Convert USD to USDC (6 decimals)
-  const amountUSDC = parseUnits(amount.toString(), 6);
-  const tipAmountUSDC = parseUnits(tipValue.toString(), 6);
-  const totalAmountUSDC = amountUSDC + tipAmountUSDC;
 
   const handleTipPreset = (percentage: number) => {
     const tip = amount * percentage;
@@ -140,77 +79,58 @@ export default function PaymentProcessor({
     setError('');
 
     try {
-      // Approve USDC spending
-      await writeUSDC({
-        address: USDC_ADDRESS,
-        abi: USDC_ABI,
-        functionName: 'approve',
-        args: [PAYVERGE_ADDRESS, totalAmountUSDC],
-      });
+      // TODO: Implement USDC approval when wagmi is set up
+      console.log('Mock: USDC approval for amount:', totalAmount);
+      setTimeout(() => {
+        setPaymentStep('payment');
+      }, 1000);
     } catch (err) {
       setError('Failed to approve USDC spending');
       setPaymentStep('error');
     }
   };
 
-  const handlePayment = React.useCallback(async () => {
+  const handlePayment = async () => {
     setPaymentStep('payment');
     setError('');
 
     try {
-      // Convert bill ID to bytes32
-      const billIdBytes32 = `0x${billId.toString(16).padStart(64, '0')}` as `0x${string}`;
-
-      await writePayverge({
-        address: PAYVERGE_ADDRESS,
-        abi: PAYVERGE_ABI,
-        functionName: 'payBill',
-        args: [
-          billIdBytes32,
-          amountUSDC,
-          tipAmountUSDC,
-          businessAddress as `0x${string}`,
-          tipAddress as `0x${string}`
-        ],
-      });
-
-      setTransactionHash(paymentHash || '');
-      setPaymentStep('confirming');
+      // TODO: Implement blockchain payment when wagmi is set up
+      console.log('Mock: Processing payment for bill:', billId, 'amount:', totalAmount);
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        setPaymentStep('success');
+        onPaymentComplete?.();
+      }, 2000);
     } catch (err) {
-      setError('Payment transaction failed');
+      setError('Failed to process payment');
       setPaymentStep('error');
     }
-  }, [writePayverge, billId, businessAddress, tipAddress, PAYVERGE_ADDRESS, amountUSDC, tipAmountUSDC, paymentHash]);
+  };
 
-  const notifyBackend = React.useCallback(async () => {
+  const notifyBackend = async () => {
     try {
-      await notifyPaymentWebhook({
-        billId: parseInt(billId.toString()),
-        transactionHash: paymentHash || '',
-        amount: Math.round(Number(amount) * 100), // Convert to cents
-        tipAmount: Math.round(Number(tipValue) * 100), // Convert to cents
-        payerAddress: address || '',
-        timestamp: new Date().toISOString(),
-      });
+      // TODO: Implement backend notification when API is ready
+      console.log('Mock: Notifying backend of payment completion');
     } catch (err) {
       console.error('Failed to notify backend:', err);
     }
-  }, [paymentHash, billId, amount, tipValue, address]);
+  };
 
-  // Watch for transaction confirmations
-  React.useEffect(() => {
-    if (transactionHash && paymentStep !== 'success') {
-      handlePayment()
-    }
-  }, [transactionHash, paymentStep, handlePayment]);
+  // TODO: Re-enable when wagmi is set up
+  // React.useEffect(() => {
+  //   if (transactionHash && paymentStep !== 'success') {
+  //     handlePayment()
+  //   }
+  // }, [transactionHash, paymentStep]);
 
-  React.useEffect(() => {
-    if (isPaymentSuccess) {
-      setPaymentStep('success');
-      // Notify backend about the payment
-      notifyBackend();
-    }
-  }, [isPaymentSuccess, notifyBackend]);
+  // React.useEffect(() => {
+  //   if (isPaymentSuccess) {
+  //     setPaymentStep('success');
+  //     notifyBackend();
+  //   }
+  // }, [isPaymentSuccess]);
 
 
   const handleClose = () => {
@@ -381,7 +301,11 @@ export default function PaymentProcessor({
             </CardBody>
           </Card>
 
-          <WalletConnector showBalance={true} showDisconnect={false} />
+          {/* TODO: Re-enable when WalletConnector is set up */}
+          {/* <WalletConnector showBalance={true} showDisconnect={false} /> */}
+          <div className="text-center text-gray-600">
+            <p>🔗 Wallet connection coming soon</p>
+          </div>
         </div>
       </ModalBody>
     </>

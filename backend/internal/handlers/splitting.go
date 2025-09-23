@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -31,7 +32,7 @@ func NewSplittingHandler(db *database.DB, blockchainService *blockchain.Blockcha
 // CalculateEqualSplit calculates equal split for a bill
 // POST /api/v1/bills/:id/split/equal
 func (h *SplittingHandler) CalculateEqualSplit(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -68,7 +69,7 @@ func (h *SplittingHandler) CalculateEqualSplit(c *gin.Context) {
 // CalculateCustomSplit calculates custom split for a bill
 // POST /api/v1/bills/:id/split/custom
 func (h *SplittingHandler) CalculateCustomSplit(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -110,7 +111,7 @@ func (h *SplittingHandler) CalculateCustomSplit(c *gin.Context) {
 // CalculateItemSplit calculates item-based split for a bill
 // POST /api/v1/bills/:id/split/items
 func (h *SplittingHandler) CalculateItemSplit(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -152,7 +153,7 @@ func (h *SplittingHandler) CalculateItemSplit(c *gin.Context) {
 // GetBillSplitOptions returns available split options for a bill
 // GET /api/v1/bills/:id/split/options
 func (h *SplittingHandler) GetBillSplitOptions(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -166,11 +167,13 @@ func (h *SplittingHandler) GetBillSplitOptions(c *gin.Context) {
 		return
 	}
 
-	// Get bill items
-	billItems, err := h.db.GetBillItems(uint(billID))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get bill items"})
-		return
+	// Parse bill items from JSON
+	var billItems []map[string]interface{}
+	if bill.Items != "" {
+		if err := json.Unmarshal([]byte(bill.Items), &billItems); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse bill items"})
+			return
+		}
 	}
 
 	// Calculate remaining amount to be paid
@@ -217,7 +220,7 @@ func (h *SplittingHandler) GetBillSplitOptions(c *gin.Context) {
 // ValidateSplit validates a split calculation without saving
 // POST /api/v1/bills/:id/split/validate
 func (h *SplittingHandler) ValidateSplit(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -281,10 +284,17 @@ func (h *SplittingHandler) ValidateSplit(c *gin.Context) {
 // GetBillParticipants gets all participants who have paid for a bill from blockchain
 // GET /api/v1/bills/:id/participants
 func (h *SplittingHandler) GetBillParticipants(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	
+	// For now, return empty participants list if blockchain service is not available
+	// This allows the frontend to work without blockchain integration
 	if h.blockchain == nil {
-		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Blockchain service not available"})
+		c.JSON(http.StatusOK, gin.H{
+			"success":      true,
+			"participants": []string{},
+			"count":        0,
+			"message":      "Blockchain service not available - returning empty participants",
+		})
 		return
 	}
 
@@ -293,7 +303,14 @@ func (h *SplittingHandler) GetBillParticipants(c *gin.Context) {
 
 	participants, err := h.blockchain.GetBillParticipants(ctx, billIDStr)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		// Return empty list instead of error to allow frontend to continue
+		c.JSON(http.StatusOK, gin.H{
+			"success":      true,
+			"participants": []string{},
+			"count":        0,
+			"error":        err.Error(),
+			"message":      "Blockchain error - returning empty participants",
+		})
 		return
 	}
 
@@ -307,7 +324,7 @@ func (h *SplittingHandler) GetBillParticipants(c *gin.Context) {
 // GetParticipantInfo gets information about a specific participant
 // GET /api/v1/bills/:id/participants/:address
 func (h *SplittingHandler) GetParticipantInfo(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	participantAddress := c.Param("address")
 	
 	if h.blockchain == nil {
@@ -333,7 +350,7 @@ func (h *SplittingHandler) GetParticipantInfo(c *gin.Context) {
 // GetBillSummaryWithParticipants gets bill summary including blockchain participant data
 // GET /api/v1/bills/:id/summary
 func (h *SplittingHandler) GetBillSummaryWithParticipants(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	billID, err := strconv.ParseUint(billIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
@@ -384,7 +401,7 @@ func (h *SplittingHandler) GetBillSummaryWithParticipants(c *gin.Context) {
 // ExecuteSplitPayment coordinates a split payment execution
 // POST /api/v1/bills/:id/split/execute
 func (h *SplittingHandler) ExecuteSplitPayment(c *gin.Context) {
-	billIDStr := c.Param("id")
+	billIDStr := c.Param("bill_id")
 	
 	var req struct {
 		SplitResult *splitting.SplitResult `json:"split_result"`

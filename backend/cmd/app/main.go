@@ -206,6 +206,20 @@ func main() {
 		publicRoutes.GET("/payments/history/:bill_id", paymentHandler.GetBillPayments)
 		publicRoutes.GET("/payments/:payment_id", paymentHandler.GetPaymentDetails)
 		publicRoutes.GET("/payments/total/:bill_id", paymentHandler.GetBillTotalPaid)
+
+		// Phase 5: Bill Splitting routes (public for guests)
+		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper(), blockchainService)
+		publicRoutes.GET("/bills/:bill_id/split/options", splittingHandler.GetBillSplitOptions)
+		publicRoutes.POST("/bills/:bill_id/split/equal", splittingHandler.CalculateEqualSplit)
+		publicRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
+		publicRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
+		publicRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
+		
+		// Blockchain integration routes for split payments (public for guests)
+		publicRoutes.GET("/bills/:bill_id/participants", splittingHandler.GetBillParticipants)
+		publicRoutes.GET("/bills/:bill_id/participants/:address", splittingHandler.GetParticipantInfo)
+		publicRoutes.GET("/bills/:bill_id/summary", splittingHandler.GetBillSummaryWithParticipants)
+		publicRoutes.POST("/bills/:bill_id/split/execute", splittingHandler.ExecuteSplitPayment)
 		publicRoutes.POST("/payments/webhook", paymentHandler.WebhookPaymentConfirmation)
 
 		// WebSocket endpoint for real-time updates
@@ -271,19 +285,6 @@ func main() {
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
 
-		// Phase 5: Bill Splitting routes
-		splittingHandler := handlers.NewSplittingHandler(database.GetDBWrapper(), blockchainService)
-		protectedRoutes.GET("/bills/:bill_id/split/options", splittingHandler.GetBillSplitOptions)
-		protectedRoutes.POST("/bills/:bill_id/split/equal", splittingHandler.CalculateEqualSplit)
-		protectedRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
-		protectedRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
-		protectedRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
-		
-		// Blockchain integration routes for split payments
-		protectedRoutes.GET("/bills/:bill_id/participants", splittingHandler.GetBillParticipants)
-		protectedRoutes.GET("/bills/:bill_id/participants/:address", splittingHandler.GetParticipantInfo)
-		protectedRoutes.GET("/bills/:bill_id/summary", splittingHandler.GetBillSummaryWithParticipants)
-		protectedRoutes.POST("/bills/:bill_id/split/execute", splittingHandler.ExecuteSplitPayment)
 
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())

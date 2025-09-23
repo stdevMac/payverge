@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Card,
   CardBody,
@@ -14,7 +14,7 @@ import { BillResponse } from '../../api/bills';
 import { Business } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
-import ParticipantTracker from '../blockchain/ParticipantTracker';
+// import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
 
 interface GuestBillProps {
   bill: BillResponse;
@@ -83,26 +83,31 @@ export const GuestBill: React.FC<GuestBillProps> = ({
     return Array.from(itemMap.values());
   };
 
-  const consolidatedItems = consolidateItems(bill.items);
+  // Memoize expensive calculations to prevent re-computation on every render
+  const consolidatedItems = useMemo(() => consolidateItems(bill.items), [bill.items]);
 
-  const remainingAmount = bill.bill.total_amount - bill.bill.paid_amount;
+  const remainingAmount = useMemo(() => 
+    bill.bill.total_amount - bill.bill.paid_amount, 
+    [bill.bill.total_amount, bill.bill.paid_amount]
+  );
 
-  // Convert bill data for splitting component
-  const billData: BillData = {
+  // Convert bill data for splitting component (use stable IDs and memoize)
+  const billData: BillData = useMemo(() => ({
     id: bill.bill.id,
     billNumber: bill.bill.bill_number,
     subtotal: bill.bill.subtotal,
     taxAmount: bill.bill.tax_amount,
     serviceFeeAmount: bill.bill.service_fee_amount,
     totalAmount: bill.bill.total_amount,
-    items: bill.items.map(item => ({
-      id: item.id?.toString() || `item_${Math.random()}`,
+    items: bill.items.map((item, index) => ({
+      id: item.id?.toString() || `item_${bill.bill.id}_${index}`, // Use stable ID based on bill ID and index
       name: item.name,
       price: item.price,
       quantity: item.quantity,
       subtotal: item.subtotal
     }))
-  };
+  }), [bill.bill.id, bill.bill.bill_number, bill.bill.subtotal, bill.bill.tax_amount, 
+       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items]);
 
   const handleSplitPaymentInitiate = (personId: string, amount: number, tipAmount: number) => {
     // Close splitting modal and open payment processor with split amount
@@ -224,15 +229,15 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         </div>
       </div>
 
-      {/* Participant Tracker - Show real-time payment progress */}
-      {bill.bill.status === 'open' && (
+      {/* Participant Tracker - Temporarily disabled for debugging */}
+      {/* {bill.bill.status === 'open' && (
         <ParticipantTracker
           billId={bill.bill.id}
           totalAmount={bill.bill.total_amount * 1000000} // Convert to wei (6 decimals)
           className="mb-6"
           refreshInterval={5000} // Refresh every 5 seconds
         />
-      )}
+      )} */}
 
       {/* Payment Actions */}
       {bill.bill.status === 'open' && (
@@ -247,14 +252,22 @@ export const GuestBill: React.FC<GuestBillProps> = ({
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={() => setIsPaymentModalOpen(true)}
+                onClick={() => {
+                  console.log('Pay Full Amount button clicked, opening modal...');
+                  console.log('Bill data:', billData);
+                  setIsPaymentModalOpen(true);
+                }}
                 className="group bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg flex items-center justify-center gap-3"
               >
                 <Wallet className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
                 <span>Pay Full Amount</span>
               </button>
               <button
-                onClick={() => setIsSplittingModalOpen(true)}
+                onClick={() => {
+                  console.log('Split Bill button clicked, opening modal...');
+                  console.log('Bill data:', billData);
+                  setIsSplittingModalOpen(true);
+                }}
                 className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide rounded-lg flex items-center justify-center gap-3"
               >
                 <Users className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />

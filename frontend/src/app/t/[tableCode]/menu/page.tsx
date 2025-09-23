@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import GuestMenu from '../../../../components/guest/GuestMenu';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
-import { BillResponse, getTableByCode, getOpenBillByTableCode } from '../../../../api/bills';
+import { BillResponse, getTableByCode, getOpenBillByTableCode, addBillItem } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
 
 interface Table {
@@ -57,10 +57,13 @@ export default function GuestMenuPage() {
   }, [tableCode]);
 
   const handleAddToBill = useCallback(async (itemName: string, price: number, quantity: number = 1) => {
-    if (!currentBill || !tableData?.business) return;
+    if (!currentBill) {
+      console.log('No current bill available');
+      return;
+    }
     
     try {
-      const { addBillItem } = await import('../../../../api/bills');
+      console.log('Adding item to bill:', { itemName, price, quantity });
       
       const addItemRequest = {
         menu_item_id: itemName,
@@ -71,17 +74,19 @@ export default function GuestMenuPage() {
       };
       
       await addBillItem(currentBill.bill.id, addItemRequest);
+      console.log('Item added successfully');
       
+      // Reload bill data
       const billResponse = await getOpenBillByTableCode(tableCode);
       setCurrentBill(billResponse);
     } catch (error) {
       console.error('Error adding item to bill:', error);
     }
-  }, [currentBill, tableData?.business, tableCode]);
+  }, [currentBill?.bill.id, tableCode]);
 
   useEffect(() => {
     loadTableData();
-  }, [loadTableData]);
+  }, [tableCode]); // Only depend on tableCode, not the callback
 
   if (loading) {
     return (
@@ -107,6 +112,15 @@ export default function GuestMenuPage() {
   }
 
   const { business, categories } = tableData;
+
+  // Safety check for categories data (similar to BillCreator fix)
+  const safeCategories = Array.isArray(categories) ? categories : [];
+
+  console.log('Menu page - categories data:', { 
+    categories, 
+    safeCategories, 
+    isArray: Array.isArray(categories) 
+  });
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -155,7 +169,7 @@ export default function GuestMenuPage() {
       {/* Menu Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">
         <GuestMenu
-          categories={categories}
+          categories={safeCategories}
           business={business}
           tableCode={tableCode}
           currentBill={currentBill}

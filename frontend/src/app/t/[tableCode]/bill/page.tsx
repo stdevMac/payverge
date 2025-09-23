@@ -62,15 +62,36 @@ export default function GuestBillPage() {
 
   const handlePaymentComplete = useCallback(async () => {
     try {
-      await loadTableData();
+      console.log('Payment completed, reloading table data...');
+      // Reload table data directly instead of calling loadTableData
+      const tableResponse = await getTableByCode(tableCode);
+      setTableData(tableResponse);
+
+      try {
+        const billResponse = await getOpenBillByTableCode(tableCode);
+        setCurrentBill(billResponse);
+      } catch {
+        setCurrentBill(null);
+      }
     } catch (error) {
       console.error('Error reloading after payment:', error);
     }
-  }, [loadTableData]);
+  }, [tableCode]);
 
   useEffect(() => {
+    console.log('Bill page mounted, loading data for table:', tableCode);
     loadTableData();
-  }, [loadTableData]);
+  }, [tableCode]); // Only depend on tableCode, not the callback
+
+  // Add debugging for any state changes
+  useEffect(() => {
+    console.log('Bill page state changed:', { 
+      loading, 
+      hasTableData: !!tableData, 
+      hasBill: !!currentBill,
+      tableCode 
+    });
+  }, [loading, tableData, currentBill, tableCode]);
 
   if (loading) {
     return (
@@ -110,7 +131,10 @@ export default function GuestBillPage() {
         <div className="relative z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100">
           <div className="max-w-4xl mx-auto px-6 py-6">
             <div className="flex items-center gap-6">
-              <Link href={`/t/${tableCode}`}>
+              <Link 
+              href={`/t/${tableCode}`}
+              onClick={() => console.log('Bill page: Clicking back to table link:', `/t/${tableCode}`)}
+            >
                 <Button
                   isIconOnly
                   variant="light"
@@ -152,7 +176,10 @@ export default function GuestBillPage() {
             <p className="text-gray-600 text-lg mb-10 leading-relaxed max-w-md mx-auto font-light">
               There&apos;s no active bill for this table yet. Start by browsing our menu and adding items.
             </p>
-            <Link href={`/t/${tableCode}/menu`}>
+            <Link 
+              href={`/t/${tableCode}/menu`}
+              onClick={() => console.log('Bill page: Clicking Add Items link to menu:', `/t/${tableCode}/menu`)}
+            >
               <button className="group bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 relative overflow-hidden tracking-wide rounded-lg">
                 <div className="flex items-center gap-3">
                   <Menu className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
@@ -184,7 +211,10 @@ export default function GuestBillPage() {
       <div className="relative z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <div className="flex items-center gap-6">
-            <Link href={`/t/${tableCode}`}>
+            <Link 
+              href={`/t/${tableCode}`}
+              onClick={() => console.log('Bill page (no bill): Clicking back to table link:', `/t/${tableCode}`)}
+            >
               <Button
                 isIconOnly
                 variant="light"
@@ -213,7 +243,10 @@ export default function GuestBillPage() {
               </div>
             </div>
             
-            <Link href={`/t/${tableCode}/menu`}>
+            <Link 
+              href={`/t/${tableCode}/menu`}
+              onClick={() => console.log('Bill page header: Clicking Add Items link to menu:', `/t/${tableCode}/menu`)}
+            >
               <button className="group border border-gray-300 text-gray-700 px-6 py-2 text-sm font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide rounded-lg">
                 <div className="flex items-center gap-2">
                   <Menu className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />

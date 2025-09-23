@@ -1,27 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Card,
-  CardBody,
-  Button,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Button,
   Spinner,
-  Alert,
 } from '@nextui-org/react';
-import { Calculator, Users, ArrowLeft, ArrowRight } from 'lucide-react';
-
-import SplitSelector, { SplitMethod } from './SplitSelector';
-import TipCalculator from './TipCalculator';
-import PaymentSummary, { PaymentPerson } from './PaymentSummary';
-import { useSplittingAPI, SplitResult, SplitOptions } from '../../api/splitting';
-import { useBlockchainAPI } from '../../api/blockchain';
-import { useSplitPaymentWebSocket } from '../../hooks/useSplitPaymentWebSocket';
-import { ReceiptGenerator, ReceiptData } from '../../utils/receiptGenerator';
+import SplittingAPI from '../../api/splitting';
 
 export interface BillData {
   id: number;
@@ -50,485 +39,113 @@ export interface BillSplittingFlowProps {
   className?: string;
 }
 
-type FlowStep = 'split' | 'tip' | 'summary';
-
-export default function BillSplittingFlow({
+const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
   bill,
   businessName,
-  businessAddress,
-  tableNumber,
   isOpen,
   onClose,
-  onPaymentInitiate,
-  className = ''
-}: BillSplittingFlowProps) {
-  const [currentStep, setCurrentStep] = useState<FlowStep>('split');
-  const [splitMethod, setSplitMethod] = useState<SplitMethod>('equal');
-  const [splitData, setSplitData] = useState<any>(null);
-  const [splitResult, setSplitResult] = useState<SplitResult | null>(null);
-  const [splitOptions, setSplitOptions] = useState<SplitOptions | null>(null);
-  const [tipAmount, setTipAmount] = useState(0);
-  const [tipPercentage, setTipPercentage] = useState(18);
-  const [people, setPeople] = useState<PaymentPerson[]>([]);
+}) => {
   const [loading, setLoading] = useState(false);
+  const [splitOptions, setSplitOptions] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [splitId, setSplitId] = useState<string>('');
-  const [participants, setParticipants] = useState<string[]>([]);
-  const [participantDetails, setParticipantDetails] = useState<Record<string, any>>({});
-
-  const splittingAPI = useSplittingAPI();
-  const blockchainAPI = useBlockchainAPI();
-
-  // WebSocket for real-time split payment tracking
-  const {
-    isConnected: wsConnected,
-    splitProgress,
-    notifyPaymentStarted,
-    notifyPaymentCompleted,
-    notifyPaymentFailed
-  } = useSplitPaymentWebSocket({
-    billId: bill.id,
-    splitId: splitId,
-    onSplitPaymentReceived: (notification) => {
-      // Update person payment status when payment is received
-      setPeople(prev => prev.map(person => 
-        person.id === notification.person_id 
-          ? { ...person, status: 'completed', transactionHash: notification.transaction_hash }
-          : person
-      ));
-    },
-    onSplitPaymentUpdate: (notification) => {
-      // Update person payment status on updates
-      setPeople(prev => prev.map(person => 
-        person.id === notification.person_id 
-          ? { ...person, status: notification.status }
-          : person
-      ));
-    }
-  });
-
-  // Load blockchain participants
-  const loadBlockchainParticipants = useCallback(async () => {
-    try {
-      const participantsResponse = await blockchainAPI.getBillParticipants(bill.id);
-      if (participantsResponse.success) {
-        setParticipants(participantsResponse.participants);
-        
-        // Load details for each participant
-        const details: Record<string, any> = {};
-        for (const address of participantsResponse.participants) {
-          try {
-            const participantResponse = await blockchainAPI.getParticipantInfo(bill.id, address);
-            if (participantResponse.success) {
-              details[address] = participantResponse.participant;
-            }
-          } catch (error) {
-            console.error(`Error loading participant ${address}:`, error);
-          }
-        }
-        setParticipantDetails(details);
-      }
-    } catch (error) {
-      console.error('Error loading blockchain participants:', error);
-    }
-  }, [bill.id, blockchainAPI]);
 
   useEffect(() => {
-    const loadSplitOptions = async () => {
-      try {
-        setLoading(true);
-        const options = await splittingAPI.getSplitOptions(bill.id);
-        setSplitOptions(options);
-        
-        // Also load current blockchain participants
-        await loadBlockchainParticipants();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load split options');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (isOpen && bill.id) {
+      console.log('BillSplittingFlow: Modal opened for bill:', bill);
       loadSplitOptions();
-      // Generate unique split ID for this session
-      setSplitId(`split_${bill.id}_${Date.now()}`);
     }
-  }, [isOpen, bill.id, loadBlockchainParticipants, splittingAPI]);
+  }, [isOpen, bill.id]);
 
-  // Update people when split result changes
-  useEffect(() => {
-    if (splitResult) {
-      const updatedPeople: PaymentPerson[] = splitResult.people.map(person => ({
-        id: person.person_id,
-        name: person.name,
-        amount: person.base_amount + person.tax_amount + person.service_fee_amount,
-        tipAmount: person.tip_amount,
-        totalAmount: person.total_amount,
-        status: 'pending' as const,
-        items: person.items
-      }));
-      setPeople(updatedPeople);
-    }
-  }, [splitResult]);
-
-
-  const handleSplitChange = async (method: SplitMethod, data: any) => {
+  const loadSplitOptions = async () => {
     try {
       setLoading(true);
       setError(null);
-      setSplitMethod(method);
-      setSplitData(data);
-
-      let result: SplitResult;
-
-      switch (method) {
-        case 'equal':
-          result = await splittingAPI.calculateEqualSplit({
-            bill_id: bill.id,
-            num_people: data.num_people,
-            people: data.people
-          });
-          break;
-        case 'custom':
-          result = await splittingAPI.calculateCustomSplit({
-            bill_id: bill.id,
-            amounts: data.amounts,
-            people: data.people
-          });
-          break;
-        case 'items':
-          result = await splittingAPI.calculateItemSplit({
-            bill_id: bill.id,
-            item_selections: data.item_selections,
-            people: data.people
-          });
-          break;
-        default:
-          throw new Error('Invalid split method');
-      }
-
-      setSplitResult(result);
+      console.log('Loading split options for bill:', bill.id);
+      
+      const options = await SplittingAPI.getSplitOptions(bill.id);
+      console.log('Split options loaded:', options);
+      setSplitOptions(options);
     } catch (err) {
-      setError('Failed to calculate split');
-      console.error('Error calculating split:', err);
+      console.error('Error loading split options:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load split options');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleTipChange = (newTipAmount: number, newTipPercentage: number) => {
-    setTipAmount(newTipAmount);
-    setTipPercentage(newTipPercentage);
-
-    // Recalculate split with new tip
-    if (splitResult && splitData) {
-      const tipPerPerson = newTipAmount / splitResult.people.length;
-      const updatedPeople = people.map(person => ({
-        ...person,
-        tipAmount: tipPerPerson,
-        totalAmount: person.amount + tipPerPerson
-      }));
-      setPeople(updatedPeople);
-    }
-  };
-
-  const handleNextStep = () => {
-    if (currentStep === 'split' && splitResult) {
-      setCurrentStep('tip');
-    } else if (currentStep === 'tip') {
-      setCurrentStep('summary');
-    }
-  };
-
-  const handlePreviousStep = () => {
-    if (currentStep === 'summary') {
-      setCurrentStep('tip');
-    } else if (currentStep === 'tip') {
-      setCurrentStep('split');
-    }
-  };
-
-  const handlePaymentInitiate = async (personId: string) => {
-    const person = people.find(p => p.id === personId);
-    if (person) {
-      try {
-        // Notify WebSocket that payment has started
-        notifyPaymentStarted(personId, person.name, person.amount, person.tipAmount);
-        
-        // Update person status to processing
-        setPeople(prev => prev.map(p => 
-          p.id === personId ? { ...p, status: 'processing' as const } : p
-        ));
-        
-        // Execute split payment coordination with backend
-        if (splitResult) {
-          await splittingAPI.executeSplitPayment(bill.id, splitResult, {
-            person_id: personId,
-            payment_method: 'blockchain',
-            initiated_at: new Date().toISOString()
-          });
-        }
-        
-        // Initiate the actual payment
-        onPaymentInitiate(personId, person.amount, person.tipAmount);
-        
-        // Refresh blockchain participants after payment initiation
-        setTimeout(() => {
-          loadBlockchainParticipants();
-        }, 2000);
-        
-      } catch (error) {
-        console.error('Error initiating payment:', error);
-        // Update person status to failed
-        setPeople(prev => prev.map(p => 
-          p.id === personId ? { ...p, status: 'failed' as const } : p
-        ));
-        notifyPaymentFailed(personId, person.name);
-      }
-    }
-  };
-
-  const handleReceiptGenerate = () => {
-    const receiptData: ReceiptData = {
-      billId: bill.id.toString(),
-      billNumber: bill.billNumber,
-      businessName: businessName,
-      businessAddress: businessAddress,
-      tableNumber: tableNumber,
-      subtotal: bill.subtotal,
-      taxAmount: bill.taxAmount,
-      serviceFeeAmount: bill.serviceFeeAmount,
-      totalBillAmount: bill.totalAmount,
-      splitMethod: splitMethod,
-      people: people,
-      generatedAt: new Date().toISOString(),
-      items: bill.items
-    };
-
-    // Show options for receipt generation
-    const action = confirm('Choose receipt format:\nOK = Download HTML\nCancel = Print');
-    if (action) {
-      ReceiptGenerator.downloadHTMLReceipt(receiptData);
-    } else {
-      ReceiptGenerator.printReceipt(receiptData);
-    }
-  };
-
-  const handleShareSummary = async () => {
-    const receiptData: ReceiptData = {
-      billId: bill.id.toString(),
-      billNumber: bill.billNumber,
-      businessName: businessName,
-      businessAddress: businessAddress,
-      tableNumber: tableNumber,
-      subtotal: bill.subtotal,
-      taxAmount: bill.taxAmount,
-      serviceFeeAmount: bill.serviceFeeAmount,
-      totalBillAmount: bill.totalAmount,
-      splitMethod: splitMethod,
-      people: people,
-      generatedAt: new Date().toISOString(),
-      items: bill.items
-    };
-
-    const success = await ReceiptGenerator.copyShareableText(receiptData);
-    if (success) {
-      alert('Payment summary copied to clipboard!');
-    } else {
-      alert('Failed to copy to clipboard. Please try again.');
-    }
-  };
-
-  const canProceedToTip = splitResult && splitResult.people.length > 0;
-  const canProceedToSummary = canProceedToTip && tipAmount >= 0;
-
-  const getStepTitle = () => {
-    switch (currentStep) {
-      case 'split': return 'Split the Bill';
-      case 'tip': return 'Add Tip';
-      case 'summary': return 'Payment Summary';
-      default: return 'Bill Splitting';
-    }
-  };
-
-  const renderStepContent = () => {
-    if (loading) {
-      return (
-        <div className="flex items-center justify-center py-12">
-          <Spinner size="lg" />
-          <span className="ml-3">Loading...</span>
-        </div>
-      );
-    }
-
-    if (error) {
-      return (
-        <Alert color="danger" className="mb-4">
-          {error}
-        </Alert>
-      );
-    }
-
-    switch (currentStep) {
-      case 'split':
-        return splitOptions ? (
-          <SplitSelector
-            billAmount={bill.totalAmount}
-            billItems={bill.items}
-            onSplitChange={handleSplitChange}
-            disabled={loading}
-          />
-        ) : null;
-
-      case 'tip':
-        return (
-          <TipCalculator
-            subtotal={bill.subtotal}
-            taxAmount={bill.taxAmount}
-            serviceFeeAmount={bill.serviceFeeAmount}
-            numPeople={splitResult?.people.length || 1}
-            onTipChange={handleTipChange}
-            disabled={loading}
-          />
-        );
-
-      case 'summary':
-        return (
-          <PaymentSummary
-            billId={bill.id.toString()}
-            billNumber={bill.billNumber}
-            subtotal={bill.subtotal}
-            taxAmount={bill.taxAmount}
-            serviceFeeAmount={bill.serviceFeeAmount}
-            totalBillAmount={bill.totalAmount}
-            people={people}
-            splitMethod={splitMethod}
-            onPaymentInitiate={handlePaymentInitiate}
-            onReceiptGenerate={handleReceiptGenerate}
-            onShareSummary={handleShareSummary}
-          />
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
-      size="5xl"
+      size="2xl"
       scrollBehavior="inside"
-      className={className}
+      classNames={{
+        base: "max-h-[90vh]",
+        body: "py-6",
+      }}
     >
       <ModalContent>
-        <ModalHeader>
-          <div className="flex items-center gap-3">
-            <Calculator className="w-6 h-6" />
-            <div>
-              <h3 className="text-xl font-semibold">{getStepTitle()}</h3>
-              <p className="text-sm text-default-500">Bill #{bill.billNumber}</p>
-            </div>
-          </div>
+        <ModalHeader className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold">Split Bill</h2>
+          <p className="text-sm text-gray-600">
+            {businessName} • Bill #{bill.billNumber}
+          </p>
         </ModalHeader>
         
         <ModalBody>
-          {/* Step Indicator */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                currentStep === 'split' ? 'bg-primary text-white' : 
-                ['tip', 'summary'].includes(currentStep) ? 'bg-success text-white' : 'bg-default-200'
-              }`}>
-                1
-              </div>
-              <div className={`w-12 h-1 ${
-                ['tip', 'summary'].includes(currentStep) ? 'bg-success' : 'bg-default-200'
-              }`} />
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                currentStep === 'tip' ? 'bg-primary text-white' : 
-                currentStep === 'summary' ? 'bg-success text-white' : 'bg-default-200'
-              }`}>
-                2
-              </div>
-              <div className={`w-12 h-1 ${
-                currentStep === 'summary' ? 'bg-success' : 'bg-default-200'
-              }`} />
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                currentStep === 'summary' ? 'bg-primary text-white' : 'bg-default-200'
-              }`}>
-                3
-              </div>
-            </div>
-          </div>
-
-          {/* Step Content */}
-          <div className="min-h-[400px]">
-            {renderStepContent()}
-          </div>
-        </ModalBody>
-
-        <ModalFooter>
-          <div className="flex justify-between w-full">
-            <div>
-              {currentStep !== 'split' && (
-                <Button
-                  variant="bordered"
-                  startContent={<ArrowLeft size={16} />}
-                  onPress={handlePreviousStep}
-                  disabled={loading}
-                >
-                  Back
-                </Button>
-              )}
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-lg font-medium">Total Amount</h3>
+              <p className="text-3xl font-bold text-green-600">
+                ${bill.totalAmount.toFixed(2)}
+              </p>
             </div>
             
-            <div className="flex gap-2">
-              <Button 
-                variant="light" 
-                onPress={onClose}
-                disabled={loading}
-              >
-                Cancel
-              </Button>
-              
-              {currentStep === 'split' && (
-                <Button
-                  color="primary"
-                  endContent={<ArrowRight size={16} />}
-                  onPress={handleNextStep}
-                  disabled={!canProceedToTip || loading}
-                >
-                  Add Tip
-                </Button>
-              )}
-              
-              {currentStep === 'tip' && (
-                <Button
-                  color="primary"
-                  endContent={<ArrowRight size={16} />}
-                  onPress={handleNextStep}
-                  disabled={!canProceedToSummary || loading}
-                >
-                  Review & Pay
-                </Button>
-              )}
-              
-              {currentStep === 'summary' && (
-                <Button
-                  color="success"
-                  startContent={<Users size={16} />}
-                  onPress={onClose}
-                >
-                  Done
-                </Button>
-              )}
-            </div>
+            {loading && (
+              <div className="flex justify-center">
+                <Spinner size="lg" />
+                <span className="ml-2">Loading split options...</span>
+              </div>
+            )}
+            
+            {error && (
+              <div className="text-center text-red-600">
+                <p>Error: {error}</p>
+              </div>
+            )}
+            
+            {splitOptions && (
+              <div className="text-center text-green-600">
+                <p>✅ Split options loaded successfully!</p>
+                <p className="text-sm mt-2">
+                  Available methods: {Object.keys(splitOptions.split_options || {}).join(', ')}
+                </p>
+                <p className="text-sm">
+                  Total items: {splitOptions.items?.length || 0}
+                </p>
+              </div>
+            )}
+            
+            {!loading && !error && !splitOptions && (
+              <div className="text-center text-gray-600">
+                <p>Ready to load split options...</p>
+              </div>
+            )}
           </div>
+        </ModalBody>
+        
+        <ModalFooter>
+          <Button
+            color="danger"
+            variant="light"
+            onPress={onClose}
+          >
+            Close
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default BillSplittingFlow;

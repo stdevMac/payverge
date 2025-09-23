@@ -34,7 +34,10 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
       <div className="max-w-4xl mx-auto px-6 py-4">
         <div className="flex items-center justify-center gap-8">
           {/* Back to Table */}
-          <Link href={`/t/${tableCode}`}>
+          <Link 
+            href={`/t/${tableCode}`}
+            onClick={() => console.log('Navigation: Clicking Table link to:', `/t/${tableCode}`)}
+          >
             <div className={`group flex flex-col items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
               isTablePage 
                 ? 'bg-gray-100 text-gray-900 shadow-md border border-gray-200' 
@@ -51,7 +54,10 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
           </Link>
 
           {/* Menu */}
-          <Link href={`/t/${tableCode}/menu`}>
+          <Link 
+            href={`/t/${tableCode}/menu`}
+            onClick={() => console.log('Navigation: Clicking Menu link to:', `/t/${tableCode}/menu`)}
+          >
             <div className={`group flex flex-col items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
               isMenuPage 
                 ? 'bg-gray-100 text-gray-900 shadow-md border border-gray-200' 

@@ -100,6 +100,12 @@ export class SplittingAPI {
     return response.data;
   }
 
+  // Get specific participant info by address
+  static async getParticipantInfo(billId: number, address: string) {
+    const response = await apiClient.get(`/bills/${billId}/participants/${address}`);
+    return response.data;
+  }
+
   // Get enhanced bill summary with blockchain data
   static async getBillSummaryWithParticipants(billId: number) {
     const response = await apiClient.get(`/bills/${billId}/summary`);
@@ -139,12 +145,57 @@ export class SplittingAPI {
   }
 }
 
-// Hook for using splitting API with error handling
+// Cache for split options to prevent repeated requests
+const splitOptionsCache = new Map<number, { data: SplitOptions; timestamp: number }>();
+const CACHE_DURATION = 30000; // 30 seconds
+
+// Request throttling to prevent rapid successive calls
+const pendingRequests = new Map<number, Promise<SplitOptions>>();
+
+// Hook for using splitting API with error handling and caching
 export const useSplittingAPI = () => {
   const getSplitOptions = async (billId: number) => {
     try {
-      return await SplittingAPI.getSplitOptions(billId);
-    } catch (error) {
+      // Check cache first
+      const cached = splitOptionsCache.get(billId);
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        return cached.data;
+      }
+
+      // Check if there's already a pending request for this billId
+      const pending = pendingRequests.get(billId);
+      if (pending) {
+        return await pending;
+      }
+
+      // Create new request and store it as pending
+      const requestPromise = SplittingAPI.getSplitOptions(billId);
+      pendingRequests.set(billId, requestPromise);
+
+      try {
+        const data = await requestPromise;
+        
+        // Cache the result
+        splitOptionsCache.set(billId, {
+          data,
+          timestamp: Date.now()
+        });
+        
+        return data;
+      } finally {
+        // Remove from pending requests
+        pendingRequests.delete(billId);
+      }
+    } catch (error: any) {
+      // Handle rate limiting specifically
+      if (error?.response?.status === 429) {
+        console.warn(`Rate limited for bill ${billId}, using cached data if available`);
+        const cached = splitOptionsCache.get(billId);
+        if (cached) {
+          console.log('Returning stale cached data due to rate limiting');
+          return cached.data;
+        }
+      }
       console.error('Failed to get split options:', error);
       throw error;
     }
@@ -204,12 +255,31 @@ export const useSplittingAPI = () => {
     }
   };
 
+  const getParticipantInfo = async (billId: number, address: string) => {
+    try {
+      return await SplittingAPI.getParticipantInfo(billId, address);
+    } catch (error) {
+      console.error('Failed to get participant info:', error);
+      throw error;
+    }
+  };
+
   const getBillSummaryWithParticipants = async (billId: number) => {
     try {
       return await SplittingAPI.getBillSummaryWithParticipants(billId);
     } catch (error) {
       console.error('Failed to get bill summary:', error);
       throw error;
+    }
+  };
+
+  const clearSplitOptionsCache = (billId?: number) => {
+    if (billId) {
+      splitOptionsCache.delete(billId);
+      pendingRequests.delete(billId);
+    } else {
+      splitOptionsCache.clear();
+      pendingRequests.clear();
     }
   };
 
@@ -221,7 +291,9 @@ export const useSplittingAPI = () => {
     validateSplit,
     executeSplitPayment,
     getBillParticipants,
+    getParticipantInfo,
     getBillSummaryWithParticipants,
+    clearSplitOptionsCache,
   };
 };
 
