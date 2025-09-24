@@ -26,6 +26,14 @@ CREATE INDEX IF NOT EXISTS idx_tables_code ON tables(code);
 CREATE INDEX IF NOT EXISTS idx_bills_analytics ON bills(business_id, created_at, status, total_amount);
 CREATE INDEX IF NOT EXISTS idx_payments_analytics ON payments(bill_id, created_at, amount, tip_amount);
 
+-- Alternative payments table indexes
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_bill_id ON alternative_payments(bill_id);
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_status ON alternative_payments(status);
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_participant ON alternative_payments(participant_addr);
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_created_at ON alternative_payments(created_at);
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_bill_status ON alternative_payments(bill_id, status);
+
 -- Indexes for date range queries (common in analytics)
 CREATE INDEX IF NOT EXISTS idx_bills_date_range ON bills(business_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_payments_date_range ON payments(created_at DESC, amount);
+CREATE INDEX IF NOT EXISTS idx_alternative_payments_date_range ON alternative_payments(created_at DESC, amount);

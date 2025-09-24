@@ -143,6 +143,51 @@ func (s *PaymentService) Update(payment *Payment) error {
 	return s.repo.Update(payment)
 }
 
+// AlternativePaymentService provides alternative payment-specific operations
+type AlternativePaymentService struct {
+	repo *Repository[AlternativePayment]
+}
+
+func NewAlternativePaymentService() *AlternativePaymentService {
+	return &AlternativePaymentService{
+		repo: NewRepository[AlternativePayment](db),
+	}
+}
+
+func (s *AlternativePaymentService) Create(payment *AlternativePayment) error {
+	return s.repo.Create(payment)
+}
+
+func (s *AlternativePaymentService) GetByID(id uint) (*AlternativePayment, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *AlternativePaymentService) GetByBillID(billID uint) ([]AlternativePayment, error) {
+	return s.repo.GetWhere("bill_id = ?", billID)
+}
+
+func (s *AlternativePaymentService) GetPendingByBillID(billID uint) ([]AlternativePayment, error) {
+	return s.repo.GetWhere("bill_id = ? AND status = ?", billID, AltPaymentStatusPending)
+}
+
+func (s *AlternativePaymentService) GetConfirmedByBillID(billID uint) ([]AlternativePayment, error) {
+	return s.repo.GetWhere("bill_id = ? AND status = ?", billID, AltPaymentStatusConfirmed)
+}
+
+func (s *AlternativePaymentService) Update(payment *AlternativePayment) error {
+	return s.repo.Update(payment)
+}
+
+func (s *AlternativePaymentService) MarkAsConfirmed(id uint, confirmedBy string) error {
+	now := time.Now()
+	return s.repo.UpdateWhere("id = ?", map[string]interface{}{
+		"status":       AltPaymentStatusConfirmed,
+		"confirmed_by": confirmedBy,
+		"confirmed_at": &now,
+		"updated_at":   now,
+	}, id)
+}
+
 // MenuService provides menu-specific operations with JSON handling
 type MenuService struct {
 	repo *Repository[Menu]

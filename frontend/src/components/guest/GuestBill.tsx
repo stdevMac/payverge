@@ -8,6 +8,12 @@ import {
   Chip,
   Divider,
   Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@nextui-org/react';
 import { Receipt, Clock, CreditCard, Wallet, Users } from 'lucide-react';
 import { BillResponse } from '../../api/bills';
@@ -33,6 +39,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
 }) => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSplittingModalOpen, setIsSplittingModalOpen] = useState(false);
+  const { isOpen: isCashierModalOpen, onOpen: onCashierModalOpen, onClose: onCashierModalClose } = useDisclosure();
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2)}`;
@@ -239,52 +246,55 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         />
       )} */}
 
-      {/* Payment Actions */}
+      {/* Payment Options */}
       {bill.bill.status === 'open' && (
-        <div className="bg-blue-50 rounded-2xl p-8 shadow-sm">
-          <div className="text-center space-y-6">
-            <div className="space-y-2">
-              <h3 className="text-2xl font-light text-gray-900 tracking-wide">Ready to Pay</h3>
-              <p className="text-gray-600 font-light">
-                Amount due: <span className="font-medium text-2xl text-gray-900 tracking-wide">{formatCurrency(remainingAmount)}</span>
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => {
-                  console.log('Pay Full Amount button clicked, opening modal...');
-                  console.log('Bill data:', billData);
-                  setIsPaymentModalOpen(true);
-                }}
-                className="group bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg flex items-center justify-center gap-3"
-              >
-                <Wallet className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                <span>Pay Full Amount</span>
-              </button>
-              <button
-                onClick={() => {
-                  console.log('Split Bill button clicked, opening modal...');
-                  console.log('Bill data:', billData);
-                  setIsSplittingModalOpen(true);
-                }}
-                className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide rounded-lg flex items-center justify-center gap-3"
-              >
-                <Users className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                <span>Split Bill</span>
-              </button>
-              <button
-                disabled
-                className="border border-gray-200 text-gray-400 px-8 py-3 text-base font-medium tracking-wide rounded-lg flex items-center justify-center gap-3 cursor-not-allowed"
-              >
-                <CreditCard className="w-5 h-5" />
-                <span>Pay with Card (Coming Soon)</span>
-              </button>
-            </div>
-            
-            <div className="text-xs text-gray-400 font-light space-y-1">
-              <p>Settlement Address: {bill.bill.settlement_address}</p>
-              <p>Tipping Address: {bill.bill.tipping_address}</p>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Options</h3>
+          
+          <div className="space-y-3">
+            {/* Pay with Crypto */}
+            <Button
+              color="primary"
+              size="lg"
+              onPress={() => setIsPaymentModalOpen(true)}
+              className="w-full"
+              startContent={<Wallet className="w-5 h-5" />}
+            >
+              Pay with Crypto (USDC)
+            </Button>
+
+            {/* Pay with Cashier */}
+            <Button
+              color="secondary"
+              variant="bordered"
+              size="lg"
+              onPress={onCashierModalOpen}
+              className="w-full"
+              startContent={<CreditCard className="w-5 h-5" />}
+            >
+              Pay with Cashier (Cash/Card)
+            </Button>
+
+            {/* Split Bill */}
+            <Button
+              color="warning"
+              variant="bordered"
+              size="lg"
+              onPress={() => setIsSplittingModalOpen(true)}
+              className="w-full"
+              startContent={<Users className="w-5 h-5" />}
+            >
+              Split Bill
+            </Button>
+          </div>
+
+          {/* Payment Summary */}
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Remaining Amount:</span>
+              <span className="font-semibold text-gray-900">
+                {formatCurrency(remainingAmount)}
+              </span>
             </div>
           </div>
         </div>
@@ -336,6 +346,60 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         onClose={() => setIsSplittingModalOpen(false)}
         onPaymentInitiate={handleSplitPaymentInitiate}
       />
+
+      {/* Cashier Payment Modal */}
+      <Modal isOpen={isCashierModalOpen} onClose={onCashierModalClose} size="lg">
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            Pay with Cashier
+          </ModalHeader>
+          <ModalBody>
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                <CreditCard className="w-8 h-8 text-blue-600" />
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Please pay at the cashier
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Go to the cashier and pay with cash, card, or any other method they accept. 
+                  They will mark your payment in the system.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Amount to pay:</span>
+                  <span className="text-xl font-bold text-gray-900">
+                    {formatCurrency(remainingAmount)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-sm text-gray-500">Bill #:</span>
+                  <span className="text-sm font-mono text-gray-700">
+                    {bill.bill.bill_number}
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-sm text-gray-500">
+                💡 The cashier will update your payment status automatically
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button 
+              color="primary" 
+              onPress={onCashierModalClose}
+              className="w-full"
+            >
+              Got it!
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

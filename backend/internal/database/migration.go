@@ -41,7 +41,7 @@ func (db *DB) OptimizeDatabase() error {
 	}
 
 	// Analyze tables for query optimization
-	tables := []string{"bills", "payments", "businesses", "tables"}
+	tables := []string{"bills", "payments", "alternative_payments", "businesses", "tables"}
 	for _, table := range tables {
 		if err := db.conn.Exec(fmt.Sprintf("ANALYZE %s", table)).Error; err != nil {
 			fmt.Printf("Warning: Failed to analyze table %s: %v\n", table, err)

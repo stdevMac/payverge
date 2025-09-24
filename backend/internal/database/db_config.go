@@ -28,12 +28,13 @@ var (
 // DB wraps the GORM database instance
 type DB struct {
 	conn *gorm.DB
-	BusinessService *BusinessService
-	TableService    *TableService
-	BillService     *BillService
-	PaymentService  *PaymentService
-	MenuService     *MenuService
-	CodeService     *CodeService
+	BusinessService           *BusinessService
+	TableService              *TableService
+	BillService               *BillService
+	PaymentService            *PaymentService
+	AlternativePaymentService *AlternativePaymentService
+	MenuService               *MenuService
+	CodeService               *CodeService
 }
 
 // NewDB creates a new DB instance
@@ -80,12 +81,13 @@ func GetDB() *gorm.DB {
 func GetDBWrapper() *DB {
 	return &DB{
 		conn: db,
-		BusinessService: NewBusinessService(),
-		TableService: NewTableService(),
-		BillService: NewBillService(),
-		PaymentService: NewPaymentService(),
-		MenuService: NewMenuService(),
-		CodeService: NewCodeService(),
+		BusinessService:           NewBusinessService(),
+		TableService:              NewTableService(),
+		BillService:               NewBillService(),
+		PaymentService:            NewPaymentService(),
+		AlternativePaymentService: NewAlternativePaymentService(),
+		MenuService:               NewMenuService(),
+		CodeService:               NewCodeService(),
 	}
 }
 
@@ -185,5 +187,6 @@ func autoMigrate() error {
 		&Table{},
 		&Bill{},
 		&Payment{},
+		&AlternativePayment{},
 	)
 }

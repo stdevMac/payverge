@@ -221,6 +221,50 @@ const (
 	PaymentStatusFailed    PaymentStatus = "failed"
 )
 
+// AlternativePayment represents a non-crypto payment (cash, card, etc.)
+type AlternativePayment struct {
+	ID              uint                     `gorm:"primaryKey" json:"id"`
+	BillID          uint                     `gorm:"index;not null" json:"bill_id"`
+	ParticipantAddr string                   `gorm:"not null" json:"participant_address"`
+	ParticipantName string                   `json:"participant_name"` // Optional name for identification
+	Amount          float64                  `gorm:"not null" json:"amount"`
+	PaymentMethod   AlternativePaymentMethod `gorm:"not null" json:"payment_method"`
+	Status          AlternativePaymentStatus `gorm:"default:'pending'" json:"status"`
+	ConfirmedBy     string                   `json:"confirmed_by"` // Business owner who confirmed
+	CreatedAt       time.Time                `json:"created_at"`
+	UpdatedAt       time.Time                `json:"updated_at"`
+	ConfirmedAt     *time.Time               `json:"confirmed_at"`
+	Bill            Bill                     `gorm:"foreignKey:BillID" json:"bill,omitempty"`
+}
+
+// AlternativePaymentMethod represents the method used for alternative payment
+type AlternativePaymentMethod string
+
+const (
+	PaymentMethodCash  AlternativePaymentMethod = "cash"
+	PaymentMethodCard  AlternativePaymentMethod = "card"
+	PaymentMethodVenmo AlternativePaymentMethod = "venmo"
+	PaymentMethodOther AlternativePaymentMethod = "other"
+)
+
+// AlternativePaymentStatus represents the status of an alternative payment
+type AlternativePaymentStatus string
+
+const (
+	AltPaymentStatusPending   AlternativePaymentStatus = "pending"
+	AltPaymentStatusConfirmed AlternativePaymentStatus = "confirmed"
+	AltPaymentStatusFailed    AlternativePaymentStatus = "failed"
+)
+
+// PaymentBreakdown represents the breakdown of crypto vs alternative payments
+type PaymentBreakdown struct {
+	TotalAmount     float64 `json:"total_amount"`
+	CryptoPaid      float64 `json:"crypto_paid"`
+	AlternativePaid float64 `json:"alternative_paid"`
+	Remaining       float64 `json:"remaining"`
+	IsComplete      bool    `json:"is_complete"`
+}
+
 // TableName methods to specify custom table names if needed
 func (User) TableName() string {
 	return "users"
@@ -264,4 +308,8 @@ func (Bill) TableName() string {
 
 func (Payment) TableName() string {
 	return "payments"
+}
+
+func (AlternativePayment) TableName() string {
+	return "alternative_payments"
 }

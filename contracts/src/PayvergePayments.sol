@@ -93,6 +93,23 @@ contract PayvergePayments is
         uint64 lastClaimed;          // 8 bytes (sufficient until year 2554)
     }
 
+    struct AlternativePayment {
+        address participant;         // 20 bytes - who paid
+        uint256 amount;              // 32 bytes - amount paid
+        uint64 timestamp;            // 8 bytes - when confirmed
+        uint8 methodType;            // 1 byte - payment method enum
+        bool verified;               // 1 byte - confirmed by business
+    }
+
+    // Payment method types
+    enum PaymentMethod {
+        CRYPTO,    // 0 - On-chain USDC payment
+        CASH,      // 1 - Cash payment
+        CARD,      // 2 - Credit/debit card
+        VENMO,     // 3 - Venmo/PayPal
+        OTHER      // 4 - Other payment methods
+    }
+
     // Simplified mappings
     mapping(bytes32 => Bill) public bills;
     mapping(bytes32 => bool) public billExists;
@@ -107,6 +124,10 @@ contract PayvergePayments is
     // Simple participant tracking
     mapping(bytes32 => mapping(address => Participant)) public billParticipants;
     mapping(bytes32 => address[]) public participantList;
+    
+    // Alternative payment tracking
+    mapping(bytes32 => AlternativePayment[]) public billAlternativePayments;
+    mapping(bytes32 => uint256) public totalAlternativeAmount;
 
     // Modifiers
     modifier onlyActiveBusiness(address business) {
@@ -154,6 +175,8 @@ contract PayvergePayments is
     event FeeUpdateDelayChanged(uint256 newDelay);
     event RegistrationFeeUpdateProposed(uint256 newFee, uint256 executeAfter);
     event RegistrationFeeUpdated(uint256 newFee);
+    event AlternativePaymentMarked(bytes32 indexed billId, address indexed participant, uint256 amount, PaymentMethod method, address indexed confirmedBy);
+    event BillCompletedWithAlternativePayments(bytes32 indexed billId, uint256 totalCrypto, uint256 totalAlternative);
 
     // Custom errors
     error BillNotFound(bytes32 billId);
@@ -519,6 +542,70 @@ contract PayvergePayments is
     }
 
     /**
+     * @dev Mark alternative payment (cash/card) for a bill participant
+     * @param billId The bill identifier
+     * @param participant The participant who paid alternatively
+     * @param amount Amount paid via alternative method
+     * @param method Payment method used
+     */
+    function markAlternativePayment(
+        bytes32 billId,
+        address participant,
+        uint256 amount,
+        PaymentMethod method
+    ) external onlyRole(BILL_MANAGER_ROLE) nonReentrant whenNotPaused {
+        require(billExists[billId], "Bill not found");
+        require(participant != address(0), "Zero address");
+        require(amount > 0, "Invalid amount");
+        require(method != PaymentMethod.CRYPTO, "Use processPayment for crypto");
+        
+        Bill storage bill = bills[billId];
+        require(!bill.isPaid && !bill.isCancelled, "Bill not active");
+        
+        // Check if this would exceed the bill total
+        uint256 currentPaid = bill.paidAmount + totalAlternativeAmount[billId];
+        require(currentPaid + amount <= bill.totalAmount, "Exceeds bill total");
+        
+        // Add alternative payment record
+        billAlternativePayments[billId].push(AlternativePayment({
+            participant: participant,
+            amount: amount,
+            timestamp: uint64(block.timestamp),
+            methodType: uint8(method),
+            verified: true
+        }));
+        
+        // Update totals
+        totalAlternativeAmount[billId] += amount;
+        
+        // Update participant tracking
+        Participant storage participantInfo = billParticipants[billId][participant];
+        if (participantInfo.paymentCount == 0) {
+            // First time participant
+            participantList[billId].push(participant);
+            bill.participantCount++;
+        }
+        participantInfo.paidAmount += amount;
+        participantInfo.paymentCount++;
+        participantInfo.lastPaymentTime = uint32(block.timestamp);
+        
+        // Check if bill is now complete
+        uint256 totalPaid = bill.paidAmount + totalAlternativeAmount[billId];
+        if (totalPaid >= bill.totalAmount) {
+            bill.isPaid = true;
+            bill.lastPaymentAt = uint64(block.timestamp);
+            
+            emit BillCompletedWithAlternativePayments(
+                billId, 
+                bill.paidAmount, 
+                totalAlternativeAmount[billId]
+            );
+        }
+        
+        emit AlternativePaymentMarked(billId, participant, amount, method, msg.sender);
+    }
+
+    /**
      * @dev Get business bill count (gas-efficient alternative to array)
      */
     function getBusinessBillCount(address businessAddress) external view returns (uint256) {
@@ -653,6 +740,57 @@ contract PayvergePayments is
         returns (uint256 pendingFee, uint256 executeAfter) 
     {
         return (pendingRegistrationFee, registrationFeeUpdateTimestamp);
+    }
+
+    /**
+     * @dev Get alternative payments for a bill
+     */
+    function getBillAlternativePayments(bytes32 billId) 
+        external 
+        view 
+        returns (AlternativePayment[] memory) 
+    {
+        return billAlternativePayments[billId];
+    }
+
+    /**
+     * @dev Get total alternative payment amount for a bill
+     */
+    function getTotalAlternativeAmount(bytes32 billId) 
+        external 
+        view 
+        returns (uint256) 
+    {
+        return totalAlternativeAmount[billId];
+    }
+
+    /**
+     * @dev Get complete bill payment breakdown (crypto + alternative)
+     */
+    function getBillPaymentBreakdown(bytes32 billId) 
+        external 
+        view 
+        returns (
+            uint256 totalAmount,
+            uint256 cryptoPaid,
+            uint256 alternativePaid,
+            uint256 remaining,
+            bool isComplete
+        ) 
+    {
+        require(billExists[billId], "Bill not found");
+        
+        Bill memory bill = bills[billId];
+        uint256 altPaid = totalAlternativeAmount[billId];
+        uint256 totalPaid = bill.paidAmount + altPaid;
+        
+        return (
+            bill.totalAmount,
+            bill.paidAmount,
+            altPaid,
+            bill.totalAmount > totalPaid ? bill.totalAmount - totalPaid : 0,
+            bill.isPaid
+        );
     }
 
     /**

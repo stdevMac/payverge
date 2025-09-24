@@ -224,6 +224,11 @@ func main() {
 
 		// WebSocket endpoint for real-time updates
 		publicRoutes.GET("/ws", gin.WrapH(http.HandlerFunc(wsHub.ServeWS)))
+
+		// Alternative Payment routes (public for guests)
+		publicRoutes.POST("/bills/:bill_id/request-alternative-payment", paymentHandler.RequestAlternativePayment)
+		publicRoutes.GET("/bills/:bill_id/alternative-payments", paymentHandler.GetBillAlternativePayments)
+		publicRoutes.GET("/bills/:bill_id/payment-breakdown", paymentHandler.GetBillPaymentBreakdown)
 	}
 
 	// Protected routes (require authentication)
@@ -294,6 +299,10 @@ func main() {
 		protectedRoutes.GET("/businesses/:id/analytics/dashboard", analyticsHandler.GetDashboardSummary)
 		protectedRoutes.GET("/businesses/:id/analytics/live-bills", analyticsHandler.GetLiveBills)
 		protectedRoutes.GET("/businesses/:id/reports/export", analyticsHandler.ExportSalesData)
+
+		// Alternative Payment routes (business owner functions)
+		protectedRoutes.POST("/bills/:bill_id/alternative-payment", paymentHandler.MarkAlternativePayment)
+		protectedRoutes.GET("/bills/:bill_id/pending-alternative-payments", paymentHandler.GetPendingAlternativePayments)
 	}
 
 	// Admin routes (require authentication and admin role)
