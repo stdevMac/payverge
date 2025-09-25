@@ -101,14 +101,14 @@ export default function Home() {
                 and you&apos;re paid instantly. No banks. No friction.
               </p>
               {/* Not yet to be deployed! */}
-              {/* <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Button size="large" onClick={() => router.push('/business/register')}>
                 Register Business
               </Button>
               <Button variant="secondary" size="large" onClick={() => router.push('/dashboard')}>
                 Access Dashboard
               </Button>
-            </div> */}
+            </div>
               <div className="text-center">
                 <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
                   👉 Become an Early Partner

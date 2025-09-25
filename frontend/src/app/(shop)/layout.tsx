@@ -27,7 +27,7 @@ export default function RootLayout({
             <TopMenu />
             {/* {getNetwork().id === baseSepolia.id && <InvestmentBanner />} */}
             {/* <Sidebar /> */}
-            <div className="px-5 sm:px-10 flex-1">{children}</div>
+            <div className="flex-1">{children}</div>
             {/* <Footer /> */}
             {/* <OnboardingWrapper /> */}
             {/* <FloatingLanguageSwitcher /> */}
