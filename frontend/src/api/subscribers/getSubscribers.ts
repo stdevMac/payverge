@@ -17,7 +17,7 @@ export const getAllSubscribers = async (): Promise<SubscriberInterface[]> => {
     }
 };
 
-export const subscribeToWaitlist = async (email: string, businessName: string): Promise<{ success: boolean; message: string }> => {
+export const subscribeToWaitlist = async (email: string, businessName: string, message: string): Promise<{ success: boolean; message: string }> => {
     try {
         const subscriptionData = {
             name: "", // Optional - we don't collect name in this form
@@ -25,7 +25,7 @@ export const subscribeToWaitlist = async (email: string, businessName: string): 
             phone_number: "", // Optional - we don't collect phone
             company_name: businessName,
             contact_way: "email", // Default to email as preferred contact
-            message: "Waitlist signup from landing page",
+            message: message,
             social_media: "", // Optional
             username: "" // Optional
         };
