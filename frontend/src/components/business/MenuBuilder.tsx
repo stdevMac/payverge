@@ -26,7 +26,7 @@ import { businessApi, MenuItem, MenuCategory, MenuItemOption } from '../../api/b
 import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
 import MultipleImageUpload from './MultipleImageUpload';
-import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign } from 'lucide-react';
+import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign, Search, X } from 'lucide-react';
 
 interface MenuBuilderProps {
   businessId: number;
@@ -73,6 +73,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [newDietaryTag, setNewDietaryTag] = useState('');
   const [newOptionName, setNewOptionName] = useState('');
   const [newOptionPrice, setNewOptionPrice] = useState('');
+
+  // Search functionality
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFilter, setSearchFilter] = useState<'all' | 'available' | 'unavailable'>('all');
 
   const loadMenu = useCallback(async () => {
     try {
@@ -352,6 +356,60 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemDietaryTags(itemDietaryTags.filter(t => t !== tag));
   };
 
+  // Search and filter functionality
+  const filteredMenu = React.useMemo(() => {
+    if (!searchQuery.trim() && searchFilter === 'all') {
+      return menu;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    
+    return menu.map(category => {
+      // Check if category matches search
+      const categoryMatches = category.name.toLowerCase().includes(query) ||
+                             category.description.toLowerCase().includes(query);
+
+      // Filter items within category
+      const filteredItems = category.items.filter(item => {
+        // Text search
+        const itemMatches = !query || 
+          item.name.toLowerCase().includes(query) ||
+          item.description.toLowerCase().includes(query) ||
+          (item.allergens && item.allergens.some(allergen => allergen.toLowerCase().includes(query))) ||
+          (item.dietary_tags && item.dietary_tags.some(tag => tag.toLowerCase().includes(query))) ||
+          (item.options && item.options.some(option => option.name.toLowerCase().includes(query)));
+
+        // Availability filter
+        const availabilityMatches = searchFilter === 'all' ||
+          (searchFilter === 'available' && item.is_available) ||
+          (searchFilter === 'unavailable' && !item.is_available);
+
+        return itemMatches && availabilityMatches;
+      });
+
+      // Include category if it matches search or has matching items
+      if (categoryMatches || filteredItems.length > 0) {
+        return {
+          ...category,
+          items: filteredItems
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as MenuCategory[];
+  }, [menu, searchQuery, searchFilter]);
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchFilter('all');
+  };
+
+  const getSearchResultsCount = () => {
+    const totalItems = filteredMenu.reduce((total, category) => total + category.items.length, 0);
+    const totalCategories = filteredMenu.length;
+    return { totalItems, totalCategories };
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -368,20 +426,107 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
-          <p className="text-gray-600 font-light mt-2">Create and manage your restaurant menu</p>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
+            <p className="text-gray-600 font-light mt-2">Create and manage your restaurant menu</p>
+          </div>
+          <Button
+            onPress={onAddCategoryOpen}
+            color="primary"
+            size="lg"
+            startContent={<Plus className="w-5 h-5" />}
+            className="font-semibold shadow-lg"
+          >
+            Add Category
+          </Button>
         </div>
-        <Button
-          onPress={onAddCategoryOpen}
-          color="primary"
-          size="lg"
-          startContent={<Plus className="w-5 h-5" />}
-          className="font-semibold shadow-lg"
-        >
-          Add Category
-        </Button>
+
+        {/* Search and Filter Section */}
+        <Card className="border-gray-200">
+          <CardBody className="p-4">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex-1 relative">
+                <Input
+                  placeholder="Search menu items, categories, allergens, or dietary tags..."
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                  startContent={<Search className="w-4 h-4 text-gray-400" />}
+                  endContent={
+                    searchQuery && (
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onPress={clearSearch}
+                        className="min-w-0 w-6 h-6"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )
+                  }
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Select
+                  label="Filter by availability"
+                  selectedKeys={[searchFilter]}
+                  onSelectionChange={(keys) => setSearchFilter(Array.from(keys)[0] as 'all' | 'available' | 'unavailable')}
+                  className="w-48"
+                  size="sm"
+                >
+                  <SelectItem key="all" value="all">All Items</SelectItem>
+                  <SelectItem key="available" value="available">Available Only</SelectItem>
+                  <SelectItem key="unavailable" value="unavailable">Unavailable Only</SelectItem>
+                </Select>
+                
+                {(searchQuery || searchFilter !== 'all') && (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    onPress={clearSearch}
+                    startContent={<X className="w-3 h-3" />}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Search Results Summary */}
+            {(searchQuery || searchFilter !== 'all') && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    {(() => {
+                      const { totalItems, totalCategories } = getSearchResultsCount();
+                      return (
+                        <span>
+                          Found <strong>{totalItems}</strong> items in <strong>{totalCategories}</strong> categories
+                          {searchQuery && (
+                            <span> matching "<strong>{searchQuery}</strong>"</span>
+                          )}
+                          {searchFilter !== 'all' && (
+                            <span> ({searchFilter} items)</span>
+                          )}
+                        </span>
+                      );
+                    })()}
+                  </div>
+                  
+                  {searchQuery && (
+                    <Chip size="sm" variant="flat" color="primary">
+                      Search active
+                    </Chip>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardBody>
+        </Card>
       </div>
 
       {error && (
@@ -426,9 +571,33 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             Add Your First Category
           </button>
         </div>
+      ) : filteredMenu.length === 0 ? (
+        <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+            <Search className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No results found</h3>
+          <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
+            No menu items match your search criteria. Try adjusting your search terms or filters.
+          </p>
+          <Button
+            onPress={clearSearch}
+            color="primary"
+            variant="flat"
+            startContent={<X className="w-4 h-4" />}
+          >
+            Clear Search
+          </Button>
+        </div>
       ) : (
         <div className="space-y-8">
-          {Array.isArray(menu) && menu.map((category, categoryIndex) => (
+          {Array.isArray(filteredMenu) && filteredMenu.map((category, categoryIndex) => {
+            // Find the original category index for edit/delete operations
+            const originalCategoryIndex = menu.findIndex(originalCategory => 
+              originalCategory.name === category.name
+            );
+            
+            return (
             <Card key={categoryIndex} className="shadow-lg border-0">
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start w-full">
@@ -460,7 +629,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       variant="flat"
                       color="default"
                       startContent={<Edit className="w-4 h-4" />}
-                      onPress={() => handleEditCategory(categoryIndex)}
+                      onPress={() => handleEditCategory(originalCategoryIndex)}
                     >
                       Edit
                     </Button>
@@ -469,7 +638,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       variant="flat"
                       color="danger"
                       startContent={<Trash2 className="w-4 h-4" />}
-                      onPress={() => handleDeleteCategory(categoryIndex)}
+                      onPress={() => handleDeleteCategory(originalCategoryIndex)}
                     >
                       Delete
                     </Button>
@@ -488,7 +657,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       color="primary"
                       variant="flat"
                       onPress={() => {
-                        setSelectedCategoryIndex(categoryIndex);
+                        setSelectedCategoryIndex(originalCategoryIndex);
                         resetItemForm();
                         onAddItemOpen();
                       }}
@@ -498,9 +667,15 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {category.items.map((item, itemIndex) => (
-                      <Card key={itemIndex} className="group hover:shadow-lg transition-all duration-300 border-gray-200 overflow-hidden">
-                        <CardBody className="p-0">
+                    {category.items.map((item, itemIndex) => {
+                      // Find the original item index for edit/delete operations
+                      const originalItemIndex = menu[originalCategoryIndex]?.items.findIndex(originalItem => 
+                        originalItem.name === item.name && originalItem.price === item.price
+                      ) || itemIndex;
+                      
+                      return (
+                      <Card key={itemIndex} className="group hover:shadow-lg transition-all duration-300 border-gray-200 overflow-hidden h-full">
+                        <CardBody className="p-0 flex flex-col h-full">
                           {/* Image Section */}
                           <div className="relative h-48 bg-gray-100 overflow-hidden">
                             {item.images && item.images.length > 0 ? (
@@ -511,7 +686,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                                 {item.images.length > 1 && (
-                                  <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                                  <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
                                     +{item.images.length - 1} more
                                   </div>
                                 )}
@@ -563,10 +738,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 </Chip>
                               </div>
                             )}
+
                           </div>
 
                           {/* Content Section */}
-                          <div className="p-4 space-y-3">
+                          <div className="p-4 space-y-3 flex-grow flex flex-col">
                             {/* Header with name and price */}
                             <div className="flex justify-between items-start">
                               <h4 className="font-semibold text-gray-900 tracking-wide text-lg leading-tight flex-1 pr-2">
@@ -639,14 +815,17 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                               )}
                             </div>
 
-                            {/* Action buttons */}
-                            <div className="flex gap-2 pt-2">
+                            {/* Spacer to push action buttons to bottom */}
+                            <div className="flex-grow"></div>
+
+                            {/* Action buttons - always at bottom */}
+                            <div className="flex gap-2 pt-4 mt-auto border-t border-gray-100">
                               <Button
                                 size="sm"
                                 variant="flat"
                                 color="default"
                                 startContent={<Edit className="w-3 h-3" />}
-                                onPress={() => handleEditItem(categoryIndex, itemIndex)}
+                                onPress={() => handleEditItem(originalCategoryIndex, originalItemIndex)}
                                 className="flex-1"
                               >
                                 Edit
@@ -656,21 +835,24 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 variant="flat"
                                 color="danger"
                                 startContent={<Trash2 className="w-3 h-3" />}
-                                onPress={() => handleDeleteItem(categoryIndex, itemIndex)}
+                                onPress={() => handleDeleteItem(originalCategoryIndex, originalItemIndex)}
                                 className="flex-1"
                               >
                                 Delete
                               </Button>
                             </div>
+
                           </div>
                         </CardBody>
                       </Card>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardBody>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 

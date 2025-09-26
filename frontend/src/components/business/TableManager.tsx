@@ -15,10 +15,12 @@ import {
   useDisclosure,
   Chip,
   Switch,
+  Select,
+  SelectItem,
 } from '@nextui-org/react';
 import { businessApi, Table, CreateTableRequest, UpdateTableRequest } from '@/api/business';
 import { PrimarySpinner } from '@/components/ui/spinners/PrimarySpinner';
-import { QrCode, Download, Copy, Edit, Trash2, ExternalLink, Check } from 'lucide-react';
+import { QrCode, Download, Copy, Edit, Trash2, ExternalLink, Check, Search, X, Plus } from 'lucide-react';
 
 interface TableManagerProps {
   businessId: number;
@@ -33,6 +35,10 @@ export default function TableManager({ businessId }: TableManagerProps) {
   const [editName, setEditName] = useState('');
   const [editActive, setEditActive] = useState(false);
   const [copiedUrls, setCopiedUrls] = useState<Record<number, boolean>>({});
+  
+  // Search functionality
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
   // Modal states
   const { isOpen: isCreateOpen, onOpen: onCreateOpen, onOpenChange: onCreateOpenChange } = useDisclosure();
@@ -54,6 +60,32 @@ export default function TableManager({ businessId }: TableManagerProps) {
   useEffect(() => {
     loadTables();
   }, [loadTables]);
+
+  // Search and filter functionality
+  const filteredTables = React.useMemo(() => {
+    if (!searchQuery.trim() && statusFilter === 'all') {
+      return tables;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    
+    return tables.filter(table => {
+      // Text search
+      const nameMatches = !query || table.name.toLowerCase().includes(query);
+      
+      // Status filter
+      const statusMatches = statusFilter === 'all' ||
+        (statusFilter === 'active' && table.is_active) ||
+        (statusFilter === 'inactive' && !table.is_active);
+
+      return nameMatches && statusMatches;
+    });
+  }, [tables, searchQuery, statusFilter]);
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+  };
 
   const handleCreateTable = async () => {
     if (!tableName.trim()) return;
@@ -161,14 +193,101 @@ export default function TableManager({ businessId }: TableManagerProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-light text-gray-900 tracking-wide">Table Management</h2>
-        <button
-          onClick={onCreateOpen}
-          className="bg-gray-900 text-white px-6 py-3 text-sm font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-md hover:shadow-lg"
-        >
-          Add Table
-        </button>
+      {/* Header */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-3xl font-light text-gray-900 tracking-wide">Table Management</h2>
+            <p className="text-gray-600 font-light mt-2">Create and manage your restaurant tables</p>
+          </div>
+          <Button
+            onPress={onCreateOpen}
+            color="primary"
+            size="lg"
+            startContent={<Plus className="w-5 h-5" />}
+            className="font-semibold shadow-lg"
+          >
+            Create Table
+          </Button>
+        </div>
+
+        {/* Search and Filter Section */}
+        <Card className="border-gray-200">
+          <CardBody className="p-4">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="flex-1 relative">
+                <Input
+                  placeholder="Search tables by name..."
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                  startContent={<Search className="w-4 h-4 text-gray-400" />}
+                  endContent={
+                    searchQuery && (
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onPress={clearSearch}
+                        className="min-w-0 w-6 h-6"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )
+                  }
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Select
+                  label="Filter by status"
+                  selectedKeys={[statusFilter]}
+                  onSelectionChange={(keys: any) => setStatusFilter(Array.from(keys)[0] as 'all' | 'active' | 'inactive')}
+                  className="w-48"
+                  size="sm"
+                >
+                  <SelectItem key="all" value="all">All Tables</SelectItem>
+                  <SelectItem key="active" value="active">Active Only</SelectItem>
+                  <SelectItem key="inactive" value="inactive">Inactive Only</SelectItem>
+                </Select>
+                
+                {(searchQuery || statusFilter !== 'all') && (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    onPress={clearSearch}
+                    startContent={<X className="w-3 h-3" />}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Search Results Summary */}
+            {(searchQuery || statusFilter !== 'all') && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Found <strong>{filteredTables.length}</strong> tables
+                    {searchQuery && (
+                      <span> matching "<strong>{searchQuery}</strong>"</span>
+                    )}
+                    {statusFilter !== 'all' && (
+                      <span> ({statusFilter} tables)</span>
+                    )}
+                  </div>
+                  
+                  {searchQuery && (
+                    <Chip size="sm" variant="flat" color="primary">
+                      Search active
+                    </Chip>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardBody>
+        </Card>
       </div>
 
       {error && (
@@ -213,9 +332,27 @@ export default function TableManager({ businessId }: TableManagerProps) {
             Create Your First Table
           </button>
         </div>
+      ) : filteredTables.length === 0 ? (
+        <div className="bg-white border border-gray-200 rounded-2xl p-16 text-center shadow-sm">
+          <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
+            <Search className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No results found</h3>
+          <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
+            No tables match your search criteria. Try adjusting your search terms or filters.
+          </p>
+          <Button
+            onPress={clearSearch}
+            color="primary"
+            variant="flat"
+            startContent={<X className="w-4 h-4" />}
+          >
+            Clear Search
+          </Button>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {tables.map((table) => (
+          {filteredTables.map((table) => (
             <div key={table.id} className="group bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1">
               <div className="flex justify-between items-start mb-6">
                 <div>
