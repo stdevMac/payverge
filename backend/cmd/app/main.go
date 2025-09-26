@@ -51,6 +51,10 @@ func main() {
 		awsProtectedAccessKey  = flag.String("aws-protected-access-key", "", "AWS Access Key ID")
 		awsProtectedSecretKey  = flag.String("aws-protected-secret-key", "", "AWS Secret Access Key")
 		s3ProtectedEndpointURL = flag.String("s3-protected-endpoint", "", "S3 Endpoint URL (optional)")
+		postmarkServerToken    = flag.String("postmark-server-token", "", "Postmark server token")
+		fromEmail              = flag.String("from-email", "", "From email")
+		fromEmailNews          = flag.String("from-email-news", "", "From email news")
+		fromEmailUpdates       = flag.String("from-email-updates", "", "From email updates")
 	)
 	flag.Parse()
 	if *production {
@@ -72,10 +76,10 @@ func main() {
 
 	// Initialize the email server
 	emailServer := emails.NewEmailServer(
-		os.Getenv("FROM_EMAIL"),
-		os.Getenv("FROM_EMAIL_NEWS"),
-		os.Getenv("FROM_EMAIL_UPDATES"),
-		os.Getenv("POSTMARK_SERVER_TOKEN"),
+		*fromEmail,
+		*fromEmailNews,
+		*fromEmailUpdates,
+		*postmarkServerToken,
 	)
 
 	// Initialize notification dispatchers
@@ -214,7 +218,7 @@ func main() {
 		publicRoutes.POST("/bills/:bill_id/split/custom", splittingHandler.CalculateCustomSplit)
 		publicRoutes.POST("/bills/:bill_id/split/items", splittingHandler.CalculateItemSplit)
 		publicRoutes.POST("/bills/:bill_id/split/validate", splittingHandler.ValidateSplit)
-		
+
 		// Blockchain integration routes for split payments (public for guests)
 		publicRoutes.GET("/bills/:bill_id/participants", splittingHandler.GetBillParticipants)
 		publicRoutes.GET("/bills/:bill_id/participants/:address", splittingHandler.GetParticipantInfo)
@@ -229,6 +233,11 @@ func main() {
 		publicRoutes.POST("/bills/:bill_id/request-alternative-payment", paymentHandler.RequestAlternativePayment)
 		publicRoutes.GET("/bills/:bill_id/alternative-payments", paymentHandler.GetBillAlternativePayments)
 		publicRoutes.GET("/bills/:bill_id/payment-breakdown", paymentHandler.GetBillPaymentBreakdown)
+
+		// Staff Authentication routes (public - no auth required)
+		publicRoutes.POST("/staff/accept-invitation", server.AcceptInvitation)
+		publicRoutes.POST("/staff/request-login-code", server.RequestLoginCode)
+		publicRoutes.POST("/staff/verify-login-code", server.VerifyLoginCode)
 	}
 
 	// Protected routes (require authentication)
@@ -290,7 +299,6 @@ func main() {
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
 
-
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())
 		protectedRoutes.GET("/businesses/:id/analytics/sales", analyticsHandler.GetSalesAnalytics)
@@ -303,6 +311,12 @@ func main() {
 		// Alternative Payment routes (business owner functions)
 		protectedRoutes.POST("/bills/:bill_id/alternative-payment", paymentHandler.MarkAlternativePayment)
 		protectedRoutes.GET("/bills/:bill_id/pending-alternative-payments", paymentHandler.GetPendingAlternativePayments)
+
+		// Staff Management routes (business owner functions)
+		protectedRoutes.POST("/businesses/:id/staff/invite", server.InviteStaff)
+		protectedRoutes.POST("/businesses/:id/staff/invitations/:invitationId/resend", server.ResendInvitation)
+		protectedRoutes.GET("/businesses/:id/staff", server.GetBusinessStaff)
+		protectedRoutes.DELETE("/businesses/:id/staff/:staffId", server.RemoveStaff)
 	}
 
 	// Admin routes (require authentication and admin role)

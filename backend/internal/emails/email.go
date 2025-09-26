@@ -21,7 +21,6 @@ type EmailServer struct {
 }
 
 func NewEmailServer(fromTransactional, fromNews, fromUpdates, token string) *EmailServer {
-
 	EmailServerInstance = &EmailServer{
 		FromTransactional: fromTransactional,
 		FromNews:          fromNews,

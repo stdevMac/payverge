@@ -59,6 +59,10 @@ ARG CHAIN_ID=chain_id
 ARG USDC_CONTRACT=usdc_contract
 ARG PAYVERGE_CONTRACT=payverge_contract
 ARG TELEGRAM_TOKEN=telegram_token
+ARG POSTMARK_TOKEN=postmark_token
+ARG POSTMARK_FROM_TRANSACTIONAL=postmark_from_transactional
+ARG POSTMARK_FROM_NEWS=postmark_from_news
+ARG POSTMARK_FROM_UPDATES=postmark_from_updates
 
 # Command to run the executable
 ENTRYPOINT ["./server"]

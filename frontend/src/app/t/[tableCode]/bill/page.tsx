@@ -81,7 +81,7 @@ export default function GuestBillPage() {
   useEffect(() => {
     console.log('Bill page mounted, loading data for table:', tableCode);
     loadTableData();
-  }, [tableCode]); // Only depend on tableCode, not the callback
+  }, [tableCode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Add debugging for any state changes
   useEffect(() => {

@@ -82,11 +82,11 @@ export default function GuestMenuPage() {
     } catch (error) {
       console.error('Error adding item to bill:', error);
     }
-  }, [currentBill?.bill.id, tableCode]);
+  }, [currentBill?.bill.id, tableCode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     loadTableData();
-  }, [tableCode]); // Only depend on tableCode, not the callback
+  }, [tableCode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (

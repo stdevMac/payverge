@@ -108,7 +108,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
       setShowValidation(false);
       loadSplitOptions();
     }
-  }, [isOpen, bill.id]);
+  }, [isOpen, bill.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadSplitOptions = async () => {
     try {

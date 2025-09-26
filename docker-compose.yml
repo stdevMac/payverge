@@ -65,6 +65,14 @@ services:
       - ${CHAIN_ID:-1}
       - --usdc-contract
       - ${USDC_CONTRACT:-usdc_contract}
+      - --postmark-server-token
+      - ${POSTMARK_SERVER_TOKEN:-postmark_token}
+      - --from-email
+      - ${FROM_EMAIL:-noreply@yourapp.com}
+      - --from-email-news
+      - ${FROM_EMAIL_NEWS:-news@yourapp.com}
+      - --from-email-updates
+      - ${FROM_EMAIL_UPDATES:-updates@yourapp.com}
 
   # Frontend Service
   frontend:

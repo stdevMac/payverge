@@ -271,7 +271,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                   <div className="text-sm text-gray-600">
                     Found <strong>{filteredTables.length}</strong> tables
                     {searchQuery && (
-                      <span> matching "<strong>{searchQuery}</strong>"</span>
+                      <span> matching &quot;<strong>{searchQuery}</strong>&quot;</span>
                     )}
                     {statusFilter !== 'all' && (
                       <span> ({statusFilter} tables)</span>

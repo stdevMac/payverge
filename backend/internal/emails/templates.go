@@ -18,4 +18,8 @@ const (
 	// Admin templates
 	TemplateAdminNotification = 38670643 // Template for admin notifications
 	TemplateDailyReport       = 38670644 // Template for daily reports
+
+	// Staff management templates
+	TemplateStaffInvitation = 41615158 // Template for staff invitations
+	TemplateStaffLoginCode  = 41615160 // Template for staff login codes
 )

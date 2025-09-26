@@ -265,6 +265,68 @@ type PaymentBreakdown struct {
 	IsComplete      bool    `json:"is_complete"`
 }
 
+// Staff represents employees/workers of a business
+type Staff struct {
+	ID           uint       `gorm:"primaryKey" json:"id"`
+	BusinessID   uint       `gorm:"index;not null" json:"business_id"`
+	Email        string     `gorm:"uniqueIndex;not null" json:"email"`
+	Name         string     `gorm:"not null" json:"name"`
+	Role         StaffRole  `gorm:"not null" json:"role"`
+	IsActive     bool       `gorm:"default:true" json:"is_active"`
+	LastLoginAt  *time.Time `json:"last_login_at"`
+	InvitedBy    string     `gorm:"not null" json:"invited_by"` // Owner wallet address
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+	Business     Business   `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+}
+
+// StaffInvitation represents pending staff invitations
+type StaffInvitation struct {
+	ID         uint             `gorm:"primaryKey" json:"id"`
+	BusinessID uint             `gorm:"index;not null" json:"business_id"`
+	Email      string           `gorm:"not null" json:"email"`
+	Name       string           `gorm:"not null" json:"name"`
+	Role       StaffRole        `gorm:"not null" json:"role"`
+	Token      string           `gorm:"uniqueIndex;not null" json:"token"`
+	Status     InvitationStatus `gorm:"default:'pending'" json:"status"`
+	InvitedBy  string           `gorm:"not null" json:"invited_by"` // Owner wallet address
+	ExpiresAt  time.Time        `json:"expires_at"`
+	CreatedAt  time.Time        `json:"created_at"`
+	UpdatedAt  time.Time        `json:"updated_at"`
+	Business   Business         `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+}
+
+// StaffLoginCode represents temporary login codes for staff
+type StaffLoginCode struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	StaffID   uint      `gorm:"index;not null" json:"staff_id"`
+	Code      string    `gorm:"uniqueIndex;not null" json:"code"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Used      bool      `gorm:"default:false" json:"used"`
+	CreatedAt time.Time `json:"created_at"`
+	Staff     Staff     `gorm:"foreignKey:StaffID" json:"staff,omitempty"`
+}
+
+// StaffRole represents different staff permission levels
+type StaffRole string
+
+const (
+	StaffRoleManager StaffRole = "manager" // Can manage menu, tables, bills (no financial settings)
+	StaffRoleServer  StaffRole = "server"  // Can view tables, create/close bills
+	StaffRoleHost    StaffRole = "host"    // Can view tables, seat guests
+	StaffRoleKitchen StaffRole = "kitchen" // Can view orders, mark items ready
+)
+
+// InvitationStatus represents the status of a staff invitation
+type InvitationStatus string
+
+const (
+	InvitationStatusPending  InvitationStatus = "pending"
+	InvitationStatusAccepted InvitationStatus = "accepted"
+	InvitationStatusExpired  InvitationStatus = "expired"
+	InvitationStatusRevoked  InvitationStatus = "revoked"
+)
+
 // TableName methods to specify custom table names if needed
 func (User) TableName() string {
 	return "users"
@@ -312,4 +374,16 @@ func (Payment) TableName() string {
 
 func (AlternativePayment) TableName() string {
 	return "alternative_payments"
+}
+
+func (Staff) TableName() string {
+	return "staff"
+}
+
+func (StaffInvitation) TableName() string {
+	return "staff_invitations"
+}
+
+func (StaffLoginCode) TableName() string {
+	return "staff_login_codes"
 }

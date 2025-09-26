@@ -35,6 +35,9 @@ type DB struct {
 	AlternativePaymentService *AlternativePaymentService
 	MenuService               *MenuService
 	CodeService               *CodeService
+	StaffService              *StaffService
+	StaffInvitationService    *StaffInvitationService
+	StaffLoginCodeService     *StaffLoginCodeService
 }
 
 // NewDB creates a new DB instance
@@ -88,6 +91,9 @@ func GetDBWrapper() *DB {
 		AlternativePaymentService: NewAlternativePaymentService(),
 		MenuService:               NewMenuService(),
 		CodeService:               NewCodeService(),
+		StaffService:              NewStaffService(),
+		StaffInvitationService:    NewStaffInvitationService(),
+		StaffLoginCodeService:     NewStaffLoginCodeService(),
 	}
 }
 
@@ -188,5 +194,9 @@ func autoMigrate() error {
 		&Bill{},
 		&Payment{},
 		&AlternativePayment{},
+		// Staff management models
+		&Staff{},
+		&StaffInvitation{},
+		&StaffLoginCode{},
 	)
 }

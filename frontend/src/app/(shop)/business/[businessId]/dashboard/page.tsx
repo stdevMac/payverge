@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
@@ -16,6 +16,7 @@ import MenuBuilder from '../../../../../components/business/MenuBuilder';
 import TableManager from '../../../../../components/business/TableManager';
 import { BillManager } from '../../../../../components/business/BillManager';
 import BusinessSettings from '../../../../../components/business/BusinessSettings';
+import StaffManagement from '../../../../../components/business/StaffManagement';
 
 interface BusinessDashboardProps {
   params: {
@@ -233,6 +234,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       case 'bills':
         return <BillManager businessId={businessId} />;
 
+      case 'staff':
+        return <StaffManagement businessId={businessId.toString()} />;
+
       case 'settings':
         return <BusinessSettings businessId={businessId} />;
 
@@ -272,6 +276,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
               { key: 'bills', icon: Receipt, label: 'Bills' },
+              { key: 'staff', icon: UserCheck, label: 'Staff' },
               { key: 'settings', icon: Settings, label: 'Settings' }
             ].map(({ key, icon: Icon, label }) => (
               <button

@@ -261,3 +261,111 @@ func (s *CodeService) Update(code *Code) error {
 func (s *CodeService) Delete(code string) error {
 	return s.repo.DeleteWhere("code = ?", code)
 }
+
+// StaffService provides staff-specific operations
+type StaffService struct {
+	repo *Repository[Staff]
+}
+
+func NewStaffService() *StaffService {
+	return &StaffService{
+		repo: NewRepository[Staff](db),
+	}
+}
+
+func (s *StaffService) Create(staff *Staff) error {
+	return s.repo.Create(staff)
+}
+
+func (s *StaffService) GetByID(id uint) (*Staff, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *StaffService) GetByEmail(email string) (*Staff, error) {
+	return s.repo.GetFirstWhere("email = ?", email)
+}
+
+func (s *StaffService) GetByBusinessID(businessID uint) ([]Staff, error) {
+	return s.repo.GetWhere("business_id = ? AND is_active = ?", businessID, true)
+}
+
+func (s *StaffService) Update(staff *Staff) error {
+	return s.repo.Update(staff)
+}
+
+func (s *StaffService) UpdateLastLogin(staffID uint) error {
+	now := time.Now()
+	return s.repo.UpdateWhere("id = ?", map[string]interface{}{"last_login_at": &now}, staffID)
+}
+
+func (s *StaffService) SoftDelete(id uint) error {
+	return s.repo.UpdateWhere("id = ?", map[string]interface{}{"is_active": false}, id)
+}
+
+// StaffInvitationService provides staff invitation operations
+type StaffInvitationService struct {
+	repo *Repository[StaffInvitation]
+}
+
+func NewStaffInvitationService() *StaffInvitationService {
+	return &StaffInvitationService{
+		repo: NewRepository[StaffInvitation](db),
+	}
+}
+
+func (s *StaffInvitationService) Create(invitation *StaffInvitation) error {
+	return s.repo.Create(invitation)
+}
+
+func (s *StaffInvitationService) GetByID(id uint) (*StaffInvitation, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *StaffInvitationService) GetByToken(token string) (*StaffInvitation, error) {
+	return s.repo.GetFirstWhere("token = ? AND status = ?", token, InvitationStatusPending)
+}
+
+func (s *StaffInvitationService) GetByBusinessID(businessID uint) ([]StaffInvitation, error) {
+	return s.repo.GetWhere("business_id = ?", businessID)
+}
+
+func (s *StaffInvitationService) Update(invitation *StaffInvitation) error {
+	return s.repo.Update(invitation)
+}
+
+func (s *StaffInvitationService) UpdateStatus(id uint, status InvitationStatus) error {
+	return s.repo.UpdateWhere("id = ?", map[string]interface{}{"status": status}, id)
+}
+
+func (s *StaffInvitationService) ExpireOldInvitations() error {
+	return s.repo.UpdateWhere("expires_at < ? AND status = ?", 
+		map[string]interface{}{"status": InvitationStatusExpired}, 
+		time.Now(), InvitationStatusPending)
+}
+
+// StaffLoginCodeService provides login code operations
+type StaffLoginCodeService struct {
+	repo *Repository[StaffLoginCode]
+}
+
+func NewStaffLoginCodeService() *StaffLoginCodeService {
+	return &StaffLoginCodeService{
+		repo: NewRepository[StaffLoginCode](db),
+	}
+}
+
+func (s *StaffLoginCodeService) Create(loginCode *StaffLoginCode) error {
+	return s.repo.Create(loginCode)
+}
+
+func (s *StaffLoginCodeService) GetByCode(code string) (*StaffLoginCode, error) {
+	return s.repo.GetFirstWhere("code = ? AND used = ? AND expires_at > ?", code, false, time.Now())
+}
+
+func (s *StaffLoginCodeService) MarkAsUsed(id uint) error {
+	return s.repo.UpdateWhere("id = ?", map[string]interface{}{"used": true}, id)
+}
+
+func (s *StaffLoginCodeService) DeleteExpiredCodes() error {
+	return s.repo.DeleteWhere("expires_at < ?", time.Now())
+}

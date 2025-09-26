@@ -211,14 +211,14 @@ export default function Dashboard() {
     }, 500); // Give UserProvider 500ms to initialize
 
     return () => clearTimeout(timer);
-  }, [isConnected, user, fetchUserDataDirectly]);
+  }, [isConnected, user, fetchUserDataDirectly]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Reload when user changes
   useEffect(() => {
     if (user && authChecked && !error) {
       loadBusinesses();
     }
-  }, [user?.address, authChecked, error, loadBusinesses]);
+  }, [user?.address, authChecked, error]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const handleCreateBusiness = async (e: React.FormEvent) => {
