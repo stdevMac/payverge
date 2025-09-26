@@ -497,83 +497,171 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     </Button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {category.items.map((item, itemIndex) => (
-                      <Card key={itemIndex} className="group hover:shadow-md transition-all duration-200 border-gray-200">
-                        <CardBody className="p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <h4 className="font-semibold text-gray-900 tracking-wide text-lg">{item.name}</h4>
-                            <Chip
-                              size="sm"
-                              color={item.is_available ? "success" : "default"}
-                              variant="flat"
-                            >
-                              {item.is_available ? 'Available' : 'Unavailable'}
-                            </Chip>
-                          </div>
-                          
-                          {item.description && (
-                            <p className="text-sm text-gray-600 font-light mb-3 leading-relaxed">{item.description}</p>
-                          )}
-                          
-                          <div className="flex items-center gap-2 mb-3">
-                            <DollarSign className="w-4 h-4 text-green-600" />
-                            <span className="text-xl font-semibold text-gray-900">{(item.price || 0).toFixed(2)}</span>
-                            {item.currency && item.currency !== 'USD' && (
-                              <span className="text-sm text-gray-500">{item.currency}</span>
-                            )}
-                          </div>
-
-                          {/* Additional item details */}
-                          <div className="space-y-2 mb-4">
-                            {item.allergens && item.allergens.length > 0 && (
-                              <div className="flex items-center gap-2">
-                                <AlertTriangle className="w-4 h-4 text-orange-500" />
-                                <div className="flex flex-wrap gap-1">
-                                  {item.allergens.map((allergen, idx) => (
-                                    <Chip key={idx} size="sm" color="warning" variant="flat" className="text-xs">
-                                      {allergen}
+                      <Card key={itemIndex} className="group hover:shadow-lg transition-all duration-300 border-gray-200 overflow-hidden">
+                        <CardBody className="p-0">
+                          {/* Image Section */}
+                          <div className="relative h-48 bg-gray-100 overflow-hidden">
+                            {item.images && item.images.length > 0 ? (
+                              <div className="relative w-full h-full">
+                                <img
+                                  src={item.images[0]}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                {item.images.length > 1 && (
+                                  <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                                    +{item.images.length - 1} more
+                                  </div>
+                                )}
+                                {/* Availability overlay */}
+                                {!item.is_available && (
+                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                    <Chip color="default" variant="solid" className="text-white">
+                                      Unavailable
                                     </Chip>
-                                  ))}
+                                  </div>
+                                )}
+                              </div>
+                            ) : item.image ? (
+                              <div className="relative w-full h-full">
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                {!item.is_available && (
+                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                    <Chip color="default" variant="solid" className="text-white">
+                                      Unavailable
+                                    </Chip>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                                <div className="text-center">
+                                  <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                                  <p className="text-sm text-gray-500">No image</p>
                                 </div>
+                                {!item.is_available && (
+                                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                    <Chip color="default" variant="solid" className="text-white">
+                                      Unavailable
+                                    </Chip>
+                                  </div>
+                                )}
                               </div>
                             )}
                             
-                            {item.dietary_tags && item.dietary_tags.length > 0 && (
+                            {/* Availability badge for available items */}
+                            {item.is_available && (
+                              <div className="absolute top-2 left-2">
+                                <Chip size="sm" color="success" variant="solid" className="text-white">
+                                  Available
+                                </Chip>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Content Section */}
+                          <div className="p-4 space-y-3">
+                            {/* Header with name and price */}
+                            <div className="flex justify-between items-start">
+                              <h4 className="font-semibold text-gray-900 tracking-wide text-lg leading-tight flex-1 pr-2">
+                                {item.name}
+                              </h4>
+                              <div className="flex items-center gap-1 text-green-600 font-bold text-lg">
+                                <DollarSign className="w-4 h-4" />
+                                <span>{(item.price || 0).toFixed(2)}</span>
+                                {item.currency && item.currency !== 'USD' && (
+                                  <span className="text-sm text-gray-500 ml-1">{item.currency}</span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Description */}
+                            {item.description && (
+                              <p className="text-sm text-gray-600 font-light leading-relaxed" style={{
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden'
+                              }}>
+                                {item.description}
+                              </p>
+                            )}
+
+                            {/* Options preview */}
+                            {item.options && item.options.length > 0 && (
                               <div className="flex items-center gap-2">
-                                <Tag className="w-4 h-4 text-green-500" />
+                                <span className="text-xs text-gray-500">Options:</span>
+                                <Chip size="sm" variant="flat" color="primary" className="text-xs">
+                                  +{item.options.length} add-ons
+                                </Chip>
+                              </div>
+                            )}
+
+                            {/* Tags and allergens */}
+                            <div className="space-y-2">
+                              {item.dietary_tags && item.dietary_tags.length > 0 && (
                                 <div className="flex flex-wrap gap-1">
-                                  {item.dietary_tags.map((tag, idx) => (
+                                  {item.dietary_tags.slice(0, 3).map((tag, idx) => (
                                     <Chip key={idx} size="sm" color="success" variant="flat" className="text-xs">
                                       {tag}
                                     </Chip>
                                   ))}
+                                  {item.dietary_tags.length > 3 && (
+                                    <Chip size="sm" variant="flat" color="default" className="text-xs">
+                                      +{item.dietary_tags.length - 3} more
+                                    </Chip>
+                                  )}
                                 </div>
-                              </div>
-                            )}
-                          </div>
+                              )}
+                              
+                              {item.allergens && item.allergens.length > 0 && (
+                                <div className="flex items-center gap-2">
+                                  <AlertTriangle className="w-3 h-3 text-orange-500" />
+                                  <div className="flex flex-wrap gap-1">
+                                    {item.allergens.slice(0, 2).map((allergen, idx) => (
+                                      <Chip key={idx} size="sm" color="warning" variant="flat" className="text-xs">
+                                        {allergen}
+                                      </Chip>
+                                    ))}
+                                    {item.allergens.length > 2 && (
+                                      <Chip size="sm" variant="flat" color="warning" className="text-xs">
+                                        +{item.allergens.length - 2} more
+                                      </Chip>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
 
-                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            <Button
-                              size="sm"
-                              variant="flat"
-                              color="default"
-                              startContent={<Edit className="w-3 h-3" />}
-                              onPress={() => handleEditItem(categoryIndex, itemIndex)}
-                              className="flex-1"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="flat"
-                              color="danger"
-                              startContent={<Trash2 className="w-3 h-3" />}
-                              onPress={() => handleDeleteItem(categoryIndex, itemIndex)}
-                              className="flex-1"
-                            >
-                              Delete
-                            </Button>
+                            {/* Action buttons */}
+                            <div className="flex gap-2 pt-2">
+                              <Button
+                                size="sm"
+                                variant="flat"
+                                color="default"
+                                startContent={<Edit className="w-3 h-3" />}
+                                onPress={() => handleEditItem(categoryIndex, itemIndex)}
+                                className="flex-1"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="flat"
+                                color="danger"
+                                startContent={<Trash2 className="w-3 h-3" />}
+                                onPress={() => handleDeleteItem(categoryIndex, itemIndex)}
+                                className="flex-1"
+                              >
+                                Delete
+                              </Button>
+                            </div>
                           </div>
                         </CardBody>
                       </Card>
