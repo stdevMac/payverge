@@ -11,7 +11,7 @@ import (
 var EmailServerInstance *EmailServer
 
 // TODO: Change AdminsEmails to be configurable
-var AdminsEmails = []string{"admin@yourapp.com", "admin@yourcompany.com", "admin@example.com"}
+var AdminsEmails = []string{"marcosmaceowork@gmail.com", "info@payverge.io"}
 
 type EmailServer struct {
 	FromTransactional string
@@ -55,7 +55,7 @@ func (e *EmailServer) SendTransactionalEmail(to []string, templateID int, templa
 		Tag:           "transactional",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@yourapp.com",
+		ReplyTo:       "info@payverge.io",
 		MessageStream: "outbound",
 	}
 
@@ -86,7 +86,7 @@ func (e *EmailServer) SendUpdatesEmail(to []string, templateID int, templateBody
 		Tag:           "updates",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@yourapp.com",
+		ReplyTo:       "info@payverge.io",
 		MessageStream: "broadcast",
 	}
 
@@ -117,7 +117,7 @@ func (e *EmailServer) SendNewsEmail(to []string, templateID int, templateBody ma
 		Tag:           "news",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@yourapp.com",
+		ReplyTo:       "info@payverge.io",
 		MessageStream: "news-broadcast-stream",
 	}
 
@@ -149,7 +149,7 @@ func (e *EmailServer) SendAdminEmail(templateID int, templateBody map[string]int
 		Tag:           "admin",
 		TemplateID:    templateID,
 		TemplateModel: templateBody,
-		ReplyTo:       "info@yourapp.com",
+		ReplyTo:       "info@payverge.io",
 		MessageStream: "admin-notifications",
 	}
 
