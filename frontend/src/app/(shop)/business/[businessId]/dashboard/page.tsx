@@ -18,6 +18,7 @@ import { BillManager } from '../../../../../components/business/BillManager';
 import BusinessSettings from '../../../../../components/business/BusinessSettings';
 import StaffManagement from '../../../../../components/business/StaffManagement';
 import Dashboard from '../../../../../components/dashboard/Dashboard';
+import { ToastProvider } from '../../../../../contexts/ToastContext';
 
 interface BusinessDashboardProps {
   params: {
@@ -250,7 +251,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <ToastProvider>
+      <div className="min-h-screen bg-white">
       {/* Desktop Layout */}
       <div className="lg:flex">
         {/* Desktop Sidebar */}
@@ -401,5 +403,6 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         </div>
       </div>
     </div>
+    </ToastProvider>
   );
 }

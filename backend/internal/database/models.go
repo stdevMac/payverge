@@ -84,6 +84,16 @@ type Business struct {
 	TaxInclusive    bool            `gorm:"default:false" json:"tax_inclusive"`
 	ServiceInclusive bool           `gorm:"default:false" json:"service_inclusive"`
 	IsActive        bool            `gorm:"default:true" json:"is_active"`
+	// New fields for enhanced business features
+	Description     string          `json:"description"`
+	CustomURL       string          `json:"custom_url"`
+	Phone           string          `json:"phone"`
+	Website         string          `json:"website"`
+	SocialMedia     string          `json:"social_media"` // JSON string for social media links
+	BannerImages    string          `json:"banner_images"` // JSON array of banner image URLs
+	BusinessPageEnabled bool        `gorm:"default:false" json:"business_page_enabled"`
+	ShowReviews     bool            `gorm:"default:true" json:"show_reviews"`
+	GoogleReviewsEnabled bool       `gorm:"default:false" json:"google_reviews_enabled"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }

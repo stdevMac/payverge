@@ -22,6 +22,16 @@ export interface Business {
   tax_inclusive: boolean;
   service_inclusive: boolean;
   is_active: boolean;
+  // New fields for enhanced business features
+  description?: string;
+  custom_url?: string;
+  phone?: string;
+  website?: string;
+  social_media?: string;
+  banner_images?: string;
+  business_page_enabled?: boolean;
+  show_reviews?: boolean;
+  google_reviews_enabled?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -48,6 +58,16 @@ export interface UpdateBusinessRequest {
   service_fee_rate?: number;
   tax_inclusive?: boolean;
   service_inclusive?: boolean;
+  // New fields for enhanced business features
+  description?: string;
+  custom_url?: string;
+  phone?: string;
+  website?: string;
+  social_media?: string;
+  banner_images?: string;
+  business_page_enabled?: boolean;
+  show_reviews?: boolean;
+  google_reviews_enabled?: boolean;
 }
 
 // Create a new business
@@ -77,6 +97,22 @@ export const updateBusiness = async (businessId: number, businessData: UpdateBus
 // Delete a business
 export const deleteBusiness = async (businessId: number): Promise<void> => {
   await axiosInstance.delete(`/inside/businesses/${businessId}`);
+};
+
+// Check custom URL availability
+export const checkCustomURLAvailability = async (
+  url: string, 
+  excludeBusinessId?: number
+): Promise<{ available: boolean; error?: string }> => {
+  const params = new URLSearchParams({ url });
+  if (excludeBusinessId) {
+    params.append('exclude_business_id', excludeBusinessId.toString());
+  }
+  
+  const response = await axiosInstance.get<{ available: boolean; error?: string }>(
+    `/inside/businesses/check-url?${params.toString()}`
+  );
+  return response.data;
 };
 
 // Menu Management Types

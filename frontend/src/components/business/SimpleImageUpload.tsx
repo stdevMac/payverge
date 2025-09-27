@@ -9,8 +9,9 @@ import {
   Progress,
   Image,
 } from '@nextui-org/react';
+import { useToast } from '@/contexts/ToastContext';
 
-interface ImageUploadProps {
+interface SimpleImageUploadProps {
   onImageUploaded: (imageUrl: string) => void;
   currentImage?: string;
   isLoading?: boolean;
@@ -18,11 +19,10 @@ interface ImageUploadProps {
   type?: 'business-logo' | 'menu-item' | 'banner' | 'gallery';
   title?: string;
   description?: string;
-  aspectRatio?: 'square' | 'banner' | 'auto';
   maxSize?: number; // in MB
 }
 
-export default function ImageUpload({ 
+export default function SimpleImageUpload({ 
   onImageUploaded, 
   currentImage, 
   isLoading = false, 
@@ -30,13 +30,13 @@ export default function ImageUpload({
   type = 'business-logo',
   title,
   description,
-  aspectRatio = 'auto',
   maxSize = 5
-}: ImageUploadProps) {
+}: SimpleImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showSuccess, showError } = useToast();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -71,14 +71,28 @@ export default function ImageUpload({
 
       // Upload to backend S3 endpoint with proper type
       const result = await uploadFile(file, type, businessId);
-      const imageUrl = result.url || result.location; // Use url if available, otherwise location
+      const imageUrl = result.url || result.location;
       onImageUploaded(imageUrl);
       setUploadProgress(100);
+      
+      // Show success toast
+      showSuccess(
+        'Image Uploaded!',
+        `${title || 'Image'} has been uploaded successfully.`,
+        3000
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload image');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to upload image';
+      setError(errorMessage);
+      
+      // Show error toast
+      showError(
+        'Upload Failed',
+        errorMessage,
+        5000
+      );
     } finally {
       setUploading(false);
-      // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -87,28 +101,6 @@ export default function ImageUpload({
 
   const handleRemoveImage = () => {
     onImageUploaded('');
-  };
-
-  const getImageDimensions = () => {
-    switch (aspectRatio) {
-      case 'square':
-        return { width: 120, height: 120 };
-      case 'banner':
-        return { width: 200, height: 80 };
-      default:
-        return { width: 120, height: 80 };
-    }
-  };
-
-  const getPlaceholderHeight = () => {
-    switch (aspectRatio) {
-      case 'square':
-        return 'h-32';
-      case 'banner':
-        return 'h-24';
-      default:
-        return 'h-28';
-    }
   };
 
   return (
@@ -137,7 +129,8 @@ export default function ImageUpload({
               <Image
                 src={currentImage}
                 alt={title || 'Uploaded image'}
-                {...getImageDimensions()}
+                width={120}
+                height={120}
                 className="object-cover rounded-lg border-2 border-default-200"
               />
               <div className="flex-1">
@@ -171,8 +164,8 @@ export default function ImageUpload({
         </Card>
       ) : (
         <Card className="border-dashed border-2 border-default-300 hover:border-primary-300 transition-colors">
-          <CardBody className={`text-center py-6 ${getPlaceholderHeight()}`}>
-            <div className="space-y-3 flex flex-col items-center justify-center h-full">
+          <CardBody className="text-center py-6">
+            <div className="space-y-3 flex flex-col items-center justify-center">
               <div className="text-default-400">
                 <svg
                   className="mx-auto h-10 w-10"
@@ -209,6 +202,7 @@ export default function ImageUpload({
           </CardBody>
         </Card>
       )}
+      
       {uploading && (
         <div className="space-y-2">
           <Progress

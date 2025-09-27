@@ -270,6 +270,7 @@ func main() {
 		protectedRoutes.GET("/businesses/:id", server.GetBusiness)
 		protectedRoutes.PUT("/businesses/:id", server.UpdateBusiness)
 		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
+		protectedRoutes.GET("/businesses/check-url", server.CheckCustomURLAvailability)
 
 		// Menu routes
 		protectedRoutes.POST("/businesses/:id/menu", server.CreateMenu)

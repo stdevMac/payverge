@@ -1,8 +1,10 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -22,6 +24,16 @@ type CreateBusinessRequest struct {
 	ServiceFeeRate   float64                     `json:"service_fee_rate"`
 	TaxInclusive     bool                        `json:"tax_inclusive"`
 	ServiceInclusive bool                        `json:"service_inclusive"`
+	// New fields for enhanced business features
+	Description          string                  `json:"description"`
+	CustomURL            string                  `json:"custom_url"`
+	Phone                string                  `json:"phone"`
+	Website              string                  `json:"website"`
+	SocialMedia          string                  `json:"social_media"`
+	BannerImages         string                  `json:"banner_images"`
+	BusinessPageEnabled  bool                    `json:"business_page_enabled"`
+	ShowReviews          bool                    `json:"show_reviews"`
+	GoogleReviewsEnabled bool                    `json:"google_reviews_enabled"`
 }
 
 // Business update request
@@ -35,6 +47,16 @@ type UpdateBusinessRequest struct {
 	ServiceFeeRate   float64                     `json:"service_fee_rate"`
 	TaxInclusive     bool                        `json:"tax_inclusive"`
 	ServiceInclusive bool                        `json:"service_inclusive"`
+	// New fields for enhanced business features
+	Description          string                  `json:"description"`
+	CustomURL            string                  `json:"custom_url"`
+	Phone                string                  `json:"phone"`
+	Website              string                  `json:"website"`
+	SocialMedia          string                  `json:"social_media"`
+	BannerImages         string                  `json:"banner_images"`
+	BusinessPageEnabled  bool                    `json:"business_page_enabled"`
+	ShowReviews          bool                    `json:"show_reviews"`
+	GoogleReviewsEnabled bool                    `json:"google_reviews_enabled"`
 }
 
 // CreateBusiness creates a new business for the authenticated user
@@ -62,20 +84,38 @@ func CreateBusiness(c *gin.Context) {
 		return
 	}
 
+	// Validate custom URL if provided
+	if req.CustomURL != "" {
+		if err := validateCustomURL(req.CustomURL, 0); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	business := &database.Business{
-		OwnerAddress:     userAddress.(string),
-		Name:             req.Name,
-		Logo:             req.Logo,
-		Address:          req.Address,
-		SettlementAddr:   req.SettlementAddr,
-		TippingAddr:      req.TippingAddr,
-		TaxRate:          req.TaxRate,
-		ServiceFeeRate:   req.ServiceFeeRate,
-		TaxInclusive:     req.TaxInclusive,
-		ServiceInclusive: req.ServiceInclusive,
-		IsActive:         true,
-		CreatedAt:        time.Now(),
-		UpdatedAt:        time.Now(),
+		OwnerAddress:         userAddress.(string),
+		Name:                 req.Name,
+		Logo:                 req.Logo,
+		Address:              req.Address,
+		SettlementAddr:       req.SettlementAddr,
+		TippingAddr:          req.TippingAddr,
+		TaxRate:              req.TaxRate,
+		ServiceFeeRate:       req.ServiceFeeRate,
+		TaxInclusive:         req.TaxInclusive,
+		ServiceInclusive:     req.ServiceInclusive,
+		IsActive:             true,
+		// New fields
+		Description:          req.Description,
+		CustomURL:            req.CustomURL,
+		Phone:                req.Phone,
+		Website:              req.Website,
+		SocialMedia:          req.SocialMedia,
+		BannerImages:         req.BannerImages,
+		BusinessPageEnabled:  req.BusinessPageEnabled,
+		ShowReviews:          req.ShowReviews,
+		GoogleReviewsEnabled: req.GoogleReviewsEnabled,
+		CreatedAt:            time.Now(),
+		UpdatedAt:            time.Now(),
 	}
 
 	if err := database.CreateBusiness(business); err != nil {
@@ -188,6 +228,35 @@ func UpdateBusiness(c *gin.Context) {
 	business.ServiceFeeRate = req.ServiceFeeRate
 	business.TaxInclusive = req.TaxInclusive
 	business.ServiceInclusive = req.ServiceInclusive
+	
+	// Update new fields
+	if req.Description != "" {
+		business.Description = req.Description
+	}
+	if req.CustomURL != "" {
+		// Check if custom URL is already taken by another business
+		if err := validateCustomURL(req.CustomURL, uint(businessID)); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		business.CustomURL = req.CustomURL
+	}
+	if req.Phone != "" {
+		business.Phone = req.Phone
+	}
+	if req.Website != "" {
+		business.Website = req.Website
+	}
+	if req.SocialMedia != "" {
+		business.SocialMedia = req.SocialMedia
+	}
+	if req.BannerImages != "" {
+		business.BannerImages = req.BannerImages
+	}
+	business.BusinessPageEnabled = req.BusinessPageEnabled
+	business.ShowReviews = req.ShowReviews
+	business.GoogleReviewsEnabled = req.GoogleReviewsEnabled
+	
 	business.UpdatedAt = time.Now()
 
 	if err := database.UpdateBusiness(business); err != nil {
@@ -1131,5 +1200,63 @@ func CloseBill(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"bill":  updatedBill,
 		"items": items,
+	})
+}
+
+// validateCustomURL checks if a custom URL is available for use
+func validateCustomURL(customURL string, excludeBusinessID uint) error {
+	if customURL == "" {
+		return nil
+	}
+
+	// Basic validation - only allow alphanumeric characters and hyphens
+	if matched, _ := regexp.MatchString("^[a-zA-Z0-9-]+$", customURL); !matched {
+		return errors.New("custom URL can only contain letters, numbers, and hyphens")
+	}
+
+	// Check minimum length
+	if len(customURL) < 2 {
+		return errors.New("custom URL must be at least 2 characters long")
+	}
+
+	// Check if URL is already taken by another business
+	var existingBusiness database.Business
+	result := database.GetDB().Where("custom_url = ? AND id != ?", customURL, excludeBusinessID).First(&existingBusiness)
+	if result.Error == nil {
+		return errors.New("this custom URL is already taken")
+	}
+
+	return nil
+}
+
+// CheckCustomURLAvailability checks if a custom URL is available
+func CheckCustomURLAvailability(c *gin.Context) {
+	customURL := c.Query("url")
+	businessIDStr := c.Query("exclude_business_id")
+	
+	if customURL == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "URL parameter is required"})
+		return
+	}
+
+	var excludeBusinessID uint = 0
+	if businessIDStr != "" {
+		if id, err := strconv.ParseUint(businessIDStr, 10, 32); err == nil {
+			excludeBusinessID = uint(id)
+		}
+	}
+
+	// Validate the URL format and availability
+	if err := validateCustomURL(customURL, excludeBusinessID); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"available": false,
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"available": true,
+		"url": customURL,
 	})
 }

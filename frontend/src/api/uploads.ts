@@ -11,7 +11,7 @@ export interface UploadResponse {
 // Upload file to S3
 export const uploadFile = async (
   file: File, 
-  type: 'business-logo' | 'menu-item' = 'business-logo',
+  type: 'business-logo' | 'menu-item' | 'banner' | 'gallery' = 'business-logo',
   businessId?: number
 ): Promise<UploadResponse> => {
   const formData = new FormData();
