@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
  * @dev Referral system for Payverge platform with tiered access and rewards
  * @notice Handles referrer registration, code generation, and commission distribution
  */
-contract PayvergeReferrals is 
+contract PayvergeReferrals is
     Initializable,
     ReentrancyGuardUpgradeable,
     PausableUpgradeable,
@@ -28,8 +28,8 @@ contract PayvergeReferrals is
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
     // Constants
-    uint256 public constant BASIC_REFERRER_FEE = 10 * 10**6; // $10 USDC
-    uint256 public constant PREMIUM_REFERRER_FEE = 25 * 10**6; // $25 USDC
+    uint256 public constant BASIC_REFERRER_FEE = 10 * 10 ** 6; // $10 USDC
+    uint256 public constant PREMIUM_REFERRER_FEE = 25 * 10 ** 6; // $25 USDC
     uint256 public constant BASIC_BUSINESS_DISCOUNT_RATE = 1000; // 10% discount for basic referrals
     uint256 public constant PREMIUM_BUSINESS_DISCOUNT_RATE = 1500; // 15% discount for premium referrals
     uint256 public constant BASIC_COMMISSION_RATE = 1000; // 10% commission for basic referrers
@@ -54,27 +54,27 @@ contract PayvergeReferrals is
 
     // Referrer information
     struct Referrer {
-        address referrerAddress;     // 20 bytes
-        ReferrerTier tier;           // 1 byte
-        bool isActive;               // 1 byte
-        uint64 registrationDate;     // 8 bytes
-        uint256 totalReferrals;      // 32 bytes
-        uint256 totalCommissions;    // 32 bytes
+        address referrerAddress; // 20 bytes
+        ReferrerTier tier; // 1 byte
+        bool isActive; // 1 byte
+        uint64 registrationDate; // 8 bytes
+        uint256 totalReferrals; // 32 bytes
+        uint256 totalCommissions; // 32 bytes
         uint256 claimableCommissions; // 32 bytes - amount available to claim
-        uint256 lastClaimedAt;       // 32 bytes - timestamp of last claim
-        string referralCode;         // Dynamic - stored separately for gas optimization
+        uint256 lastClaimedAt; // 32 bytes - timestamp of last claim
+        string referralCode; // Dynamic - stored separately for gas optimization
     }
 
     // Referral tracking
     struct ReferralRecord {
-        bytes32 id;                 // 32 bytes
-        address referrer;           // 20 bytes
-        address business;           // 20 bytes
-        uint64 timestamp;           // 8 bytes
-        uint256 registrationFee;    // 32 bytes
-        uint256 discount;           // 32 bytes
-        uint256 commission;         // 32 bytes
-        bool commissionPaid;        // 1 byte
+        bytes32 id; // 32 bytes
+        address referrer; // 20 bytes
+        address business; // 20 bytes
+        uint64 timestamp; // 8 bytes
+        uint256 registrationFee; // 32 bytes
+        uint256 discount; // 32 bytes
+        uint256 commission; // 32 bytes
+        bool commissionPaid; // 1 byte
     }
 
     // Mappings
@@ -85,35 +85,18 @@ contract PayvergeReferrals is
     mapping(address => bytes32) public businessToReferralRecord;
 
     // Events
-    event ReferrerRegistered(
-        address indexed referrer,
-        ReferrerTier tier,
-        string referralCode,
-        uint256 fee
-    );
+    event ReferrerRegistered(address indexed referrer, ReferrerTier tier, string referralCode, uint256 fee);
 
     event ReferralUsed(
-        bytes32 indexed referralId,
-        address indexed referrer,
-        string referralCode,
-        uint256 discount,
-        uint256 commission
+        bytes32 indexed referralId, address indexed referrer, string referralCode, uint256 discount, uint256 commission
     );
 
     event CommissionEarned(address indexed referrer, uint256 amount, uint256 totalClaimable);
     event CommissionClaimed(address indexed referrer, uint256 amount, uint256 remainingClaimable);
 
-    event ReferralCodeUpdated(
-        address indexed referrer,
-        string oldCode,
-        string newCode
-    );
+    event ReferralCodeUpdated(address indexed referrer, string oldCode, string newCode);
 
-    event ReferrerTierUpgraded(
-        address indexed referrer,
-        ReferrerTier oldTier,
-        ReferrerTier newTier
-    );
+    event ReferrerTierUpgraded(address indexed referrer, ReferrerTier oldTier, ReferrerTier newTier);
 
     // Custom errors
     error InvalidReferralCode();
@@ -144,11 +127,7 @@ contract PayvergeReferrals is
      * @param _platformTreasury Platform treasury address
      * @param _admin Admin address
      */
-    function initialize(
-        address _usdcToken,
-        address _platformTreasury,
-        address _admin
-    ) public initializer {
+    function initialize(address _usdcToken, address _platformTreasury, address _admin) public initializer {
         require(_usdcToken != address(0), "Invalid USDC token");
         require(_platformTreasury != address(0), "Invalid treasury");
         require(_admin != address(0), "Invalid admin");
@@ -170,11 +149,7 @@ contract PayvergeReferrals is
      * @dev Register as a basic referrer with $10 USDC fee
      * @param _referralCode Desired referral code (6-12 characters, alphanumeric)
      */
-    function registerBasicReferrer(string calldata _referralCode) 
-        external 
-        nonReentrant 
-        whenNotPaused 
-    {
+    function registerBasicReferrer(string calldata _referralCode) external nonReentrant whenNotPaused {
         _registerReferrer(_referralCode, ReferrerTier.Basic, BASIC_REFERRER_FEE);
     }
 
@@ -182,11 +157,7 @@ contract PayvergeReferrals is
      * @dev Register as a premium referrer with $25 USDC fee
      * @param _referralCode Desired referral code (6-12 characters, alphanumeric)
      */
-    function registerPremiumReferrer(string calldata _referralCode) 
-        external 
-        nonReentrant 
-        whenNotPaused 
-    {
+    function registerPremiumReferrer(string calldata _referralCode) external nonReentrant whenNotPaused {
         _registerReferrer(_referralCode, ReferrerTier.Premium, PREMIUM_REFERRER_FEE);
     }
 
@@ -215,16 +186,12 @@ contract PayvergeReferrals is
      * @return referrer Address of the referrer (for commission payment)
      * @return commission Commission amount to pay referrer
      */
-    function processReferral(
-        address _business,
-        string calldata _referralCode,
-        uint256 _registrationFee
-    ) 
-        external 
-        returns (uint256 discount, address referrer, uint256 commission) 
+    function processReferral(address _business, string calldata _referralCode, uint256 _registrationFee)
+        external
+        returns (uint256 discount, address referrer, uint256 commission)
     {
         if (msg.sender != payvergePaymentsContract) revert UnauthorizedCaller();
-        
+
         referrer = referralCodeToAddress[_referralCode];
         if (referrer == address(0)) revert ReferralNotFound();
 
@@ -232,25 +199,18 @@ contract PayvergeReferrals is
         if (!referrerData.isActive) revert ReferrerNotFound();
 
         // Calculate discount based on tier
-        uint256 discountRate = referrerData.tier == ReferrerTier.Premium 
-            ? PREMIUM_BUSINESS_DISCOUNT_RATE 
-            : BASIC_BUSINESS_DISCOUNT_RATE;
+        uint256 discountRate =
+            referrerData.tier == ReferrerTier.Premium ? PREMIUM_BUSINESS_DISCOUNT_RATE : BASIC_BUSINESS_DISCOUNT_RATE;
         discount = (_registrationFee * discountRate) / FEE_DENOMINATOR;
 
         // Calculate commission based on tier
-        uint256 commissionRate = referrerData.tier == ReferrerTier.Premium 
-            ? PREMIUM_COMMISSION_RATE 
-            : BASIC_COMMISSION_RATE;
-        
+        uint256 commissionRate =
+            referrerData.tier == ReferrerTier.Premium ? PREMIUM_COMMISSION_RATE : BASIC_COMMISSION_RATE;
+
         commission = (_registrationFee * commissionRate) / FEE_DENOMINATOR;
 
         // Create referral record
-        bytes32 referralId = keccak256(abi.encodePacked(
-            _business,
-            referrer,
-            block.timestamp,
-            block.number
-        ));
+        bytes32 referralId = keccak256(abi.encodePacked(_business, referrer, block.timestamp, block.number));
 
         ReferralRecord storage record = referralRecords[referralId];
         record.id = referralId;
@@ -272,29 +232,19 @@ contract PayvergeReferrals is
 
         totalCommissionsPaid += commission;
 
-        emit ReferralUsed(
-            referralId,
-            referrer,
-            _referralCode,
-            discount,
-            commission
-        );
+        emit ReferralUsed(referralId, referrer, _referralCode, discount, commission);
     }
 
     /**
      * @dev Claim available commissions (called by referrer)
      */
-    function claimCommissions() 
-        external 
-        nonReentrant 
-        whenNotPaused 
-    {
+    function claimCommissions() external nonReentrant whenNotPaused {
         Referrer storage referrerData = referrers[msg.sender];
         require(referrerData.isActive, "Not an active referrer");
         require(referrerData.claimableCommissions > 0, "No commissions to claim");
 
         uint256 claimAmount = referrerData.claimableCommissions;
-        
+
         // Update referrer data
         referrerData.claimableCommissions = 0;
         referrerData.totalCommissions += claimAmount;
@@ -310,11 +260,7 @@ contract PayvergeReferrals is
      * @dev Mark commission as earned (called by PayvergePayments)
      * @param _business Business address that was referred
      */
-    function markCommissionEarned(address _business) 
-        external 
-        onlyPayvergePayments 
-        whenNotPaused 
-    {
+    function markCommissionEarned(address _business) external onlyPayvergePayments whenNotPaused {
         bytes32 referralId = businessToReferralRecord[_business];
         require(referralId != bytes32(0), "No referral found");
 
@@ -335,21 +281,18 @@ contract PayvergeReferrals is
      * @dev Update referral code (once per month limit)
      * @param _newReferralCode New referral code
      */
-    function updateReferralCode(string calldata _newReferralCode) 
-        external 
-        whenNotPaused 
-    {
+    function updateReferralCode(string calldata _newReferralCode) external whenNotPaused {
         Referrer storage referrer = referrers[msg.sender];
         if (referrer.tier == ReferrerTier.None) revert ReferrerNotFound();
 
         _validateReferralCode(_newReferralCode);
-        
+
         if (referralCodeToAddress[_newReferralCode] != address(0)) {
             revert ReferralCodeTaken();
         }
 
         string memory oldCode = referrer.referralCode;
-        
+
         // Update mappings
         delete referralCodeToAddress[oldCode];
         referralCodeToAddress[_newReferralCode] = msg.sender;
@@ -362,10 +305,7 @@ contract PayvergeReferrals is
      * @dev Set the PayvergePayments contract address (admin only)
      * @param _payvergePayments PayvergePayments contract address
      */
-    function setPayvergePaymentsContract(address _payvergePayments) 
-        external 
-        onlyRole(ADMIN_ROLE) 
-    {
+    function setPayvergePaymentsContract(address _payvergePayments) external onlyRole(ADMIN_ROLE) {
         require(_payvergePayments != address(0), "Invalid contract address");
         payvergePaymentsContract = _payvergePayments;
     }
@@ -375,11 +315,7 @@ contract PayvergeReferrals is
      * @param _referrer Referrer address
      * @return Referrer struct data
      */
-    function getReferrer(address _referrer) 
-        external 
-        view 
-        returns (Referrer memory) 
-    {
+    function getReferrer(address _referrer) external view returns (Referrer memory) {
         return referrers[_referrer];
     }
 
@@ -388,11 +324,7 @@ contract PayvergeReferrals is
      * @param _referrer Referrer address
      * @return Array of referral record IDs
      */
-    function getReferralRecords(address _referrer) 
-        external 
-        view 
-        returns (bytes32[] memory) 
-    {
+    function getReferralRecords(address _referrer) external view returns (bytes32[] memory) {
         return referrerToRecords[_referrer];
     }
 
@@ -401,13 +333,8 @@ contract PayvergeReferrals is
      * @param _referralCode Code to check
      * @return True if available
      */
-    function isReferralCodeAvailable(string calldata _referralCode) 
-        external 
-        view 
-        returns (bool) 
-    {
-        return referralCodeToAddress[_referralCode] == address(0) && 
-               _isValidReferralCode(_referralCode);
+    function isReferralCodeAvailable(string calldata _referralCode) external view returns (bool) {
+        return referralCodeToAddress[_referralCode] == address(0) && _isValidReferralCode(_referralCode);
     }
 
     /**
@@ -415,11 +342,7 @@ contract PayvergeReferrals is
      * @param _referralCode Referral code
      * @return Referrer address
      */
-    function getReferrerByCode(string calldata _referralCode) 
-        external 
-        view 
-        returns (address) 
-    {
+    function getReferrerByCode(string calldata _referralCode) external view returns (address) {
         return referralCodeToAddress[_referralCode];
     }
 
@@ -428,17 +351,13 @@ contract PayvergeReferrals is
     /**
      * @dev Internal function to register a referrer
      */
-    function _registerReferrer(
-        string calldata _referralCode,
-        ReferrerTier _tier,
-        uint256 _fee
-    ) internal {
+    function _registerReferrer(string calldata _referralCode, ReferrerTier _tier, uint256 _fee) internal {
         if (referrers[msg.sender].tier != ReferrerTier.None) {
             revert ReferrerAlreadyExists();
         }
 
         _validateReferralCode(_referralCode);
-        
+
         if (referralCodeToAddress[_referralCode] != address(0)) {
             revert ReferralCodeTaken();
         }
@@ -471,14 +390,10 @@ contract PayvergeReferrals is
     /**
      * @dev Check if referral code is valid format
      */
-    function _isValidReferralCode(string calldata _referralCode) 
-        internal 
-        pure 
-        returns (bool) 
-    {
+    function _isValidReferralCode(string calldata _referralCode) internal pure returns (bool) {
         bytes memory codeBytes = bytes(_referralCode);
         uint256 length = codeBytes.length;
-        
+
         if (length < MIN_REFERRAL_CODE_LENGTH || length > MAX_REFERRAL_CODE_LENGTH) {
             return false;
         }
@@ -486,9 +401,12 @@ contract PayvergeReferrals is
         // Check alphanumeric characters only
         for (uint256 i = 0; i < length; i++) {
             bytes1 char = codeBytes[i];
-            if (!(char >= 0x30 && char <= 0x39) && // 0-9
-                !(char >= 0x41 && char <= 0x5A) && // A-Z
-                !(char >= 0x61 && char <= 0x7A)) { // a-z
+            if (
+                !(char >= 0x30 && char <= 0x39) // 0-9
+                    && !(char >= 0x41 && char <= 0x5A) // A-Z
+                    && !(char >= 0x61 && char <= 0x7A)
+            ) {
+                // a-z
                 return false;
             }
         }
@@ -516,10 +434,7 @@ contract PayvergeReferrals is
      * @dev Deactivate a referrer (admin only)
      * @param _referrer Referrer address to deactivate
      */
-    function deactivateReferrer(address _referrer) 
-        external 
-        onlyRole(ADMIN_ROLE) 
-    {
+    function deactivateReferrer(address _referrer) external onlyRole(ADMIN_ROLE) {
         referrers[_referrer].isActive = false;
     }
 
@@ -528,10 +443,7 @@ contract PayvergeReferrals is
      * @param _token Token address (use address(0) for ETH)
      * @param _amount Amount to withdraw
      */
-    function emergencyWithdraw(address _token, uint256 _amount) 
-        external 
-        onlyRole(ADMIN_ROLE) 
-    {
+    function emergencyWithdraw(address _token, uint256 _amount) external onlyRole(ADMIN_ROLE) {
         if (_token == address(0)) {
             payable(platformTreasury).transfer(_amount);
         } else {
@@ -542,11 +454,7 @@ contract PayvergeReferrals is
     /**
      * @dev Authorize upgrade (upgrader role only)
      */
-    function _authorizeUpgrade(address newImplementation) 
-        internal 
-        override 
-        onlyRole(UPGRADER_ROLE) 
-    {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
 
     /**
      * @dev Get contract version

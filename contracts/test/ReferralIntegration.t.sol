@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract MockUSDC is ERC20 {
     constructor() ERC20("Mock USDC", "USDC") {
-        _mint(msg.sender, 1000000 * 10**6); // 1M USDC
+        _mint(msg.sender, 1000000 * 10 ** 6); // 1M USDC
     }
 
     function mint(address to, uint256 amount) external {
@@ -25,7 +25,7 @@ contract ReferralIntegrationTest is Test {
     PayvergeReferrals public referrals;
     PayvergePayments public payments;
     MockUSDC public usdc;
-    
+
     address public admin = makeAddr("admin");
     address public treasury = makeAddr("treasury");
     address public referrer = makeAddr("referrer");
@@ -33,21 +33,17 @@ contract ReferralIntegrationTest is Test {
     address public paymentAddr = makeAddr("paymentAddr");
     address public tippingAddr = makeAddr("tippingAddr");
 
-    uint256 public constant BASIC_FEE = 10 * 10**6; // $10 USDC
-    uint256 public constant REGISTRATION_FEE = 100 * 10**6; // $100 USDC
+    uint256 public constant BASIC_FEE = 10 * 10 ** 6; // $10 USDC
+    uint256 public constant REGISTRATION_FEE = 100 * 10 ** 6; // $100 USDC
 
     function setUp() public {
         // Deploy USDC mock
         usdc = new MockUSDC();
-        
+
         // Deploy referrals contract
         PayvergeReferrals referralsImpl = new PayvergeReferrals();
-        bytes memory referralsInitData = abi.encodeWithSelector(
-            PayvergeReferrals.initialize.selector,
-            address(usdc),
-            treasury,
-            admin
-        );
+        bytes memory referralsInitData =
+            abi.encodeWithSelector(PayvergeReferrals.initialize.selector, address(usdc), treasury, admin);
         ERC1967Proxy referralsProxy = new ERC1967Proxy(address(referralsImpl), referralsInitData);
         referrals = PayvergeReferrals(address(referralsProxy));
 
@@ -56,7 +52,6 @@ contract ReferralIntegrationTest is Test {
         bytes memory paymentsInitData = abi.encodeWithSelector(
             PayvergePayments.initialize.selector,
             address(usdc),
-            treasury,
             200, // 2% platform fee
             admin,
             admin, // bill creator (same as admin for testing)
@@ -68,14 +63,14 @@ contract ReferralIntegrationTest is Test {
         // Connect contracts
         vm.prank(admin);
         referrals.setPayvergePaymentsContract(address(payments));
-        
+
         // This would be added to PayvergePayments contract
         // vm.prank(admin);
         // payments.setReferralsContract(address(referrals));
 
         // Distribute USDC
-        usdc.mint(referrer, 1000 * 10**6);
-        usdc.mint(business, 1000 * 10**6);
+        usdc.mint(referrer, 1000 * 10 ** 6);
+        usdc.mint(business, 1000 * 10 ** 6);
 
         // Approve spending
         vm.prank(referrer);
@@ -86,7 +81,7 @@ contract ReferralIntegrationTest is Test {
 
     function testEndToEndReferralFlow() public {
         string memory referralCode = "TESTCODE";
-        
+
         // Step 1: Referrer registers
         vm.prank(referrer);
         referrals.registerBasicReferrer(referralCode);
@@ -99,10 +94,10 @@ contract ReferralIntegrationTest is Test {
 
         // Step 2: Simulate business registration with referral
         // (This would be integrated into PayvergePayments.registerBusiness)
-        
+
         // Process referral
         vm.prank(address(payments));
-        (uint256 discount, address referrerAddr, uint256 commission) = 
+        (uint256 discount, address referrerAddr, uint256 commission) =
             referrals.processReferral(business, referralCode, REGISTRATION_FEE);
 
         // Verify referral processing
@@ -157,7 +152,7 @@ contract ReferralIntegrationTest is Test {
         console.log("Business Paid:", finalFee);
         console.log("Referrer Commission:", commission);
         console.log("Platform Net Revenue:", platformNet);
-        
+
         // Verify economics make sense
         assertEq(totalPaid + discount, REGISTRATION_FEE); // Discount applied correctly
         assertTrue(platformNet > 0); // Platform still profitable
@@ -167,9 +162,9 @@ contract ReferralIntegrationTest is Test {
     function testMultipleReferrals() public {
         string memory referralCode = "MULTI123";
         address business2 = makeAddr("business2");
-        
+
         // Setup second business
-        usdc.mint(business2, 1000 * 10**6);
+        usdc.mint(business2, 1000 * 10 ** 6);
         vm.prank(business2);
         usdc.approve(address(payments), type(uint256).max);
 
@@ -186,7 +181,7 @@ contract ReferralIntegrationTest is Test {
         // Verify referrer stats updated
         PayvergeReferrals.Referrer memory referrerData = referrals.getReferrer(referrer);
         assertEq(referrerData.totalReferrals, 2);
-        
+
         uint256 expectedCommission = (REGISTRATION_FEE * 1000 / 10000) * 2; // 2 referrals
         assertEq(referrerData.claimableCommissions, expectedCommission);
 
@@ -198,7 +193,7 @@ contract ReferralIntegrationTest is Test {
 
         // Fund referrals contract for claims
         usdc.mint(address(referrals), expectedCommission);
-        
+
         // Referrer claims all commissions
         vm.prank(referrer);
         referrals.claimCommissions();
@@ -211,15 +206,14 @@ contract ReferralIntegrationTest is Test {
 
     function testPremiumReferrerHigherCommission() public {
         string memory referralCode = "PREMIUM1";
-        
+
         // Register premium referrer
         vm.prank(referrer);
         referrals.registerPremiumReferrer(referralCode);
 
         // Process referral
         vm.prank(address(payments));
-        (uint256 discount, , uint256 commission) = 
-            referrals.processReferral(business, referralCode, REGISTRATION_FEE);
+        (uint256 discount,, uint256 commission) = referrals.processReferral(business, referralCode, REGISTRATION_FEE);
 
         // Verify premium commission rate (15% vs 10% for basic) and discount (15% vs 10%)
         uint256 expectedCommission = REGISTRATION_FEE * 1500 / 10000; // 15%
@@ -248,7 +242,7 @@ contract ReferralIntegrationTest is Test {
 
     function testReferrerDeactivation() public {
         string memory referralCode = "DEACTIVE";
-        
+
         // Register referrer
         vm.prank(referrer);
         referrals.registerBasicReferrer(referralCode);
@@ -265,7 +259,7 @@ contract ReferralIntegrationTest is Test {
 
     function testReferralRecordTracking() public {
         string memory referralCode = "RECORD1";
-        
+
         // Register referrer
         vm.prank(referrer);
         referrals.registerBasicReferrer(referralCode);

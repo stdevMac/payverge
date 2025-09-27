@@ -181,6 +181,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       "/terms",
       "/privacy",
       "/drop",
+      "/referrals",
+      "/referrals/buy",
+      "/referrals/dashboard",
+      "/b",
+      "/t",
     ];
     const currentPath = window.location.pathname;
     const isPublicRoute = publicRoutes.some((route) =>

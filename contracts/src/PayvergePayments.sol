@@ -11,12 +11,10 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 // Interface for referral system integration
 interface IPayvergeReferrals {
-    function processReferral(
-        address business,
-        string calldata referralCode,
-        uint256 registrationFee
-    ) external returns (uint256 discount, address referrer, uint256 commission);
-    
+    function processReferral(address business, string calldata referralCode, uint256 registrationFee)
+        external
+        returns (uint256 discount, address referrer, uint256 commission);
+
     function markCommissionEarned(address business) external;
 }
 
@@ -30,7 +28,7 @@ interface IPayvergeProfitSplit {
  * @dev Secure payment processing contract for Payverge platform with all security fixes
  * @notice Handles USDC payments with tips and platform fees - security hardened version
  */
-contract PayvergePayments is 
+contract PayvergePayments is
     Initializable,
     ReentrancyGuardUpgradeable,
     PausableUpgradeable,
@@ -48,14 +46,13 @@ contract PayvergePayments is
     uint256 public constant FEE_DENOMINATOR = 10000; // 100% = 10000
     uint256 public constant MAX_PLATFORM_FEE = 1000; // 10% maximum platform fee
     uint256 public constant MIN_PAYMENT_AMOUNT = 100; // Minimum payment amount to prevent dust attacks
-    uint256 public constant MAX_BILL_AMOUNT = 1_000_000 * 10**6; // $1M max per bill
+    uint256 public constant MAX_BILL_AMOUNT = 1_000_000 * 10 ** 6; // $1M max per bill
     uint256 public constant RATE_LIMIT_WINDOW = 60; // 1 minute rate limit window
-    uint256 public constant MAX_REGISTRATION_FEE = 1000 * 10**6; // $1000 max registration fee
+    uint256 public constant MAX_REGISTRATION_FEE = 1000 * 10 ** 6; // $1000 max registration fee
     uint256 public constant MAX_SPLIT_PARTICIPANTS = 20; // Maximum number of split participants
 
     // State variables
     IERC20 public usdcToken;
-    address public platformTreasury;
     uint256 public platformFeeRate; // in basis points (200 = 2% as per PRD)
     uint256 public billModificationNonce; // To prevent replay attacks
     address public billCreatorAddress; // Admin-controlled address that can create bills
@@ -65,69 +62,70 @@ contract PayvergePayments is
     uint256 public businessRegistrationFee; // Fee for business registration in USDC
     uint256 public pendingRegistrationFee; // Pending registration fee
     uint256 public registrationFeeUpdateTimestamp; // When registration fee update can be executed
-    
+
     // Integration contracts
     IPayvergeReferrals public referralsContract;
     IPayvergeProfitSplit public profitSplitContract;
 
     // Simplified unified bill structure
     struct Bill {
-        address businessAddress;     // 20 bytes
-        bool isPaid;                 // 1 byte
-        bool isCancelled;            // 1 byte
-        uint8 participantCount;      // 1 byte - current number of participants
-        uint64 createdAt;            // 8 bytes
-        uint64 lastPaymentAt;        // 8 bytes
-        uint256 totalAmount;         // 32 bytes
-        uint256 paidAmount;          // 32 bytes
-        bytes32 nonce;               // 32 bytes
+        address businessAddress; // 20 bytes
+        bool isPaid; // 1 byte
+        bool isCancelled; // 1 byte
+        uint8 participantCount; // 1 byte - current number of participants
+        uint64 createdAt; // 8 bytes
+        uint64 lastPaymentAt; // 8 bytes
+        uint256 totalAmount; // 32 bytes
+        uint256 paidAmount; // 32 bytes
+        bytes32 nonce; // 32 bytes
     }
 
     struct Participant {
-        uint256 paidAmount;          // 32 bytes - total paid by this participant
-        uint32 paymentCount;         // 4 bytes - number of payments made
-        uint32 lastPaymentTime;      // 4 bytes - timestamp of last payment
+        uint256 paidAmount; // 32 bytes - total paid by this participant
+        uint32 paymentCount; // 4 bytes - number of payments made
+        uint32 lastPaymentTime; // 4 bytes - timestamp of last payment
     }
 
     struct BusinessInfo {
-        address paymentAddress;      // 20 bytes
-        address tippingAddress;      // 20 bytes
-        bool isActive;               // 1 byte
-        uint64 registrationDate;     // 8 bytes (sufficient until year 2554)
-        uint256 totalVolume;         // 32 bytes
-        uint256 totalTips;           // 32 bytes
+        address paymentAddress; // 20 bytes
+        address tippingAddress; // 20 bytes
+        bool isActive; // 1 byte
+        uint64 registrationDate; // 8 bytes (sufficient until year 2554)
+        uint256 totalVolume; // 32 bytes
+        uint256 totalTips; // 32 bytes
     }
 
     struct Payment {
-        bytes32 id;                  // 32 bytes
-        bytes32 billId;             // 32 bytes
-        address payer;               // 20 bytes
-        uint64 timestamp;            // 8 bytes (sufficient until year 2554)
-        uint256 amount;              // 32 bytes
-        uint256 tipAmount;           // 32 bytes
-        uint256 platformFee;         // 32 bytes
+        bytes32 id; // 32 bytes
+        bytes32 billId; // 32 bytes
+        address payer; // 20 bytes
+        uint64 timestamp; // 8 bytes (sufficient until year 2554)
+        uint256 amount; // 32 bytes
+        uint256 tipAmount; // 32 bytes
+        uint256 platformFee; // 32 bytes
     }
 
     struct ClaimableBalance {
-        uint256 amount;              // 32 bytes
-        uint64 lastClaimed;          // 8 bytes (sufficient until year 2554)
+        uint256 amount; // 32 bytes
+        uint64 lastClaimed; // 8 bytes (sufficient until year 2554)
     }
 
     struct AlternativePayment {
-        address participant;         // 20 bytes - who paid
-        uint256 amount;              // 32 bytes - amount paid
-        uint64 timestamp;            // 8 bytes - when confirmed
-        uint8 methodType;            // 1 byte - payment method enum
-        bool verified;               // 1 byte - confirmed by business
+        address participant; // 20 bytes - who paid
+        uint256 amount; // 32 bytes - amount paid
+        uint64 timestamp; // 8 bytes - when confirmed
+        uint8 methodType; // 1 byte - payment method enum
+        bool verified; // 1 byte - confirmed by business
     }
 
     // Payment method types
     enum PaymentMethod {
-        CRYPTO,    // 0 - On-chain USDC payment
-        CASH,      // 1 - Cash payment
-        CARD,      // 2 - Credit/debit card
-        VENMO,     // 3 - Venmo/PayPal
-        OTHER      // 4 - Other payment methods
+        CRYPTO, // 0 - On-chain USDC payment
+        CASH, // 1 - Cash payment
+        CARD, // 2 - Credit/debit card
+        VENMO, // 3 - Venmo/PayPal
+        OTHER // 4 - Other payment methods
+
     }
 
     // Simplified mappings
@@ -140,11 +138,11 @@ contract PayvergePayments is
     mapping(address => uint256) public lastBillCreation;
     mapping(address => ClaimableBalance) public claimablePayments;
     mapping(address => ClaimableBalance) public claimableTips;
-    
+
     // Simple participant tracking
     mapping(bytes32 => mapping(address => Participant)) public billParticipants;
     mapping(bytes32 => address[]) public participantList;
-    
+
     // Alternative payment tracking
     mapping(bytes32 => AlternativePayment[]) public billAlternativePayments;
     mapping(bytes32 => uint256) public totalAlternativeAmount;
@@ -154,12 +152,12 @@ contract PayvergePayments is
         require(businessInfo[business].isActive, "Business not active");
         _;
     }
-    
+
     modifier onlyBillOwner(bytes32 billId) {
         require(bills[billId].businessAddress == msg.sender, "Not bill owner");
         _;
     }
-    
+
     modifier validAmount(uint256 amount) {
         require(amount >= MIN_PAYMENT_AMOUNT, "Amount too small");
         require(amount <= MAX_BILL_AMOUNT, "Amount exceeds limit");
@@ -170,18 +168,21 @@ contract PayvergePayments is
         require(msg.sender == billCreatorAddress, "Not authorized bill creator");
         _;
     }
-    
+
     modifier rateLimited(address user) {
-        require(
-            block.timestamp >= lastBillCreation[user] + RATE_LIMIT_WINDOW,
-            "Rate limit exceeded"
-        );
+        require(block.timestamp >= lastBillCreation[user] + RATE_LIMIT_WINDOW, "Rate limit exceeded");
         _;
         lastBillCreation[user] = block.timestamp;
     }
 
     // Events
-    event BusinessRegistered(address indexed businessAddress, string name, address paymentAddress, address tippingAddress, uint256 registrationFee);
+    event BusinessRegistered(
+        address indexed businessAddress,
+        string name,
+        address paymentAddress,
+        address tippingAddress,
+        uint256 registrationFee
+    );
     event BusinessRegisteredWithReferral(
         address indexed businessAddress,
         string name,
@@ -194,8 +195,22 @@ contract PayvergePayments is
     );
     event BusinessPaymentAddressUpdated(address indexed businessAddress, address newPaymentAddress);
     event BusinessTippingAddressUpdated(address indexed businessAddress, address newTippingAddress);
-    event BillCreated(bytes32 indexed billId, address indexed creator, address indexed businessAddress, uint256 totalAmount, string metadata);
-    event PaymentProcessed(bytes32 indexed paymentId, bytes32 indexed billId, address indexed payer, uint256 amount, uint256 tipAmount, uint256 platformFee, bool billComplete);
+    event BillCreated(
+        bytes32 indexed billId,
+        address indexed creator,
+        address indexed businessAddress,
+        uint256 totalAmount,
+        string metadata
+    );
+    event PaymentProcessed(
+        bytes32 indexed paymentId,
+        bytes32 indexed billId,
+        address indexed payer,
+        uint256 amount,
+        uint256 tipAmount,
+        uint256 platformFee,
+        bool billComplete
+    );
     event NewParticipantAdded(bytes32 indexed billId, address indexed participant, uint256 paymentAmount);
     event BillCancelled(bytes32 indexed billId, address indexed businessAddress);
     event EarningsClaimed(address indexed businessAddress, address indexed recipient, uint256 amount, bool isTip);
@@ -205,7 +220,13 @@ contract PayvergePayments is
     event FeeUpdateDelayChanged(uint256 newDelay);
     event RegistrationFeeUpdateProposed(uint256 newFee, uint256 executeAfter);
     event RegistrationFeeUpdated(uint256 newFee);
-    event AlternativePaymentMarked(bytes32 indexed billId, address indexed participant, uint256 amount, PaymentMethod method, address indexed confirmedBy);
+    event AlternativePaymentMarked(
+        bytes32 indexed billId,
+        address indexed participant,
+        uint256 amount,
+        PaymentMethod method,
+        address indexed confirmedBy
+    );
     event BillCompletedWithAlternativePayments(bytes32 indexed billId, uint256 totalCrypto, uint256 totalAlternative);
 
     // Custom errors
@@ -224,14 +245,12 @@ contract PayvergePayments is
      */
     function initialize(
         address _usdcToken,
-        address _platformTreasury,
         uint256 _platformFeeRate,
         address _admin,
         address _billCreator,
         uint256 _registrationFee
     ) public initializer {
         require(_usdcToken != address(0), "Invalid USDC token");
-        require(_platformTreasury != address(0), "Invalid treasury");
         require(_platformFeeRate <= MAX_PLATFORM_FEE, "Fee too high");
         require(_admin != address(0), "Invalid admin");
         require(_billCreator != address(0), "Invalid bill creator");
@@ -243,7 +262,6 @@ contract PayvergePayments is
         __UUPSUpgradeable_init();
 
         usdcToken = IERC20(_usdcToken);
-        platformTreasury = _platformTreasury;
         platformFeeRate = _platformFeeRate;
         billCreatorAddress = _billCreator;
         businessRegistrationFee = _registrationFee;
@@ -278,9 +296,11 @@ contract PayvergePayments is
     /**
      * @dev Update business payment address (only business owner)
      */
-    function updateBusinessPaymentAddress(
-        address newPaymentAddress
-    ) external onlyActiveBusiness(msg.sender) whenNotPaused {
+    function updateBusinessPaymentAddress(address newPaymentAddress)
+        external
+        onlyActiveBusiness(msg.sender)
+        whenNotPaused
+    {
         require(newPaymentAddress != address(0), "Zero address");
 
         BusinessInfo storage business = businessInfo[msg.sender];
@@ -292,9 +312,11 @@ contract PayvergePayments is
     /**
      * @dev Update business tipping address (only business owner)
      */
-    function updateBusinessTippingAddress(
-        address newTippingAddress
-    ) external onlyActiveBusiness(msg.sender) whenNotPaused {
+    function updateBusinessTippingAddress(address newTippingAddress)
+        external
+        onlyActiveBusiness(msg.sender)
+        whenNotPaused
+    {
         require(newTippingAddress != address(0), "Zero address");
 
         BusinessInfo storage business = businessInfo[msg.sender];
@@ -312,12 +334,7 @@ contract PayvergePayments is
         uint256 totalAmount,
         string calldata metadata,
         bytes32 nonce
-    ) external 
-        onlyBillCreator
-        validAmount(totalAmount) 
-        rateLimited(msg.sender)
-        whenNotPaused 
-    {
+    ) external onlyBillCreator validAmount(totalAmount) rateLimited(msg.sender) whenNotPaused {
         require(!billExists[billId], "Bill already exists");
         require(businessAddress != address(0), "Zero address");
         require(!usedNonces["createBill"][nonce], "Nonce already used");
@@ -343,17 +360,17 @@ contract PayvergePayments is
         emit BillCreated(billId, msg.sender, businessAddress, totalAmount, metadata);
     }
 
-
     /**
      * @dev Process payment for a bill (with security checks)
      */
-    function processPayment(
-        bytes32 billId,
-        uint256 amount,
-        uint256 tipAmount
-    ) external nonReentrant validAmount(amount) whenNotPaused {
+    function processPayment(bytes32 billId, uint256 amount, uint256 tipAmount)
+        external
+        nonReentrant
+        validAmount(amount)
+        whenNotPaused
+    {
         require(billExists[billId], "Bill not found");
-        
+
         Bill storage bill = bills[billId];
         require(!bill.isPaid && !bill.isCancelled, "Bill not active");
         require(amount <= (bill.totalAmount - bill.paidAmount), "Excessive payment");
@@ -364,7 +381,7 @@ contract PayvergePayments is
         // Handle participant tracking - simple approach
         Participant storage participant = billParticipants[billId][msg.sender];
         bool isNewParticipant = (participant.paymentCount == 0 && participant.paidAmount == 0);
-        
+
         if (isNewParticipant) {
             participantList[billId].push(msg.sender);
             bill.participantCount++;
@@ -375,20 +392,20 @@ contract PayvergePayments is
         uint256 totalTransfer = amount + tipAmount;
         uint256 platformFee = (amount * platformFeeRate) / FEE_DENOMINATOR;
         uint256 businessAmount = amount - platformFee;
-
         // Transfer tokens (external calls after state updates)
         usdcToken.safeTransferFrom(msg.sender, address(this), totalTransfer);
-        
+
         if (platformFee > 0) {
-            // Route platform fees to profit split contract if available, otherwise to treasury
+            // Transfer platform fee to profit split contract
             if (address(profitSplitContract) != address(0)) {
                 usdcToken.safeTransfer(address(profitSplitContract), platformFee);
-                try profitSplitContract.depositForDistribution(platformFee) {} catch {
+                try profitSplitContract.depositForDistribution(platformFee) {
+                    // Successfully deposited for distribution
+                } catch {
                     // If deposit fails, funds are still in the profit split contract
                 }
-            } else {
-                usdcToken.safeTransfer(platformTreasury, platformFee);
             }
+            // Note: If no profit split contract is set, platform fees are not collected
         }
 
         // Update claimable balances (CEI pattern)
@@ -405,7 +422,7 @@ contract PayvergePayments is
         // Update bill state
         bill.paidAmount += amount;
         bill.lastPaymentAt = uint64(block.timestamp);
-        
+
         // Simple completion check - bill is complete when total amount is reached
         bool billComplete = false;
         if (bill.paidAmount >= bill.totalAmount) {
@@ -419,15 +436,17 @@ contract PayvergePayments is
 
         // Create payment record
         bytes32 paymentId = keccak256(abi.encodePacked(billId, msg.sender, block.timestamp, participant.paymentCount));
-        billPayments[billId].push(Payment({
-            id: paymentId,
-            billId: billId,
-            payer: msg.sender,
-            amount: amount,
-            tipAmount: tipAmount,
-            platformFee: platformFee,
-            timestamp: uint64(block.timestamp)
-        }));
+        billPayments[billId].push(
+            Payment({
+                id: paymentId,
+                billId: billId,
+                payer: msg.sender,
+                amount: amount,
+                tipAmount: tipAmount,
+                platformFee: platformFee,
+                timestamp: uint64(block.timestamp)
+            })
+        );
 
         emit PaymentProcessed(paymentId, billId, msg.sender, amount, tipAmount, platformFee, billComplete);
     }
@@ -440,11 +459,11 @@ contract PayvergePayments is
         BusinessInfo memory business = businessInfo[msg.sender];
         require(business.isActive, "Not business owner");
         require(business.paymentAddress != address(0) && business.tippingAddress != address(0), "Invalid addresses");
-        
+
         // Use local variables to prevent reentrancy
         uint256 paymentAmount = claimablePayments[business.paymentAddress].amount;
         uint256 tipAmount = claimableTips[business.tippingAddress].amount;
-        
+
         require(paymentAmount > 0 || tipAmount > 0, "Nothing to claim");
 
         // Reset state before external calls (CEI pattern)
@@ -452,18 +471,18 @@ contract PayvergePayments is
             claimablePayments[business.paymentAddress].amount = 0;
             claimablePayments[business.paymentAddress].lastClaimed = uint64(block.timestamp);
         }
-        
+
         if (tipAmount > 0) {
             claimableTips[business.tippingAddress].amount = 0;
             claimableTips[business.tippingAddress].lastClaimed = uint64(block.timestamp);
         }
-        
+
         // External calls after state updates
         if (paymentAmount > 0) {
             usdcToken.safeTransfer(business.paymentAddress, paymentAmount);
             emit EarningsClaimed(msg.sender, business.paymentAddress, paymentAmount, false);
         }
-        
+
         if (tipAmount > 0) {
             usdcToken.safeTransfer(business.tippingAddress, tipAmount);
             emit EarningsClaimed(msg.sender, business.tippingAddress, tipAmount, true);
@@ -475,10 +494,10 @@ contract PayvergePayments is
      */
     function proposePlatformFeeUpdate(uint256 newFeeRate) external onlyRole(ADMIN_ROLE) {
         require(newFeeRate <= MAX_PLATFORM_FEE, "Fee too high");
-        
+
         pendingFeeRate = newFeeRate;
         feeUpdateTimestamp = block.timestamp + feeUpdateDelay;
-        
+
         emit PlatformFeeUpdateProposed(newFeeRate, feeUpdateTimestamp);
     }
 
@@ -488,13 +507,13 @@ contract PayvergePayments is
     function executePlatformFeeUpdate() external onlyRole(ADMIN_ROLE) {
         require(feeUpdateTimestamp != 0, "No pending fee update");
         require(block.timestamp >= feeUpdateTimestamp, "Timelock not expired");
-        
+
         platformFeeRate = pendingFeeRate;
-        
+
         // Reset pending state
         pendingFeeRate = 0;
         feeUpdateTimestamp = 0;
-        
+
         emit PlatformFeeUpdated(platformFeeRate);
     }
 
@@ -503,10 +522,10 @@ contract PayvergePayments is
      */
     function cancelPlatformFeeUpdate() external onlyRole(ADMIN_ROLE) {
         require(feeUpdateTimestamp != 0, "No pending fee update");
-        
+
         pendingFeeRate = 0;
         feeUpdateTimestamp = 0;
-        
+
         emit PlatformFeeUpdateProposed(0, 0); // Indicates cancellation
     }
 
@@ -516,7 +535,7 @@ contract PayvergePayments is
     function setFeeUpdateDelay(uint256 newDelay) external onlyRole(ADMIN_ROLE) {
         require(newDelay >= 1 hours, "Delay too short");
         require(newDelay <= 30 days, "Delay too long");
-        
+
         feeUpdateDelay = newDelay;
         emit FeeUpdateDelayChanged(newDelay);
     }
@@ -536,10 +555,10 @@ contract PayvergePayments is
      */
     function proposeRegistrationFeeUpdate(uint256 newFee) external onlyRole(ADMIN_ROLE) {
         require(newFee <= MAX_REGISTRATION_FEE, "Registration fee too high");
-        
+
         pendingRegistrationFee = newFee;
         registrationFeeUpdateTimestamp = block.timestamp + feeUpdateDelay;
-        
+
         emit RegistrationFeeUpdateProposed(newFee, registrationFeeUpdateTimestamp);
     }
 
@@ -549,13 +568,13 @@ contract PayvergePayments is
     function executeRegistrationFeeUpdate() external onlyRole(ADMIN_ROLE) {
         require(registrationFeeUpdateTimestamp != 0, "No pending fee update");
         require(block.timestamp >= registrationFeeUpdateTimestamp, "Timelock not expired");
-        
+
         businessRegistrationFee = pendingRegistrationFee;
-        
+
         // Reset pending state
         pendingRegistrationFee = 0;
         registrationFeeUpdateTimestamp = 0;
-        
+
         emit RegistrationFeeUpdated(businessRegistrationFee);
     }
 
@@ -564,10 +583,10 @@ contract PayvergePayments is
      */
     function cancelRegistrationFeeUpdate() external onlyRole(ADMIN_ROLE) {
         require(registrationFeeUpdateTimestamp != 0, "No pending fee update");
-        
+
         pendingRegistrationFee = 0;
         registrationFeeUpdateTimestamp = 0;
-        
+
         emit RegistrationFeeUpdateProposed(0, 0); // Indicates cancellation
     }
 
@@ -578,36 +597,38 @@ contract PayvergePayments is
      * @param amount Amount paid via alternative method
      * @param method Payment method used
      */
-    function markAlternativePayment(
-        bytes32 billId,
-        address participant,
-        uint256 amount,
-        PaymentMethod method
-    ) external onlyRole(BILL_MANAGER_ROLE) nonReentrant whenNotPaused {
+    function markAlternativePayment(bytes32 billId, address participant, uint256 amount, PaymentMethod method)
+        external
+        onlyRole(BILL_MANAGER_ROLE)
+        nonReentrant
+        whenNotPaused
+    {
         require(billExists[billId], "Bill not found");
         require(participant != address(0), "Zero address");
         require(amount > 0, "Invalid amount");
         require(method != PaymentMethod.CRYPTO, "Use processPayment for crypto");
-        
+
         Bill storage bill = bills[billId];
         require(!bill.isPaid && !bill.isCancelled, "Bill not active");
-        
+
         // Check if this would exceed the bill total
         uint256 currentPaid = bill.paidAmount + totalAlternativeAmount[billId];
         require(currentPaid + amount <= bill.totalAmount, "Exceeds bill total");
-        
+
         // Add alternative payment record
-        billAlternativePayments[billId].push(AlternativePayment({
-            participant: participant,
-            amount: amount,
-            timestamp: uint64(block.timestamp),
-            methodType: uint8(method),
-            verified: true
-        }));
-        
+        billAlternativePayments[billId].push(
+            AlternativePayment({
+                participant: participant,
+                amount: amount,
+                timestamp: uint64(block.timestamp),
+                methodType: uint8(method),
+                verified: true
+            })
+        );
+
         // Update totals
         totalAlternativeAmount[billId] += amount;
-        
+
         // Update participant tracking
         Participant storage participantInfo = billParticipants[billId][participant];
         if (participantInfo.paymentCount == 0) {
@@ -618,20 +639,16 @@ contract PayvergePayments is
         participantInfo.paidAmount += amount;
         participantInfo.paymentCount++;
         participantInfo.lastPaymentTime = uint32(block.timestamp);
-        
+
         // Check if bill is now complete
         uint256 totalPaid = bill.paidAmount + totalAlternativeAmount[billId];
         if (totalPaid >= bill.totalAmount) {
             bill.isPaid = true;
             bill.lastPaymentAt = uint64(block.timestamp);
-            
-            emit BillCompletedWithAlternativePayments(
-                billId, 
-                bill.paidAmount, 
-                totalAlternativeAmount[billId]
-            );
+
+            emit BillCompletedWithAlternativePayments(billId, bill.paidAmount, totalAlternativeAmount[billId]);
         }
-        
+
         emit AlternativePaymentMarked(billId, participant, amount, method, msg.sender);
     }
 
@@ -681,25 +698,18 @@ contract PayvergePayments is
     /**
      * @dev Get claimable amounts
      */
-    function getClaimableAmounts(address paymentAddress, address tippingAddress) 
-        external 
-        view 
-        returns (uint256 payments, uint256 tips) 
+    function getClaimableAmounts(address paymentAddress, address tippingAddress)
+        external
+        view
+        returns (uint256 payments, uint256 tips)
     {
-        return (
-            claimablePayments[paymentAddress].amount,
-            claimableTips[tippingAddress].amount
-        );
+        return (claimablePayments[paymentAddress].amount, claimableTips[tippingAddress].amount);
     }
 
     /**
      * @dev Get all participants for a bill
      */
-    function getBillParticipants(bytes32 billId) 
-        external 
-        view 
-        returns (address[] memory) 
-    {
+    function getBillParticipants(bytes32 billId) external view returns (address[] memory) {
         require(billExists[billId], "Bill not found");
         return participantList[billId];
     }
@@ -707,25 +717,21 @@ contract PayvergePayments is
     /**
      * @dev Get specific participant's payment info
      */
-    function getParticipantInfo(bytes32 billId, address participant) 
-        external 
-        view 
-        returns (uint256 paidAmount, uint32 paymentCount, uint32 lastPaymentTime) 
+    function getParticipantInfo(bytes32 billId, address participant)
+        external
+        view
+        returns (uint256 paidAmount, uint32 paymentCount, uint32 lastPaymentTime)
     {
         require(billExists[billId], "Bill not found");
         Participant memory p = billParticipants[billId][participant];
-        
+
         return (p.paidAmount, p.paymentCount, p.lastPaymentTime);
     }
 
     /**
      * @dev Check if an address has participated in a bill
      */
-    function hasParticipatedInBill(bytes32 billId, address participant) 
-        external 
-        view 
-        returns (bool) 
-    {
+    function hasParticipatedInBill(bytes32 billId, address participant) external view returns (bool) {
         Participant memory p = billParticipants[billId][participant];
         return p.paymentCount > 0 || p.paidAmount > 0;
     }
@@ -733,25 +739,15 @@ contract PayvergePayments is
     /**
      * @dev Get bill summary
      */
-    function getBillSummary(bytes32 billId) 
-        external 
-        view 
-        returns (
-            uint8 participantCount,
-            uint256 totalAmount,
-            uint256 paidAmount,
-            bool isPaid
-        ) 
+    function getBillSummary(bytes32 billId)
+        external
+        view
+        returns (uint8 participantCount, uint256 totalAmount, uint256 paidAmount, bool isPaid)
     {
         require(billExists[billId], "Bill not found");
         Bill memory bill = bills[billId];
-        
-        return (
-            bill.participantCount,
-            bill.totalAmount,
-            bill.paidAmount,
-            bill.isPaid
-        );
+
+        return (bill.participantCount, bill.totalAmount, bill.paidAmount, bill.isPaid);
     }
 
     /**
@@ -764,56 +760,38 @@ contract PayvergePayments is
     /**
      * @dev Get pending registration fee info
      */
-    function getPendingRegistrationFeeInfo() 
-        external 
-        view 
-        returns (uint256 pendingFee, uint256 executeAfter) 
-    {
+    function getPendingRegistrationFeeInfo() external view returns (uint256 pendingFee, uint256 executeAfter) {
         return (pendingRegistrationFee, registrationFeeUpdateTimestamp);
     }
 
     /**
      * @dev Get alternative payments for a bill
      */
-    function getBillAlternativePayments(bytes32 billId) 
-        external 
-        view 
-        returns (AlternativePayment[] memory) 
-    {
+    function getBillAlternativePayments(bytes32 billId) external view returns (AlternativePayment[] memory) {
         return billAlternativePayments[billId];
     }
 
     /**
      * @dev Get total alternative payment amount for a bill
      */
-    function getTotalAlternativeAmount(bytes32 billId) 
-        external 
-        view 
-        returns (uint256) 
-    {
+    function getTotalAlternativeAmount(bytes32 billId) external view returns (uint256) {
         return totalAlternativeAmount[billId];
     }
 
     /**
      * @dev Get complete bill payment breakdown (crypto + alternative)
      */
-    function getBillPaymentBreakdown(bytes32 billId) 
-        external 
-        view 
-        returns (
-            uint256 totalAmount,
-            uint256 cryptoPaid,
-            uint256 alternativePaid,
-            uint256 remaining,
-            bool isComplete
-        ) 
+    function getBillPaymentBreakdown(bytes32 billId)
+        external
+        view
+        returns (uint256 totalAmount, uint256 cryptoPaid, uint256 alternativePaid, uint256 remaining, bool isComplete)
     {
         require(billExists[billId], "Bill not found");
-        
+
         Bill memory bill = bills[billId];
         uint256 altPaid = totalAlternativeAmount[billId];
         uint256 totalPaid = bill.paidAmount + altPaid;
-        
+
         return (
             bill.totalAmount,
             bill.paidAmount,
@@ -833,10 +811,21 @@ contract PayvergePayments is
         string calldata referralCode
     ) internal {
         (uint256 finalFee, address referrer) = _processReferral(name, paymentAddress, tippingAddress, referralCode);
-        
+
         // Collect registration fee (after discount)
         if (finalFee > 0) {
-            usdcToken.safeTransferFrom(msg.sender, platformTreasury, finalFee);
+            usdcToken.safeTransferFrom(msg.sender, address(this), finalFee);
+
+            // Route registration fee to profit split contract if available
+            if (address(profitSplitContract) != address(0)) {
+                usdcToken.safeTransfer(address(profitSplitContract), finalFee);
+                try profitSplitContract.depositForDistribution(finalFee) {
+                    // Successfully deposited for distribution
+                } catch {
+                    // If deposit fails, funds are still in the profit split contract
+                }
+            }
+            // Note: If no profit split contract is set, registration fees remain in contract
         }
 
         // Register business
@@ -851,7 +840,8 @@ contract PayvergePayments is
 
         // Mark referral commission as earned if applicable
         if (referrer != address(0) && address(referralsContract) != address(0)) {
-            try referralsContract.markCommissionEarned(msg.sender) {} catch {
+            try referralsContract.markCommissionEarned(msg.sender) {}
+            catch {
                 // Commission earning failure doesn't affect business registration
             }
         }
@@ -863,7 +853,7 @@ contract PayvergePayments is
     }
 
     /**
-{{ ... }}
+     * {{ ... }}
      */
     function _processReferral(
         string calldata name,
@@ -876,16 +866,22 @@ contract PayvergePayments is
 
         // Process referral if code provided and referrals contract is set
         if (bytes(referralCode).length > 0 && address(referralsContract) != address(0)) {
-            try referralsContract.processReferral(msg.sender, referralCode, businessRegistrationFee) 
-                returns (uint256 discount, address _referrer, uint256) {
+            try referralsContract.processReferral(msg.sender, referralCode, businessRegistrationFee) returns (
+                uint256 discount, address _referrer, uint256 commission
+            ) {
                 referrer = _referrer;
                 finalFee = businessRegistrationFee - discount;
-                
+
+                // Transfer commission to referrals contract so referrer can claim it
+                if (commission > 0) {
+                    usdcToken.safeTransferFrom(msg.sender, address(referralsContract), commission);
+                }
+
                 emit BusinessRegisteredWithReferral(
-                    msg.sender, 
-                    name, 
-                    paymentAddress, 
-                    tippingAddress, 
+                    msg.sender,
+                    name,
+                    paymentAddress,
+                    tippingAddress,
                     businessRegistrationFee,
                     discount,
                     referrer,
@@ -901,10 +897,7 @@ contract PayvergePayments is
      * @dev Set the referrals contract address (admin only)
      * @param _referralsContract Address of the PayvergeReferrals contract
      */
-    function setReferralsContract(address _referralsContract) 
-        external 
-        onlyRole(ADMIN_ROLE) 
-    {
+    function setReferralsContract(address _referralsContract) external onlyRole(ADMIN_ROLE) {
         referralsContract = IPayvergeReferrals(_referralsContract);
     }
 
@@ -912,10 +905,7 @@ contract PayvergePayments is
      * @dev Set the profit split contract address (admin only)
      * @param _profitSplitContract Address of the PayvergeProfitSplit contract
      */
-    function setProfitSplitContract(address _profitSplitContract) 
-        external 
-        onlyRole(ADMIN_ROLE) 
-    {
+    function setProfitSplitContract(address _profitSplitContract) external onlyRole(ADMIN_ROLE) {
         profitSplitContract = IPayvergeProfitSplit(_profitSplitContract);
     }
 
@@ -944,6 +934,6 @@ contract PayvergePayments is
      * @dev Get contract version
      */
     function version() external pure returns (string memory) {
-        return "1.0.0";
+        return "2.1.0-profit-split-only";
     }
 }

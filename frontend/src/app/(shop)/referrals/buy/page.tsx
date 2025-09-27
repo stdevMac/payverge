@@ -169,128 +169,112 @@ export default function BuyReferralPage() {
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Basic Tier */}
               <div 
-                className={`bg-white rounded-3xl p-8 border cursor-pointer transition-all duration-300 group ${
+                className={`rounded-3xl p-8 border-2 cursor-pointer transition-all duration-300 group relative ${
                   selectedTier === 'basic' 
-                    ? 'border-gray-900 shadow-lg' 
-                    : 'border-gray-200 hover:shadow-lg'
+                    ? 'bg-gray-900 border-gray-900 shadow-xl' 
+                    : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg'
                 }`}
                 onClick={() => setSelectedTier('basic')}
               >
+                {selectedTier === 'basic' && (
+                  <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                )}
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">Basic Referrer</h3>
-                  <div className="text-5xl font-medium text-gray-900 mb-2">$10</div>
-                  <p className="text-gray-500 font-light">One-time registration fee</p>
+                  <h3 className={`text-2xl font-semibold mb-3 ${selectedTier === 'basic' ? 'text-white' : 'text-gray-900'}`}>
+                    Basic Referrer
+                  </h3>
+                  <div className={`text-5xl font-medium mb-2 ${selectedTier === 'basic' ? 'text-white' : 'text-gray-900'}`}>
+                    $10
+                  </div>
+                  <p className={`font-light ${selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-500'}`}>
+                    One-time registration fee
+                  </p>
                 </div>
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">10% commission on referrals</span>
+                    <span className={selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-700'}>10% commission on referrals</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">10% discount for businesses</span>
+                    <span className={selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-700'}>10% discount for businesses</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">Custom referral code</span>
+                    <span className={selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-700'}>Custom referral code</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">Real-time dashboard</span>
+                    <span className={selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-700'}>Real-time dashboard</span>
                   </div>
                 </div>
               </div>
 
               {/* Premium Tier */}
               <div 
-                className={`bg-white rounded-3xl p-8 border-2 cursor-pointer transition-all duration-300 group relative ${
+                className={`rounded-3xl p-8 border-2 cursor-pointer transition-all duration-300 group relative ${
                   selectedTier === 'premium' 
-                    ? 'border-gray-900 shadow-lg' 
-                    : 'border-gray-900 hover:shadow-lg'
+                    ? 'bg-gray-900 border-gray-900 shadow-xl' 
+                    : 'bg-white border-gray-900 hover:shadow-lg'
                 }`}
                 onClick={() => setSelectedTier('premium')}
               >
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gray-900 text-white px-4 py-1 text-sm font-medium rounded-full">
+                  <Badge className={`px-4 py-1 text-sm font-medium rounded-full ${
+                    selectedTier === 'premium' 
+                      ? 'bg-white text-gray-900' 
+                      : 'bg-gray-900 text-white'
+                  }`}>
                     RECOMMENDED
                   </Badge>
                 </div>
                 
+                {selectedTier === 'premium' && (
+                  <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">✓</span>
+                  </div>
+                )}
+                
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-3">Premium Referrer</h3>
-                  <div className="text-5xl font-medium text-gray-900 mb-2">$25</div>
-                  <p className="text-gray-500 font-light">One-time registration fee</p>
+                  <h3 className={`text-2xl font-semibold mb-3 ${selectedTier === 'premium' ? 'text-white' : 'text-gray-900'}`}>
+                    Premium Referrer
+                  </h3>
+                  <div className={`text-5xl font-medium mb-2 ${selectedTier === 'premium' ? 'text-white' : 'text-gray-900'}`}>
+                    $25
+                  </div>
+                  <p className={`font-light ${selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-500'}`}>
+                    One-time registration fee
+                  </p>
                 </div>
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">15% commission on referrals</span>
+                    <span className={selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-700'}>15% commission on referrals</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">15% discount for businesses</span>
+                    <span className={selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-700'}>15% discount for businesses</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">Custom referral code</span>
+                    <span className={selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-700'}>Custom referral code</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">Priority support</span>
+                    <span className={selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-700'}>Priority support</span>
                   </div>
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                    <span className="text-gray-700">Advanced analytics</span>
+                    <span className={selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-700'}>Advanced analytics</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Referral Code Input */}
-            <div className="bg-white rounded-3xl p-8 border border-gray-200 mb-8 hover:shadow-lg transition-all duration-300">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Choose Your Referral Code</h3>
-              <div className="flex gap-4 mb-4">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    value={referralCode}
-                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter your referral code"
-                    maxLength={12}
-                  />
-                </div>
-                <Button
-                  onClick={handleGenerateNewCode}
-                  variant="secondary"
-                  className="px-6 py-3 whitespace-nowrap"
-                >
-                  Generate New
-                </Button>
-              </div>
-              
-              {/* Code Status */}
-              <div className="flex items-center gap-2">
-                {isCheckingCode ? (
-                  <div className="flex items-center text-gray-600">
-                    <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mr-2"></div>
-                    Checking availability...
-                  </div>
-                ) : isCodeAvailable === true ? (
-                  <div className="flex items-center text-green-600">
-                    <div className="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
-                    Code is available!
-                  </div>
-                ) : isCodeAvailable === false ? (
-                  <div className="flex items-center text-red-600">
-                    <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
-                    {error || 'Code is not available'}
-                  </div>
-                ) : null}
-              </div>
-            </div>
 
             {/* Wallet Connection & Balance */}
             {!isConnected ? (
@@ -323,15 +307,14 @@ export default function BuyReferralPage() {
             <div className="text-center">
               <Button
                 onClick={() => setRegistrationStep(hasEnoughAllowance() ? 'register' : 'approve')}
-                disabled={!isConnected || !isCodeAvailable || !hasEnoughBalance()}
-                className={`px-12 py-4 text-lg font-semibold rounded-xl ${
-                  selectedTier === 'premium'
-                    ? 'bg-purple-600 hover:bg-purple-700'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                } text-white disabled:bg-gray-400 disabled:cursor-not-allowed`}
+                disabled={!isConnected || !hasEnoughBalance()}
+                className="px-12 py-4 text-lg font-medium rounded-xl bg-gray-900 hover:bg-gray-800 text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
               >
                 Continue to Payment
               </Button>
+              <p className="text-sm text-gray-500 mt-3">
+                {selectedTier === 'premium' ? 'Premium' : 'Basic'} tier selected • ${selectedTier === 'premium' ? '25' : '10'} USDC
+              </p>
             </div>
           </div>
         );
@@ -406,39 +389,86 @@ export default function BuyReferralPage() {
 
       case 'success':
         return (
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl">🎉</span>
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-3xl p-8 border border-gray-200 text-center mb-8">
+              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">🎉</span>
               </div>
               
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Registration Complete!</h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <h2 className="text-4xl font-medium text-gray-900 mb-4 tracking-tight">Registration Complete!</h2>
+              <p className="text-lg font-light text-gray-600 mb-8">
                 Congratulations! You&apos;re now a {selectedTier} referrer with Payverge.
               </p>
               
-              <div className="bg-green-50 rounded-xl p-6 mb-8">
-                <div className="text-sm text-green-600 mb-2">Your Referral Code:</div>
-                <div className="text-2xl font-bold font-mono text-green-800">{referralCode}</div>
-                <div className="text-sm text-green-600 mt-2">
-                  Share this code with restaurants to start earning!
-                </div>
-              </div>
-
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => router.push('/referrals/dashboard')}
-                  className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700"
+                  className="px-8 py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800"
                 >
                   Go to Dashboard
                 </Button>
                 <Button
                   onClick={() => router.push('/referrals')}
                   variant="secondary"
-                  className="px-8 py-3"
+                  className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-gray-500 hover:text-gray-900"
                 >
                   Back to Referrals
                 </Button>
+              </div>
+            </div>
+
+            {/* Referral Code Setup */}
+            <div className="bg-white rounded-3xl p-8 border border-gray-200">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Set Up Your Referral Code</h3>
+              
+              <div className="max-w-md mx-auto">
+                <div className="flex gap-4 mb-4">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={referralCode}
+                      onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-300 focus:border-transparent text-center text-lg font-mono"
+                      placeholder="Enter your referral code"
+                      maxLength={12}
+                    />
+                  </div>
+                  <Button
+                    onClick={handleGenerateNewCode}
+                    variant="secondary"
+                    className="px-6 py-3 whitespace-nowrap"
+                  >
+                    Generate New
+                  </Button>
+                </div>
+                
+                {/* Code Status */}
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  {isCheckingCode ? (
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mr-2"></div>
+                      Checking availability...
+                    </div>
+                  ) : isCodeAvailable === true ? (
+                    <div className="flex items-center text-green-600">
+                      <div className="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                      Code is available!
+                    </div>
+                  ) : isCodeAvailable === false ? (
+                    <div className="flex items-center text-red-600">
+                      <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                      {error || 'Code is not available'}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6 text-center">
+                  <div className="text-sm text-gray-600 mb-2">Your Referral Code:</div>
+                  <div className="text-3xl font-bold font-mono text-gray-900 mb-2">{referralCode}</div>
+                  <div className="text-sm text-gray-600">
+                    Share this code with restaurants to start earning commissions!
+                  </div>
+                </div>
               </div>
             </div>
           </div>

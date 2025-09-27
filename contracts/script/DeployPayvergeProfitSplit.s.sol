@@ -9,12 +9,12 @@ contract DeployPayvergeProfitSplit is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
-        
+
         // Get environment variables
         address usdcToken = vm.envAddress("USDC_TOKEN_ADDRESS");
         address platformTreasury = vm.envAddress("PLATFORM_TREASURY");
         address admin = vm.envAddress("ADMIN_ADDRESS");
-        
+
         console.log("Deploying PayvergeProfitSplit...");
         console.log("Deployer:", deployer);
         console.log("USDC Token:", usdcToken);
@@ -28,24 +28,17 @@ contract DeployPayvergeProfitSplit is Script {
         console.log("Implementation deployed at:", address(implementation));
 
         // Prepare initialization data
-        bytes memory initData = abi.encodeWithSelector(
-            PayvergeProfitSplit.initialize.selector,
-            usdcToken,
-            platformTreasury,
-            admin
-        );
+        bytes memory initData =
+            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, usdcToken, platformTreasury, admin);
 
         // Deploy proxy
-        ERC1967Proxy proxy = new ERC1967Proxy(
-            address(implementation),
-            initData
-        );
-        
+        ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
+
         console.log("Proxy deployed at:", address(proxy));
-        
+
         // Wrap proxy in interface
         PayvergeProfitSplit profitSplit = PayvergeProfitSplit(payable(address(proxy)));
-        
+
         // Verify initialization
         console.log("USDC Token set to:", address(profitSplit.usdcToken()));
         console.log("Platform Treasury set to:", profitSplit.platformTreasury());
