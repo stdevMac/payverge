@@ -56,7 +56,7 @@ contract PayvergeProfitSplitTest is Test {
         // Deploy profit split contract with proxy
         PayvergeProfitSplit implementation = new PayvergeProfitSplit();
         bytes memory initData =
-            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, address(usdc), treasury, admin);
+            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, address(usdc), admin);
 
         ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
         profitSplit = PayvergeProfitSplit(payable(address(proxy)));

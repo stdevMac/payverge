@@ -154,7 +154,6 @@ contract UpgradePayvergeContracts is Script {
 
         // Verify core functionality still works
         console.log("USDC token:", address(proxy.usdcToken()));
-        console.log("Platform treasury:", proxy.platformTreasury());
         console.log("Beneficiary count:", proxy.beneficiaryCount());
         console.log("Total distributed:", proxy.totalDistributed());
 

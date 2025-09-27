@@ -35,7 +35,6 @@ contract PayvergeProfitSplit is
 
     // State variables
     IERC20 public usdcToken;
-    address public platformTreasury;
     uint256 public totalDistributed;
     uint256 public distributionCount;
     uint256 public lastDistributionTime;
@@ -108,12 +107,10 @@ contract PayvergeProfitSplit is
     /**
      * @dev Initialize the contract
      * @param _usdcToken USDC token contract address
-     * @param _platformTreasury Platform treasury address
      * @param _admin Admin address
      */
-    function initialize(address _usdcToken, address _platformTreasury, address _admin) public initializer {
+    function initialize(address _usdcToken, address _admin) public initializer {
         require(_usdcToken != address(0), "Invalid USDC token");
-        require(_platformTreasury != address(0), "Invalid treasury");
         require(_admin != address(0), "Invalid admin");
 
         __ReentrancyGuard_init();
@@ -122,7 +119,6 @@ contract PayvergeProfitSplit is
         __UUPSUpgradeable_init();
 
         usdcToken = IERC20(_usdcToken);
-        platformTreasury = _platformTreasury;
 
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(ADMIN_ROLE, _admin);

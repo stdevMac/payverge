@@ -1,0 +1,57 @@
+== Logs ==
+  Deployer: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
+  USDC Token: 0x82d491aB292C06Aa7148234b910cdea5FE788223
+  Platform Fee BPS: 200
+  Bill Creator: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
+  Registration Fee: 1000
+  Implementation deployed at: 0x71c7beae26b3b6f5030831d615deacb7633331c4
+  Proxy deployed at: 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
+  
+=== DEPLOYING PROFIT SPLIT CONTRACT ===
+  Profit split contract deployed at: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  
+=== DEPLOYING REFERRALS CONTRACT ===
+  Referrals contract deployed at: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
+  Referrals treasury set to profit split contract: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  
+=== CONNECTING CONTRACTS ===
+  Set referrals contract in PayvergePayments
+  Set profit split contract in PayvergePayments
+  Set PayvergePayments contract in referrals
+  Granted distributor role to deployer
+  
+=== VERIFYING DEPLOYMENT ===
+  PayvergePayments version: 2.1.0-profit-split-only
+  USDC token address: 0x82d491aB292C06Aa7148234b910cdea5FE788223
+  Platform fee rate: 200
+  Bill creator address: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
+  Registration fee: 1000
+  Referrals contract: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
+  Profit split contract: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  
+=== DEPLOYMENT COMPLETE ===
+  PayvergePayments Implementation: 0x71c7beae26b3b6f5030831d615deacb7633331c4
+  PayvergePayments Proxy (Main Contract): 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
+  PayvergeReferrals Proxy: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
+  PayvergeProfitSplit Proxy: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  Contract Version: 2.1.0-profit-split-only
+  
+=== ENVIRONMENT VARIABLES NEEDED ===
+  PAYVERGE_CONTRACT_ADDRESS= 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
+  PAYVERGE_REFERRALS_ADDRESS= 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
+  PAYVERGE_PROFIT_SPLIT_ADDRESS= 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  USDC_CONTRACT_ADDRESS= 0x82d491aB292C06Aa7148234b910cdea5FE788223
+  
+=== FRONTEND INTEGRATION ===
+  Use PayvergePayments Proxy address for payment operations
+  Use PayvergeReferrals Proxy address for referral operations
+  Use PayvergeProfitSplit Proxy address for profit distribution
+  Contract supports unified payment system with referrals and profit sharing
+  
+=== ADMIN ACTIONS NEEDED ===
+  1. Add beneficiaries to profit split contract
+  2. Configure profit distribution percentages
+  3. Grant additional distributor roles if needed
+  4. Test referral system with basic/premium registrations
+
+## Setting up 1 EVM.

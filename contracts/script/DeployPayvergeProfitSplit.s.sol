@@ -29,7 +29,7 @@ contract DeployPayvergeProfitSplit is Script {
 
         // Prepare initialization data
         bytes memory initData =
-            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, usdcToken, platformTreasury, admin);
+            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, usdcToken, admin);
 
         // Deploy proxy
         ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
@@ -41,7 +41,6 @@ contract DeployPayvergeProfitSplit is Script {
 
         // Verify initialization
         console.log("USDC Token set to:", address(profitSplit.usdcToken()));
-        console.log("Platform Treasury set to:", profitSplit.platformTreasury());
         console.log("Beneficiary Count:", profitSplit.beneficiaryCount());
         console.log("Contract Version:", profitSplit.version());
 

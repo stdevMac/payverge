@@ -14,14 +14,12 @@ contract DeployPayvergeEcosystem is Script {
 
         // Get environment variables
         address usdcToken = vm.envAddress("USDC_TOKEN_ADDRESS");
-        address platformFeeRecipient = vm.envAddress("PLATFORM_FEE_RECIPIENT");
         uint256 platformFeeBps = vm.envUint("PLATFORM_FEE_BPS"); // Default: 200 (2%)
         address billCreator = vm.envAddress("BILL_CREATOR_ADDRESS");
         uint256 registrationFee = vm.envUint("REGISTRATION_FEE"); // Default: 0 (free registration)
 
         console.log("Deployer:", deployer);
         console.log("USDC Token:", usdcToken);
-        console.log("Platform Fee Recipient:", platformFeeRecipient);
         console.log("Platform Fee BPS:", platformFeeBps);
         console.log("Bill Creator:", billCreator);
         console.log("Registration Fee:", registrationFee);
@@ -49,7 +47,7 @@ contract DeployPayvergeEcosystem is Script {
 
         // Deploy and setup referrals and profit split contracts
         (address referralsProxy, address profitSplitProxy) =
-            _deployAuxiliaryContracts(usdcToken, platformFeeRecipient, deployer);
+            _deployAuxiliaryContracts(usdcToken, deployer);
 
         // Connect contracts
         console.log("\n=== CONNECTING CONTRACTS ===");
@@ -110,26 +108,27 @@ contract DeployPayvergeEcosystem is Script {
         console.log("4. Test referral system with basic/premium registrations");
     }
 
-    function _deployAuxiliaryContracts(address usdcToken, address platformFeeRecipient, address deployer)
+    function _deployAuxiliaryContracts(address usdcToken, address deployer)
         internal
         returns (address referralsProxy, address profitSplitProxy)
     {
-        // Deploy PayvergeReferrals contract
-        console.log("\n=== DEPLOYING REFERRALS CONTRACT ===");
-        PayvergeReferrals referralsImpl = new PayvergeReferrals();
-        bytes memory referralsInitData =
-            abi.encodeWithSelector(PayvergeReferrals.initialize.selector, usdcToken, platformFeeRecipient, deployer);
-        ERC1967Proxy referralsProxyContract = new ERC1967Proxy(address(referralsImpl), referralsInitData);
-        referralsProxy = address(referralsProxyContract);
-        console.log("Referrals contract deployed at:", referralsProxy);
-
-        // Deploy PayvergeProfitSplit contract
+        // Deploy PayvergeProfitSplit contract FIRST
         console.log("\n=== DEPLOYING PROFIT SPLIT CONTRACT ===");
         PayvergeProfitSplit profitSplitImpl = new PayvergeProfitSplit();
         bytes memory profitSplitInitData =
-            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, usdcToken, platformFeeRecipient, deployer);
+            abi.encodeWithSelector(PayvergeProfitSplit.initialize.selector, usdcToken, deployer);
         ERC1967Proxy profitSplitProxyContract = new ERC1967Proxy(address(profitSplitImpl), profitSplitInitData);
         profitSplitProxy = address(profitSplitProxyContract);
         console.log("Profit split contract deployed at:", profitSplitProxy);
+
+        // Deploy PayvergeReferrals contract using profit split as treasury
+        console.log("\n=== DEPLOYING REFERRALS CONTRACT ===");
+        PayvergeReferrals referralsImpl = new PayvergeReferrals();
+        bytes memory referralsInitData =
+            abi.encodeWithSelector(PayvergeReferrals.initialize.selector, usdcToken, profitSplitProxy, deployer);
+        ERC1967Proxy referralsProxyContract = new ERC1967Proxy(address(referralsImpl), referralsInitData);
+        referralsProxy = address(referralsProxyContract);
+        console.log("Referrals contract deployed at:", referralsProxy);
+        console.log("Referrals treasury set to profit split contract:", profitSplitProxy);
     }
 }
