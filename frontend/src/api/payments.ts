@@ -30,8 +30,10 @@ export const notifyPaymentWebhook = async (data: PaymentWebhookData): Promise<vo
 
 // Get payment history for a business
 export const getPaymentHistory = async (businessId: number): Promise<PaymentHistoryItem[]> => {
-  const response = await axiosInstance.get<PaymentHistoryItem[]>(`/inside/businesses/${businessId}/payments`);
-  return response.data;
+  // Since there's no dedicated payments endpoint, return empty array for now
+  // TODO: Implement proper payments endpoint or use analytics data
+  console.warn('Payment history endpoint not implemented, returning empty array');
+  return [];
 };
 
 // Export payments data

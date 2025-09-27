@@ -17,6 +17,7 @@ import TableManager from '../../../../../components/business/TableManager';
 import { BillManager } from '../../../../../components/business/BillManager';
 import BusinessSettings from '../../../../../components/business/BusinessSettings';
 import StaffManagement from '../../../../../components/business/StaffManagement';
+import Dashboard from '../../../../../components/dashboard/Dashboard';
 
 interface BusinessDashboardProps {
   params: {
@@ -225,6 +226,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
           </div>
         );
 
+      case 'analytics':
+        return <Dashboard businessId={businessId.toString()} />;
+
       case 'menu':
         return <MenuBuilder businessId={businessId} />;
 
@@ -268,16 +272,16 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               </div>
             </div>
           </div>
-
           {/* Sidebar Navigation */}
           <nav className="flex-1 px-6 py-6 space-y-2">
             {[
               { key: 'overview', icon: BarChart3, label: 'Overview' },
+              { key: 'analytics', icon: BarChart3, label: 'Analytics' },
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
               { key: 'bills', icon: Receipt, label: 'Bills' },
               { key: 'staff', icon: UserCheck, label: 'Staff' },
-              { key: 'settings', icon: Settings, label: 'Settings' }
+              { key: 'settings', icon: Settings, label: 'Settings' },
             ].map(({ key, icon: Icon, label }) => (
               <button
                 key={key}
@@ -349,10 +353,12 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <nav className="flex-1 p-6 space-y-2">
                     {[
                       { key: 'overview', icon: BarChart3, label: 'Overview' },
+                      { key: 'analytics', icon: BarChart3, label: 'Analytics' },
                       { key: 'menu', icon: Menu, label: 'Menu' },
                       { key: 'tables', icon: Users, label: 'Tables' },
                       { key: 'bills', icon: Receipt, label: 'Bills' },
-                      { key: 'settings', icon: Settings, label: 'Settings' }
+                      { key: 'staff', icon: UserCheck, label: 'Staff' },
+                      { key: 'settings', icon: Settings, label: 'Settings' },
                     ].map(({ key, icon: Icon, label }) => (
                       <button
                         key={key}

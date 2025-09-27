@@ -7,12 +7,15 @@ export interface SalesData {
   bill_count: number
   unique_customers: number
   average_ticket: number
-  payment_methods: Record<string, number>
-  hourly_breakdown: Record<string, {
+  payment_methods?: Record<string, number>
+  hourly_breakdown?: Record<string, {
     revenue: number
     bill_count: number
     transaction_count: number
   }>
+  growth_rate?: number
+  start_date?: string
+  end_date?: string
 }
 
 export interface TipAnalytics {
@@ -94,7 +97,7 @@ export const analyticsApi = {
     const response = await axiosInstance.get(
       `/inside/businesses/${businessId}/analytics/sales?${params.toString()}`
     )
-    return response.data
+    return response.data.data
   },
 
   // Get tip analytics for a business
@@ -105,7 +108,7 @@ export const analyticsApi = {
     const response = await axiosInstance.get(
       `/inside/businesses/${businessId}/analytics/tips?period=${period}`
     )
-    return response.data
+    return response.data.data
   },
 
   // Get item performance analytics
@@ -116,7 +119,7 @@ export const analyticsApi = {
     const response = await axiosInstance.get(
       `/inside/businesses/${businessId}/analytics/items?period=${period}`
     )
-    return response.data
+    return response.data.data
   },
 
   // Get live bills for real-time monitoring
@@ -124,7 +127,7 @@ export const analyticsApi = {
     const response = await axiosInstance.get(
       `/inside/businesses/${businessId}/analytics/live-bills`
     )
-    return response.data
+    return response.data.data
   },
 
   // Get dashboard summary with key metrics
@@ -132,7 +135,7 @@ export const analyticsApi = {
     const response = await axiosInstance.get(
       `/inside/businesses/${businessId}/analytics/dashboard`
     )
-    return response.data
+    return response.data.data
   },
 
   // Export sales data in CSV or JSON 

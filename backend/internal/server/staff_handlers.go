@@ -482,16 +482,24 @@ func GetBusinessStaff(c *gin.Context) {
 		return
 	}
 
-	// Get pending invitations
-	invitations, err := db.StaffInvitationService.GetByBusinessID(uint(businessID))
+	// Get pending invitations (only pending status)
+	allInvitations, err := db.StaffInvitationService.GetByBusinessID(uint(businessID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve invitations"})
 		return
 	}
+	
+	// Filter only pending invitations
+	var pendingInvitations []database.StaffInvitation
+	for _, invitation := range allInvitations {
+		if invitation.Status == database.InvitationStatusPending {
+			pendingInvitations = append(pendingInvitations, invitation)
+		}
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"staff": staff,
-		"pending_invitations": invitations,
+		"pending_invitations": pendingInvitations,
 	})
 }
 
@@ -552,8 +560,92 @@ func RemoveStaff(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Staff member removed successfully",
-	})
+	c.JSON(http.StatusOK, gin.H{"message": "Staff member removed successfully"})
 }
 
+// UpdateStaffRole updates a staff member's role
+func UpdateStaffRole(c *gin.Context) {
+	businessIDStr := c.Param("id")
+	staffIDStr := c.Param("staffId")
+	
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+	
+	staffID, err := strconv.ParseUint(staffIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid staff ID"})
+		return
+	}
+
+	var req struct {
+		Role string `json:"role" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validate role
+	validRoles := []string{"manager", "server", "host", "kitchen"}
+	roleValid := false
+	for _, validRole := range validRoles {
+		if req.Role == validRole {
+			roleValid = true
+			break
+		}
+	}
+	if !roleValid {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid role"})
+		return
+	}
+
+	// Get owner address from context
+	ownerAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Owner address not found"})
+		return
+	}
+
+	// Get database wrapper
+	db := database.GetDBWrapper()
+
+	// Verify business ownership
+	business, err := db.BusinessService.GetByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != ownerAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to manage this business"})
+		return
+	}
+
+	// Get staff member
+	staff, err := db.StaffService.GetByID(uint(staffID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Staff member not found"})
+		return
+	}
+
+	// Verify staff belongs to this business
+	if staff.BusinessID != uint(businessID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Staff member does not belong to this business"})
+		return
+	}
+
+	// Update staff role
+	staff.Role = database.StaffRole(req.Role)
+	if err := db.StaffService.Update(staff); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update staff role"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Staff role updated successfully",
+		"staff": staff,
+	})
+}

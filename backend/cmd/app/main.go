@@ -316,6 +316,7 @@ func main() {
 		protectedRoutes.POST("/businesses/:id/staff/invite", server.InviteStaff)
 		protectedRoutes.POST("/businesses/:id/staff/invitations/:invitationId/resend", server.ResendInvitation)
 		protectedRoutes.GET("/businesses/:id/staff", server.GetBusinessStaff)
+		protectedRoutes.PUT("/businesses/:id/staff/:staffId/role", server.UpdateStaffRole)
 		protectedRoutes.DELETE("/businesses/:id/staff/:staffId", server.RemoveStaff)
 	}
 

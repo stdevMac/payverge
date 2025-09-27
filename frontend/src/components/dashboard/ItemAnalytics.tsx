@@ -32,8 +32,11 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
       setLoading(true)
       setError(null)
       const data = await analyticsApi.getItemAnalytics(businessId, period)
-      setItems(data)
+      console.log('ItemAnalytics - Raw API response:', data)
+      console.log('ItemAnalytics - Data type:', typeof data, Array.isArray(data))
+      setItems(data || [])
     } catch (err) {
+      console.error('ItemAnalytics - API Error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -145,17 +148,22 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header with Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold">Item Analytics</h2>
+        <div>
+          <h2 className="text-3xl font-bold text-default-900">Item Analytics</h2>
+          <p className="text-default-600 mt-1">Track menu item performance and popularity trends</p>
+        </div>
         
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Select
-            size="sm"
+            size="md"
             selectedKeys={[period]}
             onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
-            className="w-32"
+            className="w-full sm:w-40"
+            variant="bordered"
+            label="Period"
           >
             {periods.map((p) => (
               <SelectItem key={p.key} value={p.key}>
@@ -165,10 +173,12 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
           </Select>
           
           <Select
-            size="sm"
+            size="md"
             selectedKeys={[sortBy]}
             onSelectionChange={(keys) => setSortBy(Array.from(keys)[0] as string)}
-            className="w-40"
+            className="w-full sm:w-48"
+            variant="bordered"
+            label="Sort by"
           >
             {sortOptions.map((option) => (
               <SelectItem key={option.key} value={option.key}>

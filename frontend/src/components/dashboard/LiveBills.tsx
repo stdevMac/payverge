@@ -45,9 +45,12 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
       setLoading(true)
       setError(null)
       const data = await getLiveBills(parseInt(businessId))
-      setBills(data || [])
+      console.log('LiveBills - Raw API response:', data)
+      console.log('LiveBills - Data type:', typeof data, Array.isArray(data))
+      setBills(Array.isArray(data) ? data : [])
       setLastUpdated(new Date())
     } catch (err) {
+      console.error('LiveBills - API Error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -128,37 +131,41 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold">Live Bills</h2>
-          <Badge 
-            content={bills.length} 
-            color={bills.length > 0 ? 'primary' : 'default'}
-            size="sm"
-          >
-            <div className="w-6 h-6" />
-          </Badge>
-          {isConnected && (
-            <Chip size="sm" color="success" variant="dot">
-              Live
-            </Chip>
-          )}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <h2 className="text-3xl font-bold text-default-900">Live Bills</h2>
+            <Badge 
+              content={bills.length} 
+              color={bills.length > 0 ? 'primary' : 'default'}
+              size="lg"
+              className="text-sm"
+            >
+              <div className="w-6 h-6" />
+            </Badge>
+            {isConnected && (
+              <Chip size="md" color="success" variant="dot" className="animate-pulse">
+                Live
+              </Chip>
+            )}
+          </div>
+          <p className="text-default-600 mt-1">Monitor active bills and payment progress in real-time</p>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="text-sm text-default-500">
-            Updated {lastUpdated.toLocaleTimeString()}
+            Last updated: {lastUpdated.toLocaleTimeString()}
           </span>
           <Button
-            isIconOnly
-            size="sm"
-            variant="ghost"
+            size="md"
+            variant="bordered"
             onPress={fetchLiveBills}
             isLoading={loading}
+            startContent={<RefreshCw className="w-4 h-4" />}
           >
-            <RefreshCw className="w-4 h-4" />
+            Refresh
           </Button>
         </div>
       </div>
@@ -174,29 +181,35 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
       )}
 
       {bills.length === 0 ? (
-        <Card>
-          <CardBody className="p-8">
+        <Card className="shadow-md">
+          <CardBody className="p-12">
             <div className="text-center text-default-500">
-              <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">No Active Bills</p>
-              <p>All bills have been paid or closed.</p>
+              <div className="w-20 h-20 mx-auto mb-6 bg-default-100 rounded-full flex items-center justify-center">
+                <Users className="w-10 h-10 text-default-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-default-700">No Active Bills</h3>
+              <p className="text-default-500">All bills have been paid or closed. New bills will appear here automatically.</p>
             </div>
           </CardBody>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {bills.map((bill) => (
-            <Card key={bill.id} className="border-none shadow-sm hover:shadow-md transition-shadow">
-              <CardHeader className="pb-2">
+            <Card key={bill.id} className="border-none shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+              <CardHeader className="pb-3">
                 <div className="flex justify-between items-start w-full">
                   <div>
-                    <h3 className="font-semibold text-lg">#{bill.bill_number}</h3>
-                    <p className="text-sm text-default-600">{bill.table_name}</p>
+                    <h3 className="font-bold text-xl text-default-900">#{bill.bill_number}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <DollarSign className="w-4 h-4 text-default-500" />
+                      <p className="text-sm font-medium text-default-600">{bill.table_name}</p>
+                    </div>
                   </div>
                   <Chip
-                    size="sm"
+                    size="md"
                     color={getStatusColor(bill)}
                     variant="flat"
+                    className="font-semibold"
                   >
                     {getStatusText(bill)}
                   </Chip>
@@ -206,17 +219,17 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
               <Divider />
               
               <CardBody className="pt-4">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {/* Amount Details */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-default-600">Total</span>
-                      <span className="font-semibold">{formatCurrency(bill.total_amount)}</span>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
+                      <span className="text-sm font-medium text-default-600">Total Amount</span>
+                      <span className="font-bold text-lg text-default-900">{formatCurrency(bill.total_amount)}</span>
                     </div>
                     
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-default-600">Paid</span>
-                      <span className="font-semibold text-success">
+                    <div className="flex justify-between items-center p-3 bg-success-50 rounded-lg">
+                      <span className="text-sm font-medium text-success-700">Paid Amount</span>
+                      <span className="font-bold text-lg text-success-700">
                         {formatCurrency(bill.paid_amount)}
                       </span>
                     </div>

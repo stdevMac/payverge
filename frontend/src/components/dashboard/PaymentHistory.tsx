@@ -22,7 +22,7 @@ import {
   DateRangePicker,
   Pagination
 } from '@nextui-org/react'
-import { Search, Filter, Download, ExternalLink } from 'lucide-react'
+import { Search, Filter, Download, ExternalLink, X } from 'lucide-react'
 import { parseDate } from '@internationalized/date'
 
 interface Payment {
@@ -96,8 +96,8 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
 
     // Date range filter
     if (dateRange?.start && dateRange?.end) {
-      const startDate = new Date(dateRange.start.toString())
-      const endDate = new Date(dateRange.end.toString())
+      const startDate = new Date(dateRange.start?.toString() || '')
+      const endDate = new Date(dateRange.end?.toString() || '')
       filtered = filtered.filter(payment => {
         const paymentDate = new Date(payment.created_at)
         return paymentDate >= startDate && paymentDate <= endDate
@@ -180,84 +180,146 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Payment History</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-default-900">Payment History</h2>
+          <p className="text-default-600 mt-1">Track and manage all payment transactions</p>
+        </div>
         <Button
           color="primary"
+          size="lg"
           variant="flat"
-          startContent={<Download className="w-4 h-4" />}
+          startContent={<Download className="w-5 h-5" />}
           onPress={handleExportPayments}
+          className="w-full sm:w-auto"
         >
-          Export
+          Export Data
         </Button>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5" />
-            <h3 className="text-lg font-semibold">Filters</h3>
+      <Card className="shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Filter className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-default-900">Search & Filter</h3>
           </div>
         </CardHeader>
         <Divider />
-        <CardBody className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Input
-              placeholder="Search bills, tables, addresses..."
-              startContent={<Search className="w-4 h-4 text-default-400" />}
-              value={searchTerm}
-              onValueChange={setSearchTerm}
-              isClearable
-            />
+        <CardBody className="p-6">
+          <div className="space-y-6">
+            {/* Search Section */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-default-700">Search Payments</label>
+              <Input
+                placeholder="Search by bill number, table name, or payer address..."
+                startContent={<Search className="w-4 h-4 text-default-400" />}
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+                isClearable
+                size="lg"
+                variant="bordered"
+                className="w-full"
+                classNames={{
+                  input: "text-sm",
+                  inputWrapper: "h-12"
+                }}
+              />
+            </div>
             
-            <Select
-              placeholder="Filter by status"
-              selectedKeys={[statusFilter]}
-              onSelectionChange={(keys) => setStatusFilter(Array.from(keys)[0] as string)}
-            >
-              {statusOptions.map((option) => (
-                <SelectItem key={option.key} value={option.key}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </Select>
+            {/* Filters Section */}
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-default-700">Filter Options</label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-default-500 uppercase tracking-wide">Status</label>
+                  <Select
+                    placeholder="All Status"
+                    selectedKeys={[statusFilter]}
+                    onSelectionChange={(keys) => setStatusFilter(Array.from(keys)[0] as string)}
+                    size="lg"
+                    variant="bordered"
+                    className="w-full"
+                    classNames={{
+                      trigger: "h-12"
+                    }}
+                  >
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.key} value={option.key}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
 
-            <DateRangePicker
-              label="Date Range"
-              value={dateRange}
-              onChange={setDateRange}
-              className="max-w-xs"
-            />
+                <div className="space-y-2">
+                  <label className="text-xs text-default-500 uppercase tracking-wide">Date Range</label>
+                  <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    size="lg"
+                    variant="bordered"
+                    className="w-full"
+                    classNames={{
+                      base: "w-full",
+                      input: "h-12"
+                    }}
+                  />
+                </div>
 
-            <Button
-              variant="flat"
-              onPress={() => {
-                setSearchTerm('')
-                setStatusFilter('all')
-                setDateRange(null)
-              }}
-            >
-              Clear Filters
-            </Button>
+                <div className="flex items-end">
+                  <Button
+                    variant="flat"
+                    size="lg"
+                    startContent={<X className="w-4 h-4" />}
+                    onPress={() => {
+                      setSearchTerm('')
+                      setStatusFilter('all')
+                      setDateRange(null)
+                    }}
+                    className="w-full h-12"
+                    color="default"
+                  >
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </CardBody>
       </Card>
 
       {error && (
-        <Card className="border-danger-200 bg-danger-50">
-          <CardBody className="p-4">
-            <div className="text-danger">
-              <p>Error loading payment history: {error}</p>
+        <Card className="border-danger-200 bg-danger-50 shadow-md">
+          <CardBody className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center">
+                <X className="h-6 w-6 text-danger-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-danger-900">Error</h3>
+                <p className="text-danger-700">{error}</p>
+              </div>
             </div>
           </CardBody>
         </Card>
       )}
 
       {/* Payment Table */}
-      <Card>
+      <Card className="shadow-md">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between w-full">
+            <h3 className="text-xl font-semibold text-default-900">Payment Records</h3>
+            <div className="text-sm text-default-600">
+              {filteredPayments.length} of {payments.length} payments
+            </div>
+          </div>
+        </CardHeader>
+        <Divider />
         <CardBody className="p-0">
           <Table aria-label="Payment history table">
             <TableHeader>

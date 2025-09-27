@@ -52,13 +52,13 @@ export default function Dashboard({ businessId }: DashboardProps) {
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Business Dashboard</h1>
+        <h1 className="text-3xl font-bold text-default-900 mb-2">Analytics Dashboard</h1>
         <p className="text-default-600">
           Monitor your business performance, track payments, and analyze customer behavior in real-time.
         </p>
       </div>
 
-      <Card className="w-full">
+      <Card className="w-full shadow-lg">
         <CardBody className="p-0">
           <Tabs
             aria-label="Dashboard tabs"

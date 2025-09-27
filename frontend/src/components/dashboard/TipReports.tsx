@@ -36,8 +36,11 @@ export default function TipReports({ businessId }: TipReportsProps) {
       setLoading(true)
       setError(null)
       const data = await analyticsApi.getTipAnalytics(businessId, period)
+      console.log('TipReports - Raw API response:', data)
+      console.log('TipReports - Data properties:', Object.keys(data || {}))
       setTipData(data)
     } catch (err) {
+      console.error('TipReports - API Error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -119,31 +122,32 @@ export default function TipReports({ businessId }: TipReportsProps) {
     )
   }
 
-  const tipDistributionEntries = Object.entries(tipData.tip_distribution)
+  const tipDistributionEntries = Object.entries(tipData.tip_distribution || {})
     .sort(([a], [b]) => {
       // Sort by tip range
       const getMinValue = (range: string) => {
-        if (range === '$0-5') return 0
-        if (range === '$5-10') return 5
-        if (range === '$10-20') return 10
-        if (range === '$20+') return 20
-        return 0
+        const match = range.match(/\d+/)
+        return match ? parseInt(match[0], 10) : 0
       }
       return getMinValue(a) - getMinValue(b)
     })
 
-  const totalTipTransactions = Object.values(tipData.tip_distribution).reduce((sum, count) => sum + count, 0)
+  const totalTipTransactions = Object.values(tipData.tip_distribution || {}).reduce((sum, count) => sum + (typeof count === 'number' ? count : 0), 0)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header with Period Selector */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Tip Reports</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-default-900">Tip Reports</h2>
+          <p className="text-default-600 mt-1">Analyze tip patterns and customer generosity trends</p>
+        </div>
         <Select
-          size="sm"
+          size="md"
           selectedKeys={[period]}
           onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
-          className="w-40"
+          className="w-full sm:w-48"
+          variant="bordered"
         >
           {periods.map((p) => (
             <SelectItem key={p.key} value={p.key}>
@@ -154,30 +158,30 @@ export default function TipReports({ businessId }: TipReportsProps) {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-none shadow-sm">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-success/10">
-                <DollarSign className="w-5 h-5 text-success" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardBody className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-success/10">
+                <DollarSign className="w-6 h-6 text-success" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-default-600">Total Tips</p>
-                <p className="text-xl font-semibold">{formatCurrency(tipData.total_tips)}</p>
+                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Total Tips</p>
+                <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.total_tips || 0)}</p>
               </div>
             </div>
           </CardBody>
         </Card>
 
-        <Card className="border-none shadow-sm">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Target className="w-5 h-5 text-primary" />
+        <Card className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
+          <CardBody className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <TrendingUp className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-default-600">Average Tip</p>
-                <p className="text-xl font-semibold">{formatCurrency(tipData.average_tip)}</p>
+                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Average Tip</p>
+                <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.average_tip || 0)}</p>
               </div>
             </div>
           </CardBody>
@@ -295,7 +299,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
         </Card>
 
         {/* Hourly Tips */}
-        {Object.keys(tipData.hourly_tips).length > 0 && (
+        {Object.keys(tipData.hourly_tips || {}).length > 0 && (
           <Card>
             <CardHeader>
               <h3 className="text-lg font-semibold">Hourly Tip Performance</h3>
@@ -303,10 +307,10 @@ export default function TipReports({ businessId }: TipReportsProps) {
             <Divider />
             <CardBody className="p-4">
               <div className="grid grid-cols-3 gap-3">
-                {Object.entries(tipData.hourly_tips)
+                {Object.entries(tipData.hourly_tips || {})
                   .sort(([a], [b]) => parseInt(a) - parseInt(b))
                   .map(([hour, amount]) => {
-                    const maxHourlyTip = Math.max(...Object.values(tipData.hourly_tips))
+                    const maxHourlyTip = Math.max(...Object.values(tipData.hourly_tips || {}))
                     const percentage = maxHourlyTip > 0 ? (amount / maxHourlyTip) * 100 : 0
                     
                     return (

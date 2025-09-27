@@ -37,6 +37,6 @@ export const getRevenueData = async (
 
 // Get live bills data
 export const getLiveBills = async (businessId: number) => {
-  const response = await axiosInstance.get(`/inside/businesses/${businessId}/bills/live`);
-  return response.data;
+  const response = await axiosInstance.get(`/inside/businesses/${businessId}/analytics/live-bills`);
+  return response.data.data || [];
 };

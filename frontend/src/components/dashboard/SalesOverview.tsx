@@ -20,8 +20,11 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       setLoading(true)
       setError(null)
       const data = await analyticsApi.getSalesAnalytics(businessId, period)
+      console.log('SalesOverview - Raw API response:', data)
+      console.log('SalesOverview - Data properties:', Object.keys(data || {}))
       setSalesData(data)
     } catch (err) {
+      console.error('SalesOverview - API Error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
@@ -89,42 +92,42 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
   const metrics = [
     {
       title: 'Total Revenue',
-      value: formatCurrency(salesData.total_revenue),
+      value: formatCurrency(salesData.total_revenue || 0),
       icon: DollarSign,
       color: 'text-success',
       bgColor: 'bg-success/10',
     },
     {
       title: 'Total Tips',
-      value: formatCurrency(salesData.total_tips),
+      value: formatCurrency(salesData.total_tips || 0),
       icon: TrendingUp,
       color: 'text-warning',
       bgColor: 'bg-warning/10',
     },
     {
       title: 'Transactions',
-      value: salesData.transaction_count.toString(),
+      value: (salesData.transaction_count || 0).toString(),
       icon: CreditCard,
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
     {
       title: 'Bills',
-      value: salesData.bill_count.toString(),
+      value: (salesData.bill_count || 0).toString(),
       icon: Receipt,
       color: 'text-secondary',
       bgColor: 'bg-secondary/10',
     },
     {
       title: 'Unique Customers',
-      value: salesData.unique_customers.toString(),
+      value: (salesData.unique_customers || 0).toString(),
       icon: Users,
       color: 'text-default-600',
       bgColor: 'bg-default/10',
     },
     {
       title: 'Average Ticket',
-      value: formatCurrency(salesData.average_ticket),
+      value: formatCurrency(salesData.average_ticket || 0),
       icon: TrendingUp,
       color: 'text-success',
       bgColor: 'bg-success/10',
@@ -132,20 +135,24 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
   ]
 
   // Calculate tip rate
-  const tipRate = salesData.total_revenue > 0 
-    ? (salesData.total_tips / salesData.total_revenue) * 100 
+  const tipRate = (salesData.total_revenue || 0) > 0 
+    ? ((salesData.total_tips || 0) / (salesData.total_revenue || 1)) * 100 
     : 0
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header with Period Selector */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Sales Overview</h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-default-900">Sales Overview</h2>
+          <p className="text-default-600 mt-1">Track your business performance and revenue metrics</p>
+        </div>
         <Select
-          size="sm"
+          size="md"
           selectedKeys={[period]}
           onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
-          className="w-40"
+          className="w-full sm:w-48"
+          variant="bordered"
         >
           {periods.map((p) => (
             <SelectItem key={p.key} value={p.key}>
@@ -156,19 +163,19 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {metrics.map((metric, index) => {
           const Icon = metric.icon
           return (
-            <Card key={index} className="border-none shadow-sm">
-              <CardBody className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${metric.bgColor}`}>
-                    <Icon className={`w-5 h-5 ${metric.color}`} />
+            <Card key={index} className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
+              <CardBody className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className={`p-3 rounded-xl ${metric.bgColor}`}>
+                    <Icon className={`w-6 h-6 ${metric.color}`} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-default-600">{metric.title}</p>
-                    <p className="text-xl font-semibold">{metric.value}</p>
+                    <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{metric.title}</p>
+                    <p className="text-2xl font-bold text-default-900 mt-1">{metric.value}</p>
                   </div>
                 </div>
               </CardBody>
@@ -178,32 +185,41 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       </div>
 
       {/* Additional Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Tip Performance */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Tip Performance</h3>
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-success" />
+              <h3 className="text-xl font-semibold text-default-900">Tip Performance</h3>
+            </div>
           </CardHeader>
           <Divider />
-          <CardBody className="p-4">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-default-600">Tip Rate</span>
-                <div className="flex items-center gap-2">
+          <CardBody className="p-6">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Tip Rate</p>
+                  <p className="text-xs text-default-500 mt-1">Percentage of total revenue</p>
+                </div>
+                <div className="flex items-center gap-3">
                   {tipRate >= 15 ? (
-                    <TrendingUp className="w-4 h-4 text-success" />
+                    <TrendingUp className="w-5 h-5 text-success" />
                   ) : (
-                    <TrendingDown className="w-4 h-4 text-danger" />
+                    <TrendingDown className="w-5 h-5 text-danger" />
                   )}
-                  <span className={`font-semibold ${tipRate >= 15 ? 'text-success' : 'text-danger'}`}>
+                  <span className={`text-2xl font-bold ${tipRate >= 15 ? 'text-success' : 'text-danger'}`}>
                     {formatPercentage(tipRate)}
                   </span>
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-default-600">Average Tip per Transaction</span>
-                <span className="font-semibold">
-                  {formatCurrency(salesData.transaction_count > 0 ? salesData.total_tips / salesData.transaction_count : 0)}
+              <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Average Tip</p>
+                  <p className="text-xs text-default-500 mt-1">Per transaction</p>
+                </div>
+                <span className="text-2xl font-bold text-default-900">
+                  {formatCurrency((salesData.transaction_count || 0) > 0 ? (salesData.total_tips || 0) / (salesData.transaction_count || 1) : 0)}
                 </span>
               </div>
             </div>
@@ -211,51 +227,64 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
         </Card>
 
         {/* Payment Methods */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Payment Methods</h3>
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-semibold text-default-900">Payment Methods</h3>
+            </div>
           </CardHeader>
           <Divider />
-          <CardBody className="p-4">
-            <div className="space-y-3">
-              {Object.entries(salesData.payment_methods).map(([method, count]) => {
-                const percentage = salesData.transaction_count > 0 
-                  ? (count / salesData.transaction_count) * 100 
-                  : 0
-                return (
-                  <div key={method} className="flex justify-between items-center">
-                    <span className="text-default-600 capitalize">{method}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-default-500">
-                        {count} ({formatPercentage(percentage)})
-                      </span>
+          <CardBody className="p-6">
+            <div className="space-y-4">
+              {Object.entries(salesData.payment_methods || {}).length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-default-500">No payment data available</p>
+                </div>
+              ) : (
+                Object.entries(salesData.payment_methods || {}).map(([method, count]) => {
+                  const percentage = (salesData.transaction_count || 0) > 0 
+                    ? (count / (salesData.transaction_count || 1)) * 100 
+                    : 0
+                  return (
+                    <div key={method} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
+                      <span className="text-default-700 font-medium capitalize">{method}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-default-500">
+                          {count} ({formatPercentage(percentage)})
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              )}
             </div>
           </CardBody>
         </Card>
       </div>
 
       {/* Hourly Breakdown */}
-      {Object.keys(salesData.hourly_breakdown).length > 0 && (
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Hourly Breakdown</h3>
+      {Object.keys(salesData.hourly_breakdown || {}).length > 0 && (
+        <Card className="shadow-md">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-warning" />
+              <h3 className="text-xl font-semibold text-default-900">Hourly Breakdown</h3>
+            </div>
+            <p className="text-sm text-default-600 mt-1">Revenue and transaction patterns throughout the day</p>
           </CardHeader>
           <Divider />
-          <CardBody className="p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Object.entries(salesData.hourly_breakdown)
+          <CardBody className="p-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {Object.entries(salesData.hourly_breakdown || {})
                 .sort(([a], [b]) => parseInt(a) - parseInt(b))
                 .map(([hour, data]) => (
-                  <div key={hour} className="text-center p-3 bg-default-50 rounded-lg">
-                    <p className="text-sm font-medium">{hour}:00</p>
-                    <p className="text-xs text-default-600 mt-1">
+                  <div key={hour} className="text-center p-4 bg-gradient-to-br from-default-50 to-default-100 rounded-xl border border-default-200 hover:shadow-md transition-all duration-200">
+                    <p className="text-lg font-bold text-default-900">{hour}:00</p>
+                    <p className="text-sm font-semibold text-success mt-2">
                       {formatCurrency(data.revenue)}
                     </p>
-                    <p className="text-xs text-default-500">
+                    <p className="text-xs text-default-500 mt-1">
                       {data.bill_count} bills
                     </p>
                   </div>

@@ -110,6 +110,18 @@ export const resendInvitation = async (businessId: string, invitationId: number)
   }
 };
 
+export const updateStaffRole = async (businessId: string, staffId: number, role: StaffMember['role']): Promise<{ message: string; staff: StaffMember }> => {
+  try {
+    const response = await axiosInstance.put(`/inside/businesses/${businessId}/staff/${staffId}/role`, { role });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.error || 'Failed to update staff role');
+    }
+    throw error;
+  }
+};
+
 // Staff Authentication API (Public Functions)
 export const acceptInvitation = async (data: AcceptInvitationRequest): Promise<StaffLoginResponse> => {
   try {
