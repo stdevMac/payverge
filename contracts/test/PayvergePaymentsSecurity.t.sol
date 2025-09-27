@@ -130,7 +130,7 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Register business
         vm.prank(businessOwner);
-        payverge.registerBusiness("Test Business", businessOwner, businessOwner);
+        payverge.registerBusiness("Test Business", businessOwner, businessOwner, "");
 
         // Deploy attack contracts
         reentrantAttacker = new ReentrantAttacker(payverge, usdc);
@@ -155,7 +155,7 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Register attacker as business to get claimable balance
         vm.prank(address(reentrantAttacker));
-        payverge.registerBusiness("Attacker Business", address(reentrantAttacker), address(reentrantAttacker));
+        payverge.registerBusiness("Attacker Business", address(reentrantAttacker), address(reentrantAttacker), "");
         
         // Wait for rate limit before creating bill
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
@@ -397,7 +397,7 @@ contract PayvergePaymentsSecurityTest is Test {
         // Operations should fail when paused
         vm.prank(businessOwner);
         vm.expectRevert();
-        payverge.registerBusiness("Test", businessOwner, businessOwner);
+        payverge.registerBusiness("Test", businessOwner, businessOwner, "");
     }
 
     // Test 11: Zero Address Validation
@@ -410,11 +410,11 @@ contract PayvergePaymentsSecurityTest is Test {
         // Cannot register business with zero addresses
         vm.prank(attacker);
         vm.expectRevert(bytes("Zero address"));
-        payverge.registerBusiness("Test", address(0), businessOwner);
+        payverge.registerBusiness("Test", address(0), businessOwner, "");
         
         vm.prank(attacker);
         vm.expectRevert(bytes("Zero address"));
-        payverge.registerBusiness("Test", businessOwner, address(0));
+        payverge.registerBusiness("Test", businessOwner, address(0), "");
     }
 
     // Test 12: Business Registration
@@ -426,7 +426,7 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Register new business (business registers themselves)
         vm.prank(newBusiness);
-        payverge.registerBusiness("New Business", newBusiness, newBusiness);
+        payverge.registerBusiness("New Business", newBusiness, newBusiness, "");
         
         // Check business is active
         PayvergePayments.BusinessInfo memory info = payverge.getBusinessInfo(newBusiness);
@@ -437,7 +437,7 @@ contract PayvergePaymentsSecurityTest is Test {
         // Cannot register same business twice
         vm.prank(newBusiness);
         vm.expectRevert("Business already registered");
-        payverge.registerBusiness("Duplicate", newBusiness, newBusiness);
+        payverge.registerBusiness("Duplicate", newBusiness, newBusiness, "");
     }
 
     // ==================== EDGE CASE TESTS ====================
@@ -641,13 +641,13 @@ contract PayvergePaymentsSecurityTest is Test {
         
         // Register businesses
         vm.prank(business1);
-        payverge.registerBusiness("Restaurant", business1, business1);
+        payverge.registerBusiness("Restaurant", business1, business1, "");
         
         vm.prank(business2);
-        payverge.registerBusiness("Coffee Shop", business2, business2);
+        payverge.registerBusiness("Coffee Shop", business2, business2, "");
         
         vm.prank(business3);
-        payverge.registerBusiness("Retail Store", business3, business3);
+        payverge.registerBusiness("Retail Store", business3, business3, "");
         
         // Create bills for each business
         bytes32 bill1 = keccak256("restaurant-bill");
@@ -1727,7 +1727,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.getBill(keccak256("non_existent"));
     }
 
-    function testGetBusinessInfo() public {
+    function testGetBusinessInfo() public view {
         // Get business info
         PayvergePayments.BusinessInfo memory business = payverge.getBusinessInfo(businessOwner);
         assertTrue(business.isActive);
@@ -1802,9 +1802,9 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(payverge.feeUpdateDelay(), 12 hours);
     }
 
-    function testVersionFunction() public {
+    function testVersionFunction() public view {
         string memory version = payverge.version();
-        assertEq(version, "5.0.0-unified-simple");
+        assertEq(version, "2.0.0-referrals-profit-split");
     }
 
     // ============ ERROR CONDITION TESTS ============

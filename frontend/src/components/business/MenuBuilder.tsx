@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import {
   Card,
   CardHeader,
@@ -680,10 +681,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                           <div className="relative h-48 bg-gray-100 overflow-hidden">
                             {item.images && item.images.length > 0 ? (
                               <div className="relative w-full h-full">
-                                <img
+                                <Image
                                   src={item.images[0]}
                                   alt={item.name}
-                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  fill
+                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                                 {item.images.length > 1 && (
                                   <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
@@ -701,10 +703,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                               </div>
                             ) : item.image ? (
                               <div className="relative w-full h-full">
-                                <img
+                                <Image
                                   src={item.image}
                                   alt={item.name}
-                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  fill
+                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                                 {!item.is_available && (
                                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

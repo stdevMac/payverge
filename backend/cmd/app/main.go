@@ -238,6 +238,11 @@ func main() {
 		publicRoutes.POST("/staff/accept-invitation", server.AcceptInvitation)
 		publicRoutes.POST("/staff/request-login-code", server.RequestLoginCode)
 		publicRoutes.POST("/staff/verify-login-code", server.VerifyLoginCode)
+
+		// Referral system routes (public - no auth required for checking availability)
+		publicRoutes.POST("/referrals/check-code", server.CheckReferralCodeAvailability)
+		publicRoutes.GET("/referrals/stats", server.GetReferralStats)
+		publicRoutes.GET("/referrals/referrer/code/:referral_code", server.GetReferrerByCode)
 	}
 
 	// Protected routes (require authentication)
@@ -319,6 +324,14 @@ func main() {
 		protectedRoutes.GET("/businesses/:id/staff", server.GetBusinessStaff)
 		protectedRoutes.PUT("/businesses/:id/staff/:staffId/role", server.UpdateStaffRole)
 		protectedRoutes.DELETE("/businesses/:id/staff/:staffId", server.RemoveStaff)
+
+		// Referral system routes (protected - require authentication)
+		protectedRoutes.POST("/referrals/register", server.RegisterReferrer)
+		protectedRoutes.GET("/referrals/referrer/:wallet_address", server.GetReferrer)
+		protectedRoutes.GET("/referrals/referrer/:wallet_address/referrals", server.GetReferrerReferrals)
+		protectedRoutes.POST("/referrals/process", server.ProcessReferral)
+		protectedRoutes.POST("/referrals/claim", server.ClaimCommission)
+		protectedRoutes.PUT("/referrals/referrer/:wallet_address/code", server.UpdateReferralCode)
 	}
 
 	// Admin routes (require authentication and admin role)
@@ -343,6 +356,9 @@ func main() {
 		adminRoutes.PUT("/update_code", server.UpdateCode)
 		adminRoutes.DELETE("/delete_code", server.DeleteCode)
 		adminRoutes.GET("/get_all_codes", server.GetAllCodes)
+
+		// Admin referral management
+		adminRoutes.PUT("/referrals/referrer/:wallet_address/deactivate", server.DeactivateReferrer)
 	}
 
 	// Go routine to clean up the challenge store every 5 minutes

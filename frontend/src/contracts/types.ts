@@ -1,4 +1,6 @@
-// TypeScript interfaces for PayvergePayments smart contract - Updated for v5.0.0-unified-simple
+// TypeScript interfaces for Payverge ecosystem smart contracts
+
+// ============ PayvergePayments Types ============
 export interface Bill {
   businessAddress: string;
   isPaid: boolean;
@@ -69,6 +71,7 @@ export interface RegisterBusinessParams {
   name: string;
   paymentAddress: string;
   tippingAddress: string;
+  referralCode?: string; // Optional referral code
 }
 
 export interface ClaimableAmounts {
@@ -107,4 +110,113 @@ export interface TransactionOptions {
   gasLimit?: bigint;
   gasPrice?: bigint;
   value?: bigint;
+}
+
+// ============ PayvergeReferrals Types ============
+
+export interface Referrer {
+  referrerAddress: string;
+  tier: number; // 1 = Basic, 2 = Premium
+  isActive: boolean;
+  registrationDate: bigint;
+  totalReferrals: bigint;
+  totalCommissions: bigint;
+  claimableCommissions: bigint;
+  lastClaimedAt: bigint;
+  referralCode: string;
+}
+
+export interface ReferralRecord {
+  id: string;
+  referrer: string;
+  business: string;
+  timestamp: bigint;
+  registrationFee: bigint;
+  discount: bigint;
+  commission: bigint;
+  commissionPaid: boolean;
+}
+
+export interface RegisterReferrerParams {
+  referralCode: string;
+  tier: number; // 1 = Basic, 2 = Premium
+}
+
+export interface ProcessReferralParams {
+  business: string;
+  referralCode: string;
+  registrationFee: bigint;
+}
+
+// ============ PayvergeProfitSplit Types ============
+
+export interface Beneficiary {
+  beneficiaryAddress: string;
+  name: string;
+  percentage: number; // Basis points (e.g., 1000 = 10%)
+  isActive: boolean;
+  totalReceived: bigint;
+  lastDistributionAt: bigint;
+}
+
+export interface Distribution {
+  id: string;
+  totalAmount: bigint;
+  beneficiaryCount: number;
+  timestamp: bigint;
+  triggeredBy: string;
+}
+
+export interface AddBeneficiaryParams {
+  beneficiary: string;
+  name: string;
+  percentage: number; // Basis points
+}
+
+export interface DistributeProfitsParams {
+  amount: bigint;
+}
+
+// ============ Event Types for New Contracts ============
+
+export interface ReferrerRegisteredEvent {
+  referrer: string;
+  tier: number;
+  referralCode: string;
+  fee: bigint;
+}
+
+export interface ReferralProcessedEvent {
+  referrer: string;
+  business: string;
+  discount: bigint;
+  commission: bigint;
+  referralCode: string;
+}
+
+export interface CommissionClaimedEvent {
+  referrer: string;
+  amount: bigint;
+  timestamp: bigint;
+}
+
+export interface BeneficiaryAddedEvent {
+  beneficiary: string;
+  name: string;
+  percentage: number;
+  addedBy: string;
+}
+
+export interface ProfitDistributedEvent {
+  distributionId: string;
+  totalAmount: bigint;
+  beneficiaryCount: number;
+  triggeredBy: string;
+}
+
+export interface BeneficiaryPayoutEvent {
+  distributionId: string;
+  beneficiary: string;
+  amount: bigint;
+  percentage: number;
 }

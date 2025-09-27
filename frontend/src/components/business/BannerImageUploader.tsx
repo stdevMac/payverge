@@ -262,7 +262,7 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                  <span><strong>Content:</strong> Showcase your restaurant's atmosphere and dishes</span>
+                  <span><strong>Content:</strong> Showcase your restaurant&apos;s atmosphere and dishes</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>

@@ -68,7 +68,7 @@ contract AlternativePaymentsTest is Test {
         vm.startPrank(business);
         usdc.mint(business, 1000 * 10**6);
         usdc.approve(address(payments), 1000 * 10**6);
-        payments.registerBusiness("Test Restaurant", business, business);
+        payments.registerBusiness("Test Restaurant", business, business, "");
         vm.stopPrank();
         
         // Wait for rate limit before creating bill

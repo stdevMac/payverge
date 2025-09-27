@@ -86,7 +86,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center animate-fade-in">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 hover:bg-white hover:shadow-sm transition-all duration-300">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                Coming soon 😁
+                Coming soon 
               </div>
 
               <h1 className="text-5xl lg:text-7xl font-medium text-gray-900 mb-8 leading-tight tracking-tight">
@@ -111,7 +111,7 @@ export default function Home() {
             </div>
               <div className="text-center">
                 <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
-                  👉 Become an Early Partner
+                  Become an Early Partner
                 </Button>
               </div>
             </div>
@@ -269,7 +269,7 @@ export default function Home() {
 
               <div className="text-center">
                 <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
-                  👉 Become an Early Partner
+                  Become an Early Partner
                 </Button>
               </div>
             </div>

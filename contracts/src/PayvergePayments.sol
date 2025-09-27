@@ -9,6 +9,22 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+// Interface for referral system integration
+interface IPayvergeReferrals {
+    function processReferral(
+        address business,
+        string calldata referralCode,
+        uint256 registrationFee
+    ) external returns (uint256 discount, address referrer, uint256 commission);
+    
+    function markCommissionEarned(address business) external;
+}
+
+// Interface for profit split integration
+interface IPayvergeProfitSplit {
+    function depositForDistribution(uint256 amount) external;
+}
+
 /**
  * @title PayvergePayments
  * @dev Secure payment processing contract for Payverge platform with all security fixes
@@ -49,6 +65,10 @@ contract PayvergePayments is
     uint256 public businessRegistrationFee; // Fee for business registration in USDC
     uint256 public pendingRegistrationFee; // Pending registration fee
     uint256 public registrationFeeUpdateTimestamp; // When registration fee update can be executed
+    
+    // Integration contracts
+    IPayvergeReferrals public referralsContract;
+    IPayvergeProfitSplit public profitSplitContract;
 
     // Simplified unified bill structure
     struct Bill {
@@ -162,6 +182,16 @@ contract PayvergePayments is
 
     // Events
     event BusinessRegistered(address indexed businessAddress, string name, address paymentAddress, address tippingAddress, uint256 registrationFee);
+    event BusinessRegisteredWithReferral(
+        address indexed businessAddress,
+        string name,
+        address paymentAddress,
+        address tippingAddress,
+        uint256 originalFee,
+        uint256 discount,
+        address indexed referrer,
+        string referralCode
+    );
     event BusinessPaymentAddressUpdated(address indexed businessAddress, address newPaymentAddress);
     event BusinessTippingAddressUpdated(address indexed businessAddress, address newTippingAddress);
     event BillCreated(bytes32 indexed billId, address indexed creator, address indexed businessAddress, uint256 totalAmount, string metadata);
@@ -226,31 +256,23 @@ contract PayvergePayments is
     }
 
     /**
-     * @dev Register a new business (with registration fee)
+     * @dev Register a new business (with optional referral code)
+     * @param name Business name
+     * @param paymentAddress Address to receive payments
+     * @param tippingAddress Address to receive tips
+     * @param referralCode Optional referral code for discount
      */
     function registerBusiness(
         string calldata name,
         address paymentAddress,
-        address tippingAddress
+        address tippingAddress,
+        string calldata referralCode
     ) external whenNotPaused {
         require(paymentAddress != address(0) && tippingAddress != address(0), "Zero address");
         require(!businessInfo[msg.sender].isActive, "Business already registered");
 
-        // Collect registration fee if set
-        if (businessRegistrationFee > 0) {
-            usdcToken.safeTransferFrom(msg.sender, platformTreasury, businessRegistrationFee);
-        }
-
-        businessInfo[msg.sender] = BusinessInfo({
-            paymentAddress: paymentAddress,
-            tippingAddress: tippingAddress,
-            totalVolume: 0,
-            totalTips: 0,
-            registrationDate: uint64(block.timestamp),
-            isActive: true
-        });
-
-        emit BusinessRegistered(msg.sender, name, paymentAddress, tippingAddress, businessRegistrationFee);
+        // Process referral and register business
+        _processBusinessRegistration(name, paymentAddress, tippingAddress, referralCode);
     }
 
     /**
@@ -358,7 +380,15 @@ contract PayvergePayments is
         usdcToken.safeTransferFrom(msg.sender, address(this), totalTransfer);
         
         if (platformFee > 0) {
-            usdcToken.safeTransfer(platformTreasury, platformFee);
+            // Route platform fees to profit split contract if available, otherwise to treasury
+            if (address(profitSplitContract) != address(0)) {
+                usdcToken.safeTransfer(address(profitSplitContract), platformFee);
+                try profitSplitContract.depositForDistribution(platformFee) {} catch {
+                    // If deposit fails, funds are still in the profit split contract
+                }
+            } else {
+                usdcToken.safeTransfer(platformTreasury, platformFee);
+            }
         }
 
         // Update claimable balances (CEI pattern)
@@ -794,6 +824,118 @@ contract PayvergePayments is
     }
 
     /**
+     * @dev Internal function to process business registration with referral logic
+     */
+    function _processBusinessRegistration(
+        string calldata name,
+        address paymentAddress,
+        address tippingAddress,
+        string calldata referralCode
+    ) internal {
+        (uint256 finalFee, address referrer) = _processReferral(name, paymentAddress, tippingAddress, referralCode);
+        
+        // Collect registration fee (after discount)
+        if (finalFee > 0) {
+            usdcToken.safeTransferFrom(msg.sender, platformTreasury, finalFee);
+        }
+
+        // Register business
+        businessInfo[msg.sender] = BusinessInfo({
+            paymentAddress: paymentAddress,
+            tippingAddress: tippingAddress,
+            totalVolume: 0,
+            totalTips: 0,
+            registrationDate: uint64(block.timestamp),
+            isActive: true
+        });
+
+        // Mark referral commission as earned if applicable
+        if (referrer != address(0) && address(referralsContract) != address(0)) {
+            try referralsContract.markCommissionEarned(msg.sender) {} catch {
+                // Commission earning failure doesn't affect business registration
+            }
+        }
+
+        // Emit standard event if no referral was used
+        if (referrer == address(0)) {
+            emit BusinessRegistered(msg.sender, name, paymentAddress, tippingAddress, finalFee);
+        }
+    }
+
+    /**
+{{ ... }}
+     */
+    function _processReferral(
+        string calldata name,
+        address paymentAddress,
+        address tippingAddress,
+        string calldata referralCode
+    ) internal returns (uint256 finalFee, address referrer) {
+        finalFee = businessRegistrationFee;
+        referrer = address(0);
+
+        // Process referral if code provided and referrals contract is set
+        if (bytes(referralCode).length > 0 && address(referralsContract) != address(0)) {
+            try referralsContract.processReferral(msg.sender, referralCode, businessRegistrationFee) 
+                returns (uint256 discount, address _referrer, uint256) {
+                referrer = _referrer;
+                finalFee = businessRegistrationFee - discount;
+                
+                emit BusinessRegisteredWithReferral(
+                    msg.sender, 
+                    name, 
+                    paymentAddress, 
+                    tippingAddress, 
+                    businessRegistrationFee,
+                    discount,
+                    referrer,
+                    referralCode
+                );
+            } catch {
+                // If referral processing fails, proceed with normal registration
+            }
+        }
+    }
+
+    /**
+     * @dev Set the referrals contract address (admin only)
+     * @param _referralsContract Address of the PayvergeReferrals contract
+     */
+    function setReferralsContract(address _referralsContract) 
+        external 
+        onlyRole(ADMIN_ROLE) 
+    {
+        referralsContract = IPayvergeReferrals(_referralsContract);
+    }
+
+    /**
+     * @dev Set the profit split contract address (admin only)
+     * @param _profitSplitContract Address of the PayvergeProfitSplit contract
+     */
+    function setProfitSplitContract(address _profitSplitContract) 
+        external 
+        onlyRole(ADMIN_ROLE) 
+    {
+        profitSplitContract = IPayvergeProfitSplit(_profitSplitContract);
+    }
+
+    /**
+     * @dev Get the current referrals contract address
+     * @return Address of the referrals contract
+     */
+    function getReferralsContract() external view returns (address) {
+        return address(referralsContract);
+    }
+
+    /**
+     * @dev Get the current profit split contract address
+     * @return Address of the profit split contract
+     */
+    function getProfitSplitContract() external view returns (address) {
+        return address(profitSplitContract);
+    }
+
+    /**
      * @dev Required by UUPSUpgradeable
      */
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
@@ -802,6 +944,6 @@ contract PayvergePayments is
      * @dev Get contract version
      */
     function version() external pure returns (string memory) {
-        return "5.0.0-unified-simple";
+        return "1.0.0";
     }
 }

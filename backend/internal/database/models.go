@@ -94,6 +94,7 @@ type Business struct {
 	BusinessPageEnabled bool        `gorm:"default:false" json:"business_page_enabled"`
 	ShowReviews     bool            `gorm:"default:true" json:"show_reviews"`
 	GoogleReviewsEnabled bool       `gorm:"default:false" json:"google_reviews_enabled"`
+	ReferredByCode  string          `json:"referred_by_code"` // Referral code used during registration
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }
@@ -396,4 +397,81 @@ func (StaffInvitation) TableName() string {
 
 func (StaffLoginCode) TableName() string {
 	return "staff_login_codes"
+}
+
+// Referral system models
+
+// ReferralTier represents the tier of a referrer (Basic or Premium)
+type ReferralTier string
+
+const (
+	ReferralTierBasic   ReferralTier = "basic"
+	ReferralTierPremium ReferralTier = "premium"
+)
+
+// ReferralStatus represents the status of a referrer
+type ReferralStatus string
+
+const (
+	ReferralStatusActive   ReferralStatus = "active"
+	ReferralStatusInactive ReferralStatus = "inactive"
+	ReferralStatusSuspended ReferralStatus = "suspended"
+)
+
+// Referrer represents a user who can refer businesses
+type Referrer struct {
+	ID                  uint           `gorm:"primaryKey" json:"id"`
+	WalletAddress       string         `gorm:"uniqueIndex;not null" json:"wallet_address"`
+	ReferralCode        string         `gorm:"uniqueIndex;not null" json:"referral_code"`
+	Tier                ReferralTier   `gorm:"not null" json:"tier"`
+	Status              ReferralStatus `gorm:"default:'active'" json:"status"`
+	TotalReferrals      int            `gorm:"default:0" json:"total_referrals"`
+	TotalCommissions    string         `gorm:"default:'0'" json:"total_commissions"` // USDC amount as string
+	ClaimableCommissions string        `gorm:"default:'0'" json:"claimable_commissions"` // USDC amount as string
+	LastClaimedAt       *time.Time     `json:"last_claimed_at"`
+	RegistrationTxHash  string         `json:"registration_tx_hash"` // Blockchain transaction hash
+	CreatedAt           time.Time      `json:"created_at"`
+	UpdatedAt           time.Time      `json:"updated_at"`
+}
+
+// ReferralRecord represents a successful referral of a business
+type ReferralRecord struct {
+	ID                uint      `gorm:"primaryKey" json:"id"`
+	ReferrerID        uint      `gorm:"index;not null" json:"referrer_id"`
+	BusinessID        uint      `gorm:"index;not null" json:"business_id"`
+	RegistrationFee   string    `json:"registration_fee"`   // USDC amount as string
+	Discount          string    `json:"discount"`           // USDC discount given to business
+	Commission        string    `json:"commission"`         // USDC commission earned by referrer
+	CommissionPaid    bool      `gorm:"default:false" json:"commission_paid"`
+	CommissionTxHash  string    `json:"commission_tx_hash"` // Blockchain transaction hash for commission payment
+	ProcessedTxHash   string    `json:"processed_tx_hash"`  // Blockchain transaction hash for referral processing
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+	Referrer          Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
+	Business          Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+}
+
+// ReferralCommissionClaim represents a commission claim by a referrer
+type ReferralCommissionClaim struct {
+	ID            uint      `gorm:"primaryKey" json:"id"`
+	ReferrerID    uint      `gorm:"index;not null" json:"referrer_id"`
+	Amount        string    `json:"amount"`         // USDC amount as string
+	TxHash        string    `json:"tx_hash"`        // Blockchain transaction hash
+	Status        string    `gorm:"default:'pending'" json:"status"` // pending, completed, failed
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	Referrer      Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
+}
+
+// TableName methods for referral models
+func (Referrer) TableName() string {
+	return "referrers"
+}
+
+func (ReferralRecord) TableName() string {
+	return "referral_records"
+}
+
+func (ReferralCommissionClaim) TableName() string {
+	return "referral_commission_claims"
 }

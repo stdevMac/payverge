@@ -13,7 +13,7 @@ import "./mocks/MockERC20.sol";
  * @dev Comprehensive tests for the deployment script to ensure proper deployment and configuration
  */
 contract DeployPayvergePaymentsTest is Test {
-    DeployPayvergePayments public deployScript;
+    DeployPayvergeEcosystem public deployScript;
     MockERC20 public mockUSDC;
     
     // Test addresses
@@ -45,7 +45,7 @@ contract DeployPayvergePaymentsTest is Test {
         mockUSDC = new MockERC20("USD Coin", "USDC", 6);
         
         // Deploy deployment script
-        deployScript = new DeployPayvergePayments();
+        deployScript = new DeployPayvergeEcosystem();
         
         // Set up environment variables for testing
         vm.setEnv("PRIVATE_KEY", "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef");
@@ -59,7 +59,7 @@ contract DeployPayvergePaymentsTest is Test {
         vm.deal(deployer, 10 ether);
     }
 
-    function testSuccessfulDeployment() public {
+    function testSuccessfulDeployment() public pure {
         // Note: This test verifies the deployment script can run without reverting
         // The actual deployment logic is tested in other functions
         // We skip the actual script.run() call since it reads from real environment
@@ -99,7 +99,7 @@ contract DeployPayvergePaymentsTest is Test {
         assertEq(payvergeContract.platformFeeRate(), PLATFORM_FEE_BPS);
         assertEq(payvergeContract.billCreatorAddress(), billCreator);
         assertEq(payvergeContract.getRegistrationFee(), REGISTRATION_FEE);
-        assertEq(payvergeContract.version(), "5.0.0-unified-simple");
+        assertEq(payvergeContract.version(), "1.0.0");
         
         // Test role assignments
         assertTrue(payvergeContract.hasRole(payvergeContract.ADMIN_ROLE(), deployer));
@@ -196,10 +196,10 @@ contract DeployPayvergePaymentsTest is Test {
         PayvergePayments payvergeContract = PayvergePayments(address(proxy));
         
         // Verify initial version
-        assertEq(payvergeContract.version(), "5.0.0-unified-simple");
+        assertEq(payvergeContract.version(), "2.0.0-referrals-profit-split");
         
         // Deploy new implementation (for upgrade testing)
-        PayvergePayments newImplementation = new PayvergePayments();
+        new PayvergePayments();
         
         // Test that upgrade is possible (admin has UPGRADER_ROLE)
         assertTrue(payvergeContract.hasRole(payvergeContract.UPGRADER_ROLE(), deployer));
@@ -243,7 +243,7 @@ contract DeployPayvergePaymentsTest is Test {
         // Register business (with registration fee)
         vm.startPrank(businessOwner);
         mockUSDC.approve(address(payvergeContract), REGISTRATION_FEE);
-        payvergeContract.registerBusiness("Test Business", businessOwner, businessOwner);
+        payvergeContract.registerBusiness("Test Business", businessOwner, businessOwner, "");
         vm.stopPrank();
         
         // Create bill (skip rate limiting)
@@ -296,7 +296,7 @@ contract DeployPayvergePaymentsTest is Test {
             REGISTRATION_FEE
         );
         
-        ERC1967Proxy proxy = new ERC1967Proxy(
+        new ERC1967Proxy(
             address(implementation),
             initData
         );
@@ -376,7 +376,7 @@ contract DeployPayvergePaymentsTest is Test {
         
         // Deploy proxy (initialization events will be emitted but we won't test them specifically)
         
-        ERC1967Proxy proxy = new ERC1967Proxy(
+        new ERC1967Proxy(
             address(implementation),
             initData
         );

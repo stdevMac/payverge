@@ -360,7 +360,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                     <span> and <strong className="text-default-900">{filteredInvitations.length}</strong> pending invitations</span>
                   )}
                   {searchQuery && (
-                    <span> matching "<strong className="text-primary">{searchQuery}</strong>"</span>
+                    <span> matching &quot;<strong className="text-primary">{searchQuery}</strong>&quot;</span>
                   )}
                   {roleFilter !== 'all' && (
                     <span> • {roleLabels[roleFilter as Staff['role']]} only</span>

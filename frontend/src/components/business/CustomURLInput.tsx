@@ -28,35 +28,39 @@ const CustomURLInput = React.memo(function CustomURLInput({
   const [error, setError] = useState<string | null>(null);
   const [hasChecked, setHasChecked] = useState(false);
 
-  // Debounced function to check URL availability
-  const debouncedCheck = useCallback(
-    debounce(async (url: string) => {
-      if (!url || url.length < 2) {
-        setIsAvailable(null);
-        setError(null);
-        setHasChecked(false);
-        setIsChecking(false);
-        return;
-      }
+  // Function to check URL availability
+  const checkURL = useCallback(async (url: string) => {
+    if (!url || url.length < 2) {
+      setIsAvailable(null);
+      setError(null);
+      setHasChecked(false);
+      setIsChecking(false);
+      return;
+    }
 
-      try {
-        setIsChecking(true);
-        setError(null);
-        
-        const result = await checkCustomURLAvailability(url, businessId);
-        
-        setIsAvailable(result.available);
-        setError(result.error || null);
-        setHasChecked(true);
-      } catch (err) {
-        setError('Failed to check URL availability');
-        setIsAvailable(false);
-        setHasChecked(true);
-      } finally {
-        setIsChecking(false);
-      }
-    }, 500),
-    [businessId]
+    try {
+      setIsChecking(true);
+      setError(null);
+      
+      const result = await checkCustomURLAvailability(url, businessId);
+      
+      setIsAvailable(result.available);
+      setError(result.error || null);
+      setHasChecked(true);
+    } catch (err) {
+      setError('Failed to check URL availability');
+      setIsAvailable(false);
+      setHasChecked(true);
+    } finally {
+      setIsChecking(false);
+    }
+  }, [businessId]);
+
+  // Debounced function to check URL availability
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedCheck = useCallback(
+    debounce((url: string) => checkURL(url), 500),
+    [checkURL]
   );
 
   // Effect to trigger URL checking when value changes
