@@ -863,7 +863,7 @@ func GetBusinessBills(c *gin.Context) {
 		return
 	}
 
-	bills, err := database.GetOpenBillsByBusinessID(uint(businessID))
+	bills, err := database.GetAllBillsByBusinessID(uint(businessID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

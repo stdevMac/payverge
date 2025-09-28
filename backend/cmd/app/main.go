@@ -311,6 +311,14 @@ func main() {
 		protectedRoutes.GET("/businesses/:id/analytics/tips", analyticsHandler.GetTipAnalytics)
 		protectedRoutes.GET("/businesses/:id/analytics/items", analyticsHandler.GetItemAnalytics)
 		protectedRoutes.GET("/businesses/:id/analytics/dashboard", analyticsHandler.GetDashboardSummary)
+
+		// Phase 7: Kitchen Management routes
+		protectedRoutes.POST("/businesses/:id/kitchen/orders", handlers.CreateKitchenOrder)
+		protectedRoutes.GET("/businesses/:id/kitchen/orders", handlers.GetKitchenOrders)
+		protectedRoutes.GET("/businesses/:id/kitchen/orders/:orderId", handlers.GetKitchenOrder)
+		protectedRoutes.PUT("/businesses/:id/kitchen/orders/:orderId/status", handlers.UpdateKitchenOrderStatus)
+		protectedRoutes.PUT("/businesses/:id/kitchen/orders/:orderId/items/:itemId/status", handlers.UpdateKitchenOrderItemStatus)
+		protectedRoutes.GET("/businesses/:id/kitchen/stats", handlers.GetKitchenStats)
 		protectedRoutes.GET("/businesses/:id/analytics/live-bills", analyticsHandler.GetLiveBills)
 		protectedRoutes.GET("/businesses/:id/reports/export", analyticsHandler.ExportSalesData)
 

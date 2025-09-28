@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
@@ -10,15 +10,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { getCookie } from '@/config/aws-s3/cookie-management/store.helpers';
 import { isTokenValid, decodeJwt } from '@/utils/jwt';
 import { getUserProfile } from '@/api/users/profile';
-import { Business, getBusiness } from '../../../../../api/business';
+import { Business, getBusiness, getBusinessTables, Table } from '../../../../../api/business';
 import { UserInterface as User } from '@/interface/users/users-interface';
 import MenuBuilder from '../../../../../components/business/MenuBuilder';
 import TableManager from '../../../../../components/business/TableManager';
 import { BillManager } from '../../../../../components/business/BillManager';
 import BusinessSettings from '../../../../../components/business/BusinessSettings';
 import StaffManagement from '../../../../../components/business/StaffManagement';
+import Kitchen from '../../../../../components/business/Kitchen';
 import Dashboard from '../../../../../components/dashboard/Dashboard';
 import { ToastProvider } from '../../../../../contexts/ToastContext';
+import analyticsApi, { SalesData } from '../../../../../api/analytics';
 
 interface BusinessDashboardProps {
   params: {
@@ -33,12 +35,34 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [salesData, setSalesData] = useState<SalesData | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [tables, setTables] = useState<Table[]>([]);
 
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
   const { user } = useUserStore();
   const { isAuthenticated } = useAuth();
   const businessId = parseInt(params.businessId);
+
+  // Fetch analytics data
+  const fetchAnalytics = useCallback(async () => {
+    if (!businessId) return;
+    
+    try {
+      setAnalyticsLoading(true);
+      const [salesResponse, tablesResponse] = await Promise.all([
+        analyticsApi.getSalesAnalytics(businessId.toString(), 'today'),
+        getBusinessTables(businessId)
+      ]);
+      setSalesData(salesResponse);
+      setTables(tablesResponse.tables || []);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  }, [businessId]);
 
   // Authentication check
   useEffect(() => {
@@ -125,6 +149,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         setLoading(true);
         const businessData = await getBusiness(businessId);
         setBusiness(businessData);
+        // Fetch analytics data after business is loaded
+        await fetchAnalytics();
       } catch (error) {
         console.error('Error fetching business:', error);
         setError('Failed to load business data');
@@ -178,7 +204,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <Receipt className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600" />
                 </div>
                 <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Active Bills</h3>
-                <p className="text-2xl lg:text-3xl font-light text-blue-600 tracking-wide">0</p>
+                <p className="text-2xl lg:text-3xl font-light text-blue-600 tracking-wide">
+                  {analyticsLoading ? '...' : (salesData?.bill_count || 0)}
+                </p>
               </div>
               
               <div className="bg-white border border-gray-200 rounded-2xl p-6 lg:p-8 text-center shadow-sm hover:shadow-lg transition-shadow duration-300">
@@ -186,7 +214,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <Users className="w-6 h-6 lg:w-8 lg:h-8 text-green-600" />
                 </div>
                 <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Tables</h3>
-                <p className="text-2xl lg:text-3xl font-light text-green-600 tracking-wide">0</p>
+                <p className="text-2xl lg:text-3xl font-light text-green-600 tracking-wide">
+                  {analyticsLoading ? '...' : tables.length}
+                </p>
               </div>
               
               <div className="bg-white border border-gray-200 rounded-2xl p-6 lg:p-8 text-center shadow-sm hover:shadow-lg transition-shadow duration-300 sm:col-span-2 lg:col-span-1">
@@ -194,7 +224,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <BarChart3 className="w-6 h-6 lg:w-8 lg:h-8 text-orange-600" />
                 </div>
                 <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Today&apos;s Revenue</h3>
-                <p className="text-2xl lg:text-3xl font-light text-orange-600 tracking-wide">$0.00</p>
+                <p className="text-2xl lg:text-3xl font-light text-orange-600 tracking-wide">
+                  {analyticsLoading ? '...' : `$${(salesData?.total_revenue || 0).toFixed(2)}`}
+                </p>
               </div>
             </div>
 
@@ -239,6 +271,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       case 'bills':
         return <BillManager businessId={businessId} />;
 
+      case 'kitchen':
+        return <Kitchen businessId={businessId} />;
+
       case 'staff':
         return <StaffManagement businessId={businessId.toString()} />;
 
@@ -282,6 +317,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
               { key: 'bills', icon: Receipt, label: 'Bills' },
+              { key: 'kitchen', icon: ChefHat, label: 'Kitchen' },
               { key: 'staff', icon: UserCheck, label: 'Staff' },
               { key: 'settings', icon: Settings, label: 'Settings' },
             ].map(({ key, icon: Icon, label }) => (

@@ -29,6 +29,7 @@ interface GuestMenuProps {
   tableCode: string;
   currentBill: BillResponse | null;
   onAddToBill: (itemName: string, price: number, quantity?: number) => void;
+  onAddToCart?: (itemName: string, price: number, specialRequests?: string) => void;
 }
 
 export const GuestMenu: React.FC<GuestMenuProps> = ({
@@ -37,6 +38,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   tableCode,
   currentBill,
   onAddToBill,
+  onAddToCart,
 }) => {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<number>(0);

@@ -397,6 +397,15 @@ func GetOpenBillsByBusinessID(businessID uint) ([]Bill, error) {
 	return bills, nil
 }
 
+// GetAllBillsByBusinessID retrieves all bills for a business (all statuses)
+func GetAllBillsByBusinessID(businessID uint) ([]Bill, error) {
+	var bills []Bill
+	if err := db.Where("business_id = ?", businessID).Order("created_at DESC").Find(&bills).Error; err != nil {
+		return nil, fmt.Errorf("failed to get bills: %w", err)
+	}
+	return bills, nil
+}
+
 // GetOpenBillByTableID retrieves the open bill for a specific table
 func GetOpenBillByTableID(tableID uint) (*Bill, []BillItem, error) {
 	var bill Bill
