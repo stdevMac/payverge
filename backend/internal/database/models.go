@@ -95,8 +95,28 @@ type Business struct {
 	ShowReviews     bool            `gorm:"default:true" json:"show_reviews"`
 	GoogleReviewsEnabled bool       `gorm:"default:false" json:"google_reviews_enabled"`
 	ReferredByCode  string          `json:"referred_by_code"` // Referral code used during registration
+	// Counter support for takeaway/quick service
+	CounterEnabled  bool            `gorm:"default:false" json:"counter_enabled"`
+	CounterCount    int             `gorm:"default:3" json:"counter_count"`
+	CounterPrefix   string          `gorm:"default:'C'" json:"counter_prefix"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
+}
+
+// Counter represents a service counter for takeaway/quick service
+type Counter struct {
+	ID            uint      `gorm:"primaryKey" json:"id"`
+	BusinessID    uint      `gorm:"not null;index" json:"business_id"`
+	CounterNumber int       `gorm:"not null" json:"counter_number"`
+	Name          string    `gorm:"not null" json:"name"`
+	IsActive      bool      `gorm:"default:true" json:"is_active"`
+	CurrentBillID *uint     `json:"current_bill_id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	
+	// Relationships
+	Business    Business `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	CurrentBill *Bill    `gorm:"foreignKey:CurrentBillID" json:"current_bill,omitempty"`
 }
 
 // BusinessAddress represents the physical address of a business
@@ -170,7 +190,9 @@ type Bill struct {
 	ID               uint          `gorm:"primaryKey" json:"id"`
 	BusinessID       uint          `gorm:"index;not null" json:"business_id"`
 	TableID          uint          `gorm:"index" json:"table_id"`
+	CounterID        *uint         `gorm:"index" json:"counter_id"`
 	BillNumber       string        `gorm:"uniqueIndex;not null" json:"bill_number"`
+	Notes            string        `gorm:"type:text" json:"notes"` // Order notes for kitchen/staff
 	Items            string        `gorm:"type:text" json:"items"` // JSON string for SQLite
 	Subtotal         float64       `json:"subtotal"`
 	TaxAmount        float64       `json:"tax_amount"`
@@ -186,6 +208,7 @@ type Bill struct {
 	ClosedAt         *time.Time    `json:"closed_at"`
 	Business         Business      `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 	Table            Table         `gorm:"foreignKey:TableID" json:"table,omitempty"`
+	Counter          *Counter      `gorm:"foreignKey:CounterID" json:"counter,omitempty"`
 	Payments         []Payment     `gorm:"foreignKey:BillID" json:"payments,omitempty"`
 }
 
@@ -476,83 +499,6 @@ func (ReferralCommissionClaim) TableName() string {
 	return "referral_commission_claims"
 }
 
-// KitchenOrder represents an order sent to the kitchen
-type KitchenOrder struct {
-	ID           uint               `gorm:"primaryKey" json:"id"`
-	BusinessID   uint               `gorm:"index;not null" json:"business_id"`
-	BillID       *uint              `gorm:"index" json:"bill_id"` // Optional - can be null for counter orders
-	TableID      *uint              `gorm:"index" json:"table_id"` // Optional - can be null for counter orders
-	OrderNumber  string             `gorm:"not null" json:"order_number"` // Generated order number for kitchen display
-	CustomerName string             `json:"customer_name"` // Optional customer name for counter orders
-	OrderType    KitchenOrderType   `gorm:"not null;default:'table'" json:"order_type"`
-	Status       KitchenOrderStatus `gorm:"not null;default:'incoming'" json:"status"`
-	Priority     OrderPriority      `gorm:"not null;default:'normal'" json:"priority"`
-	Notes        string             `json:"notes"` // Special instructions
-	CreatedBy    string             `json:"created_by"` // Staff member or customer address who created the order
-	AssignedTo   string             `json:"assigned_to"` // Kitchen staff assigned to prepare
-	EstimatedTime int               `json:"estimated_time"` // Estimated preparation time in minutes
-	ActualTime   *int               `json:"actual_time"` // Actual preparation time in minutes
-	CreatedAt    time.Time          `json:"created_at"`
-	UpdatedAt    time.Time          `json:"updated_at"`
-	ReadyAt      *time.Time         `json:"ready_at"`
-	DeliveredAt  *time.Time         `json:"delivered_at"`
-	
-	// Relationships
-	Business Business        `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
-	Bill     *Bill           `gorm:"foreignKey:BillID" json:"bill,omitempty"`
-	Table    *Table          `gorm:"foreignKey:TableID" json:"table,omitempty"`
-	Items    []KitchenOrderItem `gorm:"foreignKey:KitchenOrderID" json:"items"`
-}
-
-// KitchenOrderItem represents individual items in a kitchen order
-type KitchenOrderItem struct {
-	ID              uint                    `gorm:"primaryKey" json:"id"`
-	KitchenOrderID  uint                    `gorm:"index;not null" json:"kitchen_order_id"`
-	MenuItemName    string                  `gorm:"not null" json:"menu_item_name"`
-	Quantity        int                     `gorm:"not null" json:"quantity"`
-	Price           float64                 `gorm:"not null" json:"price"`
-	Status          KitchenOrderItemStatus  `gorm:"not null;default:'pending'" json:"status"`
-	SpecialRequests string                  `json:"special_requests"` // Dietary restrictions, modifications, etc.
-	CreatedAt       time.Time               `json:"created_at"`
-	UpdatedAt       time.Time               `json:"updated_at"`
-	StartedAt       *time.Time              `json:"started_at"`
-	ReadyAt         *time.Time              `json:"ready_at"`
-	
-	// Relationships
-	KitchenOrder KitchenOrder `gorm:"foreignKey:KitchenOrderID" json:"kitchen_order,omitempty"`
-}
-
-// KitchenOrderType represents the type of order
-type KitchenOrderType string
-
-const (
-	OrderTypeTable   KitchenOrderType = "table"   // Order from a table
-	OrderTypeCounter KitchenOrderType = "counter" // Walk-in counter order
-	OrderTypeTakeout KitchenOrderType = "takeout" // Takeout order
-	OrderTypeDelivery KitchenOrderType = "delivery" // Delivery order
-)
-
-// KitchenOrderStatus represents the status of a kitchen order
-type KitchenOrderStatus string
-
-const (
-	OrderStatusIncoming   KitchenOrderStatus = "incoming"   // Just received
-	OrderStatusInProgress KitchenOrderStatus = "in_progress" // Being prepared
-	OrderStatusReady      KitchenOrderStatus = "ready"      // Ready for pickup/delivery
-	OrderStatusDelivered  KitchenOrderStatus = "delivered"  // Delivered to customer
-	OrderStatusCancelled  KitchenOrderStatus = "cancelled"  // Cancelled
-)
-
-// KitchenOrderItemStatus represents the status of individual items
-type KitchenOrderItemStatus string
-
-const (
-	ItemStatusPending    KitchenOrderItemStatus = "pending"     // Waiting to be prepared
-	ItemStatusInProgress KitchenOrderItemStatus = "in_progress" // Being prepared
-	ItemStatusReady      KitchenOrderItemStatus = "ready"       // Ready
-	ItemStatusCancelled  KitchenOrderItemStatus = "cancelled"   // Cancelled
-)
-
 // OrderPriority represents the priority level of an order
 type OrderPriority string
 
@@ -563,8 +509,8 @@ const (
 	PriorityUrgent OrderPriority = "urgent"
 )
 
-// KitchenStats represents kitchen performance statistics
-type KitchenStats struct {
+// OrderStats represents order performance statistics
+type OrderStats struct {
 	BusinessID        uint    `json:"business_id"`
 	Date              string  `json:"date"`
 	TotalOrders       int     `json:"total_orders"`
@@ -575,11 +521,49 @@ type KitchenStats struct {
 	TotalRevenue      float64 `json:"total_revenue"`
 }
 
-// TableName methods for new models
-func (KitchenOrder) TableName() string {
-	return "kitchen_orders"
+// Order represents a small order within a bill (guest requests)
+type Order struct {
+	ID           uint        `gorm:"primaryKey" json:"id"`
+	BillID       uint        `gorm:"index;not null" json:"bill_id"`
+	BusinessID   uint        `gorm:"index;not null" json:"business_id"`
+	OrderNumber  string      `gorm:"not null" json:"order_number"` // Generated order number for display
+	Status       OrderStatus `gorm:"not null;default:'pending'" json:"status"`
+	CreatedBy    string      `json:"created_by"`    // "guest" or staff member address
+	ApprovedBy   string      `json:"approved_by"`   // staff member who approved
+	Notes        string      `json:"notes"`         // Special instructions
+	Items        string      `gorm:"type:text" json:"items"` // JSON string for SQLite (OrderItem array)
+	CreatedAt    time.Time   `json:"created_at"`
+	UpdatedAt    time.Time   `json:"updated_at"`
+	ApprovedAt   *time.Time  `json:"approved_at"`
+	
+	// Relationships
+	Bill     Bill     `gorm:"foreignKey:BillID" json:"bill,omitempty"`
+	Business Business `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
-func (KitchenOrderItem) TableName() string {
-	return "kitchen_order_items"
+// OrderItem represents an item within an order
+type OrderItem struct {
+	ID              string  `json:"id"`
+	MenuItemName    string  `json:"menu_item_name"`
+	Quantity        int     `json:"quantity"`
+	Price           float64 `json:"price"`
+	SpecialRequests string  `json:"special_requests"`
+	Subtotal        float64 `json:"subtotal"`
+}
+
+// OrderStatus represents the status of an order
+type OrderStatus string
+
+const (
+	OrderStatusPending      OrderStatus = "pending"      // Waiting for staff approval
+	OrderStatusApproved     OrderStatus = "approved"     // Staff approved, ready for kitchen
+	OrderStatusInKitchen    OrderStatus = "in_kitchen"   // Sent to kitchen
+	OrderStatusOrderReady   OrderStatus = "ready"        // Kitchen finished
+	OrderStatusOrderDelivered OrderStatus = "delivered"  // Served to table
+	OrderStatusOrderCancelled OrderStatus = "cancelled"  // Cancelled by staff
+)
+
+// TableName method for Order model
+func (Order) TableName() string {
+	return "orders"
 }

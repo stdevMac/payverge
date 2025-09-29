@@ -200,6 +200,8 @@ func main() {
 		// Phase 3: Public guest table API endpoints
 		publicRoutes.GET("/guest/table/:code", server.GetTableByCodePublic)
 		publicRoutes.GET("/guest/table/:code/bill", server.GetOpenBillByTableCode)
+		publicRoutes.POST("/guest/table/:code/bill", server.CreateBillByTableCode)
+		publicRoutes.POST("/guest/table/:code/order", server.CreateGuestOrder)
 		publicRoutes.GET("/guest/table/:code/business", server.GetBusinessByTableCode)
 		publicRoutes.GET("/guest/table/:code/menu", server.GetMenuByTableCode)
 		publicRoutes.GET("/guest/table/:code/status", server.GetTableStatusByCode)
@@ -277,6 +279,11 @@ func main() {
 		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
 		protectedRoutes.GET("/businesses/check-url", server.CheckCustomURLAvailability)
 
+		// Counter management routes
+		protectedRoutes.PUT("/businesses/:id/counters/settings", server.UpdateCounterSettings)
+		protectedRoutes.GET("/businesses/:id/counters", server.GetBusinessCounters)
+		protectedRoutes.GET("/businesses/:id/counters/available", server.GetAvailableCounters)
+
 		// Menu routes
 		protectedRoutes.POST("/businesses/:id/menu", server.CreateMenu)
 		protectedRoutes.GET("/businesses/:id/menu", server.GetMenu)
@@ -299,6 +306,7 @@ func main() {
 		// Phase 3: Bill Management routes
 		protectedRoutes.POST("/businesses/:id/bills", server.CreateBill)
 		protectedRoutes.GET("/businesses/:id/bills", server.GetBusinessBills)
+		protectedRoutes.GET("/businesses/:id/bills/open", server.GetOpenBusinessBills)
 		protectedRoutes.GET("/bills/:bill_id", server.GetBill)
 		protectedRoutes.PUT("/bills/:bill_id", server.UpdateBill)
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
@@ -312,13 +320,12 @@ func main() {
 		protectedRoutes.GET("/businesses/:id/analytics/items", analyticsHandler.GetItemAnalytics)
 		protectedRoutes.GET("/businesses/:id/analytics/dashboard", analyticsHandler.GetDashboardSummary)
 
-		// Phase 7: Kitchen Management routes
-		protectedRoutes.POST("/businesses/:id/kitchen/orders", handlers.CreateKitchenOrder)
-		protectedRoutes.GET("/businesses/:id/kitchen/orders", handlers.GetKitchenOrders)
-		protectedRoutes.GET("/businesses/:id/kitchen/orders/:orderId", handlers.GetKitchenOrder)
-		protectedRoutes.PUT("/businesses/:id/kitchen/orders/:orderId/status", handlers.UpdateKitchenOrderStatus)
-		protectedRoutes.PUT("/businesses/:id/kitchen/orders/:orderId/items/:itemId/status", handlers.UpdateKitchenOrderItemStatus)
-		protectedRoutes.GET("/businesses/:id/kitchen/stats", handlers.GetKitchenStats)
+		// Phase 7: Order Management routes
+		protectedRoutes.POST("/businesses/:id/orders", handlers.CreateOrder)
+		protectedRoutes.GET("/businesses/:id/orders", handlers.GetOrders)
+		protectedRoutes.GET("/businesses/:id/orders/:orderId", handlers.GetOrder)
+		protectedRoutes.GET("/businesses/:id/bills/:billId/orders", handlers.GetOrdersByBillID)
+		protectedRoutes.PUT("/businesses/:id/orders/:orderId/status", handlers.UpdateOrderStatus)
 		protectedRoutes.GET("/businesses/:id/analytics/live-bills", analyticsHandler.GetLiveBills)
 		protectedRoutes.GET("/businesses/:id/reports/export", analyticsHandler.ExportSalesData)
 

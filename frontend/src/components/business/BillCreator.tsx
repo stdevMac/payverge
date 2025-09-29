@@ -14,13 +14,16 @@ import {
   Divider,
   Chip,
   Input,
+  Textarea,
   Spinner,
 } from '@nextui-org/react';
-import { Plus, Minus, ShoppingCart, X } from 'lucide-react';
-import { createBill, BillItem, CreateBillRequest } from '../../api/bills';
+import { Plus, Minus, ShoppingCart, X, Search } from 'lucide-react';
+import { createBill, BillItem, CreateBillRequest, getOpenBusinessBills, Bill } from '../../api/bills';
 import { Business, getBusinessTables, Table, getMenu } from '../../api/business';
-import ItemSelector from './ItemSelector';
-import { MenuCategory, MenuItem } from '../../api/business';
+import { MenuCategory, MenuItem, MenuItemOption } from '../../api/business';
+import { ItemCustomizer } from './ItemCustomizer';
+import { createOrder, CreateOrderRequest } from '../../api/orders';
+import { getAvailableCounters, Counter } from '../../api/counters';
 
 interface BillCreatorProps {
   isOpen: boolean;
@@ -31,6 +34,8 @@ interface BillCreatorProps {
 
 interface SelectedItem extends BillItem {
   menuItem: MenuItem;
+  selectedOptions?: MenuItemOption[];
+  specialRequests?: string;
 }
 
 export const BillCreator: React.FC<BillCreatorProps> = ({
@@ -40,21 +45,47 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
   onBillCreated,
 }) => {
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
+  const [selectedCounter, setSelectedCounter] = useState<Counter | null>(null);
   const [tables, setTables] = useState<Table[]>([]);
+  const [counters, setCounters] = useState<Counter[]>([]);
+  const [bills, setBills] = useState<Bill[]>([]);
   const [menu, setMenu] = useState<{ categories: MenuCategory[] }>({ categories: [] });
   const [items, setItems] = useState<SelectedItem[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
-  const [showItemSelector, setShowItemSelector] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [notes, setNotes] = useState('');
+  const [showItemCustomizer, setShowItemCustomizer] = useState(false);
+  const [itemToCustomize, setItemToCustomize] = useState<MenuItem | null>(null);
 
   const loadData = useCallback(async () => {
     setLoadingData(true);
     try {
-      const [tablesResponse, menuResponse] = await Promise.all([
+      const [tablesResponse, menuResponse, billsResponse] = await Promise.all([
         getBusinessTables(businessId),
         getMenu(businessId),
+        getOpenBusinessBills(businessId),
       ]);
       setTables(tablesResponse.tables || []);
+      setBills(billsResponse.bills || []);
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loaded data:', {
+          tables: tablesResponse.tables?.length || 0,
+          bills: billsResponse.bills?.length || 0,
+          billStatuses: billsResponse.bills?.map(bill => ({ id: bill.id, status: bill.status, table_id: bill.table_id })) || []
+        });
+      }
+      
+      // Try to load counters, but don't fail if they're not available
+      try {
+        const countersResponse = await getAvailableCounters(businessId);
+        setCounters(countersResponse.counters || []);
+      } catch (error) {
+        console.log('Counters not available or not enabled for this business');
+        setCounters([]);
+      }
       
       // Safely handle menu response
       if (menuResponse && menuResponse.categories) {
@@ -85,6 +116,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
     } catch (error) {
       console.error('Error loading data:', error);
       setMenu({ categories: [] }); // Ensure safe fallback
+      setBills([]); // Ensure safe fallback
     } finally {
       setLoadingData(false);
     }
@@ -97,18 +129,43 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
     }
   }, [isOpen, businessId, loadData]);
 
-  const handleItemAdded = (menuItem: MenuItem, quantity: number) => {
+  const handleItemClick = (menuItem: MenuItem) => {
+    // If item has options/add-ons, open customizer
+    if (menuItem.options && menuItem.options.length > 0) {
+      setItemToCustomize(menuItem);
+      setShowItemCustomizer(true);
+      return;
+    }
+
+    // Otherwise, add directly with quantity 1
+    handleItemAdded(menuItem, 1);
+  };
+
+  const handleItemAdded = (menuItem: MenuItem, quantity: number, selectedOptions?: MenuItemOption[], specialRequests?: string) => {
+    // Calculate price including add-ons
+    const addOnPrice = selectedOptions ? selectedOptions.reduce((sum, option) => sum + (option.price_change || 0), 0) : 0;
+    const totalPrice = menuItem.price + addOnPrice;
+    
     const newItem: SelectedItem = {
       id: `${Date.now()}-${Math.random()}`,
       menu_item_id: menuItem.name,
       name: menuItem.name,
-      price: menuItem.price,
+      price: totalPrice,
       quantity: quantity,
-      options: [],
-      subtotal: menuItem.price * quantity,
+      options: selectedOptions ? selectedOptions.map(option => ({
+        name: option.name,
+        price: option.price_change || 0
+      })) : [],
+      subtotal: totalPrice * quantity,
       menuItem,
+      selectedOptions,
+      specialRequests,
     };
     setItems([...items, newItem]);
+  };
+
+  const handleCustomizedItemAdd = (item: MenuItem, quantity: number, selectedOptions: MenuItemOption[], specialRequests: string) => {
+    handleItemAdded(item, quantity, selectedOptions, specialRequests);
   };
 
   const updateItemQuantity = (itemId: string, quantity: number) => {
@@ -135,12 +192,15 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
   };
 
   const handleCreateBill = async () => {
-    if (!selectedTable || items.length === 0) return;
+    if ((!selectedTable && !selectedCounter) || items.length === 0) return;
 
     setIsCreating(true);
     try {
+      // First, create the bill
       const billData: CreateBillRequest = {
-        table_id: selectedTable.id,
+        table_id: selectedTable?.id,
+        counter_id: selectedCounter?.id,
+        notes: notes.trim(),
         items: items.map((item: SelectedItem) => ({
           id: item.id,
           menu_item_id: item.menu_item_id,
@@ -152,29 +212,95 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
         })),
       };
 
-      await createBill(businessId, billData);
+      const createdBill = await createBill(businessId, billData);
+
+      // Then, create the kitchen order
+      const orderLocation = selectedTable ? `Table ${selectedTable.name}` : `Counter ${selectedCounter?.name}`;
+      const orderNotes = notes.trim() 
+        ? `Order for ${orderLocation}\n\nNotes: ${notes.trim()}`
+        : `Order for ${orderLocation}`;
+      const orderData: CreateOrderRequest = {
+        bill_id: createdBill.bill.id,
+        notes: orderNotes,
+        items: items.map((item: SelectedItem) => ({
+          menu_item_name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          special_requests: item.specialRequests || '',
+        })),
+      };
+
+      await createOrder(businessId, orderData);
+
       onBillCreated();
-      handleClose();
+      resetForm();
     } catch (error) {
-      console.error('Error creating bill:', error);
+      console.error('Error creating bill and order:', error);
     } finally {
       setIsCreating(false);
     }
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     setSelectedTable(null);
+    setSelectedCounter(null);
     setItems([]);
+    setSearchQuery('');
+    setNotes('');
+    setBills([]);
+    setCounters([]);
     onClose();
   };
 
+  // Filter menu items based on search query
+  const filteredMenu = React.useMemo(() => {
+    if (!searchQuery.trim()) {
+      return menu.categories;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    return menu.categories.map(category => ({
+      ...category,
+      items: category.items.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+      )
+    })).filter(category => category.items.length > 0);
+  }, [menu.categories, searchQuery]);
+
   const { subtotal } = calculateTotals();
-  const availableTables = tables.filter(table => table.is_active);
+  
+  // Filter out tables that already have open bills
+  const availableTables = tables.filter(table => {
+    if (!table.is_active) return false;
+    
+    // Check if table has any open bills (status not 'paid' or 'closed')
+    const hasOpenBill = bills.some(bill => 
+      bill.table_id === table.id && 
+      bill.status !== 'paid' && 
+      bill.status !== 'closed'
+    );
+    
+    // Debug logging
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Table ${table.name} (ID: ${table.id}):`, {
+        is_active: table.is_active,
+        hasOpenBill,
+        relatedBills: bills.filter(bill => bill.table_id === table.id).map(bill => ({
+          id: bill.id,
+          status: bill.status,
+          table_id: bill.table_id
+        }))
+      });
+    }
+    
+    return !hasOpenBill;
+  });
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleClose}
+      onClose={resetForm}
       size="5xl"
       scrollBehavior="inside"
       classNames={{
@@ -199,49 +325,101 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
               {/* Menu Selection */}
               <div className="flex-1">
                 <Card>
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">Menu Items</h3>
+                  <CardHeader className="pb-2">
+                    <div className="w-full space-y-3">
+                      <h3 className="text-lg font-semibold">Menu Items</h3>
+                      <Input
+                        placeholder="Search menu items..."
+                        value={searchQuery}
+                        onValueChange={setSearchQuery}
+                        startContent={<Search className="w-4 h-4 text-default-400" />}
+                        variant="bordered"
+                        size="sm"
+                        isClearable
+                        onClear={() => setSearchQuery('')}
+                      />
+                    </div>
                   </CardHeader>
-                  <CardBody className="max-h-96 overflow-y-auto">
-                    {Array.isArray(menu.categories) && menu.categories.map((category, categoryIndex) => (
-                      <div key={categoryIndex} className="mb-4">
-                        <h4 className="font-medium text-medium mb-2">{category.name}</h4>
-                        <div className="grid grid-cols-1 gap-2">
-                          {category.items.map((item, itemIndex) => (
-                            <Card
-                              key={itemIndex}
-                              isPressable
-                              onPress={() => handleItemAdded(item, 1)}
-                              className="hover:bg-default-100"
-                            >
-                              <CardBody className="p-3">
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <p className="font-medium">{item.name}</p>
-                                    {item.description && (
-                                      <p className="text-small text-default-500">{item.description}</p>
-                                    )}
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <Chip color="primary" variant="flat">
-                                      ${(item.price || 0).toFixed(2)}
-                                    </Chip>
-                                    <Button
-                                      isIconOnly
-                                      size="sm"
-                                      color="primary"
-                                      variant="light"
-                                    >
-                                      <Plus className="w-4 h-4" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              </CardBody>
-                            </Card>
-                          ))}
-                        </div>
+                  <CardBody className="max-h-96 overflow-y-auto pt-2">
+                    {filteredMenu.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Search className="w-12 h-12 mx-auto text-default-300 mb-4" />
+                        <h4 className="text-lg font-medium text-default-500 mb-2">
+                          {searchQuery ? 'No items found' : 'No menu items'}
+                        </h4>
+                        <p className="text-default-400">
+                          {searchQuery 
+                            ? `No items match "${searchQuery}". Try a different search term.`
+                            : 'No menu items available for this business.'
+                          }
+                        </p>
+                        {searchQuery && (
+                          <Button
+                            variant="light"
+                            color="primary"
+                            size="sm"
+                            onPress={() => setSearchQuery('')}
+                            className="mt-3"
+                          >
+                            Clear search
+                          </Button>
+                        )}
                       </div>
-                    ))}
+                    ) : (
+                      filteredMenu.map((category, categoryIndex) => (
+                        <div key={categoryIndex} className="mb-4">
+                          <h4 className="font-medium text-medium mb-2">
+                            {category.name}
+                            {searchQuery && (
+                              <Chip size="sm" variant="flat" color="primary" className="ml-2">
+                                {category.items.length} item{category.items.length !== 1 ? 's' : ''}
+                              </Chip>
+                            )}
+                          </h4>
+                          <div className="grid grid-cols-1 gap-2">
+                            {category.items.map((item, itemIndex) => (
+                              <Card
+                                key={itemIndex}
+                                isPressable
+                                onPress={() => handleItemClick(item)}
+                                className="hover:bg-default-100"
+                              >
+                                <CardBody className="p-3">
+                                  <div className="flex justify-between items-center">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <p className="font-medium">{item.name}</p>
+                                        {item.options && item.options.length > 0 && (
+                                          <Chip size="sm" color="secondary" variant="dot">
+                                            Add-ons
+                                          </Chip>
+                                        )}
+                                      </div>
+                                      {item.description && (
+                                        <p className="text-small text-default-500">{item.description}</p>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <Chip color="primary" variant="flat">
+                                        ${(item.price || 0).toFixed(2)}
+                                      </Chip>
+                                      <Button
+                                        isIconOnly
+                                        size="sm"
+                                        color="primary"
+                                        variant="light"
+                                      >
+                                        <Plus className="w-4 h-4" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </CardBody>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </CardBody>
                 </Card>
               </div>
@@ -253,39 +431,97 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                     <h3 className="text-lg font-semibold">Bill Summary</h3>
                   </CardHeader>
                   <CardBody>
-                    {/* Table Selection */}
-                    <div className="mb-4">
-                      <Select
-                        label="Select Table"
-                        placeholder="Choose a table"
-                        selectedKeys={selectedTable ? [selectedTable.id.toString()] : []}
-                        onSelectionChange={(keys) => {
-                          const key = Array.from(keys)[0] as string;
-                          const table = availableTables.find(t => t.id.toString() === key);
-                          setSelectedTable(table || null);
-                        }}
-                      >
-                        {availableTables.map((table) => (
-                          <SelectItem key={table.id.toString()} value={table.id.toString()}>
-                            {table.name}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    </div>
+                    {/* Table/Counter Selection */}
+                    <div className="mb-4 space-y-4">
+                      {/* Table Selection */}
+                      <div>
+                        <Select
+                          label="Select Table"
+                          placeholder={availableTables.length > 0 ? "Choose a table" : "No tables available"}
+                          selectedKeys={selectedTable ? [selectedTable.id.toString()] : []}
+                          onSelectionChange={(keys) => {
+                            const key = Array.from(keys)[0] as string;
+                            const table = availableTables.find(t => t.id.toString() === key);
+                            setSelectedTable(table || null);
+                            if (table) setSelectedCounter(null); // Clear counter selection
+                          }}
+                          isDisabled={availableTables.length === 0 || selectedCounter !== null}
+                        >
+                          {availableTables.map((table) => (
+                            <SelectItem key={table.id.toString()} value={table.id.toString()}>
+                              {table.name}
+                            </SelectItem>
+                          ))}
+                        </Select>
+                        {availableTables.length === 0 && counters.length === 0 && (
+                          <p className="text-small text-warning mt-2">
+                            All active tables currently have open bills. Please close existing bills or add more tables.
+                          </p>
+                        )}
+                        {availableTables.length === 0 && counters.length > 0 && !selectedCounter && (
+                          <p className="text-small text-default-400 mt-2">
+                            All tables are occupied. Use a counter below for takeaway orders.
+                          </p>
+                        )}
+                      </div>
 
-                    <Divider className="mb-4" />
+                      {/* Counter Selection */}
+                      <div>
+                        <div className="flex items-center justify-center mb-2">
+                          <div className="flex-1 border-t border-gray-300"></div>
+                          <span className="px-3 text-small text-gray-500">OR</span>
+                          <div className="flex-1 border-t border-gray-300"></div>
+                        </div>
+                        
+                        {counters.length > 0 ? (
+                          <div>
+                            <Select
+                              label="Select Counter"
+                              placeholder="Choose a counter for takeaway/quick service"
+                              selectedKeys={selectedCounter ? [selectedCounter.id.toString()] : []}
+                              onSelectionChange={(keys) => {
+                                const key = Array.from(keys)[0] as string;
+                                const counter = counters.find(c => c.id.toString() === key);
+                                setSelectedCounter(counter || null);
+                                if (counter) setSelectedTable(null); // Clear table selection
+                              }}
+                              isDisabled={selectedTable !== null}
+                            >
+                              {counters.map((counter) => (
+                                <SelectItem key={counter.id.toString()} value={counter.id.toString()}>
+                                  {counter.name}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                            <p className="text-small text-default-400 mt-1">
+                              Perfect for takeaway orders and quick service
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="text-center py-4">
+                            <p className="text-small text-default-500 mb-2">
+                              No counters available
+                            </p>
+                            <p className="text-tiny text-default-400">
+                              Enable counters in business settings for takeaway service
+                            </p>
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Add Items Button */}
-                    <div className="mb-4">
-                      <Button
-                        color="primary"
-                        variant="flat"
-                        startContent={<Plus size={16} />}
-                        onPress={() => setShowItemSelector(true)}
-                        className="w-full"
-                      >
-                        Add Items from Menu
-                      </Button>
+                      {/* Order Notes */}
+                      <div>
+                        <Textarea
+                          label="Order Notes"
+                          placeholder="Add special instructions, customer name, or notes for kitchen/staff..."
+                          value={notes}
+                          onValueChange={setNotes}
+                          variant="bordered"
+                          minRows={2}
+                          maxRows={4}
+                          description="Optional notes that will be visible to kitchen staff and on receipts"
+                        />
+                      </div>
                     </div>
 
                     <Divider className="mb-4" />
@@ -302,6 +538,16 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                                 <p className="text-xs text-default-500">
                                   ${(item.price || 0).toFixed(2)} each
                                 </p>
+                                {item.selectedOptions && item.selectedOptions.length > 0 && (
+                                  <div className="text-xs text-default-400 mt-1">
+                                    Add-ons: {item.selectedOptions.map(opt => opt.name).join(', ')}
+                                  </div>
+                                )}
+                                {item.specialRequests && (
+                                  <div className="text-xs text-default-400 mt-1">
+                                    Note: {item.specialRequests}
+                                  </div>
+                                )}
                               </div>
                               <div className="flex items-center gap-1">
                                 <Button
@@ -369,32 +615,30 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={handleClose}>
+          <Button variant="light" onPress={resetForm}>
             Cancel
           </Button>
           <Button
             color="primary"
             onPress={handleCreateBill}
             isLoading={isCreating}
-            isDisabled={!selectedTable || items.length === 0 || isCreating}
+            isDisabled={(!selectedTable && !selectedCounter) || items.length === 0 || isCreating}
           >
             Create Bill
           </Button>
         </ModalFooter>
       </ModalContent>
 
-      {/* ItemSelector Modal */}
-      {showItemSelector && (
-        <ItemSelector
-          isOpen={showItemSelector}
-          onClose={() => setShowItemSelector(false)}
-          menu={Array.isArray(menu.categories) ? menu.categories : []}
-          onItemsAdded={(selectedItems: { item: MenuItem; quantity: number }[]) => {
-            selectedItems.forEach(({ item, quantity }: { item: MenuItem; quantity: number }) => {
-              handleItemAdded(item, quantity);
-            });
-            setShowItemSelector(false);
+      {/* ItemCustomizer Modal */}
+      {showItemCustomizer && itemToCustomize && (
+        <ItemCustomizer
+          isOpen={showItemCustomizer}
+          onClose={() => {
+            setShowItemCustomizer(false);
+            setItemToCustomize(null);
           }}
+          item={itemToCustomize}
+          onAddToCart={handleCustomizedItemAdd}
         />
       )}
     </Modal>

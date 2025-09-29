@@ -16,14 +16,14 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { Receipt, Clock, CreditCard, Wallet, Users } from 'lucide-react';
-import { BillResponse } from '../../api/bills';
+import { BillWithItemsResponse } from '../../api/bills';
 import { Business } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
 // import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
 
 interface GuestBillProps {
-  bill: BillResponse;
+  bill: BillWithItemsResponse;
   business: Business;
   tableCode: string;
   onPaymentComplete: () => void;

@@ -24,10 +24,10 @@ import {
   Tabs,
   Tab,
 } from '@nextui-org/react';
-import { Eye, DollarSign, Clock, Users, Plus, ChefHat } from 'lucide-react';
-import { getBusinessBills, getBill, closeBill, Bill, BillItem, BillResponse } from '../../api/bills';
+import { Eye, DollarSign, Clock, Users, Plus, ChefHat, CheckCircle, XCircle } from 'lucide-react';
+import { getBill, getBusinessBills, BillWithItemsResponse, closeBill, Bill } from '../../api/bills';
 import { BillCreator } from './BillCreator';
-import { createKitchenOrder } from '../../api/kitchen';
+import { getOrdersByBillId, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
 
 interface BillManagerProps {
   businessId: number;
@@ -36,11 +36,11 @@ interface BillManagerProps {
 export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBill, setSelectedBill] = useState<BillResponse | null>(null);
+  const [selectedBill, setSelectedBill] = useState<BillWithItemsResponse | null>(null);
   const [showBillDetails, setShowBillDetails] = useState(false);
   const [showBillCreator, setShowBillCreator] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  const [kitchenLoading, setKitchenLoading] = useState<number | null>(null);
+  const [orders, setOrders] = useState<Record<number, Order[]>>({});
   
   // Tab management
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
@@ -50,23 +50,43 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const [activeDateFrom, setActiveDateFrom] = useState<string>('');
   const [activeDateTo, setActiveDateTo] = useState<string>('');
   
-  // History Filters
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [historyStatusFilter, setHistoryStatusFilter] = useState<'all' | 'paid' | 'closed'>('all');
   const [historyDateFrom, setHistoryDateFrom] = useState<string>('');
   const [historyDateTo, setHistoryDateTo] = useState<string>('');
 
+  const loadOrdersForBills = useCallback(async (billsList: Bill[]) => {
+    const ordersMap: Record<number, Order[]> = {};
+    
+    // Load orders for each bill
+    for (const bill of billsList) {
+      try {
+        const orderData = await getOrdersByBillId(businessId, bill.id);
+        ordersMap[bill.id] = orderData.orders || [];
+      } catch (error) {
+        // No orders for this bill, that's okay
+        ordersMap[bill.id] = [];
+      }
+    }
+    
+    setOrders(ordersMap);
+  }, [businessId]);
+
   const loadBills = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await getBusinessBills(businessId);
-      setBills(response.bills || []);
+      const data = await getBusinessBills(businessId);
+      const billsList = data.bills || [];
+      setBills(billsList);
+      
+      // Load orders for all bills
+      await loadOrdersForBills(billsList);
     } catch (error) {
       console.error('Error loading bills:', error);
     } finally {
       setLoading(false);
     }
-  }, [businessId]);
+  }, [businessId, loadOrdersForBills]);
 
   useEffect(() => {
     if (businessId) {
@@ -177,37 +197,6 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     }
   };
 
-  const handleSendToKitchen = async (billId: number) => {
-    setKitchenLoading(billId);
-    try {
-      // First get the full bill details with items
-      const billDetails = await getBill(billId);
-      
-      // Convert bill items to kitchen order format
-      const kitchenOrderItems = billDetails.items.map((item: BillItem) => ({
-        menu_item_name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        special_requests: item.options?.join(', ') || '',
-      }));
-
-      await createKitchenOrder(businessId, {
-        bill_id: billDetails.bill.id,
-        table_id: billDetails.bill.table_id,
-        order_type: 'table',
-        priority: 'normal',
-        notes: `Bill #${billDetails.bill.bill_number}`,
-        items: kitchenOrderItems,
-      });
-
-      // Show success message or update UI
-      console.log('Order sent to kitchen successfully');
-    } catch (error) {
-      console.error('Error sending order to kitchen:', error);
-    } finally {
-      setKitchenLoading(null);
-    }
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -228,6 +217,65 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
+  };
+
+  const getOrderStatus = (billId: number) => {
+    const billOrders = orders[billId] || [];
+    if (billOrders.length === 0) return { status: 'none', color: 'default', text: 'No Orders' };
+    
+    // Check if any orders are pending approval
+    const pending = billOrders.some((order: Order) => order.status === 'pending');
+    if (pending) return { status: 'pending', color: 'warning', text: 'Needs Approval' };
+    
+    // Check if any orders are in kitchen
+    const inKitchen = billOrders.some((order: Order) => order.status === 'in_kitchen');
+    if (inKitchen) return { status: 'cooking', color: 'secondary', text: 'In Kitchen' };
+    
+    // Check if any orders are ready
+    const ready = billOrders.some((order: Order) => order.status === 'ready');
+    if (ready) return { status: 'ready', color: 'success', text: 'Ready' };
+    
+    // Check if any orders are approved but not in kitchen
+    const approved = billOrders.some((order: Order) => order.status === 'approved');
+    if (approved) return { status: 'approved', color: 'primary', text: 'Approved' };
+    
+    // All orders are delivered or cancelled
+    const delivered = billOrders.every((order: Order) => order.status === 'delivered' || order.status === 'cancelled');
+    if (delivered) return { status: 'completed', color: 'default', text: 'Completed' };
+    
+    return { status: 'unknown', color: 'default', text: 'Unknown' };
+  };
+
+  // Handle order approval
+  const handleApproveOrder = async (orderId: number) => {
+    setActionLoading(orderId);
+    try {
+      await updateOrderStatus(businessId, orderId, {
+        status: 'approved',
+        approved_by: 'staff' // TODO: Get actual staff member from auth context
+      });
+      await loadBills(); // Refresh the data
+    } catch (error) {
+      console.error('Error approving order:', error);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Handle order rejection
+  const handleRejectOrder = async (orderId: number) => {
+    setActionLoading(orderId);
+    try {
+      await updateOrderStatus(businessId, orderId, {
+        status: 'cancelled',
+        approved_by: 'staff' // TODO: Get actual staff member from auth context
+      });
+      await loadBills(); // Refresh the data
+    } catch (error) {
+      console.error('Error rejecting order:', error);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   if (loading) {
@@ -275,6 +323,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           <TableColumn>ITEMS</TableColumn>
           <TableColumn>TOTAL</TableColumn>
           <TableColumn>STATUS</TableColumn>
+          <TableColumn>KITCHEN</TableColumn>
           <TableColumn>CREATED</TableColumn>
           <TableColumn>ACTIONS</TableColumn>
         </TableHeader>
@@ -308,6 +357,23 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 </Chip>
               </TableCell>
               <TableCell>
+                {(() => {
+                  const orderStatus = getOrderStatus(bill.id);
+                  return (
+                    <div className="flex items-center gap-1">
+                      <ChefHat className="w-3 h-3" />
+                      <Chip
+                        color={orderStatus.color as any}
+                        variant="flat"
+                        size="sm"
+                      >
+                        {orderStatus.text}
+                      </Chip>
+                    </div>
+                  );
+                })()}
+              </TableCell>
+              <TableCell>
                 <div className="flex items-center gap-1 text-sm text-default-500">
                   <Clock className="w-3 h-3" />
                   {formatDate(bill.created_at)}
@@ -325,16 +391,6 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                   </Button>
                   {bill.status === 'open' && (
                     <>
-                      <Button
-                        size="sm"
-                        color="primary"
-                        variant="light"
-                        startContent={<ChefHat className="w-3 h-3" />}
-                        isLoading={kitchenLoading === bill.id}
-                        onPress={() => handleSendToKitchen(bill.id)}
-                      >
-                        Kitchen
-                      </Button>
                       <Button
                         size="sm"
                         color="warning"
@@ -357,6 +413,75 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
 
   return (
     <>
+      {/* Pending Orders Section */}
+      {Object.values(orders).flat().filter(order => order.status === 'pending').length > 0 && (
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-warning" />
+              <h3 className="text-lg font-semibold text-warning">Pending Orders - Require Approval</h3>
+            </div>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(orders).map(([billId, billOrders]) => 
+                billOrders.filter(order => order.status === 'pending').map(order => (
+                  <Card key={order.id} className="border-warning">
+                    <CardBody>
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="font-semibold">Order #{order.order_number}</h4>
+                          <p className="text-sm text-default-500">Bill #{billId}</p>
+                        </div>
+                        <Chip color="warning" size="sm">Pending</Chip>
+                      </div>
+                      <div className="space-y-1 mb-3">
+                        {parseOrderItems(order.items).slice(0, 3).map((item, index) => (
+                          <div key={index} className="text-sm">
+                            {item.quantity}x {item.menu_item_name}
+                          </div>
+                        ))}
+                        {parseOrderItems(order.items).length > 3 && (
+                          <div className="text-xs text-default-400">
+                            +{parseOrderItems(order.items).length - 3} more items
+                          </div>
+                        )}
+                      </div>
+                      {order.notes && (
+                        <p className="text-xs text-blue-600 mb-3 bg-blue-50 p-2 rounded">
+                          {order.notes}
+                        </p>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          color="success"
+                          startContent={<CheckCircle className="w-3 h-3" />}
+                          onPress={() => handleApproveOrder(order.id)}
+                          isLoading={actionLoading === order.id}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          color="danger"
+                          variant="light"
+                          startContent={<XCircle className="w-3 h-3" />}
+                          onPress={() => handleRejectOrder(order.id)}
+                          isLoading={actionLoading === order.id}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                    </CardBody>
+                  </Card>
+                ))
+              )}
+            </div>
+          </CardBody>
+        </Card>
+      )}
+
       <Card>
         <CardHeader className="flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -509,6 +634,13 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                         <p>{formatDate(selectedBill.bill.created_at)}</p>
                       </div>
                     </div>
+                    
+                    {selectedBill.bill.notes && (
+                      <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-sm font-medium text-blue-700 mb-2">📝 Order Notes:</p>
+                        <p className="text-blue-600 whitespace-pre-wrap">{selectedBill.bill.notes}</p>
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
 

@@ -198,8 +198,7 @@ func autoMigrate() error {
 		&Staff{},
 		&StaffInvitation{},
 		&StaffLoginCode{},
-		// Kitchen management models
-		&KitchenOrder{},
-		&KitchenOrderItem{},
+		// Order management models
+		&Order{},
 	)
 }

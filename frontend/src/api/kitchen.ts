@@ -137,6 +137,16 @@ export const updateKitchenOrderItemStatus = async (
   );
 };
 
+export const getKitchenOrdersByBillId = async (
+  businessId: number,
+  billId: number
+): Promise<KitchenOrdersResponse> => {
+  const response = await axiosInstance.get(
+    `/inside/businesses/${businessId}/bills/${billId}/kitchen/orders`
+  );
+  return response.data;
+};
+
 export const getKitchenStats = async (
   businessId: number,
   date?: string

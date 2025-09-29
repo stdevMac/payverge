@@ -20,7 +20,9 @@ export interface Bill {
   id: number;
   business_id: number;
   table_id: number;
+  counter_id?: number;
   bill_number: string;
+  notes: string;
   items: string; // JSON string
   subtotal: number;
   tax_amount: number;
@@ -37,7 +39,9 @@ export interface Bill {
 }
 
 export interface CreateBillRequest {
-  table_id: number;
+  table_id?: number;
+  counter_id?: number;
+  notes?: string;
   items: BillItem[];
 }
 
@@ -55,7 +59,11 @@ export interface AddBillItemRequest {
 
 export interface BillResponse {
   bill: Bill;
-  items: BillItem[];
+}
+
+export interface BillWithItemsResponse {
+  bill: Bill;
+  items: any[];
 }
 
 // Bill API functions (Protected routes - require authentication)
@@ -64,12 +72,19 @@ export const createBill = async (businessId: number, data: CreateBillRequest): P
   return response.data;
 };
 
+// Get all bills for a business
 export const getBusinessBills = async (businessId: number): Promise<{ bills: Bill[] }> => {
   const response = await axiosInstance.get(`/inside/businesses/${businessId}/bills`);
   return response.data;
 };
 
-export const getBill = async (billId: number): Promise<BillResponse> => {
+// Get only open bills for a business (for table filtering)
+export const getOpenBusinessBills = async (businessId: number): Promise<{ bills: Bill[] }> => {
+  const response = await axiosInstance.get(`/inside/businesses/${businessId}/bills/open`);
+  return response.data;
+};
+
+export const getBill = async (billId: number): Promise<BillWithItemsResponse> => {
   const response = await axiosInstance.get(`/inside/bills/${billId}`);
   return response.data;
 };
@@ -100,14 +115,37 @@ export const getTableByCode = async (code: string) => {
   return response.data;
 };
 
-export const getOpenBillByTableCode = async (code: string): Promise<BillResponse> => {
-  const response = await axiosInstance.get(`/guest/table/${code}/bill`);
+// Get open bill by table code (Public route for guests)
+export const getOpenBillByTableCode = async (tableCode: string): Promise<BillWithItemsResponse> => {
+  const response = await axiosInstance.get(`/guest/table/${tableCode}/bill`);
+  return response.data;
+};
+
+// Create new bill by table code (Public route for guests)
+export const createBillByTableCode = async (tableCode: string): Promise<BillResponse> => {
+  const response = await axiosInstance.post(`/guest/table/${tableCode}/bill`);
+  return response.data;
+};
+
+export const createGuestKitchenOrder = async (
+  tableCode: string,
+  orderData: {
+    bill_id: number;
+    items: {
+      menu_item_name: string;
+      quantity: number;
+      price: number;
+      special_requests?: string;
+    }[];
+    notes?: string;
+  }
+): Promise<any> => {
+  const response = await axiosInstance.post(`/guest/table/${tableCode}/kitchen/order`, orderData);
   return response.data;
 };
 
 export const getBusinessByTableCode = async (code: string) => {
   const response = await axiosInstance.get(`/guest/table/${code}/business`);
-  return response.data;
 };
 
 export const getMenuByTableCode = async (code: string) => {

@@ -20,14 +20,14 @@ import {
 import { ShoppingCart, Plus, Eye, Check, Info, Minus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { MenuCategory, MenuItem, Business } from '../../api/business';
-import { BillResponse } from '../../api/bills';
+import { BillWithItemsResponse } from '../../api/bills';
 import { ImageCarousel } from './ImageCarousel';
 
 interface GuestMenuProps {
   categories: MenuCategory[];
   business: Business;
   tableCode: string;
-  currentBill: BillResponse | null;
+  currentBill: BillWithItemsResponse | null;
   onAddToBill: (itemName: string, price: number, quantity?: number) => void;
   onAddToCart?: (itemName: string, price: number, specialRequests?: string) => void;
 }
@@ -243,10 +243,10 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
           <div className="text-center">
             <h3 className="text-lg font-light text-gray-900 tracking-wide mb-3">Ready to Order?</h3>
             <p className="text-gray-600 font-light leading-relaxed mb-4 max-w-md mx-auto">
-              Ask your server to create a bill for Table {tableCode} to start adding items to your order.
+              Add items to your cart, then <strong>click the cart icon</strong> to place your order. Your order will be sent to staff for approval at Table {tableCode}.
             </p>
             <div className="text-xs text-gray-400 font-light tracking-wide">
-              Powered by Payverge • Secure USDC Payments
+              Powered by Payverge • Click cart to place order • Orders require staff approval
             </div>
           </div>
         </div>
@@ -400,13 +400,16 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAddToBill(item);
+                              // Always use cart system for new order workflow
+                              if (onAddToCart) {
+                                onAddToCart(item.name, item.price);
+                              }
                             }}
-                            disabled={!currentBill}
+                            disabled={!item.is_available}
                             className={`group flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all duration-300 tracking-wide rounded-lg relative overflow-hidden ${
                               isItemAdded(item.name)
                                 ? 'bg-green-500 text-white animate-success-pulse'
-                                : currentBill
+                                : item.is_available
                                 ? 'bg-gray-900 text-white hover:bg-gray-800 shadow-md hover:shadow-lg'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
@@ -428,10 +431,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                                 <>
                                   <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                                   <span>
-                                    {currentBill 
-                                      ? `Add ${getItemQuantity(item.name)} to Bill` 
-                                      : 'No Active Bill'
-                                    }
+                                    Add {getItemQuantity(item.name)} to Cart
                                   </span>
                                 </>
                               )}
@@ -620,7 +620,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
               <ModalFooter>
                 <div className="flex flex-col gap-4 w-full">
                   {/* Quantity Selector in Modal */}
-                  {currentBill && selectedItem && (
+                  {selectedItem && (
                     <div className="flex items-center justify-center gap-4">
                       <span className="text-sm text-gray-600 font-medium">Quantity:</span>
                       <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-2">
@@ -656,18 +656,25 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                     >
                       Close
                     </Button>
-                    {currentBill && selectedItem && (
+                    {selectedItem && (
                       <div className="flex-1 relative">
                         <Button
                           color="primary"
                           onPress={() => {
-                            handleAddToBill(selectedItem);
+                            if (currentBill) {
+                              handleAddToBill(selectedItem);
+                            } else if (onAddToCart) {
+                              onAddToCart(selectedItem.name, selectedItem.price);
+                            }
                             onClose();
                           }}
+                          disabled={!selectedItem.is_available}
                           className={`w-full relative overflow-hidden ${
                             isItemAdded(selectedItem.name)
                               ? 'bg-green-500 text-white'
-                              : 'bg-gray-900 text-white'
+                              : selectedItem.is_available
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                           }`}
                           startContent={
                             isItemAdded(selectedItem.name) ? (
@@ -685,8 +692,8 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                           )}
                           <span className="relative z-10">
                             {isItemAdded(selectedItem.name) 
-                              ? `Added ${getItemQuantity(selectedItem.name)} to Bill!` 
-                              : `Add ${getItemQuantity(selectedItem.name)} to Bill - ${formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}`
+                              ? `Added ${getItemQuantity(selectedItem.name)}!` 
+                              : `Add ${getItemQuantity(selectedItem.name)} to ${currentBill ? 'Bill' : 'Cart'} - ${formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}`
                             }
                           </span>
                         </Button>

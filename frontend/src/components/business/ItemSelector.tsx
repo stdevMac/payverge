@@ -18,15 +18,16 @@ import {
   Tabs,
   Tab,
 } from '@nextui-org/react';
-import { Search, Plus, ShoppingCart, X } from 'lucide-react';
-import { MenuCategory, MenuItem } from '../../api/business';
+import { Search, Plus, ShoppingCart, X, Settings } from 'lucide-react';
+import { MenuCategory, MenuItem, MenuItemOption } from '../../api/business';
 import { BillResponse, addBillItem } from '../../api/bills';
+import { ItemCustomizer } from './ItemCustomizer';
 
 interface ItemSelectorProps {
   isOpen: boolean;
   onClose: () => void;
   menu: MenuCategory[];
-  onItemsAdded?: (selectedItems: { item: MenuItem; quantity: number }[]) => void;
+  onItemsAdded?: (selectedItems: { item: MenuItem; quantity: number; selectedOptions?: MenuItemOption[]; specialRequests?: string }[]) => void;
   businessId?: number;
   currentBill?: BillResponse | null;
 }
@@ -35,6 +36,8 @@ interface SelectedItem extends MenuItem {
   quantity: number;
   categoryIndex: number;
   itemIndex: number;
+  selectedOptions?: MenuItemOption[];
+  specialRequests?: string;
 }
 
 export const ItemSelector: React.FC<ItemSelectorProps> = ({
@@ -49,6 +52,8 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [isAddingItems, setIsAddingItems] = useState(false);
+  const [showItemCustomizer, setShowItemCustomizer] = useState(false);
+  const [itemToCustomize, setItemToCustomize] = useState<MenuItem & { categoryIndex: number; itemIndex: number } | null>(null);
 
   // Filter items based on search and category
   const filteredItems = React.useMemo(() => {
@@ -82,6 +87,14 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
   }, [menu, searchQuery, selectedCategory]);
 
   const handleAddItem = (item: MenuItem & { categoryIndex: number; itemIndex: number }) => {
+    // If item has options/add-ons, open customizer
+    if (item.options && item.options.length > 0) {
+      setItemToCustomize(item);
+      setShowItemCustomizer(true);
+      return;
+    }
+
+    // Otherwise, add directly
     const existingItem = selectedItems.find(
       selected => selected.name === item.name && selected.categoryIndex === item.categoryIndex
     );
@@ -99,10 +112,27 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
         ...prev,
         {
           ...item,
-          quantity: 1
+          quantity: 1,
+          selectedOptions: [],
+          specialRequests: ''
         }
       ]);
     }
+  };
+
+  const handleCustomizedItemAdd = (item: MenuItem, quantity: number, selectedOptions: MenuItemOption[], specialRequests: string) => {
+    const customizedItem: SelectedItem = {
+      ...item,
+      quantity,
+      selectedOptions,
+      specialRequests,
+      categoryIndex: itemToCustomize?.categoryIndex || 0,
+      itemIndex: itemToCustomize?.itemIndex || 0,
+      // Calculate price with add-ons
+      price: (item.price || 0) + selectedOptions.reduce((sum, option) => sum + (option.price_change || 0), 0)
+    };
+
+    setSelectedItems(prev => [...prev, customizedItem]);
   };
 
   const handleRemoveItem = (item: SelectedItem) => {
@@ -139,7 +169,11 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
             name: item.name,
             price: item.price,
             quantity: item.quantity,
-            options: []
+            options: (item.selectedOptions || []).map(option => ({
+              name: option.name,
+              price: option.price_change || 0
+            })),
+            special_requests: item.specialRequests || ''
           };
 
           await addBillItem(currentBill.bill.id, addItemRequest);
@@ -150,7 +184,9 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
       if (onItemsAdded) {
         onItemsAdded(selectedItems.map(item => ({
           item: item,
-          quantity: item.quantity
+          quantity: item.quantity,
+          selectedOptions: item.selectedOptions,
+          specialRequests: item.specialRequests
         })));
       }
 
@@ -207,6 +243,8 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
               onValueChange={setSearchQuery}
               startContent={<Search className="w-4 h-4 text-default-400" />}
               variant="bordered"
+              isClearable
+              onClear={() => setSearchQuery('')}
             />
 
             <Tabs
@@ -243,16 +281,32 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
                         <span className="font-bold text-primary">
                           ${(item.price || 0).toFixed(2)}
                         </span>
-                        <Button
-                          size="sm"
-                          color="primary"
-                          variant="flat"
-                          isIconOnly
-                          onPress={() => handleAddItem(item)}
-                          isDisabled={!item.is_available}
-                        >
-                          <Plus className="w-3 h-3" />
-                        </Button>
+                        <div className="flex gap-1">
+                          {item.options && item.options.length > 0 && (
+                            <Button
+                              size="sm"
+                              color="secondary"
+                              variant="flat"
+                              isIconOnly
+                              onPress={() => handleAddItem(item)}
+                              isDisabled={!item.is_available}
+                              title="Customize"
+                            >
+                              <Settings className="w-3 h-3" />
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            color="primary"
+                            variant="flat"
+                            isIconOnly
+                            onPress={() => handleAddItem(item)}
+                            isDisabled={!item.is_available}
+                            title={item.options && item.options.length > 0 ? "Customize" : "Add to cart"}
+                          >
+                            <Plus className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -282,6 +336,16 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
                         <p className="text-xs text-default-600">
                           ${(item.price || 0).toFixed(2)} each
                         </p>
+                        {item.selectedOptions && item.selectedOptions.length > 0 && (
+                          <div className="text-xs text-default-500 mt-1">
+                            Add-ons: {item.selectedOptions.map(opt => opt.name).join(', ')}
+                          </div>
+                        )}
+                        {item.specialRequests && (
+                          <div className="text-xs text-default-500 mt-1">
+                            Note: {item.specialRequests}
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -336,6 +400,19 @@ export const ItemSelector: React.FC<ItemSelectorProps> = ({
           </Button>
         </ModalFooter>
       </ModalContent>
+
+      {/* ItemCustomizer Modal */}
+      {showItemCustomizer && itemToCustomize && (
+        <ItemCustomizer
+          isOpen={showItemCustomizer}
+          onClose={() => {
+            setShowItemCustomizer(false);
+            setItemToCustomize(null);
+          }}
+          item={itemToCustomize}
+          onAddToCart={handleCustomizedItemAdd}
+        />
+      )}
     </Modal>
   );
 };

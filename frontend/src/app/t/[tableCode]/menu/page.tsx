@@ -7,9 +7,9 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import GuestMenu from '../../../../components/guest/GuestMenu';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
-import { BillResponse, getTableByCode, getOpenBillByTableCode, addBillItem } from '../../../../api/bills';
+import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, addBillItem, createBillByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
-import { createKitchenOrder } from '../../../../api/kitchen';
+import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
 
 interface Table {
   id: number;
@@ -42,7 +42,7 @@ export default function GuestMenuPage() {
   const tableCode = params.tableCode as string;
   
   const [tableData, setTableData] = useState<TableData | null>(null);
-  const [currentBill, setCurrentBill] = useState<BillResponse | null>(null);
+  const [currentBill, setCurrentBill] = useState<BillWithItemsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
@@ -109,11 +109,30 @@ export default function GuestMenuPage() {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 
-  const handleSendToKitchen = useCallback(async () => {
-    if (!tableData || cart.length === 0) return;
+  const handleCreateBill = useCallback(async () => {
+    if (!tableData) return;
     
     setOrderLoading(true);
     try {
+      const newBill = await createBillByTableCode(tableCode);
+      // Reload the bill with items after creation
+      const billWithItems = await getOpenBillByTableCode(tableCode);
+      setCurrentBill(billWithItems);
+      
+      // Add cart items to the new bill
+      for (const item of cart) {
+        for (let i = 0; i < item.quantity; i++) {
+          await addBillItem(newBill.bill.id, {
+            menu_item_id: `${item.name}-${Date.now()}-${i}`,
+            name: item.name,
+            price: item.price,
+            quantity: 1,
+            options: []
+          });
+        }
+      }
+      
+      // Auto-send to kitchen (new simplified flow)
       const kitchenOrderItems = cart.map(item => ({
         menu_item_name: item.name,
         quantity: item.quantity,
@@ -121,26 +140,104 @@ export default function GuestMenuPage() {
         special_requests: item.specialRequests || '',
       }));
 
-      await createKitchenOrder(tableData.business.id, {
+      console.log('Creating initial kitchen order with data:', {
+        business_id: tableData.business.id,
+        bill_id: newBill.bill.id,
         table_id: tableData.table.id,
-        order_type: 'table',
-        priority: 'normal',
-        notes: `Table ${tableData.table.name} - Guest Order`,
-        items: kitchenOrderItems,
+        items: kitchenOrderItems
       });
 
+      try {
+        const orderResult = await createGuestOrder(tableCode, {
+          bill_id: newBill.bill.id,
+          items: kitchenOrderItems,
+          notes: `Table ${tableData.table.name} - Guest Order`,
+        });
+        
+        console.log('Order created successfully and pending approval:', orderResult);
+      } catch (orderError) {
+        console.error('Failed to create order:', orderError);
+        // Don't fail the entire operation if order creation fails
+        alert('Order placed, but failed to send for approval. Please notify staff.');
+      }
+      
       // Clear cart after successful order
       clearCart();
       setShowCart(false);
       
-      // Show success message
-      console.log('Order sent to kitchen successfully');
+      // Show success feedback
+      console.log('Order placed and sent to kitchen automatically');
+      
+      // Reload bill data
+      await loadTableData();
     } catch (error) {
-      console.error('Error sending order to kitchen:', error);
+      console.error('Error creating bill:', error);
     } finally {
       setOrderLoading(false);
     }
-  }, [tableData, cart, clearCart]);
+  }, [tableCode, tableData, cart, clearCart, loadTableData]);
+
+  const handleAddItemsToBill = useCallback(async () => {
+    if (!currentBill || cart.length === 0 || !tableData) return;
+    
+    setOrderLoading(true);
+    try {
+      // Add cart items to existing bill
+      for (const item of cart) {
+        for (let i = 0; i < item.quantity; i++) {
+          await addBillItem(currentBill.bill.id, {
+            menu_item_id: `${item.name}-${Date.now()}-${i}`,
+            name: item.name,
+            price: item.price,
+            quantity: 1,
+            options: []
+          });
+        }
+      }
+      
+      // Create a new order for additional items (always create new order for each request)
+      const orderItems = cart.map(item => ({
+        menu_item_name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        special_requests: item.specialRequests || '',
+      }));
+
+      console.log('Creating order with data:', {
+        business_id: tableData.business.id,
+        bill_id: currentBill.bill.id,
+        items: orderItems
+      });
+
+      try {
+        const orderResult = await createGuestOrder(tableCode, {
+          bill_id: currentBill.bill.id,
+          items: orderItems,
+          notes: `Table ${tableData.table.name} - Additional Items`,
+        });
+        
+        console.log('Additional order created successfully and pending approval:', orderResult);
+      } catch (orderError) {
+        console.error('Failed to create additional order:', orderError);
+        // Don't fail the entire operation if order creation fails
+        alert('Items added to bill, but failed to send for approval. Please notify staff.');
+      }
+      
+      // Clear cart after adding to bill
+      clearCart();
+      setShowCart(false);
+      
+      // Show success feedback
+      console.log('Additional items sent to kitchen automatically');
+      
+      // Reload bill data
+      await loadTableData();
+    } catch (error) {
+      console.error('Error adding items to bill:', error);
+    } finally {
+      setOrderLoading(false);
+    }
+  }, [currentBill, cart, clearCart, loadTableData, tableData]);
 
   const handleAddToBill = useCallback(async (itemName: string, price: number, quantity: number = 1) => {
     if (!currentBill) {
@@ -370,21 +467,34 @@ export default function GuestMenuPage() {
             </Button>
             {cart.length > 0 && (
               <>
-                <Button 
-                  color="danger" 
-                  variant="light"
-                  onPress={clearCart}
-                >
-                  Clear Cart
-                </Button>
-                <Button 
-                  color="primary"
-                  startContent={<ChefHat className="w-4 h-4" />}
-                  onPress={handleSendToKitchen}
-                  isLoading={orderLoading}
-                >
-                  Send to Kitchen
-                </Button>
+                {!currentBill && (
+                  <Button 
+                    color="danger" 
+                    variant="light"
+                    onPress={clearCart}
+                  >
+                    Clear Cart
+                  </Button>
+                )}
+                {!currentBill ? (
+                  <Button 
+                    color="primary"
+                    startContent={<Plus className="w-4 h-4" />}
+                    onPress={handleCreateBill}
+                    isLoading={orderLoading}
+                  >
+                    {orderLoading ? 'Sending for Approval...' : 'Place Order'}
+                  </Button>
+                ) : (
+                  <Button 
+                    color="primary"
+                    startContent={<Plus className="w-4 h-4" />}
+                    onPress={handleAddItemsToBill}
+                    isLoading={orderLoading}
+                  >
+                    {orderLoading ? 'Sending for Approval...' : 'Send Cart for Approval'}
+                  </Button>
+                )}
               </>
             )}
           </ModalFooter>

@@ -22,7 +22,7 @@ import {
 import {
   getTableByCode,
   getOpenBillByTableCode,
-  BillResponse,
+  BillWithItemsResponse,
 } from '../../api/bills';
 import { Business, MenuCategory } from '../../api/business';
 import { useBillWebSocket } from '../../hooks/useBillWebSocket';
@@ -56,7 +56,7 @@ interface TableData {
 
 export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => {
   const [tableData, setTableData] = useState<TableData | null>(null);
-  const [currentBill, setCurrentBill] = useState<BillResponse | null>(null);
+  const [currentBill, setCurrentBill] = useState<BillWithItemsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [paymentNotification, setPaymentNotification] = useState<any>(null);
   const [billUpdateNotification, setBillUpdateNotification] = useState<any>(null);
@@ -102,7 +102,8 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
     tableCode,
     billId: currentBill?.bill.id,
     onBillUpdate: (updatedBill) => {
-      setCurrentBill(updatedBill);
+      // For now, cast to the expected type since WebSocket might not include items
+      setCurrentBill(updatedBill as BillWithItemsResponse);
       setBillUpdateNotification({
         type: 'bill_updated',
         billNumber: updatedBill.bill.bill_number,

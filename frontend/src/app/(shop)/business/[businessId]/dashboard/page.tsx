@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
@@ -18,6 +18,7 @@ import { BillManager } from '../../../../../components/business/BillManager';
 import BusinessSettings from '../../../../../components/business/BusinessSettings';
 import StaffManagement from '../../../../../components/business/StaffManagement';
 import Kitchen from '../../../../../components/business/Kitchen';
+import CounterManager from '../../../../../components/business/CounterManager';
 import Dashboard from '../../../../../components/dashboard/Dashboard';
 import { ToastProvider } from '../../../../../contexts/ToastContext';
 import analyticsApi, { SalesData } from '../../../../../api/analytics';
@@ -261,12 +262,14 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
       case 'analytics':
         return <Dashboard businessId={businessId.toString()} />;
-
       case 'menu':
         return <MenuBuilder businessId={businessId} />;
 
       case 'tables':
         return <TableManager businessId={businessId} />;
+
+      case 'counters':
+        return <CounterManager businessId={businessId} />;
 
       case 'bills':
         return <BillManager businessId={businessId} />;
@@ -316,6 +319,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               { key: 'analytics', icon: BarChart3, label: 'Analytics' },
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
+              { key: 'counters', icon: Coffee, label: 'Counters' },
               { key: 'bills', icon: Receipt, label: 'Bills' },
               { key: 'kitchen', icon: ChefHat, label: 'Kitchen' },
               { key: 'staff', icon: UserCheck, label: 'Staff' },
@@ -394,6 +398,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       { key: 'analytics', icon: BarChart3, label: 'Analytics' },
                       { key: 'menu', icon: Menu, label: 'Menu' },
                       { key: 'tables', icon: Users, label: 'Tables' },
+                      { key: 'counters', icon: Coffee, label: 'Counters' },
                       { key: 'bills', icon: Receipt, label: 'Bills' },
                       { key: 'staff', icon: UserCheck, label: 'Staff' },
                       { key: 'settings', icon: Settings, label: 'Settings' },

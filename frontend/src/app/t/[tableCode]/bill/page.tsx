@@ -10,7 +10,7 @@ import { PersistentGuestNav } from '../../../../components/navigation/Persistent
 import { 
   getTableByCode, 
   getOpenBillByTableCode,
-  BillResponse 
+  BillWithItemsResponse 
 } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
 
@@ -38,7 +38,7 @@ export default function GuestBillPage() {
   const tableCode = params.tableCode as string;
   
   const [tableData, setTableData] = useState<TableData | null>(null);
-  const [currentBill, setCurrentBill] = useState<BillResponse | null>(null);
+  const [currentBill, setCurrentBill] = useState<BillWithItemsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadTableData = useCallback(async () => {

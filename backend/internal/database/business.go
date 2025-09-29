@@ -519,3 +519,220 @@ func CheckBillFullyPaid(billID uint) error {
 
 	return nil
 }
+
+// Order operations
+
+// CreateOrder creates a new order within a bill
+func CreateOrder(order *Order, items []OrderItem) error {
+	// Convert items to JSON string for SQLite storage
+	itemsJSON, err := json.Marshal(items)
+	if err != nil {
+		return fmt.Errorf("failed to marshal items: %w", err)
+	}
+	order.Items = string(itemsJSON)
+
+	if err := db.Create(order).Error; err != nil {
+		return fmt.Errorf("failed to create order: %w", err)
+	}
+	return nil
+}
+
+// GetOrderByID retrieves an order by its ID with items parsed
+func GetOrderByID(id uint) (*Order, []OrderItem, error) {
+	var order Order
+	if err := db.Preload("Bill").Preload("Business").First(&order, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil, fmt.Errorf("order not found")
+		}
+		return nil, nil, fmt.Errorf("failed to get order: %w", err)
+	}
+
+	// Parse items from JSON
+	var items []OrderItem
+	if order.Items != "" {
+		if err := json.Unmarshal([]byte(order.Items), &items); err != nil {
+			return nil, nil, fmt.Errorf("failed to unmarshal items: %w", err)
+		}
+	}
+
+	return &order, items, nil
+}
+
+// GetOrdersByBillID retrieves all orders for a specific bill
+func GetOrdersByBillID(billID uint) ([]Order, error) {
+	var orders []Order
+	if err := db.Where("bill_id = ?", billID).Order("created_at DESC").Find(&orders).Error; err != nil {
+		return nil, fmt.Errorf("failed to get orders: %w", err)
+	}
+	return orders, nil
+}
+
+// GetOrdersByBusinessID retrieves orders for a business with optional status filter
+func GetOrdersByBusinessID(businessID uint, status string) ([]Order, error) {
+	query := db.Where("business_id = ?", businessID)
+	if status != "" {
+		query = query.Where("status = ?", status)
+	}
+	
+	var orders []Order
+	if err := query.Preload("Bill").Preload("Business").Order("created_at DESC").Find(&orders).Error; err != nil {
+		return nil, fmt.Errorf("failed to get orders: %w", err)
+	}
+	return orders, nil
+}
+
+// UpdateOrderStatus updates the status of an order
+func UpdateOrderStatus(orderID uint, status OrderStatus, approvedBy string) error {
+	updates := map[string]interface{}{
+		"status":     status,
+		"updated_at": time.Now(),
+	}
+	
+	if status == OrderStatusApproved && approvedBy != "" {
+		updates["approved_by"] = approvedBy
+		updates["approved_at"] = time.Now()
+	}
+	
+	if err := db.Model(&Order{}).Where("id = ?", orderID).Updates(updates).Error; err != nil {
+		return fmt.Errorf("failed to update order status: %w", err)
+	}
+	return nil
+}
+
+// Counter operations
+
+// CreateCountersForBusiness creates default counters for a business
+func CreateCountersForBusiness(businessID uint, count int, prefix string) error {
+	var counters []Counter
+	for i := 1; i <= count; i++ {
+		counter := Counter{
+			BusinessID:    businessID,
+			CounterNumber: i,
+			Name:          fmt.Sprintf("%s%d", prefix, i),
+			IsActive:      true,
+		}
+		counters = append(counters, counter)
+	}
+
+	if err := db.Create(&counters).Error; err != nil {
+		return fmt.Errorf("failed to create counters: %w", err)
+	}
+	return nil
+}
+
+// GetBusinessCounters retrieves all counters for a business
+func GetBusinessCounters(businessID uint) ([]Counter, error) {
+	var counters []Counter
+	if err := db.Where("business_id = ?", businessID).Order("counter_number").Find(&counters).Error; err != nil {
+		return nil, fmt.Errorf("failed to get counters: %w", err)
+	}
+	return counters, nil
+}
+
+// GetAvailableCounters retrieves counters that don't have active bills
+func GetAvailableCounters(businessID uint) ([]Counter, error) {
+	var counters []Counter
+	if err := db.Where("business_id = ? AND is_active = ? AND current_bill_id IS NULL", businessID, true).Order("counter_number").Find(&counters).Error; err != nil {
+		return nil, fmt.Errorf("failed to get available counters: %w", err)
+	}
+	return counters, nil
+}
+
+// UpdateCounterBill updates the current bill for a counter
+func UpdateCounterBill(counterID uint, billID *uint) error {
+	if err := db.Model(&Counter{}).Where("id = ?", counterID).Update("current_bill_id", billID).Error; err != nil {
+		return fmt.Errorf("failed to update counter bill: %w", err)
+	}
+	return nil
+}
+
+// UpdateBusinessCounters updates counter configuration for a business
+func UpdateBusinessCounters(businessID uint, enabled bool, count int, prefix string) error {
+	// Start transaction
+	tx := db.Begin()
+	if tx.Error != nil {
+		return fmt.Errorf("failed to start transaction: %w", tx.Error)
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// Update business settings
+	if err := tx.Model(&Business{}).Where("id = ?", businessID).Updates(map[string]interface{}{
+		"counter_enabled": enabled,
+		"counter_count":   count,
+		"counter_prefix":  prefix,
+	}).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to update business counter settings: %w", err)
+	}
+
+	if enabled {
+		// Get existing counters
+		var existingCounters []Counter
+		if err := tx.Where("business_id = ?", businessID).Find(&existingCounters).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to get existing counters: %w", err)
+		}
+
+		// Deactivate counters beyond the new count
+		if err := tx.Model(&Counter{}).Where("business_id = ? AND counter_number > ?", businessID, count).Update("is_active", false).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to deactivate excess counters: %w", err)
+		}
+
+		// Create or update counters up to the new count
+		for i := 1; i <= count; i++ {
+			var existingCounter Counter
+			err := tx.Where("business_id = ? AND counter_number = ?", businessID, i).First(&existingCounter).Error
+			
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				// Create new counter
+				newCounter := Counter{
+					BusinessID:    businessID,
+					CounterNumber: i,
+					Name:          fmt.Sprintf("%s%d", prefix, i),
+					IsActive:      true,
+				}
+				if err := tx.Create(&newCounter).Error; err != nil {
+					tx.Rollback()
+					return fmt.Errorf("failed to create counter %d: %w", i, err)
+				}
+			} else if err != nil {
+				tx.Rollback()
+				return fmt.Errorf("failed to check existing counter %d: %w", i, err)
+			} else {
+				// Update existing counter
+				if err := tx.Model(&existingCounter).Updates(map[string]interface{}{
+					"name":      fmt.Sprintf("%s%d", prefix, i),
+					"is_active": true,
+				}).Error; err != nil {
+					tx.Rollback()
+					return fmt.Errorf("failed to update counter %d: %w", i, err)
+				}
+			}
+		}
+	} else {
+		// Disable all counters for this business
+		if err := tx.Model(&Counter{}).Where("business_id = ?", businessID).Update("is_active", false).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to disable counters: %w", err)
+		}
+	}
+
+	return tx.Commit().Error
+}
+
+// GetCounterByID retrieves a counter by its ID
+func GetCounterByID(id uint) (*Counter, error) {
+	var counter Counter
+	if err := db.First(&counter, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("counter not found")
+		}
+		return nil, fmt.Errorf("failed to get counter: %w", err)
+	}
+	return &counter, nil
+}

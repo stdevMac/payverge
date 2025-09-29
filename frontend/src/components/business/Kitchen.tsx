@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
-  CardBody,
   CardHeader,
+  CardBody,
   Button,
   Chip,
   Modal,
@@ -10,43 +12,43 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Select,
-  SelectItem,
-  Textarea,
-  Input,
   Spinner,
   Tabs,
   Tab,
 } from '@nextui-org/react';
-import { ChefHat, Clock, Users, AlertCircle, CheckCircle, Play, Pause } from 'lucide-react';
-import { 
-  getKitchenOrders, 
-  updateKitchenOrderStatus, 
-  updateKitchenOrderItemStatus,
-  KitchenOrder,
-  KitchenOrderItem
-} from '../../api/kitchen';
+import { ChefHat, Clock, Users, CheckCircle, Play } from 'lucide-react';
+import { getOrders, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
 
 interface KitchenProps {
   businessId: number;
 }
 
 const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
-  const [orders, setOrders] = useState<KitchenOrder[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<KitchenOrder | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('incoming');
+  const [activeTab, setActiveTab] = useState<string>('approved');
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
   const loadOrders = useCallback(async (status?: string) => {
     setLoading(true);
     try {
-      const data = await getKitchenOrders(
-        businessId,
-        status && status !== 'all' ? status : undefined
+      const data = await getOrders(businessId, status);
+      console.log('Loaded orders from API:', data.orders);
+      
+      // Filter to only show approved, in_kitchen, ready orders (not pending)
+      let kitchenRelevantOrders = data.orders.filter(order => 
+        ['approved', 'in_kitchen', 'ready', 'delivered'].includes(order.status)
       );
-      setOrders(data.orders || []);
+      
+      // If a specific status is requested, filter further
+      if (status && status !== 'all') {
+        kitchenRelevantOrders = kitchenRelevantOrders.filter(order => order.status === status);
+      }
+      
+      console.log('Filtered kitchen orders:', kitchenRelevantOrders);
+      setOrders(kitchenRelevantOrders);
     } catch (error) {
       console.error('Error loading kitchen orders:', error);
     } finally {
@@ -54,81 +56,38 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
     }
   }, [businessId]);
 
-  const updateOrderStatus = async (orderId: number, status: string, assignedTo?: string) => {
+  const updateOrderStatusHandler = async (orderId: number, status: string) => {
     setActionLoading(orderId);
     try {
-      // Update the order status
-      await updateKitchenOrderStatus(
-        businessId,
-        orderId,
-        status,
-        assignedTo
-      );
-
-      // Auto-update all items in the order based on the new order status
-      const order = orders.find(o => o.id === orderId);
-      if (order) {
-        let itemStatus: string;
-        switch (status) {
-          case 'in_progress':
-            itemStatus = 'in_progress';
-            break;
-          case 'ready':
-            itemStatus = 'ready';
-            break;
-          case 'delivered':
-            itemStatus = 'ready'; // Items should be ready when order is delivered
-            break;
-          case 'cancelled':
-            itemStatus = 'cancelled';
-            break;
-          default:
-            itemStatus = 'pending';
-        }
-
-        // Update all items to the corresponding status
-        for (const item of order.items) {
-          if (item.status !== itemStatus) {
-            try {
-              await updateKitchenOrderItemStatus(
-                businessId,
-                orderId,
-                item.id,
-                itemStatus
-              );
-            } catch (itemError) {
-              console.error(`Error updating item ${item.id} status:`, itemError);
-            }
-          }
-        }
-      }
-
+      console.log(`Updating order ${orderId} to status: ${status} for business ${businessId}`);
+      console.log('Request data:', {
+        status: status,
+        approved_by: 'kitchen'
+      });
+      
+      const result = await updateOrderStatus(businessId, orderId, {
+        status: status as any,
+        approved_by: 'kitchen'
+      });
+      console.log('Order status updated successfully:', result);
+      
+      // Refresh orders with current tab filter to see the updated status
+      console.log('Refreshing orders for current tab:', activeTab);
       await loadOrders(activeTab === 'all' ? undefined : activeTab);
-    } catch (error) {
+      
+      // Close modal if order was updated
+      setShowOrderModal(false);
+      console.log('Modal closed, operation complete');
+    } catch (error: any) {
       console.error('Error updating order status:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      alert(`Failed to update order status: ${error.response?.data?.error || error.message}`);
     } finally {
       setActionLoading(null);
-    }
-  };
-
-  const updateItemStatus = async (orderId: number, itemId: number, status: string) => {
-    try {
-      await updateKitchenOrderItemStatus(
-        businessId,
-        orderId,
-        itemId,
-        status
-      );
-      await loadOrders(activeTab === 'all' ? undefined : activeTab);
-      // Update selected order if it's open
-      if (selectedOrder && selectedOrder.id === orderId) {
-        const updatedOrder = orders.find(o => o.id === orderId);
-        if (updatedOrder) {
-          setSelectedOrder(updatedOrder);
-        }
-      }
-    } catch (error) {
-      console.error('Error updating item status:', error);
     }
   };
 
@@ -138,57 +97,30 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
     // Set up polling for real-time updates
     const interval = setInterval(() => {
       loadOrders(activeTab === 'all' ? undefined : activeTab);
-    }, 10000); // Poll every 10 seconds
+    }, 30000); // Poll every 30 seconds
 
     return () => clearInterval(interval);
   }, [loadOrders, activeTab]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'incoming': return 'warning';
-      case 'in_progress': return 'primary';
-      case 'ready': return 'success';
-      case 'delivered': return 'default';
-      case 'cancelled': return 'danger';
-      default: return 'default';
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'urgent': return 'danger';
-      case 'high': return 'warning';
-      case 'normal': return 'primary';
-      case 'low': return 'default';
-      default: return 'default';
-    }
-  };
-
   const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return new Date(dateString).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
   };
 
-  const getElapsedTime = (createdAt: string) => {
+  const getElapsedTime = (dateString: string) => {
     const now = new Date();
-    const created = new Date(createdAt);
-    const diffMinutes = Math.floor((now.getTime() - created.getTime()) / (1000 * 60));
+    const created = new Date(dateString);
+    const diffMs = now.getTime() - created.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
     
-    if (diffMinutes < 60) {
-      return `${diffMinutes}m`;
+    if (diffMins < 60) {
+      return `${diffMins}m ago`;
     } else {
-      const hours = Math.floor(diffMinutes / 60);
-      const minutes = diffMinutes % 60;
-      return `${hours}h ${minutes}m`;
-    }
-  };
-
-  const getItemStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'warning';
-      case 'in_progress': return 'primary';
-      case 'ready': return 'success';
-      case 'cancelled': return 'danger';
-      default: return 'default';
+      const hours = Math.floor(diffMins / 60);
+      const mins = diffMins % 60;
+      return `${hours}h ${mins}m ago`;
     }
   };
 
@@ -224,8 +156,8 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
             onSelectionChange={(key) => setActiveTab(key as string)}
             className="mb-4"
           >
-            <Tab key="incoming" title="Incoming" />
-            <Tab key="in_progress" title="In Progress" />
+            <Tab key="approved" title="Approved" />
+            <Tab key="in_kitchen" title="In Kitchen" />
             <Tab key="ready" title="Ready" />
             <Tab key="all" title="All Orders" />
           </Tabs>
@@ -241,10 +173,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
               {orders.map((order) => (
                 <Card 
                   key={order.id} 
-                  className={`cursor-pointer hover:shadow-md transition-shadow ${
-                    order.priority === 'urgent' ? 'border-2 border-red-500' : 
-                    order.priority === 'high' ? 'border-2 border-orange-500' : ''
-                  }`}
+                  className="cursor-pointer hover:shadow-md transition-shadow"
                   onPress={() => {
                     setSelectedOrder(order);
                     setShowOrderModal(true);
@@ -255,18 +184,13 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                       <div>
                         <h3 className="font-semibold text-lg">#{order.order_number}</h3>
                         <p className="text-sm text-default-500">
-                          {order.table?.name || order.customer_name || 'Counter Order'}
+                          Bill #{order.bill_id}
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1">
-                        <Chip size="sm" color={getStatusColor(order.status)}>
-                          {order.status.replace('_', ' ')}
+                        <Chip size="sm" color={getOrderStatusColor(order.status)}>
+                          {getOrderStatusText(order.status)}
                         </Chip>
-                        {order.priority !== 'normal' && (
-                          <Chip size="sm" color={getPriorityColor(order.priority)}>
-                            {order.priority}
-                          </Chip>
-                        )}
                       </div>
                     </div>
                   </CardHeader>
@@ -279,95 +203,70 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-default-500 mb-2">
                           <Users className="w-4 h-4" />
-                          <span>{order.items.length} items to prepare:</span>
+                          <span>{parseOrderItems(order.items).length} items to prepare:</span>
                         </div>
-                        {order.items.map((item) => (
-                          <div key={item.id} className="flex justify-between items-center bg-default-50 rounded-lg p-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium">{item.quantity}x</span>
-                                <span className="text-sm">{item.menu_item_name}</span>
-                                <div className="flex items-center gap-1">
-                                  <Chip 
-                                    size="sm" 
-                                    color={getItemStatusColor(item.status)}
-                                    variant="flat"
-                                  >
-                                    {item.status.replace('_', ' ')}
-                                  </Chip>
-                                  {item.status === 'pending' && (
-                                    <Button
-                                      size="sm"
-                                      color="primary"
-                                      variant="flat"
-                                      className="min-w-unit-16 h-6 text-xs"
-                                      onPress={() => updateItemStatus(order.id, item.id, 'in_progress')}
-                                    >
-                                      Start
-                                    </Button>
-                                  )}
-                                  {item.status === 'in_progress' && (
-                                    <Button
-                                      size="sm"
-                                      color="success"
-                                      variant="flat"
-                                      className="min-w-unit-16 h-6 text-xs"
-                                      onPress={() => updateItemStatus(order.id, item.id, 'ready')}
-                                    >
-                                      Ready
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                              {item.special_requests && (
-                                <p className="text-xs text-default-500 mt-1 ml-8">
-                                  Note: {item.special_requests}
-                                </p>
-                              )}
+                        {parseOrderItems(order.items).slice(0, 3).map((item, index) => (
+                          <div key={index} className="flex justify-between items-center bg-default-50 rounded-lg p-2">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{item.quantity}x</span>
+                              <span className="text-sm">{item.menu_item_name}</span>
                             </div>
                           </div>
                         ))}
+                        {parseOrderItems(order.items).length > 3 && (
+                          <div className="text-xs text-default-400 text-center">
+                            +{parseOrderItems(order.items).length - 3} more items
+                          </div>
+                        )}
+                        {order.notes && (
+                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-2 mt-2">
+                            <p className="text-xs font-medium text-orange-700 mb-1">📝 Notes:</p>
+                            <p className="text-xs text-orange-600 line-clamp-2">
+                              {order.notes.length > 60 ? `${order.notes.substring(0, 60)}...` : order.notes}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      {order.notes && (
-                        <div className="flex items-start gap-2 text-sm">
-                          <AlertCircle className="w-4 h-4 mt-0.5" />
-                          <span className="text-default-600">{order.notes}</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      {order.status === 'incoming' && (
-                        <Button
-                          size="sm"
-                          color="primary"
-                          startContent={<Play className="w-3 h-3" />}
-                          isLoading={actionLoading === order.id}
-                          onPress={() => updateOrderStatus(order.id, 'in_progress')}
-                        >
-                          Start
-                        </Button>
-                      )}
-                      {order.status === 'in_progress' && (
-                        <Button
-                          size="sm"
-                          color="success"
-                          startContent={<CheckCircle className="w-3 h-3" />}
-                          isLoading={actionLoading === order.id}
-                          onPress={() => updateOrderStatus(order.id, 'ready')}
-                        >
-                          Ready
-                        </Button>
-                      )}
-                      {order.status === 'ready' && (
-                        <Button
-                          size="sm"
-                          color="default"
-                          isLoading={actionLoading === order.id}
-                          onPress={() => updateOrderStatus(order.id, 'delivered')}
-                        >
-                          Delivered
-                        </Button>
-                      )}
+                      
+                      {/* Quick Action Buttons */}
+                      <div className="flex gap-2 mt-3 pt-2 border-t border-default-100">
+                        {order.status === 'approved' && (
+                          <Button
+                            size="sm"
+                            color="primary"
+                            startContent={<Play className="w-3 h-3" />}
+                            onPress={() => updateOrderStatusHandler(order.id, 'in_kitchen')}
+                            isLoading={actionLoading === order.id}
+                            className="flex-1"
+                          >
+                            Start Cooking
+                          </Button>
+                        )}
+                        {order.status === 'in_kitchen' && (
+                          <Button
+                            size="sm"
+                            color="success"
+                            startContent={<CheckCircle className="w-3 h-3" />}
+                            onPress={() => updateOrderStatusHandler(order.id, 'ready')}
+                            isLoading={actionLoading === order.id}
+                            className="flex-1"
+                          >
+                            Mark Ready
+                          </Button>
+                        )}
+                        {order.status === 'ready' && (
+                          <Button
+                            size="sm"
+                            color="default"
+                            startContent={<CheckCircle className="w-3 h-3" />}
+                            onPress={() => updateOrderStatusHandler(order.id, 'delivered')}
+                            isLoading={actionLoading === order.id}
+                            className="flex-1"
+                          >
+                            Mark Delivered
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardBody>
                 </Card>
@@ -377,260 +276,109 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
         </CardBody>
       </Card>
 
-      {/* Enhanced Order Details Modal */}
+      {/* Order Detail Modal */}
       <Modal 
         isOpen={showOrderModal} 
         onClose={() => setShowOrderModal(false)}
-        size="3xl"
-        classNames={{
-          base: "bg-gradient-to-br from-white to-default-50",
-          header: "border-b border-divider bg-gradient-to-r from-primary-50 to-secondary-50",
-          body: "py-6",
-          footer: "border-t border-divider bg-default-25"
-        }}
+        size="2xl"
       >
         <ModalContent>
-          {selectedOrder && (
-            <>
-              <ModalHeader className="flex flex-col gap-1 px-6 py-4">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary-100 rounded-lg">
-                      <ChefHat className="w-6 h-6 text-primary-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-foreground">
-                        Order #{selectedOrder.order_number}
-                      </h2>
-                      <p className="text-sm text-default-500">
-                        {selectedOrder.table?.name || selectedOrder.customer_name || 'Counter Order'}
-                      </p>
-                    </div>
+          <ModalHeader>
+            <div className="flex items-center gap-2">
+              <ChefHat className="w-5 h-5" />
+              <span>Order #{selectedOrder?.order_number}</span>
+              <Chip size="sm" color={getOrderStatusColor(selectedOrder?.status || '')}>
+                {getOrderStatusText(selectedOrder?.status || '')}
+              </Chip>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            {selectedOrder && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-default-500">Bill ID</p>
+                    <p className="font-medium">#{selectedOrder.bill_id}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Chip 
-                      size="lg" 
-                      color={getStatusColor(selectedOrder.status)}
-                      variant="flat"
-                      className="font-semibold"
-                    >
-                      {selectedOrder.status.replace('_', ' ').toUpperCase()}
-                    </Chip>
-                    {selectedOrder.priority !== 'normal' && (
-                      <Chip 
-                        size="lg" 
-                        color={getPriorityColor(selectedOrder.priority)}
-                        variant="solid"
-                        className="font-semibold"
-                      >
-                        {selectedOrder.priority.toUpperCase()}
-                      </Chip>
-                    )}
+                  <div>
+                    <p className="text-sm text-default-500">Created</p>
+                    <p className="font-medium">{formatTime(selectedOrder.created_at)}</p>
                   </div>
                 </div>
-              </ModalHeader>
 
-              <ModalBody className="px-6">
-                {/* Order Info Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-                    <CardBody className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Clock className="w-5 h-5 text-blue-600" />
-                        <div>
-                          <p className="text-xs text-blue-600 font-medium">ORDER TIME</p>
-                          <p className="font-bold text-blue-800">{formatTime(selectedOrder.created_at)}</p>
-                          <p className="text-xs text-blue-600">({getElapsedTime(selectedOrder.created_at)} ago)</p>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-
-                  <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-                    <CardBody className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Users className="w-5 h-5 text-green-600" />
-                        <div>
-                          <p className="text-xs text-green-600 font-medium">ITEMS</p>
-                          <p className="font-bold text-green-800">{selectedOrder.items.length} dishes</p>
-                          <p className="text-xs text-green-600">to prepare</p>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-
-                  <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-                    <CardBody className="p-4">
-                      <div className="flex items-center gap-3">
-                        <AlertCircle className="w-5 h-5 text-purple-600" />
-                        <div>
-                          <p className="text-xs text-purple-600 font-medium">ASSIGNED TO</p>
-                          <p className="font-bold text-purple-800">
-                            {selectedOrder.assigned_to || 'Unassigned'}
-                          </p>
-                          <p className="text-xs text-purple-600">kitchen staff</p>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </div>
-
-                {/* Special Notes */}
                 {selectedOrder.notes && (
-                  <Card className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
-                    <CardBody className="p-4">
-                      <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
-                        <div>
-                          <p className="text-sm font-semibold text-amber-800 mb-1">Special Instructions</p>
-                          <p className="text-sm text-amber-700">{selectedOrder.notes}</p>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <p className="text-sm font-medium text-blue-700 mb-1">Order Notes:</p>
+                    <p className="text-blue-600">{selectedOrder.notes}</p>
+                  </div>
                 )}
 
-                {/* Items to Cook */}
                 <div>
-                  <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                    <ChefHat className="w-5 h-5" />
-                    Items to Prepare
-                  </h3>
-                  <div className="space-y-3">
-                    {selectedOrder.items.map((item, index) => (
-                      <Card 
-                        key={item.id} 
-                        className={`transition-all duration-200 hover:shadow-md ${
-                          item.status === 'ready' 
-                            ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
-                            : item.status === 'in_progress'
-                            ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200'
-                            : 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200'
-                        }`}
-                      >
-                        <CardBody className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center justify-center w-8 h-8 bg-primary-100 rounded-full">
-                                <span className="text-sm font-bold text-primary-600">
-                                  {index + 1}
-                                </span>
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-3 mb-1">
-                                  <span className="text-lg font-bold text-foreground">
-                                    {item.quantity}x
-                                  </span>
-                                  <span className="text-base font-semibold text-foreground">
-                                    {item.menu_item_name}
-                                  </span>
-                                </div>
-                                {item.special_requests && (
-                                  <div className="flex items-center gap-2 mt-2">
-                                    <AlertCircle className="w-4 h-4 text-amber-500" />
-                                    <span className="text-sm text-amber-700 font-medium">
-                                      {item.special_requests}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <Chip 
-                                size="md" 
-                                color={getItemStatusColor(item.status)}
-                                variant="flat"
-                                className="font-semibold"
-                              >
-                                {item.status.replace('_', ' ').toUpperCase()}
-                              </Chip>
-                              <div className="flex gap-2">
-                                {item.status === 'pending' && (
-                                  <Button
-                                    color="primary"
-                                    size="sm"
-                                    startContent={<Play className="w-4 h-4" />}
-                                    onPress={() => updateItemStatus(selectedOrder.id, item.id, 'in_progress')}
-                                    className="font-semibold"
-                                  >
-                                    Start Cooking
-                                  </Button>
-                                )}
-                                {item.status === 'in_progress' && (
-                                  <Button
-                                    color="success"
-                                    size="sm"
-                                    startContent={<CheckCircle className="w-4 h-4" />}
-                                    onPress={() => updateItemStatus(selectedOrder.id, item.id, 'ready')}
-                                    className="font-semibold"
-                                  >
-                                    Mark Ready
-                                  </Button>
-                                )}
-                                {item.status === 'ready' && (
-                                  <Chip color="success" variant="solid" className="font-semibold">
-                                    ✓ READY
-                                  </Chip>
-                                )}
-                              </div>
-                            </div>
+                  <h4 className="font-medium mb-2">Items to Prepare:</h4>
+                  <div className="space-y-2">
+                    {parseOrderItems(selectedOrder.items).map((item, index) => (
+                      <div key={index} className="flex justify-between items-center bg-default-50 rounded-lg p-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{item.quantity}x</span>
+                            <span>{item.menu_item_name}</span>
                           </div>
-                        </CardBody>
-                      </Card>
+                          {item.special_requests && (
+                            <p className="text-sm text-orange-600 mt-1">
+                              Special: {item.special_requests}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-medium">${item.subtotal.toFixed(2)}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
-              </ModalBody>
-
-              <ModalFooter className="px-6 py-4">
-                <div className="flex justify-between items-center w-full">
-                  <div className="flex gap-2">
-                    {selectedOrder.status === 'incoming' && (
-                      <Button
-                        color="primary"
-                        size="lg"
-                        startContent={<Play className="w-4 h-4" />}
-                        onPress={() => updateOrderStatus(selectedOrder.id, 'in_progress')}
-                        className="font-semibold"
-                      >
-                        Start All Items
-                      </Button>
-                    )}
-                    {selectedOrder.status === 'in_progress' && (
-                      <Button
-                        color="success"
-                        size="lg"
-                        startContent={<CheckCircle className="w-4 h-4" />}
-                        onPress={() => updateOrderStatus(selectedOrder.id, 'ready')}
-                        className="font-semibold"
-                      >
-                        Mark All Ready
-                      </Button>
-                    )}
-                    {selectedOrder.status === 'ready' && (
-                      <Button
-                        color="default"
-                        size="lg"
-                        onPress={() => updateOrderStatus(selectedOrder.id, 'delivered')}
-                        className="font-semibold"
-                      >
-                        Mark Delivered
-                      </Button>
-                    )}
-                  </div>
-                  <Button 
-                    color="danger" 
-                    variant="light" 
-                    size="lg"
-                    onPress={() => setShowOrderModal(false)}
-                    className="font-semibold"
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="light" onPress={() => setShowOrderModal(false)}>
+              Close
+            </Button>
+            {selectedOrder && (
+              <div className="flex gap-2">
+                {selectedOrder.status === 'approved' && (
+                  <Button
+                    color="primary"
+                    startContent={<Play className="w-4 h-4" />}
+                    onPress={() => {
+                      console.log('Start Cooking button clicked for order:', selectedOrder.id);
+                      updateOrderStatusHandler(selectedOrder.id, 'in_kitchen');
+                    }}
+                    isLoading={actionLoading === selectedOrder.id}
                   >
-                    Close
+                    Start Cooking
                   </Button>
-                </div>
-              </ModalFooter>
-            </>
-          )}
+                )}
+                {selectedOrder.status === 'in_kitchen' && (
+                  <Button
+                    color="success"
+                    startContent={<CheckCircle className="w-4 h-4" />}
+                    onPress={() => updateOrderStatusHandler(selectedOrder.id, 'ready')}
+                    isLoading={actionLoading === selectedOrder.id}
+                  >
+                    Mark Ready
+                  </Button>
+                )}
+                {selectedOrder.status === 'ready' && (
+                  <Button
+                    color="default"
+                    startContent={<CheckCircle className="w-4 h-4" />}
+                    onPress={() => updateOrderStatusHandler(selectedOrder.id, 'delivered')}
+                    isLoading={actionLoading === selectedOrder.id}
+                  >
+                    Mark Delivered
+                  </Button>
+                )}
+              </div>
+            )}
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

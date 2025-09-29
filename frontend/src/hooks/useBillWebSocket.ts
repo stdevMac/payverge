@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { useWebSocket, WebSocketMessage } from './useWebSocket';
-import { BillResponse } from '../api/bills';
+import { BillWithItemsResponse } from '../api/bills';
 
 interface UseBillWebSocketOptions {
   tableCode?: string;
   billId?: number;
-  onBillUpdate?: (bill: BillResponse) => void;
+  onBillUpdate?: (bill: BillWithItemsResponse) => void;
   onBillClosed?: (billId: number) => void;
   onPaymentReceived?: (payment: any) => void;
   onItemAdded?: (item: any) => void;

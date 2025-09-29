@@ -728,8 +728,10 @@ func DeleteMenuItem(c *gin.Context) {
 
 // CreateBillRequest represents the request to create a new bill
 type CreateBillRequest struct {
-	TableID uint                 `json:"table_id" binding:"required"`
-	Items   []database.BillItem  `json:"items"`
+	TableID   *uint                `json:"table_id"`
+	CounterID *uint                `json:"counter_id"`
+	Notes     string               `json:"notes"`
+	Items     []database.BillItem  `json:"items"`
 }
 
 // UpdateBillRequest represents the request to update a bill
@@ -778,23 +780,55 @@ func CreateBill(c *gin.Context) {
 		return
 	}
 
-	// Verify table belongs to business
-	table, err := database.GetTableByID(req.TableID)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Table not found"})
+	// Validate that either table_id or counter_id is provided, but not both
+	if req.TableID == nil && req.CounterID == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Either table_id or counter_id must be provided"})
 		return
 	}
 
-	if table.BusinessID != uint(businessID) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Table does not belong to this business"})
+	if req.TableID != nil && req.CounterID != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot specify both table_id and counter_id"})
 		return
 	}
 
-	// Check if table already has an open bill
-	existingBill, _, err := database.GetOpenBillByTableID(req.TableID)
-	if err == nil && existingBill != nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Table already has an open bill"})
-		return
+	// Validate table if provided
+	if req.TableID != nil {
+		table, err := database.GetTableByID(*req.TableID)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Table not found"})
+			return
+		}
+
+		if table.BusinessID != uint(businessID) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Table does not belong to this business"})
+			return
+		}
+
+		// Check if table already has an open bill
+		existingBill, _, err := database.GetOpenBillByTableID(*req.TableID)
+		if err == nil && existingBill != nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "Table already has an open bill"})
+			return
+		}
+	}
+
+	// Validate counter if provided
+	if req.CounterID != nil {
+		counter, err := database.GetCounterByID(*req.CounterID)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Counter not found"})
+			return
+		}
+
+		if counter.BusinessID != uint(businessID) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Counter does not belong to this business"})
+			return
+		}
+
+		if !counter.IsActive {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Counter is not active"})
+			return
+		}
 	}
 
 	// Calculate totals
@@ -814,8 +848,9 @@ func CreateBill(c *gin.Context) {
 	// Create bill
 	bill := &database.Bill{
 		BusinessID:       uint(businessID),
-		TableID:          req.TableID,
+		CounterID:        req.CounterID,
 		BillNumber:       billNumber,
+		Notes:            req.Notes,
 		Subtotal:         subtotal,
 		TaxAmount:        taxAmount,
 		ServiceFeeAmount: serviceFeeAmount,
@@ -823,6 +858,11 @@ func CreateBill(c *gin.Context) {
 		Status:           database.BillStatusOpen,
 		SettlementAddr:   business.SettlementAddr,
 		TippingAddr:      business.TippingAddr,
+	}
+
+	// Set TableID if provided
+	if req.TableID != nil {
+		bill.TableID = *req.TableID
 	}
 
 	if err := database.CreateBill(bill, req.Items); err != nil {
@@ -864,6 +904,41 @@ func GetBusinessBills(c *gin.Context) {
 	}
 
 	bills, err := database.GetAllBillsByBusinessID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"bills": bills})
+}
+
+// GetOpenBusinessBills retrieves only open bills for a business (for table filtering)
+func GetOpenBusinessBills(c *gin.Context) {
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to access this business"})
+		return
+	}
+
+	bills, err := database.GetOpenBillsByBusinessID(uint(businessID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -1259,4 +1334,145 @@ func CheckCustomURLAvailability(c *gin.Context) {
 		"available": true,
 		"url": customURL,
 	})
+}
+
+// Counter management handlers
+
+// UpdateCounterSettingsRequest represents the request to update counter settings
+type UpdateCounterSettingsRequest struct {
+	CounterEnabled bool   `json:"counter_enabled"`
+	CounterCount   int    `json:"counter_count" binding:"min=1,max=20"`
+	CounterPrefix  string `json:"counter_prefix" binding:"required,max=5"`
+}
+
+// UpdateCounterSettings updates counter configuration for a business
+func UpdateCounterSettings(c *gin.Context) {
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to modify this business"})
+		return
+	}
+
+	var req UpdateCounterSettingsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update counter settings
+	if err := database.UpdateBusinessCounters(uint(businessID), req.CounterEnabled, req.CounterCount, req.CounterPrefix); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update counter settings"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Counter settings updated successfully"})
+}
+
+// GetBusinessCounters retrieves all counters for a business
+func GetBusinessCounters(c *gin.Context) {
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to access this business"})
+		return
+	}
+
+	// Get counters
+	counters, err := database.GetBusinessCounters(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get counters"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"counters": counters,
+		"business": gin.H{
+			"counter_enabled": business.CounterEnabled,
+			"counter_count":   business.CounterCount,
+			"counter_prefix":  business.CounterPrefix,
+		},
+	})
+}
+
+// GetAvailableCounters retrieves available counters for bill creation
+func GetAvailableCounters(c *gin.Context) {
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to access this business"})
+		return
+	}
+
+	// Check if counters are enabled
+	if !business.CounterEnabled {
+		c.JSON(http.StatusOK, gin.H{"counters": []database.Counter{}})
+		return
+	}
+
+	// Get available counters
+	counters, err := database.GetAvailableCounters(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get available counters"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"counters": counters})
 }
