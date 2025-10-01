@@ -2,15 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 import { TypewriterText } from '@/components/ui/TypewriterText';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { getReferralStats, getReferralTierPricing } from '@/api/referrals';
+import { getReferralStats } from '@/api/referrals';
+import { 
+  useTotalReferrers,
+  useReferrer,
+  useBasicReferrerFee,
+  usePremiumReferrerFee,
+  formatUsdcAmount
+} from '@/contracts/hooks';
 
 export default function ReferralsPage() {
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { address, isConnected } = useAccount();
+  const { open } = useAppKit();
 
   const dreamWords = [
     "effortlessly",
@@ -20,7 +31,11 @@ export default function ReferralsPage() {
     "automatically"
   ];
 
-  const tierPricing = getReferralTierPricing();
+  // Blockchain hooks
+  const { data: totalReferrers } = useTotalReferrers();
+  const { data: userReferrer } = useReferrer(address || '0x0');
+  const { data: basicFee } = useBasicReferrerFee();
+  const { data: premiumFee } = usePremiumReferrerFee();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -77,42 +92,73 @@ export default function ReferralsPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                <Button
-                  onClick={() => router.push('/referrals/buy')}
-                  className="px-8 py-4 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                >
-                  Start Earning Today
-                </Button>
-                <Button
-                  onClick={() => router.push('/referrals/dashboard')}
-                  variant="secondary"
-                  className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-gray-500 hover:text-gray-900 transition-all duration-300"
-                >
-                  Check My Account
-                </Button>
+                {!isConnected ? (
+                  <Button
+                    onClick={() => open()}
+                    className="px-8 py-4 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                  >
+                    Connect Wallet to Start
+                  </Button>
+                ) : userReferrer ? (
+                  <>
+                    <Button
+                      onClick={() => router.push('/referrals/dashboard')}
+                      className="px-8 py-4 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                    >
+                      View My Dashboard
+                    </Button>
+                    <Button
+                      onClick={() => router.push('/referrals/buy')}
+                      variant="secondary"
+                      className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-gray-500 hover:text-gray-900 transition-all duration-300"
+                    >
+                      Upgrade Tier
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => router.push('/referrals/buy')}
+                      className="px-8 py-4 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                    >
+                      Start Earning Today
+                    </Button>
+                    <Button
+                      onClick={() => router.push('/referrals/dashboard')}
+                      variant="secondary"
+                      className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-gray-500 hover:text-gray-900 transition-all duration-300"
+                    >
+                      Check My Account
+                    </Button>
+                  </>
+                )}
               </div>
 
               {/* Stats */}
-              {!isLoading && stats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{stats.total_referrers}</div>
-                    <div className="text-sm text-gray-600">Active Referrers</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
+                    {totalReferrers ? totalReferrers.toString() : stats?.total_referrers || '0'}
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{stats.total_referrals}</div>
-                    <div className="text-sm text-gray-600">Businesses Referred</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">${(parseFloat(stats.total_commissions || '0') / 1000000).toFixed(0)}</div>
-                    <div className="text-sm text-gray-600">Total Paid Out</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">15%</div>
-                    <div className="text-sm text-gray-600">Max Commission</div>
-                  </div>
+                  <div className="text-sm text-gray-600">Active Referrers</div>
                 </div>
-              )}
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
+                    {stats?.total_referrals || '0'}
+                  </div>
+                  <div className="text-sm text-gray-600">Businesses Referred</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">
+                    ${stats ? (parseFloat(stats.total_commissions || '0') / 1000000).toFixed(0) : '0'}
+                  </div>
+                  <div className="text-sm text-gray-600">Total Paid Out</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">15%</div>
+                  <div className="text-sm text-gray-600">Max Commission</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

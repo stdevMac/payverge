@@ -736,3 +736,32 @@ func GetCounterByID(id uint) (*Counter, error) {
 	}
 	return &counter, nil
 }
+
+// MarkBillAsPaid updates a bill's payment status and details
+func MarkBillAsPaid(billID uint, amountPaid, tipAmount float64, paymentMethod, notes string) error {
+	now := time.Now()
+	
+	updates := map[string]interface{}{
+		"paid_amount":    amountPaid,
+		"tip_amount":     tipAmount,
+		"status":         BillStatusPaid,
+		"updated_at":     now,
+		"closed_at":      &now,
+	}
+	
+	// Add payment method and notes to the bill's notes field if provided
+	if notes != "" {
+		var existingNotes string
+		if err := db.Model(&Bill{}).Where("id = ?", billID).Select("notes").Scan(&existingNotes).Error; err == nil {
+			if existingNotes != "" {
+				updates["notes"] = fmt.Sprintf("%s\n\nPayment: %s via %s - %s", existingNotes, 
+					fmt.Sprintf("$%.2f", amountPaid), paymentMethod, notes)
+			} else {
+				updates["notes"] = fmt.Sprintf("Payment: %s via %s - %s", 
+					fmt.Sprintf("$%.2f", amountPaid), paymentMethod, notes)
+			}
+		}
+	}
+	
+	return db.Model(&Bill{}).Where("id = ?", billID).Updates(updates).Error
+}

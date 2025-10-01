@@ -54,7 +54,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 84532,
-    usdcAddress: '0x82d491aB292C06Aa7148234b910cdea5FE788223' as Address, // USDC on Base Sepolia
+    usdcAddress: process.env.NEXT_PUBLIC_USDC_ADDRESS as Address, // USDC on Base Sepolia
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
 };

@@ -88,6 +88,7 @@ type Business struct {
 	Description     string          `json:"description"`
 	CustomURL       string          `json:"custom_url"`
 	Phone           string          `json:"phone"`
+	Email           string          `json:"email"` // Business contact email
 	Website         string          `json:"website"`
 	SocialMedia     string          `json:"social_media"` // JSON string for social media links
 	BannerImages    string          `json:"banner_images"` // JSON array of banner image URLs

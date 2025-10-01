@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { 
@@ -18,6 +19,9 @@ import {
   useApproveUsdcForReferrals,
   useUsdcAllowanceForReferrals,
   useUsdcBalance,
+  useReferralCodeAvailability,
+  useBasicReferrerFee,
+  usePremiumReferrerFee,
   formatUsdcAmount,
   parseUsdcAmount
 } from '@/contracts/hooks';
@@ -27,7 +31,7 @@ export default function BuyReferralPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { address, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { open } = useAppKit();
   
   const [selectedTier, setSelectedTier] = useState<'basic' | 'premium'>('basic');
   const [referralCode, setReferralCode] = useState('');
@@ -37,14 +41,15 @@ export default function BuyReferralPage() {
   const [registrationStep, setRegistrationStep] = useState<'select' | 'approve' | 'register' | 'success'>('select');
   const [error, setError] = useState<string | null>(null);
 
-  const tierPricing = getReferralTierPricing();
-  
   // Contract hooks
   const { registerBasicReferrer } = useRegisterBasicReferrer();
   const { registerPremiumReferrer } = useRegisterPremiumReferrer();
   const { approveUsdcForReferrals } = useApproveUsdcForReferrals();
   const { data: usdcAllowance } = useUsdcAllowanceForReferrals();
   const { data: usdcBalance } = useUsdcBalance();
+  const { data: basicFee } = useBasicReferrerFee();
+  const { data: premiumFee } = usePremiumReferrerFee();
+  const { data: codeAvailability } = useReferralCodeAvailability(referralCode);
 
   // Get tier from URL params
   useEffect(() => {
@@ -61,7 +66,7 @@ export default function BuyReferralPage() {
     }
   }, [referralCode]);
 
-  // Check referral code availability with debounce
+  // Check referral code availability using blockchain
   useEffect(() => {
     if (!referralCode) return;
 
@@ -73,25 +78,15 @@ export default function BuyReferralPage() {
     }
 
     setError(null);
-    setIsCheckingCode(true);
-
-    const timeoutId = setTimeout(async () => {
-      try {
-        const result = await checkReferralCodeAvailability(referralCode);
-        setIsCodeAvailable(result.available);
-        if (!result.available && result.error) {
-          setError(result.error);
-        }
-      } catch (err) {
-        setError('Failed to check code availability');
-        setIsCodeAvailable(false);
-      } finally {
-        setIsCheckingCode(false);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [referralCode]);
+    
+    // Use blockchain data for availability check
+    if (codeAvailability !== undefined) {
+      setIsCodeAvailable(Boolean(codeAvailability));
+      setIsCheckingCode(false);
+    } else {
+      setIsCheckingCode(true);
+    }
+  }, [referralCode, codeAvailability]);
 
   const handleGenerateNewCode = () => {
     setReferralCode(generateReferralCode(8));
@@ -99,20 +94,24 @@ export default function BuyReferralPage() {
     setError(null);
   };
 
-  const getRequiredAmount = () => {
-    return selectedTier === 'premium' 
-      ? CONTRACT_CONSTANTS.PREMIUM_REFERRER_FEE 
-      : CONTRACT_CONSTANTS.BASIC_REFERRER_FEE;
+  const getRequiredAmount = (): bigint => {
+    if (selectedTier === 'premium') {
+      return typeof premiumFee === 'bigint' ? premiumFee : CONTRACT_CONSTANTS.PREMIUM_REFERRER_FEE; // $25 USDC
+    } else {
+      return typeof basicFee === 'bigint' ? basicFee : CONTRACT_CONSTANTS.BASIC_REFERRER_FEE; // $10 USDC
+    }
   };
 
   const hasEnoughBalance = () => {
-    if (!usdcBalance) return false;
-    return usdcBalance >= getRequiredAmount();
+    if (!usdcBalance || typeof usdcBalance !== 'bigint') return false;
+    const required = getRequiredAmount();
+    return usdcBalance >= required;
   };
 
   const hasEnoughAllowance = () => {
-    if (!usdcAllowance) return false;
-    return usdcAllowance >= getRequiredAmount();
+    if (!usdcAllowance || typeof usdcAllowance !== 'bigint') return false;
+    const required = getRequiredAmount();
+    return usdcAllowance >= required;
   };
 
   const handleApproveUsdc = async () => {
@@ -141,16 +140,23 @@ export default function BuyReferralPage() {
       setError(null);
 
       // Call smart contract function
-      const contractFn = selectedTier === 'premium' ? registerPremiumReferrer : registerBasicReferrer;
-      const txHash = await contractFn(referralCode);
+      if (selectedTier === 'premium') {
+        await registerPremiumReferrer(referralCode);
+      } else {
+        await registerBasicReferrer(referralCode);
+      }
 
-      // Register in backend
-      await registerReferrer({
-        wallet_address: address,
-        referral_code: referralCode,
-        tier: selectedTier,
-        registration_tx_hash: (txHash as unknown) as string,
-      });
+      // Optional: Register in backend for additional tracking
+      try {
+        await registerReferrer({
+          wallet_address: address,
+          referral_code: referralCode,
+          tier: selectedTier,
+          registration_tx_hash: 'blockchain', // Will be updated with actual tx hash
+        });
+      } catch (backendErr) {
+        console.warn('Backend registration failed, but blockchain registration succeeded');
+      }
 
       setRegistrationStep('success');
     } catch (err: any) {
@@ -186,7 +192,7 @@ export default function BuyReferralPage() {
                     Basic Referrer
                   </h3>
                   <div className={`text-5xl font-medium mb-2 ${selectedTier === 'basic' ? 'text-white' : 'text-gray-900'}`}>
-                    $10
+                    {typeof basicFee === 'bigint' ? formatUsdcAmount(basicFee) : '$10'} USDC
                   </div>
                   <p className={`font-light ${selectedTier === 'basic' ? 'text-gray-300' : 'text-gray-500'}`}>
                     One-time registration fee
@@ -243,7 +249,7 @@ export default function BuyReferralPage() {
                     Premium Referrer
                   </h3>
                   <div className={`text-5xl font-medium mb-2 ${selectedTier === 'premium' ? 'text-white' : 'text-gray-900'}`}>
-                    $25
+                    {typeof premiumFee === 'bigint' ? formatUsdcAmount(premiumFee) : '$25'} USDC
                   </div>
                   <p className={`font-light ${selectedTier === 'premium' ? 'text-gray-300' : 'text-gray-500'}`}>
                     One-time registration fee
@@ -282,7 +288,7 @@ export default function BuyReferralPage() {
                 <h3 className="text-lg font-semibold text-yellow-800 mb-2">Connect Your Wallet</h3>
                 <p className="text-yellow-700 mb-4">Connect your wallet to proceed with registration</p>
                 <Button
-                  onClick={() => connect({ connector: connectors[0] })}
+                  onClick={() => open()}
                   className="bg-yellow-600 text-white hover:bg-yellow-700"
                 >
                   Connect Wallet

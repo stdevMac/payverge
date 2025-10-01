@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"payverge/internal/database"
 	"payverge/internal/metrics"
 	"payverge/internal/structs"
-	"payverge/internal/utils"
+
+	"github.com/gin-gonic/gin"
 
 	"math/big"
 )
@@ -311,7 +311,7 @@ func newUser(address string) structs.User {
 		NotificationPreference:  structs.EmailNotificationPreference,
 		NotificationPreferences: structs.NewDefaultNotificationPreferences(),
 		LanguageSelected:        "",
-		ReferralCode:            utils.GenerateReferralCode(),
+		ReferralCode:            "",
 		Referrer:                "",
 		RefereePoints:           make(map[string]int64),
 		Notifications:           make([]structs.Notification, 0),

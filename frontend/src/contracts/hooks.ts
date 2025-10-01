@@ -136,27 +136,6 @@ export const useRemainingDailyLimit = (userAddress?: Address) => {
 };
 
 // Write hooks
-export const useCreateBill = () => {
-  const config = useContractConfig();
-  const { writeContract } = useWriteContract();
-  
-  const createBill = (params: CreateBillParams) => {
-    return writeContract({
-      address: config.payments,
-      abi: PAYVERGE_PAYMENTS_ABI,
-      functionName: 'createBill',
-      args: [
-        params.billId as `0x${string}`,
-        params.businessAddress,
-        params.totalAmount,
-        params.metadata,
-        params.nonce as `0x${string}`,
-      ],
-    });
-  };
-  
-  return { createBill };
-};
 
 export const useProcessPayment = () => {
   const config = useContractConfig();
@@ -180,24 +159,22 @@ export const useProcessPayment = () => {
 
 export const useRegisterBusiness = () => {
   const config = useContractConfig();
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   
-  const registerBusiness = (params: RegisterBusinessParams) => {
-    return writeContract({
+  const registerBusiness = async (params: RegisterBusinessParams) => {
+    const hash = await writeContractAsync({
       address: config.payments,
       abi: PAYVERGE_PAYMENTS_ABI,
       functionName: 'registerBusiness',
-      args: params.referralCode ? [
+      args: [
         params.name,
         params.paymentAddress,
         params.tippingAddress,
-        params.referralCode,
-      ] : [
-        params.name,
-        params.paymentAddress,
-        params.tippingAddress,
+        params.referralCode || '', // Always provide referralCode, empty string if not provided
       ],
     });
+    
+    return hash;
   };
   
   return { registerBusiness };
@@ -248,6 +225,28 @@ export const useClaimEarnings = () => {
   };
   
   return { claimEarnings };
+};
+
+export const useCreateBill = () => {
+  const config = useContractConfig();
+  const { writeContract } = useWriteContract();
+  
+  const createBill = (params: CreateBillParams) => {
+    return writeContract({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'createBill',
+      args: [
+        params.billId as `0x${string}`,
+        params.businessAddress,
+        params.totalAmount,
+        params.metadata,
+        params.nonce as `0x${string}`,
+      ],
+    });
+  };
+  
+  return { createBill };
 };
 
 // Event watching hooks
@@ -350,12 +349,12 @@ export const useUsdcAllowance = (spender?: Address) => {
 
 export const useApproveUsdc = () => {
   const config = useContractConfig();
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   
-  const approveUsdc = (amount: bigint, spender?: Address) => {
+  const approveUsdc = async (amount: bigint, spender?: Address) => {
     const spenderAddress = spender || config.payments;
     
-    return writeContract({
+    const hash = await writeContractAsync({
       address: config.usdcAddress,
       abi: [
         {
@@ -372,6 +371,8 @@ export const useApproveUsdc = () => {
       functionName: 'approve',
       args: [spenderAddress, amount],
     });
+    
+    return hash;
   };
   
   return { approveUsdc };

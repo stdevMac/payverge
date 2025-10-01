@@ -200,5 +200,9 @@ func autoMigrate() error {
 		&StaffLoginCode{},
 		// Order management models
 		&Order{},
+		// Referral system models
+		&Referrer{},
+		&ReferralRecord{},
+		&ReferralCommissionClaim{},
 	)
 }

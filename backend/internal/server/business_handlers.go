@@ -28,12 +28,14 @@ type CreateBusinessRequest struct {
 	Description          string                  `json:"description"`
 	CustomURL            string                  `json:"custom_url"`
 	Phone                string                  `json:"phone"`
+	Email                string                  `json:"email"`
 	Website              string                  `json:"website"`
 	SocialMedia          string                  `json:"social_media"`
 	BannerImages         string                  `json:"banner_images"`
 	BusinessPageEnabled  bool                    `json:"business_page_enabled"`
 	ShowReviews          bool                    `json:"show_reviews"`
 	GoogleReviewsEnabled bool                    `json:"google_reviews_enabled"`
+	ReferredByCode       string                  `json:"referred_by_code"` // Referral code used during registration
 }
 
 // Business update request
@@ -1475,4 +1477,148 @@ func GetAvailableCounters(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"counters": counters})
+}
+
+// Payment control handlers
+
+// MarkPaidRequest represents the request to mark a bill as paid
+type MarkPaidRequest struct {
+	PaymentMethod string  `json:"payment_method" binding:"required,oneof=cash card crypto"`
+	AmountPaid    float64 `json:"amount_paid" binding:"required,min=0"`
+	TipAmount     float64 `json:"tip_amount,omitempty"`
+	Notes         string  `json:"notes,omitempty"`
+}
+
+// MarkBillAsPaid allows staff to mark a bill as paid
+func MarkBillAsPaid(c *gin.Context) {
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	billID, err := strconv.ParseUint(c.Param("bill_id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req MarkPaidRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get bill and verify ownership
+	bill, _, err := database.GetBillByID(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(bill.BusinessID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to access this bill"})
+		return
+	}
+
+	// Check if bill is already paid
+	if bill.Status == database.BillStatusPaid || bill.Status == database.BillStatusClosed {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bill is already paid or closed"})
+		return
+	}
+
+	// Update bill status and payment details
+	err = database.MarkBillAsPaid(uint(billID), req.AmountPaid, req.TipAmount, req.PaymentMethod, req.Notes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to mark bill as paid"})
+		return
+	}
+
+	// Get updated bill
+	updatedBill, items, err := database.GetBillByID(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve updated bill"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"bill":  updatedBill,
+		"items": items,
+	})
+}
+
+// ApproveCashPayment allows staff to approve cash payments
+func ApproveCashPayment(c *gin.Context) {
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	billID, err := strconv.ParseUint(c.Param("bill_id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req MarkPaidRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Force payment method to cash for this endpoint
+	req.PaymentMethod = "cash"
+
+	// Get bill and verify ownership
+	bill, _, err := database.GetBillByID(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	// Verify business ownership
+	business, err := database.GetBusinessByID(bill.BusinessID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to access this bill"})
+		return
+	}
+
+	// Check if bill is already paid
+	if bill.Status == database.BillStatusPaid || bill.Status == database.BillStatusClosed {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bill is already paid or closed"})
+		return
+	}
+
+	// Update bill status and payment details with cash approval
+	notes := fmt.Sprintf("Cash payment approved by staff. %s", req.Notes)
+	err = database.MarkBillAsPaid(uint(billID), req.AmountPaid, req.TipAmount, "cash", notes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to approve cash payment"})
+		return
+	}
+
+	// Get updated bill
+	updatedBill, items, err := database.GetBillByID(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve updated bill"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"bill":  updatedBill,
+		"items": items,
+	})
 }

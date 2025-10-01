@@ -24,10 +24,13 @@ import {
   Tabs,
   Tab,
 } from '@nextui-org/react';
-import { Eye, DollarSign, Clock, Users, Plus, ChefHat, CheckCircle, XCircle } from 'lucide-react';
+import { Eye, DollarSign, Clock, Users, Plus, ChefHat, CheckCircle, XCircle, Wallet, CreditCard } from 'lucide-react';
 import { getBill, getBusinessBills, BillWithItemsResponse, closeBill, Bill } from '../../api/bills';
 import { BillCreator } from './BillCreator';
 import { getOrdersByBillId, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
+import AlternativePaymentManager from './AlternativePaymentManager';
+import PaymentProcessor from '../payment/PaymentProcessor';
+import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
 
 interface BillManagerProps {
   businessId: number;
@@ -39,11 +42,11 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const [selectedBill, setSelectedBill] = useState<BillWithItemsResponse | null>(null);
   const [showBillDetails, setShowBillDetails] = useState(false);
   const [showBillCreator, setShowBillCreator] = useState(false);
-  const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [showPaymentProcessor, setShowPaymentProcessor] = useState(false);
+  const [showBillSplitting, setShowBillSplitting] = useState(false);
   const [orders, setOrders] = useState<Record<number, Order[]>>({});
-  
-  // Tab management
-  const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('active');
   
   // Active Bills Filters
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
@@ -705,6 +708,70 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     </div>
                   </CardBody>
                 </Card>
+
+                {/* Payment Options - Only show for unpaid bills */}
+                {selectedBill.bill.status === 'open' && (
+                  <Card>
+                    <CardHeader>
+                      <h3 className="text-lg font-semibold">Payment Options</h3>
+                      <p className="text-sm text-default-500">
+                        Process payments for customers at counter or table
+                      </p>
+                    </CardHeader>
+                    <CardBody>
+                      <div className="space-y-3">
+                        {/* Pay with Crypto */}
+                        <Button
+                          color="primary"
+                          size="lg"
+                          onPress={() => setShowPaymentProcessor(true)}
+                          className="w-full"
+                          startContent={<Wallet className="w-5 h-5" />}
+                        >
+                          Pay with Crypto (USDC)
+                        </Button>
+
+                        {/* Pay with Cash/Card */}
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <h4 className="font-medium mb-3">Cash/Card Payments</h4>
+                          <AlternativePaymentManager
+                            billId={selectedBill.bill.id.toString()}
+                            billTotal={selectedBill.bill.total_amount}
+                            onPaymentMarked={() => {
+                              // Refresh bill data after payment
+                              loadBills();
+                              if (selectedBill) {
+                                handleViewBill(selectedBill.bill.id);
+                              }
+                            }}
+                          />
+                        </div>
+
+                        {/* Split Bill */}
+                        <Button
+                          color="warning"
+                          variant="bordered"
+                          size="lg"
+                          onPress={() => setShowBillSplitting(true)}
+                          className="w-full"
+                          startContent={<Users className="w-5 h-5" />}
+                        >
+                          Split Bill
+                        </Button>
+                      </div>
+
+                      {/* Payment Summary */}
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-blue-700 font-medium">Remaining Amount:</span>
+                          <span className="font-semibold text-blue-900">
+                            ${(selectedBill.bill.total_amount - selectedBill.bill.paid_amount).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+                )}
               </div>
             )}
           </ModalBody>
@@ -734,6 +801,53 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
         businessId={businessId}
         onBillCreated={loadBills}
       />
+
+      {/* Payment Processor Modal */}
+      {selectedBill && (
+        <PaymentProcessor
+          isOpen={showPaymentProcessor}
+          onClose={() => setShowPaymentProcessor(false)}
+          billId={selectedBill.bill.id}
+          amount={selectedBill.bill.total_amount - selectedBill.bill.paid_amount}
+          businessName="Business"
+          businessAddress={selectedBill.bill.settlement_address}
+          tipAddress={selectedBill.bill.tipping_address}
+          onPaymentComplete={() => {
+            setShowPaymentProcessor(false);
+            loadBills();
+            if (selectedBill) {
+              handleViewBill(selectedBill.bill.id);
+            }
+          }}
+        />
+      )}
+
+      {/* Bill Splitting Modal */}
+      {selectedBill && (
+        <BillSplittingFlow
+          bill={{
+            id: selectedBill.bill.id,
+            billNumber: selectedBill.bill.bill_number,
+            items: selectedBill.items,
+            subtotal: selectedBill.bill.subtotal,
+            taxAmount: selectedBill.bill.tax_amount,
+            serviceFeeAmount: selectedBill.bill.service_fee_amount,
+            totalAmount: selectedBill.bill.total_amount,
+          }}
+          businessName="Business"
+          businessAddress="Business Address"
+          tableNumber={selectedBill.bill.table_id?.toString() || 'Counter'}
+          isOpen={showBillSplitting}
+          onClose={() => setShowBillSplitting(false)}
+          onPaymentInitiate={() => {
+            setShowBillSplitting(false);
+            loadBills();
+            if (selectedBill) {
+              handleViewBill(selectedBill.bill.id);
+            }
+          }}
+        />
+      )}
     </>
   );
 };

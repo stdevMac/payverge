@@ -109,6 +109,24 @@ export const closeBill = async (billId: number): Promise<BillResponse> => {
   return response.data;
 };
 
+// Payment control functions for staff
+export interface MarkPaidRequest {
+  payment_method: 'cash' | 'card' | 'crypto';
+  amount_paid: number;
+  tip_amount?: number;
+  notes?: string;
+}
+
+export const markBillAsPaid = async (billId: number, data: MarkPaidRequest): Promise<BillResponse> => {
+  const response = await axiosInstance.post(`/inside/bills/${billId}/mark-paid`, data);
+  return response.data;
+};
+
+export const approveCashPayment = async (billId: number, data: MarkPaidRequest): Promise<BillResponse> => {
+  const response = await axiosInstance.post(`/inside/bills/${billId}/approve-cash`, data);
+  return response.data;
+};
+
 // Guest API functions (no authentication required)
 export const getTableByCode = async (code: string) => {
   const response = await axiosInstance.get(`/guest/table/${code}`);
