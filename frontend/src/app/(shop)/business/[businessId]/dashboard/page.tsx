@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/hooks/useAuth';
@@ -39,6 +40,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [salesData, setSalesData] = useState<SalesData | null>(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [tables, setTables] = useState<Table[]>([]);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
@@ -141,6 +144,20 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
     checkAuth();
   }, [user]);
 
+  // Check for welcome flow
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const welcome = urlParams.get('welcome');
+    const newBusiness = urlParams.get('new');
+    
+    if (welcome === 'true' || newBusiness === 'true') {
+      setShowWelcome(true);
+      setIsFirstVisit(true);
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
   // Fetch business data
   useEffect(() => {
     const fetchBusiness = async () => {
@@ -163,7 +180,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
     if (!authLoading && !error) {
       fetchBusiness();
     }
-  }, [businessId, authLoading, error]);
+  }, [businessId, authLoading, error, fetchAnalytics]);
 
   // Error state
   if (error) {
@@ -188,6 +205,106 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         <div className="text-center">
           <Spinner size="lg" />
           <p className="text-gray-600 mt-4">Loading business dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Welcome screen for first-time visitors
+  if (showWelcome && business) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Success Header */}
+          <div className="mb-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+              <Check className="w-10 h-10 text-green-600" />
+            </div>
+            <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full mb-4">
+              <span className="text-green-600 font-medium text-sm">Business Setup Complete</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
+              Welcome to <span className="font-medium">Payverge</span>
+            </h1>
+            <p className="text-xl text-gray-600 font-light tracking-wide">
+              <span className="font-medium text-gray-900">{business.name}</span> is now ready to accept payments!
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              {
+                icon: Menu,
+                title: "Menu Builder",
+                description: "Create digital menus with categories and items"
+              },
+              {
+                icon: Receipt,
+                title: "Bill Management",
+                description: "Generate bills and track payments"
+              },
+              {
+                icon: BarChart3,
+                title: "Analytics",
+                description: "Track sales and customer insights"
+              },
+              {
+                icon: Users,
+                title: "Staff Management",
+                description: "Invite team members and manage permissions"
+              }
+            ].map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="bg-white/80 backdrop-blur-sm border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <CardBody className="p-6 text-center">
+                    <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl mb-4">
+                      <Icon className="w-6 h-6 text-gray-700" />
+                    </div>
+                    <h3 className="font-medium text-gray-900 mb-2">{feature.title}</h3>
+                    <p className="text-sm text-gray-600 font-light leading-relaxed">{feature.description}</p>
+                  </CardBody>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
+              size="lg"
+              className="bg-gray-900 text-white hover:bg-gray-800 font-medium px-8 py-3 h-auto"
+              onClick={() => setShowWelcome(false)}
+              startContent={<Building2 className="w-5 h-5" />}
+            >
+              Go to Dashboard
+            </Button>
+            <Button
+              size="lg"
+              variant="bordered"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-8 py-3 h-auto"
+              as={Link}
+              href="/how-it-works"
+              target="_blank"
+            >
+              Learn More
+            </Button>
+          </div>
+
+          {/* Help Section */}
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <p className="text-sm text-gray-500 font-light">
+              Need help getting started? Check out our{' '}
+              <Link href="/how-it-works" className="text-gray-700 hover:text-gray-900 font-medium" target="_blank">
+                documentation
+              </Link>
+              {' '}or{' '}
+              <Link href="mailto:support@payverge.com" className="text-gray-700 hover:text-gray-900 font-medium">
+                contact support
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     );

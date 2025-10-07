@@ -21,7 +21,7 @@ export default function BusinessRegistrationSuccess({
 
   const handleGoToDashboard = () => {
     setIsNavigating(true);
-    router.push(`/business/${businessId}/dashboard`);
+    router.push(`/business/${businessId}/dashboard?welcome=true`);
   };
 
   const features = [

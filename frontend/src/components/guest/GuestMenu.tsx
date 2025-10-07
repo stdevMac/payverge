@@ -243,7 +243,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
           <div className="text-center">
             <h3 className="text-lg font-light text-gray-900 tracking-wide mb-3">Ready to Order?</h3>
             <p className="text-gray-600 font-light leading-relaxed mb-4 max-w-md mx-auto">
-              Add items to your cart, then <strong>click the cart icon</strong> to place your order. Your order will be sent to staff for approval at Table {tableCode}.
+              Add items to your cart, then <strong>click the cart icon</strong> to place your order. Your order will be sent to staff for approval.
             </p>
             <div className="text-xs text-gray-400 font-light tracking-wide">
               Powered by Payverge • Click cart to place order • Orders require staff approval
