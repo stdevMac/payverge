@@ -1,6 +1,8 @@
 package database
 
 import (
+	cryptorand "crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -331,8 +333,47 @@ func GenerateUniqueTableCode(businessID uint, baseName string) (string, error) {
 
 // Bill operations
 
+// generateUniqueBillNumber generates a unique bill number for a business
+func generateUniqueBillNumber(businessID uint) (string, error) {
+	for i := 0; i < 10; i++ {
+		// Generate bill number with format: B{businessID}-{timestamp}-{random}
+		timestamp := time.Now().Format("20060102150405")
+		randomBytes := make([]byte, 3)
+		if _, err := cryptorand.Read(randomBytes); err != nil {
+			return "", err
+		}
+		randomHex := hex.EncodeToString(randomBytes)
+		
+		billNumber := fmt.Sprintf("B%d-%s-%s", businessID, timestamp, strings.ToUpper(randomHex))
+		
+		// Check if bill number already exists
+		var count int64
+		if err := db.Model(&Bill{}).Where("bill_number = ?", billNumber).Count(&count).Error; err != nil {
+			return "", err
+		}
+		
+		if count == 0 {
+			return billNumber, nil
+		}
+		
+		// Bill number exists, try again with a small delay
+		time.Sleep(time.Millisecond * 10)
+	}
+	
+	return "", fmt.Errorf("failed to generate unique bill number after 10 attempts")
+}
+
 // CreateBill creates a new bill
 func CreateBill(bill *Bill, items []BillItem) error {
+	// Generate unique bill number if not provided
+	if bill.BillNumber == "" {
+		billNumber, err := generateUniqueBillNumber(bill.BusinessID)
+		if err != nil {
+			return fmt.Errorf("failed to generate bill number: %w", err)
+		}
+		bill.BillNumber = billNumber
+	}
+
 	// Convert items to JSON string for SQLite storage
 	itemsJSON, err := json.Marshal(items)
 	if err != nil {

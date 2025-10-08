@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import GuestMenu from '../../../../components/guest/GuestMenu';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
-import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, addBillItem, createBillByTableCode } from '../../../../api/bills';
+import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
 
@@ -119,17 +119,20 @@ export default function GuestMenuPage() {
       const billWithItems = await getOpenBillByTableCode(tableCode);
       setCurrentBill(billWithItems);
       
-      // Add cart items to the new bill
-      for (const item of cart) {
-        for (let i = 0; i < item.quantity; i++) {
-          await addBillItem(newBill.bill.id, {
-            menu_item_id: `${item.name}-${Date.now()}-${i}`,
-            name: item.name,
-            price: item.price,
-            quantity: 1,
-            options: []
-          });
-        }
+      // Add cart items to the new bill as a guest order
+      if (cart.length > 0) {
+        const orderItems = cart.map(item => ({
+          menu_item_name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          special_requests: ''
+        }));
+
+        await createGuestOrder(tableCode, {
+          bill_id: newBill.bill.id,
+          items: orderItems,
+          notes: `Table ${tableData?.table.name} - Initial Order`
+        });
       }
       
       // Auto-send to kitchen (new simplified flow)
@@ -182,20 +185,7 @@ export default function GuestMenuPage() {
     
     setOrderLoading(true);
     try {
-      // Add cart items to existing bill
-      for (const item of cart) {
-        for (let i = 0; i < item.quantity; i++) {
-          await addBillItem(currentBill.bill.id, {
-            menu_item_id: `${item.name}-${Date.now()}-${i}`,
-            name: item.name,
-            price: item.price,
-            quantity: 1,
-            options: []
-          });
-        }
-      }
-      
-      // Create a new order for additional items (always create new order for each request)
+      // Create a new order for additional items
       const orderItems = cart.map(item => ({
         menu_item_name: item.name,
         quantity: item.quantity,
@@ -248,16 +238,19 @@ export default function GuestMenuPage() {
     try {
       console.log('Adding item to bill:', { itemName, price, quantity });
       
-      const addItemRequest = {
-        menu_item_id: itemName,
-        name: itemName,
-        price: price,
+      const orderItems = [{
+        menu_item_name: itemName,
         quantity,
-        options: []
-      };
+        price: price,
+        special_requests: ''
+      }];
       
-      await addBillItem(currentBill.bill.id, addItemRequest);
-      console.log('Item added successfully');
+      await createGuestOrder(tableCode, {
+        bill_id: currentBill.bill.id,
+        items: orderItems,
+        notes: `Table ${tableData?.table.name || 'Unknown'} - Single Item Order`
+      });
+      console.log('Order created successfully');
       
       // Reload bill data
       const billResponse = await getOpenBillByTableCode(tableCode);
