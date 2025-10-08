@@ -39,7 +39,14 @@ export default function ImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = () => {
-    fileInputRef.current?.click();
+    console.log('ImageUpload: handleFileSelect called');
+    console.log('ImageUpload: fileInputRef.current:', fileInputRef.current);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+      console.log('ImageUpload: File input clicked');
+    } else {
+      console.error('ImageUpload: File input ref is null');
+    }
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +177,11 @@ export default function ImageUpload({
           </CardBody>
         </Card>
       ) : (
-        <Card className="border-dashed border-2 border-default-300 hover:border-primary-300 transition-colors">
+        <Card 
+          className="border-dashed border-2 border-default-300 hover:border-primary-300 transition-colors cursor-pointer"
+          isPressable
+          onPress={handleFileSelect}
+        >
           <CardBody className={`text-center py-6 ${getPlaceholderHeight()}`}>
             <div className="space-y-3 flex flex-col items-center justify-center h-full">
               <div className="text-default-400">
@@ -200,6 +211,7 @@ export default function ImageUpload({
                 color="primary"
                 variant="flat"
                 onPress={handleFileSelect}
+                onClick={handleFileSelect}
                 isDisabled={uploading || isLoading}
                 size="sm"
               >

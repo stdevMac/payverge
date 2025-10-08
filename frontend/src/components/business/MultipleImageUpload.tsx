@@ -33,14 +33,23 @@ export default function MultipleImageUpload({
   const { isOpen: isViewModalOpen, onOpen: onViewModalOpen, onClose: onViewModalClose } = useDisclosure();
   const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onClose: onAddModalClose } = useDisclosure();
 
+  const handleAddModalOpen = () => {
+    console.log('MultipleImageUpload: Opening modal with businessId:', businessId);
+    onAddModalOpen();
+  };
+
   const handleImageUploaded = (imageUrl: string) => {
+    console.log('MultipleImageUpload: Image uploaded successfully:', imageUrl);
     const newImages = [...images, imageUrl];
     onImagesChange(newImages);
     onAddModalClose();
   };
 
   const handleRemoveImage = (index: number) => {
+    console.log('MultipleImageUpload: Removing image at index:', index);
+    console.log('MultipleImageUpload: Current images:', images);
     const newImages = images.filter((_, i) => i !== index);
+    console.log('MultipleImageUpload: New images after removal:', newImages);
     onImagesChange(newImages);
   };
 
@@ -68,7 +77,7 @@ export default function MultipleImageUpload({
             color="primary"
             variant="flat"
             startContent={<Plus className="w-4 h-4" />}
-            onPress={onAddModalOpen}
+            onPress={handleAddModalOpen}
             size="sm"
           >
             Add Image
@@ -90,27 +99,17 @@ export default function MultipleImageUpload({
                     radius="lg"
                   />
                   
-                  {/* Overlay with actions */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center gap-2">
+                  {/* Overlay with view action */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center z-10">
                     <Button
                       isIconOnly
                       size="sm"
                       variant="flat"
                       color="default"
-                      className="bg-white/20 backdrop-blur-sm"
+                      className="bg-white/20 backdrop-blur-sm z-20"
                       onPress={() => handleViewImage(index)}
                     >
                       <Eye className="w-4 h-4 text-white" />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="flat"
-                      color="danger"
-                      className="bg-red-500/20 backdrop-blur-sm"
-                      onPress={() => handleRemoveImage(index)}
-                    >
-                      <Trash2 className="w-4 h-4 text-white" />
                     </Button>
                   </div>
 
@@ -120,15 +119,16 @@ export default function MultipleImageUpload({
                     size="sm"
                     variant="flat"
                     color="danger"
-                    className="absolute top-2 right-2 bg-red-500/80 backdrop-blur-sm"
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 shadow-lg z-30"
                     onPress={() => handleRemoveImage(index)}
+                    onClick={() => handleRemoveImage(index)}
                   >
                     <X className="w-3 h-3 text-white" />
                   </Button>
 
                   {/* Primary image indicator */}
                   {index === 0 && (
-                    <div className="absolute top-2 left-2">
+                    <div className="absolute top-2 left-2 z-20">
                       <div className="bg-primary text-white text-xs px-2 py-1 rounded-full">
                         Primary
                       </div>
@@ -148,7 +148,7 @@ export default function MultipleImageUpload({
               color="primary"
               variant="flat"
               startContent={<Plus className="w-4 h-4" />}
-              onPress={onAddModalOpen}
+              onPress={handleAddModalOpen}
             >
               Add First Image
             </Button>
@@ -157,7 +157,7 @@ export default function MultipleImageUpload({
       )}
 
       {/* Add Image Modal */}
-      <Modal isOpen={isAddModalOpen} onClose={onAddModalClose}>
+      <Modal isOpen={isAddModalOpen} onClose={onAddModalClose} size="lg">
         <ModalContent>
           <ModalHeader>Add New Image</ModalHeader>
           <ModalBody>
@@ -165,6 +165,11 @@ export default function MultipleImageUpload({
               onImageUploaded={handleImageUploaded}
               currentImage=""
               businessId={businessId}
+              type="menu-item"
+              title="Menu Item Image"
+              description="Upload an image for this menu item"
+              aspectRatio="square"
+              maxSize={5}
             />
           </ModalBody>
           <ModalFooter>
@@ -189,6 +194,12 @@ export default function MultipleImageUpload({
               color="danger"
               variant="light"
               onPress={() => {
+                if (selectedImageIndex !== null) {
+                  handleRemoveImage(selectedImageIndex);
+                  onViewModalClose();
+                }
+              }}
+              onClick={() => {
                 if (selectedImageIndex !== null) {
                   handleRemoveImage(selectedImageIndex);
                   onViewModalClose();

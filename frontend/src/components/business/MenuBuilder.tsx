@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import {
   Card,
   CardHeader,
@@ -13,6 +12,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  Image,
   ModalFooter,
   useDisclosure,
   Chip,
@@ -684,8 +684,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 <Image
                                   src={item.images[0]}
                                   alt={item.name}
-                                  fill
-                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  radius="lg"
                                 />
                                 {item.images.length > 1 && (
                                   <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
@@ -706,8 +706,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 <Image
                                   src={item.image}
                                   alt={item.name}
-                                  fill
-                                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  radius="lg"
                                 />
                                 {!item.is_available && (
                                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
