@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check, Wallet, DollarSign, Edit3, ExternalLink } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAppKitAccount } from '@reown/appkit/react';
@@ -23,6 +23,15 @@ import CounterManager from '../../../../../components/business/CounterManager';
 import Dashboard from '../../../../../components/dashboard/Dashboard';
 import { ToastProvider } from '../../../../../contexts/ToastContext';
 import analyticsApi, { SalesData } from '../../../../../api/analytics';
+import { 
+  useBusinessInfo, 
+  useClaimableBalance, 
+  useUpdateBusinessPaymentAddress, 
+  useUpdateBusinessTippingAddress, 
+  useClaimEarnings, 
+  formatUsdcAmount 
+} from '../../../../../contracts/hooks';
+import { Address } from 'viem';
 
 interface BusinessDashboardProps {
   params: {
@@ -42,12 +51,31 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [tables, setTables] = useState<Table[]>([]);
   const [showWelcome, setShowWelcome] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  
+  // On-chain interaction state
+  const [editingPaymentAddress, setEditingPaymentAddress] = useState(false);
+  const [editingTippingAddress, setEditingTippingAddress] = useState(false);
+  const [newPaymentAddress, setNewPaymentAddress] = useState('');
+  const [newTippingAddress, setNewTippingAddress] = useState('');
+  const [claimingEarnings, setClaimingEarnings] = useState(false);
 
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
   const { user } = useUserStore();
   const { isAuthenticated } = useAuth();
   const businessId = parseInt(params.businessId);
+
+  // Smart contract hooks - use business settlement address instead of user wallet address
+  const { data: businessInfo, refetch: refetchBusinessInfo } = useBusinessInfo(business?.settlement_address as Address);
+  const { data: claimableBalance, refetch: refetchClaimableBalance } = useClaimableBalance(business?.settlement_address as Address);
+  
+  // Debug logging
+  console.log('Business settlement address:', business?.settlement_address);
+  console.log('Smart contract businessInfo:', businessInfo);
+  console.log('Smart contract claimableBalance:', claimableBalance);
+  const { updatePaymentAddress } = useUpdateBusinessPaymentAddress();
+  const { updateTippingAddress } = useUpdateBusinessTippingAddress();
+  const { claimEarnings } = useClaimEarnings();
 
   // Fetch analytics data
   const fetchAnalytics = useCallback(async () => {
@@ -67,6 +95,45 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       setAnalyticsLoading(false);
     }
   }, [businessId]);
+
+  // On-chain interaction handlers
+  const handleUpdatePaymentAddress = async () => {
+    if (!newPaymentAddress) return;
+    
+    try {
+      await updatePaymentAddress(newPaymentAddress as Address);
+      setEditingPaymentAddress(false);
+      setNewPaymentAddress('');
+      refetchBusinessInfo();
+    } catch (error) {
+      console.error('Error updating payment address:', error);
+    }
+  };
+
+  const handleUpdateTippingAddress = async () => {
+    if (!newTippingAddress) return;
+    
+    try {
+      await updateTippingAddress(newTippingAddress as Address);
+      setEditingTippingAddress(false);
+      setNewTippingAddress('');
+      refetchBusinessInfo();
+    } catch (error) {
+      console.error('Error updating tipping address:', error);
+    }
+  };
+
+  const handleClaimEarnings = async () => {
+    try {
+      setClaimingEarnings(true);
+      await claimEarnings();
+      refetchClaimableBalance();
+    } catch (error) {
+      console.error('Error claiming earnings:', error);
+    } finally {
+      setClaimingEarnings(false);
+    }
+  };
 
   // Authentication check
   useEffect(() => {
@@ -379,6 +446,266 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
       case 'analytics':
         return <Dashboard businessId={businessId.toString()} />;
+
+      case 'blockchain':
+        return (
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100">
+                  <Wallet className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-medium text-gray-900">Blockchain Management</h3>
+                  <p className="text-gray-600">Manage your on-chain business settings and claim earnings</p>
+                </div>
+              </div>
+
+              {/* Status Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className={`w-3 h-3 rounded-full ${
+                    isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'
+                  }`}></div>
+                  <span className="text-sm font-medium text-gray-700">
+                    {isConnected ? 'Wallet Connected' : 'Wallet Not Connected'}
+                  </span>
+                  {address && (
+                    <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
+                      {address.slice(0, 6)}...{address.slice(-4)}
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                  <div className={`w-3 h-3 rounded-full ${
+                    businessInfo ? 'bg-green-400' : 'bg-yellow-400'
+                  }`}></div>
+                  <span className="text-sm font-medium text-gray-700">
+                    {businessInfo ? 'Registered on Smart Contract' : 'Not Registered on Smart Contract'}
+                  </span>
+                  {business?.settlement_address && (
+                    <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
+                      {business.settlement_address.slice(0, 6)}...{business.settlement_address.slice(-4)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Claimable Balances */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200 shadow-sm">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center border border-green-100">
+                      <DollarSign className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium text-gray-900">Payment Earnings</h4>
+                      <p className="text-sm text-gray-600">Available to claim</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardBody className="pt-0">
+                  <div className="space-y-4">
+                    <div className="text-3xl font-medium text-green-600">
+                      {claimableBalance && Array.isArray(claimableBalance) ? 
+                        `$${formatUsdcAmount(claimableBalance[0] || BigInt(0))}` : 
+                        '$0.00'
+                      }
+                    </div>
+                    <Button
+                      size="lg"
+                      className="w-full bg-green-600 text-white hover:bg-green-700"
+                      onClick={handleClaimEarnings}
+                      disabled={claimingEarnings || !claimableBalance || !Array.isArray(claimableBalance) || claimableBalance[0] === BigInt(0)}
+                      startContent={claimingEarnings ? <Spinner size="sm" /> : <DollarSign className="w-5 h-5" />}
+                    >
+                      {claimingEarnings ? 'Claiming...' : 'Claim Earnings'}
+                    </Button>
+                  </div>
+                </CardBody>
+              </Card>
+
+              <Card className="bg-white border border-gray-200 shadow-sm">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center border border-orange-100">
+                      <DollarSign className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-medium text-gray-900">Tip Earnings</h4>
+                      <p className="text-sm text-gray-600">Available to claim</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardBody className="pt-0">
+                  <div className="space-y-4">
+                    <div className="text-3xl font-medium text-orange-600">
+                      {claimableBalance && Array.isArray(claimableBalance) ? 
+                        `$${formatUsdcAmount(claimableBalance[1] || BigInt(0))}` : 
+                        '$0.00'
+                      }
+                    </div>
+                    <Button
+                      size="lg"
+                      className="w-full bg-orange-600 text-white hover:bg-orange-700"
+                      onClick={handleClaimEarnings}
+                      disabled={claimingEarnings || !claimableBalance || !Array.isArray(claimableBalance) || claimableBalance[1] === BigInt(0)}
+                      startContent={claimingEarnings ? <Spinner size="sm" /> : <DollarSign className="w-5 h-5" />}
+                    >
+                      {claimingEarnings ? 'Claiming...' : 'Claim Tips'}
+                    </Button>
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+
+            {/* Business Addresses */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+              <h3 className="text-xl font-medium text-gray-900 mb-6">Business Addresses</h3>
+              
+              <div className="space-y-6">
+                {/* Payment Address */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">Payment Address</h4>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingPaymentAddress(!editingPaymentAddress);
+                        setNewPaymentAddress((businessInfo as any)?.paymentAddress || business?.settlement_address || '');
+                      }}
+                      startContent={<Edit3 className="w-4 h-4" />}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                  
+                  {editingPaymentAddress ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={newPaymentAddress}
+                        onChange={(e) => setNewPaymentAddress(e.target.value)}
+                        placeholder="0x..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={handleUpdatePaymentAddress}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setEditingPaymentAddress(false);
+                            setNewPaymentAddress('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 break-all">
+                      {(businessInfo as any)?.paymentAddress || business?.settlement_address || 'Not set'}
+                    </div>
+                  )}
+                </div>
+
+                {/* Tipping Address */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">Tipping Address</h4>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingTippingAddress(!editingTippingAddress);
+                        setNewTippingAddress((businessInfo as any)?.tippingAddress || business?.tipping_address || '');
+                      }}
+                      startContent={<Edit3 className="w-4 h-4" />}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                  
+                  {editingTippingAddress ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={newTippingAddress}
+                        onChange={(e) => setNewTippingAddress(e.target.value)}
+                        placeholder="0x..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-blue-600 text-white hover:bg-blue-700"
+                          onClick={handleUpdateTippingAddress}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setEditingTippingAddress(false);
+                            setNewTippingAddress('');
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 break-all">
+                      {(businessInfo as any)?.tippingAddress || business?.tipping_address || 'Not set'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* On-Chain Statistics */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+              <h3 className="text-xl font-medium text-gray-900 mb-6">On-Chain Statistics</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-medium text-blue-600 mb-2">
+                    ${(businessInfo as any)?.totalVolume ? formatUsdcAmount((businessInfo as any).totalVolume) : '0'}
+                  </div>
+                  <div className="text-sm text-gray-600">Total Volume</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-2xl font-medium text-green-600 mb-2">
+                    ${(businessInfo as any)?.totalTips ? formatUsdcAmount((businessInfo as any).totalTips) : '0'}
+                  </div>
+                  <div className="text-sm text-gray-600">Total Tips</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-2xl font-medium text-gray-600 mb-2">
+                    {(businessInfo as any)?.isActive ? 'Active' : 'Inactive'}
+                  </div>
+                  <div className="text-sm text-gray-600">Status</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
       case 'menu':
         return <MenuBuilder businessId={businessId} />;
 
@@ -434,6 +761,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
             {[
               { key: 'overview', icon: BarChart3, label: 'Overview' },
               { key: 'analytics', icon: BarChart3, label: 'Analytics' },
+              { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
               { key: 'counters', icon: Coffee, label: 'Counters' },
@@ -513,6 +841,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                     {[
                       { key: 'overview', icon: BarChart3, label: 'Overview' },
                       { key: 'analytics', icon: BarChart3, label: 'Analytics' },
+                      { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
                       { key: 'menu', icon: Menu, label: 'Menu' },
                       { key: 'tables', icon: Users, label: 'Tables' },
                       { key: 'counters', icon: Coffee, label: 'Counters' },
