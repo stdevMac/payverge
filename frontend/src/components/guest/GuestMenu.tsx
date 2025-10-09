@@ -29,7 +29,7 @@ interface GuestMenuProps {
   tableCode: string;
   currentBill: BillWithItemsResponse | null;
   onAddToBill: (itemName: string, price: number, quantity?: number) => void;
-  onAddToCart?: (itemName: string, price: number, specialRequests?: string) => void;
+  onAddToCart?: (itemName: string, price: number, quantity?: number, specialRequests?: string) => void;
 }
 
 export const GuestMenu: React.FC<GuestMenuProps> = ({
@@ -365,35 +365,33 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                       {/* Quantity selector and Add to order button */}
                       <div className="flex items-center justify-between">
                         {/* Quantity Selector */}
-                        {currentBill && (
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm text-gray-600 font-medium">Quantity:</span>
-                            <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setItemQuantity(item.name, getItemQuantity(item.name) - 1);
-                                }}
-                                disabled={getItemQuantity(item.name) <= 1}
-                                className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </button>
-                              <span className="w-8 text-center text-sm font-medium text-gray-900">
-                                {getItemQuantity(item.name)}
-                              </span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setItemQuantity(item.name, getItemQuantity(item.name) + 1);
-                                }}
-                                className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
-                              >
-                                <Plus className="w-3 h-3" />
-                              </button>
-                            </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                          <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItemQuantity(item.name, getItemQuantity(item.name) - 1);
+                              }}
+                              disabled={getItemQuantity(item.name) <= 1}
+                              className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-8 text-center text-sm font-medium text-gray-900">
+                              {getItemQuantity(item.name)}
+                            </span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItemQuantity(item.name, getItemQuantity(item.name) + 1);
+                              }}
+                              className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
                           </div>
-                        )}
+                        </div>
 
                         {/* Add to Bill Button with Stripe-like Animation */}
                         <div className="relative">
@@ -402,7 +400,27 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                               e.stopPropagation();
                               // Always use cart system for new order workflow
                               if (onAddToCart) {
-                                onAddToCart(item.name, item.price);
+                                onAddToCart(item.name, item.price, getItemQuantity(item.name));
+                                
+                                // Trigger success animation
+                                setAnimatingItems(prev => new Set(Array.from(prev).concat([item.name])));
+                                setAddedItems(prev => new Set(Array.from(prev).concat([item.name])));
+                                
+                                // Reset animation and quantity after 2.5 seconds
+                                setTimeout(() => {
+                                  setAnimatingItems(prev => {
+                                    const newSet = new Set(prev);
+                                    newSet.delete(item.name);
+                                    return newSet;
+                                  });
+                                  setAddedItems(prev => {
+                                    const newSet = new Set(prev);
+                                    newSet.delete(item.name);
+                                    return newSet;
+                                  });
+                                  // Reset quantity back to 1
+                                  setItemQuantity(item.name, 1);
+                                }, 2500);
                               }
                             }}
                             disabled={!item.is_available}
@@ -664,7 +682,27 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                             if (currentBill) {
                               handleAddToBill(selectedItem);
                             } else if (onAddToCart) {
-                              onAddToCart(selectedItem.name, selectedItem.price);
+                              onAddToCart(selectedItem.name, selectedItem.price, getItemQuantity(selectedItem.name));
+                              
+                              // Trigger success animation
+                              setAnimatingItems(prev => new Set(Array.from(prev).concat([selectedItem.name])));
+                              setAddedItems(prev => new Set(Array.from(prev).concat([selectedItem.name])));
+                              
+                              // Reset animation and quantity after 2.5 seconds
+                              setTimeout(() => {
+                                setAnimatingItems(prev => {
+                                  const newSet = new Set(prev);
+                                  newSet.delete(selectedItem.name);
+                                  return newSet;
+                                });
+                                setAddedItems(prev => {
+                                  const newSet = new Set(prev);
+                                  newSet.delete(selectedItem.name);
+                                  return newSet;
+                                });
+                                // Reset quantity back to 1
+                                setItemQuantity(selectedItem.name, 1);
+                              }, 2500);
                             }
                             onClose();
                           }}

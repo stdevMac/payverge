@@ -624,6 +624,14 @@ func GetOrdersByBusinessID(businessID uint, status string) ([]Order, error) {
 
 // UpdateOrderStatus updates the status of an order
 func UpdateOrderStatus(orderID uint, status OrderStatus, approvedBy string) error {
+	// Start a transaction
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
 	updates := map[string]interface{}{
 		"status":     status,
 		"updated_at": time.Now(),
@@ -634,9 +642,84 @@ func UpdateOrderStatus(orderID uint, status OrderStatus, approvedBy string) erro
 		updates["approved_at"] = time.Now()
 	}
 	
-	if err := db.Model(&Order{}).Where("id = ?", orderID).Updates(updates).Error; err != nil {
+	// Update order status
+	if err := tx.Model(&Order{}).Where("id = ?", orderID).Updates(updates).Error; err != nil {
+		tx.Rollback()
 		return fmt.Errorf("failed to update order status: %w", err)
 	}
+
+	// If order is approved, add items to the bill
+	if status == OrderStatusApproved {
+		// Get the order with its items
+		order, orderItems, err := GetOrderByID(orderID)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to get order for bill integration: %w", err)
+		}
+
+		// Get the current bill
+		bill, billItems, err := GetBillByID(order.BillID)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to get bill for integration: %w", err)
+		}
+
+		// Convert order items to bill items
+		for _, orderItem := range orderItems {
+			billItem := BillItem{
+				ID:         orderItem.ID,
+				MenuItemID: orderItem.MenuItemName, // Using name as ID for now
+				Name:       orderItem.MenuItemName,
+				Price:      orderItem.Price,
+				Quantity:   orderItem.Quantity,
+				Options:    []MenuItemOption{}, // Empty options for now
+				Subtotal:   orderItem.Subtotal,
+			}
+			billItems = append(billItems, billItem)
+		}
+
+		// Calculate new bill totals
+		newSubtotal := bill.Subtotal
+		for _, orderItem := range orderItems {
+			newSubtotal += orderItem.Subtotal
+		}
+
+		// Update bill with new items and totals
+		billItemsJSON, err := json.Marshal(billItems)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to marshal bill items: %w", err)
+		}
+
+		// Calculate tax and service fee on the new subtotal
+		// Assuming 10% tax and 5% service fee (you may want to make this configurable)
+		taxRate := 0.10
+		serviceFeeRate := 0.05
+		
+		newTaxAmount := newSubtotal * taxRate
+		newServiceFeeAmount := newSubtotal * serviceFeeRate
+		newTotalAmount := newSubtotal + newTaxAmount + newServiceFeeAmount
+
+		billUpdates := map[string]interface{}{
+			"items":               string(billItemsJSON),
+			"subtotal":           newSubtotal,
+			"tax_amount":         newTaxAmount,
+			"service_fee_amount": newServiceFeeAmount,
+			"total_amount":       newTotalAmount,
+			"updated_at":         time.Now(),
+		}
+
+		if err := tx.Model(&Bill{}).Where("id = ?", order.BillID).Updates(billUpdates).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to update bill with approved order items: %w", err)
+		}
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
 	return nil
 }
 

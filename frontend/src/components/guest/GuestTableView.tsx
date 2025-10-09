@@ -231,23 +231,25 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
             <div className="grid md:grid-cols-2 gap-8">
               {/* Menu Card */}
               <Link href={`/t/${tableCode}/menu`}>
-                <div className="group bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                <div className="group bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-xl hover:border-gray-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden h-full min-h-[280px] flex flex-col">
                   {/* Subtle gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                   
-                  <div className="relative z-10 text-center space-y-6">
-                    {/* Icon */}
-                    <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-blue-50 transition-colors duration-300">
-                      <Menu className="w-8 h-8 text-gray-600 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <h3 className="text-2xl font-light text-gray-900 tracking-wide">
-                        Browse Menu
-                      </h3>
-                      <p className="text-gray-600 font-light leading-relaxed">
-                        Explore our carefully curated selection of dishes and beverages
-                      </p>
+                  <div className="relative z-10 text-center space-y-6 flex-1 flex flex-col justify-between">
+                    <div className="space-y-6">
+                      {/* Icon */}
+                      <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-blue-50 transition-colors duration-300">
+                        <Menu className="w-8 h-8 text-gray-600 group-hover:text-blue-600 group-hover:scale-110 transition-all duration-300" />
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h3 className="text-2xl font-light text-gray-900 tracking-wide">
+                          Browse Menu
+                        </h3>
+                        <p className="text-gray-600 font-light leading-relaxed">
+                          Explore our carefully curated selection of dishes and beverages
+                        </p>
+                      </div>
                     </div>
                     
                     {/* Arrow */}
@@ -262,32 +264,34 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
               {/* Current Bill Card */}
               {currentBill ? (
                 <Link href={`/t/${tableCode}/bill`}>
-                  <div className="group bg-white border border-green-200 rounded-2xl p-8 hover:shadow-xl hover:border-green-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                  <div className="group bg-white border border-green-200 rounded-2xl p-8 hover:shadow-xl hover:border-green-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden h-full min-h-[280px] flex flex-col">
                     {/* Subtle gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-emerald-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                     
-                    <div className="relative z-10 text-center space-y-6">
-                      {/* Icon */}
-                      <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-green-100 transition-colors duration-300">
-                        <Receipt className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-center gap-3">
-                          <h3 className="text-2xl font-light text-gray-900 tracking-wide">
-                            Current Bill
-                          </h3>
-                          <Chip 
-                            size="sm" 
-                            className="bg-green-100 text-green-700 border-green-200"
-                            variant="bordered"
-                          >
-                            Active
-                          </Chip>
+                    <div className="relative z-10 text-center space-y-6 flex-1 flex flex-col justify-between">
+                      <div className="space-y-6">
+                        {/* Icon */}
+                        <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-green-100 transition-colors duration-300">
+                          <Receipt className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300" />
                         </div>
-                        <p className="text-green-600 font-medium text-lg">
-                          ${currentBill.bill.total_amount.toFixed(2)} • {currentBill.items.length} items
-                        </p>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-center gap-3">
+                            <h3 className="text-2xl font-light text-gray-900 tracking-wide">
+                              Current Bill
+                            </h3>
+                            <Chip 
+                              size="sm" 
+                              className="bg-green-100 text-green-700 border-green-200"
+                              variant="bordered"
+                            >
+                              Active
+                            </Chip>
+                          </div>
+                          <p className="text-green-600 font-medium text-lg">
+                            ${currentBill.bill.total_amount.toFixed(2)} • {currentBill.items.length} items
+                          </p>
+                        </div>
                       </div>
                       
                       {/* Arrow */}

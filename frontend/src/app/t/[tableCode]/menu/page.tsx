@@ -67,7 +67,7 @@ export default function GuestMenuPage() {
     }
   }, [tableCode]);
 
-  const addToCart = useCallback((itemName: string, price: number, specialRequests?: string) => {
+  const addToCart = useCallback((itemName: string, price: number, quantity: number = 1, specialRequests?: string) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => 
         item.name === itemName && item.specialRequests === specialRequests
@@ -76,11 +76,11 @@ export default function GuestMenuPage() {
       if (existingItem) {
         return prevCart.map(item =>
           item.name === itemName && item.specialRequests === specialRequests
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
-        return [...prevCart, { name: itemName, price, quantity: 1, specialRequests }];
+        return [...prevCart, { name: itemName, price, quantity, specialRequests }];
       }
     });
   }, []);
@@ -119,23 +119,7 @@ export default function GuestMenuPage() {
       const billWithItems = await getOpenBillByTableCode(tableCode);
       setCurrentBill(billWithItems);
       
-      // Add cart items to the new bill as a guest order
-      if (cart.length > 0) {
-        const orderItems = cart.map(item => ({
-          menu_item_name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          special_requests: ''
-        }));
-
-        await createGuestOrder(tableCode, {
-          bill_id: newBill.bill.id,
-          items: orderItems,
-          notes: `Table ${tableData?.table.name} - Initial Order`
-        });
-      }
-      
-      // Auto-send to kitchen (new simplified flow)
+      // Create guest order for approval
       const kitchenOrderItems = cart.map(item => ({
         menu_item_name: item.name,
         quantity: item.quantity,
@@ -154,7 +138,7 @@ export default function GuestMenuPage() {
         const orderResult = await createGuestOrder(tableCode, {
           bill_id: newBill.bill.id,
           items: kitchenOrderItems,
-          notes: `Table ${tableData.table.name} - Guest Order`,
+          notes: `Table ${tableData.table.name} - Initial Order`,
         });
         
         console.log('Order created successfully and pending approval:', orderResult);

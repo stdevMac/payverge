@@ -294,8 +294,8 @@ func CreateGuestOrder(c *gin.Context) {
 	}
 
 	// Generate order number
-	timestamp := time.Now().Unix()
-	orderNumber := fmt.Sprintf("G%d-%d", table.BusinessID, timestamp%10000)
+	timestamp := time.Now().UnixNano()
+	orderNumber := fmt.Sprintf("G%d-%d", table.BusinessID, timestamp%100000000)
 
 	// Create the order (pending approval)
 	order := database.Order{

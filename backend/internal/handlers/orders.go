@@ -44,8 +44,8 @@ type OrdersResponse struct {
 
 // generateOrderNumber generates a unique order number for display
 func generateOrderNumber(businessID uint) string {
-	timestamp := time.Now().Unix()
-	return fmt.Sprintf("O%d-%d", businessID, timestamp%10000)
+	timestamp := time.Now().UnixNano()
+	return fmt.Sprintf("O%d-%d", businessID, timestamp%100000000)
 }
 
 // CreateOrder creates a new order (for guests)

@@ -72,6 +72,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
       }
     }
     
+    console.log('Orders loaded:', ordersMap);
     setOrders(ordersMap);
   }, [businessId]);
 
@@ -417,7 +418,11 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   return (
     <>
       {/* Pending Orders Section */}
-      {Object.values(orders).flat().filter(order => order.status === 'pending').length > 0 && (
+      {(() => {
+        const pendingOrders = Object.values(orders).flat().filter(order => order.status === 'pending');
+        console.log('Pending orders to display:', pendingOrders);
+        return pendingOrders.length > 0;
+      })() && (
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -427,14 +432,22 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(orders).map(([billId, billOrders]) => 
-                billOrders.filter(order => order.status === 'pending').map(order => (
+              {(() => {
+                // Deduplicate orders by ID to prevent showing the same order twice
+                const allPendingOrders = Object.entries(orders).flatMap(([billId, billOrders]) => 
+                  billOrders.filter(order => order.status === 'pending').map(order => ({ ...order, billId }))
+                );
+                const uniqueOrders = allPendingOrders.filter((order, index, array) => 
+                  array.findIndex(o => o.id === order.id) === index
+                );
+                console.log('Unique pending orders:', uniqueOrders);
+                return uniqueOrders.map(order => (
                   <Card key={order.id} className="border-warning">
                     <CardBody>
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h4 className="font-semibold">Order #{order.order_number}</h4>
-                          <p className="text-sm text-default-500">Bill #{billId}</p>
+                          <p className="text-sm text-default-500">Bill #{order.billId}</p>
                         </div>
                         <Chip color="warning" size="sm">Pending</Chip>
                       </div>
@@ -478,8 +491,8 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                       </div>
                     </CardBody>
                   </Card>
-                ))
-              )}
+                ));
+              })()}
             </div>
           </CardBody>
         </Card>
