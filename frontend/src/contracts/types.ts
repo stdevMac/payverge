@@ -52,19 +52,19 @@ export enum PaymentStatus {
   REFUNDED = 3
 }
 
-// Contract interaction parameters - Updated for new contract
+// Contract interaction parameters - Updated for PayvergePayments.sol
 export interface CreateBillParams {
-  billId: string;
-  businessAddress: string;
-  totalAmount: bigint;
-  metadata: string;
-  nonce: string;
+  billId: `0x${string}`; // bytes32
+  businessAddress: `0x${string}`; // address
+  totalAmount: bigint; // uint256
+  metadata: string; // string calldata
+  nonce: `0x${string}`; // bytes32
 }
 
 export interface ProcessPaymentParams {
-  billId: string;
-  amount: bigint;
-  tipAmount: bigint;
+  billId: `0x${string}`; // bytes32
+  amount: bigint; // uint256
+  tipAmount: bigint; // uint256
 }
 
 export interface RegisterBusinessParams {

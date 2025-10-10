@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Modal,
   ModalContent,
@@ -14,8 +14,19 @@ import {
   Input,
   Chip,
   Progress,
+  Spinner,
 } from '@nextui-org/react';
-import { Wallet, AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Wallet, AlertCircle, CheckCircle2, ExternalLink, Clock } from 'lucide-react';
+import { useAccount, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
+import { parseUnits, formatUnits, Hash } from 'viem';
+import { 
+  useProcessPayment, 
+  useUsdcBalance, 
+  useUsdcAllowance, 
+  useApproveUsdc,
+  useContractConfig 
+} from '../../contracts/hooks';
+import { updateBillPayment, createOnChainBill } from '../../api/bills';
 
 interface PaymentProcessorProps {
   isOpen: boolean;
@@ -28,7 +39,23 @@ interface PaymentProcessorProps {
   onPaymentComplete?: () => void;
 }
 
-type PaymentStep = 'amount' | 'wallet' | 'approval' | 'payment' | 'confirming' | 'success' | 'error';
+type PaymentStep = 
+  | 'amount' 
+  | 'wallet' 
+  | 'approval' 
+  | 'waiting-approval' 
+  | 'creating-bill'
+  | 'payment' 
+  | 'waiting-payment'
+  | 'confirming' 
+  | 'success' 
+  | 'error';
+
+interface TransactionState {
+  hash?: Hash;
+  isConfirmed: boolean;
+  error?: string;
+}
 
 export default function PaymentProcessor({
   isOpen,
@@ -40,16 +67,49 @@ export default function PaymentProcessor({
   tipAddress,
   onPaymentComplete
 }: PaymentProcessorProps) {
-  console.log('PaymentProcessor: Rendering with props:', { isOpen, billId, amount });
-
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('amount');
   const [tipAmount, setTipAmount] = useState<string>('0');
   const [error, setError] = useState<string>('');
-  const [transactionHash, setTransactionHash] = useState<string>('');
+  const [approvalTx, setApprovalTx] = useState<TransactionState>({ isConfirmed: false });
+  const [paymentTx, setPaymentTx] = useState<TransactionState>({ isConfirmed: false });
+  const [billCreated, setBillCreated] = useState<boolean>(false);
 
-  // Mock wagmi hooks for now
-  const isConnected = false;
-  const address = null;
+  // Wagmi hooks for wallet connection and balances
+  const { address, isConnected } = useAccount();
+  const publicClient = usePublicClient();
+  const contractConfig = useContractConfig();
+  const { data: usdcBalance, refetch: refetchBalance } = useUsdcBalance(address);
+  const { data: usdcAllowance, refetch: refetchAllowance } = useUsdcAllowance(address);
+  
+  // Contract hooks for payment processing
+  const { processPayment } = useProcessPayment();
+  const { approveUsdc } = useApproveUsdc();
+
+  // Wait for transaction confirmations
+  const { data: approvalReceipt, isSuccess: approvalSuccess, error: approvalError } = 
+    useWaitForTransactionReceipt({
+      hash: approvalTx.hash,
+      query: {
+        enabled: !!approvalTx.hash && !approvalTx.isConfirmed,
+      },
+    });
+
+  const { data: paymentReceipt, isSuccess: paymentSuccess, error: paymentError } = 
+    useWaitForTransactionReceipt({
+      hash: paymentTx.hash,
+      query: {
+        enabled: !!paymentTx.hash && !paymentTx.isConfirmed,
+      },
+    });
+
+  // Calculate amounts in Wei (USDC has 6 decimals)
+  const amountInWei = parseUnits(amount.toString(), 6);
+  const tipAmountInWei = parseUnits(tipAmount || '0', 6);
+  const totalAmountInWei = amountInWei + tipAmountInWei;
+  
+  // Check if user has sufficient balance and allowance
+  const hasSufficientBalance = usdcBalance ? usdcBalance >= totalAmountInWei : false;
+  const hasSufficientAllowance = usdcAllowance ? usdcAllowance >= totalAmountInWei : false;
 
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
 
@@ -79,14 +139,47 @@ export default function PaymentProcessor({
     setError('');
 
     try {
-      // TODO: Implement USDC approval when wagmi is set up
-      console.log('Mock: USDC approval for amount:', totalAmount);
-      setTimeout(() => {
-        setPaymentStep('payment');
-      }, 1000);
-    } catch (err) {
-      setError('Failed to approve USDC spending');
+      if (!hasSufficientBalance) {
+        throw new Error('Insufficient USDC balance');
+      }
+
+      if (!hasSufficientAllowance) {
+        console.log('Submitting USDC approval for:', formatUnits(totalAmountInWei, 6), 'USDC');
+        const txHash = await approveUsdc(totalAmountInWei);
+        
+        setApprovalTx({ hash: txHash, isConfirmed: false });
+        setPaymentStep('waiting-approval');
+        console.log('Approval transaction submitted:', txHash);
+      } else {
+        // Already has sufficient allowance, proceed to bill creation
+        await handleBillCreation();
+      }
+    } catch (err: any) {
+      console.error('Approval failed:', err);
+      setError(err.message || 'Failed to approve USDC spending');
       setPaymentStep('error');
+    }
+  };
+
+  const handleBillCreation = async () => {
+    setPaymentStep('creating-bill');
+    setError('');
+
+    try {
+      console.log('Creating on-chain bill for bill ID:', billId);
+      const result = await createOnChainBill(billId, {
+        business_address: businessAddress,
+        total_amount: totalAmount
+      });
+      
+      console.log('On-chain bill created successfully:', result);
+      setBillCreated(true);
+      await handlePayment();
+    } catch (err: any) {
+      console.error('Bill creation failed:', err);
+      // Continue anyway - bill might already exist
+      console.log('Continuing to payment despite bill creation error');
+      await handlePayment();
     }
   };
 
@@ -95,51 +188,133 @@ export default function PaymentProcessor({
     setError('');
 
     try {
-      // TODO: Implement blockchain payment when wagmi is set up
-      console.log('Mock: Processing payment for bill:', billId, 'amount:', totalAmount);
+      // Validate contract configuration
+      if (!contractConfig.payments || contractConfig.payments === '0x0000000000000000000000000000000000000000') {
+        throw new Error('Contract address not configured. Please check environment variables.');
+      }
+
+      const onChainBillId = `0x${billId.toString(16).padStart(64, '0')}` as `0x${string}`;
       
-      // Simulate payment processing
-      setTimeout(() => {
-        setPaymentStep('success');
-        onPaymentComplete?.();
-      }, 2000);
-    } catch (err) {
-      setError('Failed to process payment');
+      console.log('Processing payment on-chain:', {
+        billId: onChainBillId,
+        amount: formatUnits(amountInWei, 6),
+        tip: formatUnits(tipAmountInWei, 6),
+        contractAddress: contractConfig.payments
+      });
+
+      const txHash = await processPayment({
+        billId: onChainBillId,
+        amount: amountInWei,
+        tipAmount: tipAmountInWei,
+      });
+
+      setPaymentTx({ hash: txHash, isConfirmed: false });
+      setPaymentStep('waiting-payment');
+      console.log('Payment transaction submitted:', txHash);
+    } catch (err: any) {
+      console.error('Payment failed:', err);
+      setError(err.message || 'Payment transaction failed');
       setPaymentStep('error');
     }
   };
 
-  const notifyBackend = async () => {
+  const notifyBackend = async (txHash: Hash) => {
     try {
-      // TODO: Implement backend notification when API is ready
-      console.log('Mock: Notifying backend of payment completion');
-    } catch (err) {
-      console.error('Failed to notify backend:', err);
+      const result = await updateBillPayment(billId, {
+        transaction_hash: txHash,
+        amount_paid: totalAmount,
+        tip_amount: parseFloat(tipAmount || '0'),
+        payment_method: 'crypto',
+        blockchain_network: 'base-sepolia' // or get from chain config
+      });
+      console.log('Backend notified successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Failed to notify backend:', error);
+      throw error;
     }
   };
 
-  // TODO: Re-enable when wagmi is set up
-  // React.useEffect(() => {
-  //   if (transactionHash && paymentStep !== 'success') {
-  //     handlePayment()
-  //   }
-  // }, [transactionHash, paymentStep]);
+  // Effect to handle approval confirmation
+  useEffect(() => {
+    if (approvalSuccess && approvalReceipt && !approvalTx.isConfirmed) {
+      console.log('Approval confirmed:', approvalReceipt.transactionHash);
+      setApprovalTx(prev => ({ ...prev, isConfirmed: true }));
+      
+      // Refetch allowance to get updated value
+      refetchAllowance();
+      
+      // Proceed to bill creation
+      handleBillCreation();
+    }
+  }, [approvalSuccess, approvalReceipt, approvalTx.isConfirmed]);
 
-  // React.useEffect(() => {
-  //   if (isPaymentSuccess) {
-  //     setPaymentStep('success');
-  //     notifyBackend();
-  //   }
-  // }, [isPaymentSuccess]);
+  // Effect to handle approval errors
+  useEffect(() => {
+    if (approvalError && approvalTx.hash) {
+      console.error('Approval transaction failed:', approvalError);
+      setError('Approval transaction failed');
+      setPaymentStep('error');
+    }
+  }, [approvalError, approvalTx.hash]);
 
+  // Effect to handle payment confirmation
+  useEffect(() => {
+    if (paymentSuccess && paymentReceipt && !paymentTx.isConfirmed) {
+      console.log('Payment confirmed:', paymentReceipt.transactionHash);
+      setPaymentTx(prev => ({ ...prev, isConfirmed: true }));
+      setPaymentStep('confirming');
+      
+      // Notify backend and complete payment
+      notifyBackend(paymentReceipt.transactionHash)
+        .then(() => {
+          setPaymentStep('success');
+          if (onPaymentComplete) {
+            onPaymentComplete();
+          }
+        })
+        .catch((error) => {
+          console.error('Backend notification failed:', error);
+          // Still show success since blockchain transaction succeeded
+          setPaymentStep('success');
+          if (onPaymentComplete) {
+            onPaymentComplete();
+          }
+        });
+    }
+  }, [paymentSuccess, paymentReceipt, paymentTx.isConfirmed]);
 
-  const handleClose = () => {
+  // Effect to handle payment errors
+  useEffect(() => {
+    if (paymentError && paymentTx.hash) {
+      console.error('Payment transaction failed:', paymentError);
+      setError('Payment transaction failed');
+      setPaymentStep('error');
+    }
+  }, [paymentError, paymentTx.hash]);
+
+  const handleClose = useCallback(() => {
+    if (['approval', 'waiting-approval', 'creating-bill', 'payment', 'waiting-payment', 'confirming'].includes(paymentStep)) {
+      return; // Prevent closing during critical steps
+    }
+    
+    // Reset all state
     setPaymentStep('amount');
     setTipAmount('0');
     setError('');
-    setTransactionHash('');
+    setApprovalTx({ isConfirmed: false });
+    setPaymentTx({ isConfirmed: false });
+    setBillCreated(false);
     onClose();
-  };
+  }, [paymentStep, onClose]);
+
+  const handleRetry = useCallback(() => {
+    setError('');
+    setPaymentStep('amount');
+    setApprovalTx({ isConfirmed: false });
+    setPaymentTx({ isConfirmed: false });
+    setBillCreated(false);
+  }, []);
 
   const handleSuccess = () => {
     onPaymentComplete?.();
@@ -366,14 +541,14 @@ export default function PaymentProcessor({
                   <span>Status:</span>
                   <Chip size="sm" color="success">Confirmed</Chip>
                 </div>
-                {transactionHash && (
+                {paymentTx.hash && (
                   <div className="flex justify-between items-center">
                     <span>Transaction:</span>
                     <Button
                       size="sm"
                       variant="light"
                       endContent={<ExternalLink size={12} />}
-                      onPress={() => window.open(`https://etherscan.io/tx/${transactionHash}`, '_blank')}
+                      onPress={() => window.open(`https://basescan.org/tx/${paymentTx.hash}`, '_blank')}
                     >
                       View
                     </Button>
@@ -425,14 +600,18 @@ export default function PaymentProcessor({
       isOpen={isOpen}
       onClose={handleClose}
       size="md"
-      closeButton={!['approval', 'payment', 'confirming'].includes(paymentStep)}
+      closeButton={!['approval', 'waiting-approval', 'creating-bill', 'payment', 'waiting-payment', 'confirming'].includes(paymentStep)}
+      isDismissable={!['approval', 'waiting-approval', 'creating-bill', 'payment', 'waiting-payment', 'confirming'].includes(paymentStep)}
     >
       <ModalContent>
         {paymentStep === 'amount' && renderAmountStep()}
         {paymentStep === 'wallet' && renderWalletStep()}
         {paymentStep === 'approval' && renderProcessingStep('Approving USDC', 'Please approve USDC spending in your wallet...')}
+        {paymentStep === 'waiting-approval' && renderProcessingStep('Confirming Approval', 'Waiting for approval transaction to be confirmed on blockchain...')}
+        {paymentStep === 'creating-bill' && renderProcessingStep('Creating Bill', 'Creating bill on blockchain...')}
         {paymentStep === 'payment' && renderProcessingStep('Processing Payment', 'Please confirm the payment transaction in your wallet...')}
-        {paymentStep === 'confirming' && renderProcessingStep('Confirming Payment', 'Waiting for blockchain confirmation...')}
+        {paymentStep === 'waiting-payment' && renderProcessingStep('Confirming Payment', 'Waiting for payment transaction to be confirmed...')}
+        {paymentStep === 'confirming' && renderProcessingStep('Finalizing', 'Updating payment records...')}
         {paymentStep === 'success' && renderSuccessStep()}
         {paymentStep === 'error' && renderErrorStep()}
       </ModalContent>

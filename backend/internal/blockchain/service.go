@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"strconv"
 	"strings"
 	"time"
 
@@ -246,8 +247,12 @@ func NewBlockchainService(rpcURL, contractAddress, privateKeyHex string) (*Block
 
 // CreateBill creates a bill record on the blockchain (unified payment system)
 func (s *BlockchainService) CreateBill(billID string, businessAddress string, totalAmount int64, metadata string, nonce string) (*PaymentResult, error) {
-	// Convert bill ID to bytes32
-	billIDBytes := crypto.Keccak256Hash([]byte(billID))
+	// Convert bill ID to bytes32 (padded format to match frontend)
+	billIDInt, err := strconv.ParseUint(billID, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid bill ID format: %v", err)
+	}
+	billIDBytes := common.BytesToHash(big.NewInt(int64(billIDInt)).Bytes())
 
 	// Convert business address
 	businessAddr := common.HexToAddress(businessAddress)

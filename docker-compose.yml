@@ -65,6 +65,8 @@ services:
       - ${CHAIN_ID:-1}
       - --usdc-contract
       - ${USDC_CONTRACT:-usdc_contract}
+      - --payverge-contract
+      - ${PAYVERGE_CONTRACT:-payverge_contract}
       - --postmark-server-token
       - ${POSTMARK_SERVER_TOKEN:-postmark_token}
       - --from-email

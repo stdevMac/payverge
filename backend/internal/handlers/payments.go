@@ -1,13 +1,15 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"payverge/internal/blockchain"
 	"payverge/internal/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 // PaymentHandler handles payment-related requests
@@ -123,10 +125,10 @@ func (h *PaymentHandler) GetPaymentDetails(c *gin.Context) {
 	// For now, return a placeholder response
 	c.JSON(http.StatusOK, gin.H{
 		"transaction_hash": txHash,
-		"status":          "confirmed",
-		"block_number":    12345,
-		"gas_used":        21000,
-		"timestamp":       "2024-01-01T00:00:00Z",
+		"status":           "confirmed",
+		"block_number":     12345,
+		"gas_used":         21000,
+		"timestamp":        "2024-01-01T00:00:00Z",
 	})
 }
 
@@ -231,10 +233,10 @@ func (h *PaymentHandler) MarkAlternativePayment(c *gin.Context) {
 	}
 
 	var req struct {
-		ParticipantAddress string `json:"participant_address" binding:"required"`
-		Amount             string `json:"amount" binding:"required"`
-		PaymentMethod      string `json:"payment_method" binding:"required"`
-		BusinessConfirmation bool `json:"business_confirmation"`
+		ParticipantAddress   string `json:"participant_address" binding:"required"`
+		Amount               string `json:"amount" binding:"required"`
+		PaymentMethod        string `json:"payment_method" binding:"required"`
+		BusinessConfirmation bool   `json:"business_confirmation"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -304,7 +306,7 @@ func (h *PaymentHandler) MarkAlternativePayment(c *gin.Context) {
 	if bill.PaidAmount >= bill.TotalAmount {
 		bill.Status = database.BillStatusPaid
 	}
-	
+
 	if err := h.db.UpdateBill(bill); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update bill"})
 		return
@@ -320,8 +322,8 @@ func (h *PaymentHandler) MarkAlternativePayment(c *gin.Context) {
 	// TODO: Send WebSocket notification
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Alternative payment marked successfully",
+		"success":           true,
+		"message":           "Alternative payment marked successfully",
 		"payment_breakdown": breakdown,
 	})
 }
@@ -397,8 +399,8 @@ func (h *PaymentHandler) RequestAlternativePayment(c *gin.Context) {
 	// TODO: Send WebSocket notification to business
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Alternative payment request sent to business owner",
+		"success":    true,
+		"message":    "Alternative payment request sent to business owner",
 		"request_id": altPayment.ID,
 	})
 }
@@ -507,4 +509,168 @@ func (h *PaymentHandler) getBillPaymentBreakdown(billID uint) (*database.Payment
 	}
 
 	return breakdown, nil
+}
+
+// CryptoPaymentRequest represents a crypto payment request
+type CryptoPaymentRequest struct {
+	TransactionHash   string  `json:"transaction_hash" binding:"required"`
+	AmountPaid        float64 `json:"amount_paid" binding:"required"`
+	TipAmount         float64 `json:"tip_amount"`
+	PaymentMethod     string  `json:"payment_method" binding:"required"`
+	BlockchainNetwork string  `json:"blockchain_network"`
+}
+
+// ProcessCryptoPayment handles crypto payment completion
+// POST /api/v1/inside/bills/:bill_id/crypto-payment
+func (h *PaymentHandler) ProcessCryptoPayment(c *gin.Context) {
+	billIDStr := c.Param("bill_id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req CryptoPaymentRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get bill from database
+	bill, err := h.db.GetBill(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	// Create bill on-chain if it doesn't exist yet
+	// This is where the bill creator address creates the on-chain bill
+	if h.blockchain != nil {
+		metadata := fmt.Sprintf(`{"bill_id":%d,"business_name":"%s","bill_number":"%s"}`,
+			billID, "Business", bill.BillNumber) // TODO: Get actual business name
+		nonce := fmt.Sprintf("bill_%d_%d", billID, time.Now().Unix())
+
+		_, err = h.blockchain.CreateBill(
+			fmt.Sprintf("%d", billID),   // Use database bill ID as blockchain bill ID
+			bill.SettlementAddr,         // Business address
+			int64(bill.TotalAmount*1e6), // Convert to USDC wei (6 decimals)
+			metadata,
+			nonce,
+		)
+		if err != nil {
+			// Log error but continue - bill might already exist on-chain
+			fmt.Printf("Note: Could not create bill on-chain (may already exist): %v\n", err)
+		}
+	}
+
+	// Update bill with payment information
+	totalPaid := req.AmountPaid + req.TipAmount
+	bill.PaidAmount += totalPaid
+
+	// Check if bill is fully paid
+	if bill.PaidAmount >= bill.TotalAmount {
+		bill.Status = database.BillStatusPaid
+	}
+	// Note: We keep the bill as "open" if not fully paid
+
+	// Update the bill in database
+	err = h.db.UpdateBill(bill)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update bill"})
+		return
+	}
+
+	// Create payment record
+	payment := &database.Payment{
+		BillID:    uint(billID),
+		PayerAddr: "crypto_guest", // Placeholder for crypto payments
+		Amount:    req.AmountPaid,
+		TipAmount: req.TipAmount,
+		TxHash:    req.TransactionHash,
+		Status:    database.PaymentStatusConfirmed,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	err = database.CreatePayment(payment)
+	if err != nil {
+		// Log error but don't fail the request since bill was already updated
+		// TODO: Add proper logging
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success":          true,
+		"message":          "Payment processed successfully",
+		"bill_id":          billID,
+		"transaction_hash": req.TransactionHash,
+		"amount_paid":      req.AmountPaid,
+		"tip_amount":       req.TipAmount,
+		"bill_status":      bill.Status,
+		"remaining_amount": bill.TotalAmount - bill.PaidAmount,
+	})
+}
+
+// CreateOnChainBillRequest represents a request to create a bill on-chain
+type CreateOnChainBillRequest struct {
+	BusinessAddress string  `json:"business_address" binding:"required"`
+	TotalAmount     float64 `json:"total_amount" binding:"required"`
+}
+
+// CreateOnChainBill creates a bill on the blockchain
+// POST /api/v1/inside/bills/:bill_id/create-onchain
+func (h *PaymentHandler) CreateOnChainBill(c *gin.Context) {
+	billIDStr := c.Param("bill_id")
+	billID, err := strconv.ParseUint(billIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid bill ID"})
+		return
+	}
+
+	var req CreateOnChainBillRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get bill from database
+	bill, err := h.db.GetBill(uint(billID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Bill not found"})
+		return
+	}
+
+	// Create bill on-chain using the blockchain service
+	if h.blockchain != nil {
+		metadata := fmt.Sprintf(`{"bill_id":%d,"business_address":"%s","bill_number":"%s","created_at":"%s"}`,
+			billID, req.BusinessAddress, bill.BillNumber, bill.CreatedAt.Format("2006-01-02T15:04:05Z"))
+		nonce := fmt.Sprintf("bill_%d_%d", billID, time.Now().Unix())
+
+		result, err := h.blockchain.CreateBill(
+			fmt.Sprintf("%d", billID),  // Use database bill ID as blockchain bill ID
+			req.BusinessAddress,        // Business address from request
+			int64(req.TotalAmount*1e6), // Convert to USDC wei (6 decimals)
+			metadata,
+			nonce,
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "Failed to create bill on-chain",
+				"details": err.Error(),
+				"hint":    "Business might not be registered. Please register the business first.",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":            true,
+			"message":            "Bill created on-chain successfully",
+			"bill_id":            billID,
+			"transaction_hash":   result.TransactionHash,
+			"blockchain_bill_id": fmt.Sprintf("%d", billID),
+		})
+	} else {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"error": "Blockchain service not available",
+		})
+	}
 }

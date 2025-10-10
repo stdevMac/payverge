@@ -127,6 +127,33 @@ export const approveCashPayment = async (billId: number, data: MarkPaidRequest):
   return response.data;
 };
 
+// Update bill with crypto payment details
+export interface UpdateBillPaymentRequest {
+  transaction_hash: string;
+  tip_amount?: number;
+  payment_method: 'crypto';
+  blockchain_network?: string;
+}
+
+export const createOnChainBill = async (billId: number, billData: {
+  business_address: string;
+  total_amount: number;
+}): Promise<any> => {
+  const response = await axiosInstance.post(`/guest/bills/${billId}/create-onchain`, billData);
+  return response.data;
+};
+
+export const updateBillPayment = async (billId: number, paymentData: {
+  transaction_hash: string;
+  amount_paid: number;
+  tip_amount: number;
+  payment_method: string;
+  blockchain_network: string;
+}): Promise<any> => {
+  const response = await axiosInstance.post(`/guest/bills/${billId}/crypto-payment`, paymentData);
+  return response.data;
+};
+
 // Guest API functions (no authentication required)
 export const getTableByCode = async (code: string) => {
   const response = await axiosInstance.get(`/guest/table/${code}`);

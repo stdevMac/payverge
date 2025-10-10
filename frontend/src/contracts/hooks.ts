@@ -72,6 +72,17 @@ export const useBusinessBillCount = (businessAddress: Address) => {
   });
 };
 
+export const useGetClaimableAmounts = (businessAddress: Address, tippingAddress: Address) => {
+  const config = useContractConfig();
+  
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getClaimableAmounts',
+    args: [businessAddress, tippingAddress],
+  });
+};
+
 export const useClaimableBalance = (businessAddress: Address) => {
   const config = useContractConfig();
   
@@ -139,10 +150,10 @@ export const useRemainingDailyLimit = (userAddress?: Address) => {
 
 export const useProcessPayment = () => {
   const config = useContractConfig();
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   
-  const processPayment = (params: ProcessPaymentParams) => {
-    return writeContract({
+  const processPayment = async (params: ProcessPaymentParams) => {
+    return await writeContractAsync({
       address: config.payments,
       abi: PAYVERGE_PAYMENTS_ABI,
       functionName: 'processPayment',

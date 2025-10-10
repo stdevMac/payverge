@@ -312,6 +312,10 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
+		
+		// Crypto Payment routes (public for guests)
+		publicRoutes.POST("/guest/bills/:bill_id/create-onchain", paymentHandler.CreateOnChainBill)
+		publicRoutes.POST("/guest/bills/:bill_id/crypto-payment", paymentHandler.ProcessCryptoPayment)
 
 		// Phase 6: Analytics and Dashboard routes
 		analyticsHandler := handlers.NewAnalyticsHandler(database.GetDBWrapper())
