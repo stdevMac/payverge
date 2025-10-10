@@ -35,6 +35,10 @@ interface CartItem {
   price: number;
   quantity: number;
   specialRequests?: string;
+  addOns?: Array<{
+    name: string;
+    price: number;
+  }>;
 }
 
 export default function GuestMenuPage() {
@@ -67,20 +71,32 @@ export default function GuestMenuPage() {
     }
   }, [tableCode]);
 
-  const addToCart = useCallback((itemName: string, price: number, quantity: number = 1, specialRequests?: string) => {
+  const addToCart = useCallback((
+    itemName: string, 
+    price: number, 
+    quantity: number = 1, 
+    specialRequests?: string,
+    addOns?: Array<{ name: string; price: number }>
+  ) => {
     setCart(prevCart => {
+      // Create a unique identifier that includes add-ons
+      const addOnsString = addOns ? addOns.map(addon => addon.name).sort().join(',') : '';
       const existingItem = prevCart.find(item => 
-        item.name === itemName && item.specialRequests === specialRequests
+        item.name === itemName && 
+        item.specialRequests === specialRequests &&
+        (item.addOns ? item.addOns.map(addon => addon.name).sort().join(',') : '') === addOnsString
       );
       
       if (existingItem) {
         return prevCart.map(item =>
-          item.name === itemName && item.specialRequests === specialRequests
+          item.name === itemName && 
+          item.specialRequests === specialRequests &&
+          (item.addOns ? item.addOns.map(addon => addon.name).sort().join(',') : '') === addOnsString
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
-        return [...prevCart, { name: itemName, price, quantity, specialRequests }];
+        return [...prevCart, { name: itemName, price, quantity, specialRequests, addOns }];
       }
     });
   }, []);
@@ -102,7 +118,13 @@ export default function GuestMenuPage() {
   }, []);
 
   const getCartTotal = useCallback(() => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cart.reduce((total, item) => {
+      const baseTotal = item.price * item.quantity;
+      const addOnsTotal = item.addOns 
+        ? item.addOns.reduce((addOnSum, addon) => addOnSum + (addon.price * item.quantity), 0)
+        : 0;
+      return total + baseTotal + addOnsTotal;
+    }, 0);
   }, [cart]);
 
   const getCartItemCount = useCallback(() => {
@@ -120,12 +142,33 @@ export default function GuestMenuPage() {
       setCurrentBill(billWithItems);
       
       // Create guest order for approval
-      const kitchenOrderItems = cart.map(item => ({
-        menu_item_name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        special_requests: item.specialRequests || '',
-      }));
+      const kitchenOrderItems = cart.map(item => {
+        let itemName = item.name;
+        let totalPrice = item.price;
+        let specialRequests = item.specialRequests || '';
+        
+        // Include add-ons in the item name and price
+        if (item.addOns && item.addOns.length > 0) {
+          const addOnNames = item.addOns.map(addon => addon.name).join(', ');
+          itemName = `${item.name} (${addOnNames})`;
+          totalPrice = item.price + item.addOns.reduce((sum, addon) => sum + addon.price, 0);
+          
+          // Add add-ons to special requests if not already there
+          const addOnDetails = item.addOns.map(addon => 
+            `${addon.name}${addon.price > 0 ? ` (+$${addon.price.toFixed(2)})` : ''}`
+          ).join(', ');
+          specialRequests = specialRequests 
+            ? `${specialRequests}. Add-ons: ${addOnDetails}`
+            : `Add-ons: ${addOnDetails}`;
+        }
+        
+        return {
+          menu_item_name: itemName,
+          quantity: item.quantity,
+          price: totalPrice,
+          special_requests: specialRequests,
+        };
+      });
 
       console.log('Creating initial kitchen order with data:', {
         business_id: tableData.business.id,
@@ -170,12 +213,33 @@ export default function GuestMenuPage() {
     setOrderLoading(true);
     try {
       // Create a new order for additional items
-      const orderItems = cart.map(item => ({
-        menu_item_name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        special_requests: item.specialRequests || '',
-      }));
+      const orderItems = cart.map(item => {
+        let itemName = item.name;
+        let totalPrice = item.price;
+        let specialRequests = item.specialRequests || '';
+        
+        // Include add-ons in the item name and price
+        if (item.addOns && item.addOns.length > 0) {
+          const addOnNames = item.addOns.map(addon => addon.name).join(', ');
+          itemName = `${item.name} (${addOnNames})`;
+          totalPrice = item.price + item.addOns.reduce((sum, addon) => sum + addon.price, 0);
+          
+          // Add add-ons to special requests if not already there
+          const addOnDetails = item.addOns.map(addon => 
+            `${addon.name}${addon.price > 0 ? ` (+$${addon.price.toFixed(2)})` : ''}`
+          ).join(', ');
+          specialRequests = specialRequests 
+            ? `${specialRequests}. Add-ons: ${addOnDetails}`
+            : `Add-ons: ${addOnDetails}`;
+        }
+        
+        return {
+          menu_item_name: itemName,
+          quantity: item.quantity,
+          price: totalPrice,
+          special_requests: specialRequests,
+        };
+      });
 
       console.log('Creating order with data:', {
         business_id: tableData.business.id,
@@ -394,7 +458,24 @@ export default function GuestMenuPage() {
                   <div key={index} className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
                     <div className="flex-1">
                       <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-default-600">${item.price.toFixed(2)} each</p>
+                      <p className="text-sm text-default-600">
+                        ${item.price.toFixed(2)} base
+                        {item.addOns && item.addOns.length > 0 && (
+                          <span> + ${item.addOns.reduce((sum, addon) => sum + addon.price, 0).toFixed(2)} add-ons</span>
+                        )}
+                        <span className="font-medium"> = ${(item.price + (item.addOns?.reduce((sum, addon) => sum + addon.price, 0) || 0)).toFixed(2)} each</span>
+                      </p>
+                      {item.addOns && item.addOns.length > 0 && (
+                        <div className="text-sm text-default-500 mt-1">
+                          <span className="font-medium">Add-ons: </span>
+                          {item.addOns.map((addon, addonIndex) => (
+                            <span key={addonIndex}>
+                              {addon.name} (+${addon.price.toFixed(2)})
+                              {addonIndex < item.addOns!.length - 1 ? ', ' : ''}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       {item.specialRequests && (
                         <p className="text-sm text-default-500 mt-1">Note: {item.specialRequests}</p>
                       )}

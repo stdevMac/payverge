@@ -1,6 +1,8 @@
 package database
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -105,9 +107,25 @@ func (d *DB) GetBill(id uint) (*Bill, error) {
 	return bill, err
 }
 
-// UpdateBill updates a bill
+// UpdateBill updates a bill while preserving existing items
 func (d *DB) UpdateBill(bill *Bill) error {
-	return UpdateBill(bill, []BillItem{})
+	// Get existing bill to preserve items
+	var existingBill Bill
+	if err := db.First(&existingBill, bill.ID).Error; err != nil {
+		return fmt.Errorf("failed to get existing bill: %w", err)
+	}
+	
+	// Parse existing items to preserve them
+	var existingItems []BillItem
+	if existingBill.Items != "" {
+		if err := json.Unmarshal([]byte(existingBill.Items), &existingItems); err != nil {
+			// If parsing fails, use empty array but log the error
+			fmt.Printf("Warning: failed to parse existing items for bill %d: %v\n", bill.ID, err)
+			existingItems = []BillItem{}
+		}
+	}
+	
+	return UpdateBill(bill, existingItems)
 }
 
 // GetTable retrieves a table by ID

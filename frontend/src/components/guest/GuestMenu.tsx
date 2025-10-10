@@ -29,7 +29,13 @@ interface GuestMenuProps {
   tableCode: string;
   currentBill: BillWithItemsResponse | null;
   onAddToBill: (itemName: string, price: number, quantity?: number) => void;
-  onAddToCart?: (itemName: string, price: number, quantity?: number, specialRequests?: string) => void;
+  onAddToCart?: (
+    itemName: string, 
+    price: number, 
+    quantity?: number, 
+    specialRequests?: string,
+    addOns?: Array<{ name: string; price: number }>
+  ) => void;
 }
 
 export const GuestMenu: React.FC<GuestMenuProps> = ({
@@ -146,6 +152,40 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
       : item.name;
     
     onAddToBill(itemNameWithOptions, totalPrice, finalQuantity);
+    
+    // Stripe-like success animation
+    setAnimatingItems(prev => new Set(Array.from(prev).concat([item.name])));
+    setAddedItems(prev => new Set(Array.from(prev).concat([item.name])));
+    
+    // Reset modal state and close
+    resetModalState();
+    onItemModalClose();
+    
+    setTimeout(() => {
+      setAnimatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(item.name);
+        return newSet;
+      });
+    }, 2000);
+  };
+
+  const handleAddToCart = (item: MenuItem, quantity?: number) => {
+    if (!onAddToCart) return;
+    
+    const finalQuantity = quantity || getItemQuantity(item.name);
+    const selectedItemOptions = getSelectedOptionsForItem(item);
+    
+    // Use base price only - add-ons will be calculated separately
+    const basePrice = item.price || 0;
+    
+    // Convert selected options to add-ons format
+    const addOns = selectedItemOptions.map(option => ({
+      name: option.name,
+      price: option.price_change || 0
+    }));
+    
+    onAddToCart(item.name, basePrice, finalQuantity, '', addOns);
     
     // Stripe-like success animation
     setAnimatingItems(prev => new Set(Array.from(prev).concat([item.name])));
@@ -669,7 +709,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                   <div className="flex gap-3 w-full">
                     <Button 
                       variant="light" 
-                      onPress={onClose}
+                      onPress={onItemModalClose}
                       className="flex-1"
                     >
                       Close
@@ -679,32 +719,11 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <Button
                           color="primary"
                           onPress={() => {
-                            if (currentBill) {
-                              handleAddToBill(selectedItem);
-                            } else if (onAddToCart) {
-                              onAddToCart(selectedItem.name, selectedItem.price, getItemQuantity(selectedItem.name));
-                              
-                              // Trigger success animation
-                              setAnimatingItems(prev => new Set(Array.from(prev).concat([selectedItem.name])));
-                              setAddedItems(prev => new Set(Array.from(prev).concat([selectedItem.name])));
-                              
-                              // Reset animation and quantity after 2.5 seconds
-                              setTimeout(() => {
-                                setAnimatingItems(prev => {
-                                  const newSet = new Set(prev);
-                                  newSet.delete(selectedItem.name);
-                                  return newSet;
-                                });
-                                setAddedItems(prev => {
-                                  const newSet = new Set(prev);
-                                  newSet.delete(selectedItem.name);
-                                  return newSet;
-                                });
-                                // Reset quantity back to 1
-                                setItemQuantity(selectedItem.name, 1);
-                              }, 2500);
+                            // Always add to cart for approval workflow
+                            if (onAddToCart) {
+                              handleAddToCart(selectedItem);
                             }
-                            onClose();
+                            onItemModalClose();
                           }}
                           disabled={!selectedItem.is_available}
                           className={`w-full relative overflow-hidden ${
@@ -731,7 +750,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                           <span className="relative z-10">
                             {isItemAdded(selectedItem.name) 
                               ? `Added ${getItemQuantity(selectedItem.name)}!` 
-                              : `Add ${getItemQuantity(selectedItem.name)} to ${currentBill ? 'Bill' : 'Cart'} - ${formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}`
+                              : `Add ${getItemQuantity(selectedItem.name)} to Cart - ${formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}`
                             }
                           </span>
                         </Button>

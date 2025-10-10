@@ -564,10 +564,10 @@ func (h *PaymentHandler) ProcessCryptoPayment(c *gin.Context) {
 	}
 
 	// Update bill with payment information
-	totalPaid := req.AmountPaid + req.TipAmount
-	bill.PaidAmount += totalPaid
+	bill.PaidAmount += req.AmountPaid  // Only add the bill amount, not the tip
+	bill.TipAmount += req.TipAmount    // Track tips separately
 
-	// Check if bill is fully paid
+	// Check if bill is fully paid (tips don't count toward bill completion)
 	if bill.PaidAmount >= bill.TotalAmount {
 		bill.Status = database.BillStatusPaid
 	}

@@ -40,6 +40,22 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBill, setSelectedBill] = useState<BillWithItemsResponse | null>(null);
+
+  // Helper function to safely parse bill items
+  const parseBillItems = (items: string | any[]): any[] => {
+    if (Array.isArray(items)) {
+      return items;
+    }
+    if (typeof items === 'string') {
+      try {
+        return JSON.parse(items || '[]');
+      } catch (error) {
+        console.error('Error parsing bill items:', error);
+        return [];
+      }
+    }
+    return [];
+  };
   const [showBillDetails, setShowBillDetails] = useState(false);
   const [showBillCreator, setShowBillCreator] = useState(false);
   const [showPaymentProcessor, setShowPaymentProcessor] = useState(false);
@@ -61,8 +77,10 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const loadOrdersForBills = useCallback(async (billsList: Bill[]) => {
     const ordersMap: Record<number, Order[]> = {};
     
-    // Load orders for each bill
-    for (const bill of billsList) {
+    // Load orders for each bill (limit to prevent performance issues)
+    const billsToLoad = billsList.slice(0, 50); // Limit to 50 bills to prevent performance issues
+    
+    for (const bill of billsToLoad) {
       try {
         const orderData = await getOrdersByBillId(businessId, bill.id);
         ordersMap[bill.id] = orderData.orders || [];
@@ -72,7 +90,6 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
       }
     }
     
-    console.log('Orders loaded:', ordersMap);
     setOrders(ordersMap);
   }, [businessId]);
 
@@ -345,7 +362,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
               </TableCell>
               <TableCell>
                 <span className="text-sm">
-                  {JSON.parse(bill.items || '[]').length} items
+                  {parseBillItems(bill.items).length} items
                 </span>
               </TableCell>
               <TableCell>
@@ -663,22 +680,30 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 {/* Items */}
                 <Card>
                   <CardHeader>
-                    <h3 className="text-lg font-semibold">Items ({selectedBill.items.length})</h3>
+                    <h3 className="text-lg font-semibold">Items ({selectedBill.items?.length || 0})</h3>
                   </CardHeader>
                   <CardBody>
-                    <div className="space-y-3">
-                      {selectedBill.items.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-default-500">
-                              {item.quantity} × {formatCurrency(item.price)}
-                            </p>
+                    {!selectedBill.items || selectedBill.items.length === 0 ? (
+                      <div className="text-center py-8">
+                        <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
+                        <h3 className="text-lg font-medium text-default-500 mb-2">No Items</h3>
+                        <p className="text-default-400">This bill doesn't have any items yet.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {selectedBill.items.map((item, index) => (
+                          <div key={index} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
+                            <div>
+                              <p className="font-medium">{item.name || 'Unknown Item'}</p>
+                              <p className="text-sm text-default-500">
+                                {item.quantity || 1} × {formatCurrency(item.price || 0)}
+                              </p>
+                            </div>
+                            <p className="font-semibold">{formatCurrency(item.subtotal || 0)}</p>
                           </div>
-                          <p className="font-semibold">{formatCurrency(item.subtotal)}</p>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
 
@@ -712,10 +737,31 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                             <span>Paid:</span>
                             <span>{formatCurrency(selectedBill.bill.paid_amount)}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span>Remaining:</span>
-                            <span>{formatCurrency(selectedBill.bill.total_amount - selectedBill.bill.paid_amount)}</span>
-                          </div>
+                          {selectedBill.bill.tip_amount > 0 && (
+                            <div className="flex justify-between text-success">
+                              <span>Tips:</span>
+                              <span>{formatCurrency(selectedBill.bill.tip_amount)}</span>
+                            </div>
+                          )}
+                          {(() => {
+                            const remaining = selectedBill.bill.total_amount - selectedBill.bill.paid_amount;
+                            if (remaining > 0) {
+                              return (
+                                <div className="flex justify-between text-warning">
+                                  <span>Remaining:</span>
+                                  <span>{formatCurrency(remaining)}</span>
+                                </div>
+                              );
+                            } else if (remaining < 0) {
+                              return (
+                                <div className="flex justify-between text-success">
+                                  <span>Overpaid:</span>
+                                  <span>{formatCurrency(Math.abs(remaining))}</span>
+                                </div>
+                              );
+                            }
+                            return null; // Exactly paid, no remaining
+                          })()}
                         </>
                       )}
                     </div>
@@ -825,17 +871,17 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           businessName="Business"
           businessAddress={selectedBill.bill.settlement_address}
           tipAddress={selectedBill.bill.tipping_address}
-          onPaymentComplete={() => {
+          onPaymentComplete={async () => {
             setShowPaymentProcessor(false);
-            loadBills();
+            // Refresh bill data after payment - wait for completion
+            await loadBills();
             if (selectedBill) {
-              handleViewBill(selectedBill.bill.id);
+              // Reload the specific bill details after bills list is refreshed
+              await handleViewBill(selectedBill.bill.id);
             }
           }}
         />
       )}
-
-      {/* Bill Splitting Modal */}
       {selectedBill && (
         <BillSplittingFlow
           bill={{
@@ -852,11 +898,13 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           tableNumber={selectedBill.bill.table_id?.toString() || 'Counter'}
           isOpen={showBillSplitting}
           onClose={() => setShowBillSplitting(false)}
-          onPaymentInitiate={() => {
+          onPaymentInitiate={async () => {
             setShowBillSplitting(false);
-            loadBills();
+            // Refresh bill data after payment - wait for completion
+            await loadBills();
             if (selectedBill) {
-              handleViewBill(selectedBill.bill.id);
+              // Reload the specific bill details after bills list is refreshed
+              await handleViewBill(selectedBill.bill.id);
             }
           }}
         />

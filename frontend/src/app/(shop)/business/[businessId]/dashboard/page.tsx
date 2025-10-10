@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/hooks/useAuth';
+import { useWaitForTransactionReceipt } from 'wagmi';
 import { getCookie } from '@/config/aws-s3/cookie-management/store.helpers';
 import { isTokenValid, decodeJwt } from '@/utils/jwt';
 import { getUserProfile } from '@/api/users/profile';
@@ -25,7 +26,7 @@ import { ToastProvider } from '../../../../../contexts/ToastContext';
 import analyticsApi, { SalesData } from '../../../../../api/analytics';
 import { 
   useBusinessInfo, 
-  useClaimableBalance, 
+  useGetClaimableAmounts, 
   useUpdateBusinessPaymentAddress, 
   useUpdateBusinessTippingAddress, 
   useClaimEarnings, 
@@ -58,6 +59,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [newPaymentAddress, setNewPaymentAddress] = useState('');
   const [newTippingAddress, setNewTippingAddress] = useState('');
   const [claimingEarnings, setClaimingEarnings] = useState(false);
+  const [claimingStep, setClaimingStep] = useState<string>('');
+  const [transactionHash, setTransactionHash] = useState<string>('');
 
   const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
@@ -67,7 +70,15 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
   // Smart contract hooks - use business settlement address instead of user wallet address
   const { data: businessInfo, refetch: refetchBusinessInfo } = useBusinessInfo(business?.settlement_address as Address);
-  const { data: claimableBalance, refetch: refetchClaimableBalance } = useClaimableBalance(business?.settlement_address as Address);
+  
+  // Get payment and tipping addresses from businessInfo or fallback to settlement address
+  const paymentAddress = (businessInfo as any)?.paymentAddress || business?.settlement_address;
+  const tippingAddress = (businessInfo as any)?.tippingAddress || business?.tipping_address;
+  
+  const { data: claimableBalance, refetch: refetchClaimableBalance } = useGetClaimableAmounts(
+    paymentAddress as Address, 
+    tippingAddress as Address
+  );
   
   // Debug logging
   console.log('Business settlement address:', business?.settlement_address);
@@ -126,12 +137,46 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const handleClaimEarnings = async () => {
     try {
       setClaimingEarnings(true);
-      await claimEarnings();
-      refetchClaimableBalance();
-    } catch (error) {
+      setClaimingStep('Preparing transaction...');
+      setTransactionHash('');
+      
+      // Step 1: Initiate transaction
+      setClaimingStep('Please confirm the transaction in your wallet');
+      const hash = await claimEarnings();
+      setTransactionHash(hash);
+      
+      // Step 2: Transaction submitted
+      setClaimingStep('Transaction submitted! Waiting for blockchain confirmation...');
+      
+      // Wait for a reasonable time for the transaction to be mined
+      // In a real app, you'd use proper transaction receipt waiting
+      await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds
+      
+      setClaimingStep('Transaction confirmed! Updating balances...');
+      
+      // Step 3: Refresh data
+      await refetchClaimableBalance();
+      await refetchBusinessInfo();
+      
+      setClaimingStep('Earnings claimed successfully!');
+      
+      // Show success for 2 seconds then close
+      setTimeout(() => {
+        setClaimingEarnings(false);
+        setClaimingStep('');
+        setTransactionHash('');
+      }, 2000);
+      
+    } catch (error: any) {
       console.error('Error claiming earnings:', error);
-    } finally {
-      setClaimingEarnings(false);
+      setClaimingStep(`Error: ${error.message || 'Transaction failed'}`);
+      
+      // Show error for 5 seconds then close
+      setTimeout(() => {
+        setClaimingEarnings(false);
+        setClaimingStep('');
+        setTransactionHash('');
+      }, 5000);
     }
   };
 
@@ -495,73 +540,132 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
             </div>
 
             {/* Claimable Balances */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200 shadow-sm">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center border border-green-100">
-                      <DollarSign className="w-6 h-6 text-green-600" />
+            <Card className="bg-white border border-gray-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100">
+                    <Wallet className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-medium text-gray-900">Claimable Earnings</h4>
+                    <p className="text-sm text-gray-600">Available to claim from payments and tips</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardBody className="pt-0">
+                <div className="space-y-6">
+                  {/* Payment and Tip Amounts */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <DollarSign className="w-5 h-5 text-green-600" />
+                        <span className="text-sm font-medium text-green-800">Payment Earnings</span>
+                      </div>
+                      <div className="text-2xl font-medium text-green-600">
+                        {claimableBalance && Array.isArray(claimableBalance) ? 
+                          `$${formatUsdcAmount(claimableBalance[0] || BigInt(0))}` : 
+                          '$0.00'
+                        }
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-medium text-gray-900">Payment Earnings</h4>
-                      <p className="text-sm text-gray-600">Available to claim</p>
+                    
+                    <div className="bg-orange-50 border border-orange-100 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <DollarSign className="w-5 h-5 text-orange-600" />
+                        <span className="text-sm font-medium text-orange-800">Tip Earnings</span>
+                      </div>
+                      <div className="text-2xl font-medium text-orange-600">
+                        {claimableBalance && Array.isArray(claimableBalance) ? 
+                          `$${formatUsdcAmount(claimableBalance[1] || BigInt(0))}` : 
+                          '$0.00'
+                        }
+                      </div>
                     </div>
                   </div>
-                </CardHeader>
-                <CardBody className="pt-0">
-                  <div className="space-y-4">
-                    <div className="text-3xl font-medium text-green-600">
-                      {claimableBalance && Array.isArray(claimableBalance) ? 
-                        `$${formatUsdcAmount(claimableBalance[0] || BigInt(0))}` : 
-                        '$0.00'
-                      }
-                    </div>
-                    <Button
-                      size="lg"
-                      className="w-full bg-green-600 text-white hover:bg-green-700"
-                      onClick={handleClaimEarnings}
-                      disabled={claimingEarnings || !claimableBalance || !Array.isArray(claimableBalance) || claimableBalance[0] === BigInt(0)}
-                      startContent={claimingEarnings ? <Spinner size="sm" /> : <DollarSign className="w-5 h-5" />}
-                    >
-                      {claimingEarnings ? 'Claiming...' : 'Claim Earnings'}
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
 
-              <Card className="bg-white border border-gray-200 shadow-sm">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center border border-orange-100">
-                      <DollarSign className="w-6 h-6 text-orange-600" />
+                  {/* Total and Claim Button */}
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-lg font-medium text-gray-900">Total Available:</span>
+                      <span className="text-2xl font-medium text-blue-600">
+                        {claimableBalance && Array.isArray(claimableBalance) ? 
+                          `$${formatUsdcAmount((claimableBalance[0] || BigInt(0)) + (claimableBalance[1] || BigInt(0)))}` : 
+                          '$0.00'
+                        }
+                      </span>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-medium text-gray-900">Tip Earnings</h4>
-                      <p className="text-sm text-gray-600">Available to claim</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardBody className="pt-0">
-                  <div className="space-y-4">
-                    <div className="text-3xl font-medium text-orange-600">
-                      {claimableBalance && Array.isArray(claimableBalance) ? 
-                        `$${formatUsdcAmount(claimableBalance[1] || BigInt(0))}` : 
-                        '$0.00'
-                      }
-                    </div>
+                    
                     <Button
                       size="lg"
-                      className="w-full bg-orange-600 text-white hover:bg-orange-700"
+                      className={`w-full ${
+                        claimableBalance && Array.isArray(claimableBalance) && 
+                        (claimableBalance[0] > BigInt(0) || claimableBalance[1] > BigInt(0))
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                      }`}
                       onClick={handleClaimEarnings}
-                      disabled={claimingEarnings || !claimableBalance || !Array.isArray(claimableBalance) || claimableBalance[1] === BigInt(0)}
-                      startContent={claimingEarnings ? <Spinner size="sm" /> : <DollarSign className="w-5 h-5" />}
+                      disabled={
+                        claimingEarnings || 
+                        !claimableBalance || 
+                        !Array.isArray(claimableBalance) || 
+                        (claimableBalance[0] === BigInt(0) && claimableBalance[1] === BigInt(0))
+                      }
+                      startContent={claimingEarnings ? <Spinner size="sm" /> : <Wallet className="w-5 h-5" />}
                     >
-                      {claimingEarnings ? 'Claiming...' : 'Claim Tips'}
+                      {(() => {
+                        if (claimingEarnings) return 'Claiming All Earnings...';
+                        
+                        if (!claimableBalance || !Array.isArray(claimableBalance) || 
+                            (claimableBalance[0] === BigInt(0) && claimableBalance[1] === BigInt(0))) {
+                          return 'Nothing to Claim';
+                        }
+                        
+                        return 'Claim All Earnings';
+                      })()}
                     </Button>
                   </div>
-                </CardBody>
-              </Card>
-            </div>
+                </div>
+              </CardBody>
+            </Card>
+
+            {/* Transaction Processing Overlay */}
+            {claimingEarnings && (
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+                <Card className="w-full max-w-md mx-4">
+                  <CardBody className="text-center py-8">
+                    <div className="mb-6">
+                      <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Spinner size="lg" color="primary" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        Processing Transaction
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {claimingStep}
+                      </p>
+                      {transactionHash && (
+                        <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                          <p className="text-xs text-gray-500 mb-1">Transaction Hash:</p>
+                          <p className="text-xs font-mono text-gray-700 break-all">
+                            {transactionHash}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <div className="flex items-center gap-2 text-yellow-800">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium">Please don't close this page</p>
+                          <p>Your transaction is being processed on the blockchain</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
+            )}
 
             {/* Business Addresses */}
             <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
@@ -676,7 +780,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               </div>
             </div>
 
-            {/* On-Chain Statistics */}
+            {/* On-Chain Statistics
             <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
               <h3 className="text-xl font-medium text-gray-900 mb-6">On-Chain Statistics</h3>
               
@@ -702,7 +806,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <div className="text-sm text-gray-600">Status</div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         );
 

@@ -225,10 +225,10 @@ export const useUpdateBusinessTippingAddress = () => {
 
 export const useClaimEarnings = () => {
   const config = useContractConfig();
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   
-  const claimEarnings = () => {
-    return writeContract({
+  const claimEarnings = async () => {
+    return await writeContractAsync({
       address: config.payments,
       abi: PAYVERGE_PAYMENTS_ABI,
       functionName: 'claimEarnings',
