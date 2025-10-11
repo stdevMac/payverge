@@ -691,10 +691,16 @@ func UpdateOrderStatus(orderID uint, status OrderStatus, approvedBy string) erro
 			return fmt.Errorf("failed to marshal bill items: %w", err)
 		}
 
-		// Calculate tax and service fee on the new subtotal
-		// Assuming 10% tax and 5% service fee (you may want to make this configurable)
-		taxRate := 0.10
-		serviceFeeRate := 0.05
+		// Get business to use configured tax and service fee rates
+		var business Business
+		if err := tx.First(&business, order.BusinessID).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("failed to get business for tax/service fee rates: %w", err)
+		}
+
+		// Use business configured rates
+		taxRate := business.TaxRate
+		serviceFeeRate := business.ServiceFeeRate
 		
 		newTaxAmount := newSubtotal * taxRate
 		newServiceFeeAmount := newSubtotal * serviceFeeRate

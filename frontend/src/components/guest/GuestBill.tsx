@@ -26,7 +26,7 @@ interface GuestBillProps {
   bill: BillWithItemsResponse;
   business: Business;
   tableCode: string;
-  onPaymentComplete: () => void;
+  onPaymentComplete: (paymentDetails: { totalPaid: number; tipAmount: number }) => void;
   compact?: boolean;
 }
 
@@ -330,9 +330,9 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         businessName={business.name}
         businessAddress={bill.bill.settlement_address}
         tipAddress={bill.bill.tipping_address}
-        onPaymentComplete={() => {
+        onPaymentComplete={(paymentDetails) => {
           setIsPaymentModalOpen(false);
-          onPaymentComplete();
+          onPaymentComplete(paymentDetails);
         }}
       />
 

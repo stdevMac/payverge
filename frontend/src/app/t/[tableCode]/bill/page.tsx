@@ -40,6 +40,12 @@ export default function GuestBillPage() {
   const [tableData, setTableData] = useState<TableData | null>(null);
   const [currentBill, setCurrentBill] = useState<BillWithItemsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [paidBill, setPaidBill] = useState<BillWithItemsResponse | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<{
+    totalPaid: number;
+    tipAmount: number;
+  } | null>(null);
 
   const loadTableData = useCallback(async () => {
     setLoading(true);
@@ -60,23 +66,29 @@ export default function GuestBillPage() {
     }
   }, [tableCode]);
 
-  const handlePaymentComplete = useCallback(async () => {
+  const handlePaymentComplete = useCallback(async (paymentDetails: { totalPaid: number; tipAmount: number }) => {
     try {
-      console.log('Payment completed, reloading table data...');
-      // Reload table data directly instead of calling loadTableData
-      const tableResponse = await getTableByCode(tableCode);
-      setTableData(tableResponse);
-
-      try {
-        const billResponse = await getOpenBillByTableCode(tableCode);
-        setCurrentBill(billResponse);
-      } catch {
+      console.log('Payment completed successfully!', paymentDetails);
+      
+      // Store the current bill and payment details for the thank you screen
+      if (currentBill) {
+        setPaidBill(currentBill);
+        setPaymentDetails(paymentDetails);
+        setShowThankYou(true);
         setCurrentBill(null);
       }
+      
     } catch (error) {
-      console.error('Error reloading after payment:', error);
+      console.error('Error handling payment completion:', error);
+      // Still show thank you screen even if there's an error
+      if (currentBill) {
+        setPaidBill(currentBill);
+        setPaymentDetails(paymentDetails);
+        setShowThankYou(true);
+        setCurrentBill(null);
+      }
     }
-  }, [tableCode]);
+  }, [currentBill]);
 
   useEffect(() => {
     console.log('Bill page mounted, loading data for table:', tableCode);
@@ -117,6 +129,167 @@ export default function GuestBillPage() {
   }
 
   const { business } = tableData;
+
+  // Show thank you screen after payment
+  if (showThankYou && paidBill) {
+    return (
+      <div className="min-h-screen bg-white relative overflow-hidden">
+        {/* Subtle animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-50 to-blue-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-50 to-green-50 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
+
+        {/* Thank You Content */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 py-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-100">
+              <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">
+              Thank You!
+            </h1>
+            <p className="text-xl text-gray-600 font-light tracking-wide">
+              Your payment has been processed successfully
+            </p>
+          </div>
+
+          {/* Order Summary Card */}
+          <Card className="bg-white border border-gray-200 shadow-sm mb-6">
+            <CardBody className="p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-medium text-gray-900">Order Summary</h2>
+                  <p className="text-gray-600">Bill #{paidBill.bill.bill_number}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Table</p>
+                  <p className="text-lg font-medium text-gray-900">{tableData.table.name}</p>
+                </div>
+              </div>
+
+              {/* Items */}
+              <div className="space-y-4 mb-6">
+                {paidBill.items.map((item, index) => (
+                  <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900">{item.name}</h3>
+                      <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-gray-900">${item.subtotal.toFixed(2)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Bill Totals */}
+              <div className="border-t border-gray-200 pt-4 space-y-2">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal:</span>
+                  <span>${paidBill.bill.subtotal.toFixed(2)}</span>
+                </div>
+                {paidBill.bill.tax_amount > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Tax:</span>
+                    <span>${paidBill.bill.tax_amount.toFixed(2)}</span>
+                  </div>
+                )}
+                {paidBill.bill.service_fee_amount > 0 && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Service Fee:</span>
+                    <span>${paidBill.bill.service_fee_amount.toFixed(2)}</span>
+                  </div>
+                )}
+                {paymentDetails && paymentDetails.tipAmount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Tip:</span>
+                    <span>${paymentDetails.tipAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-medium text-gray-900 pt-2 border-t border-gray-200">
+                  <span>Total Paid:</span>
+                  <span>${paymentDetails ? paymentDetails.totalPaid.toFixed(2) : '0.00'}</span>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* Receipt Options */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <Button
+              size="lg"
+              className="bg-blue-600 text-white hover:bg-blue-700"
+              startContent={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              }
+              onClick={() => {
+                const subject = `Receipt - ${business.name} - Bill #${paidBill.bill.bill_number}`;
+                const totalPaid = paymentDetails ? paymentDetails.totalPaid : 0;
+                const body = `Thank you for dining with us!\n\nOrder Details:\nBill #${paidBill.bill.bill_number}\nTable: ${tableData.table.name}\nTotal: $${totalPaid.toFixed(2)}\n\nThank you for choosing ${business.name}!`;
+                window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+              }}
+            >
+              Email Receipt
+            </Button>
+            
+            <Button
+              size="lg"
+              variant="bordered"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+              startContent={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+              }
+              onClick={() => {
+                const totalPaid = paymentDetails ? paymentDetails.totalPaid : 0;
+                if (navigator.share) {
+                  navigator.share({
+                    title: `Receipt - ${business.name}`,
+                    text: `Thank you for dining at ${business.name}! Bill #${paidBill.bill.bill_number} - Total: $${totalPaid.toFixed(2)}`,
+                  });
+                } else {
+                  // Fallback for browsers that don't support Web Share API
+                  const text = `Thank you for dining at ${business.name}! Bill #${paidBill.bill.bill_number} - Total: $${totalPaid.toFixed(2)}`;
+                  navigator.clipboard.writeText(text);
+                  alert('Receipt details copied to clipboard!');
+                }
+              }}
+            >
+              Share Receipt
+            </Button>
+          </div>
+
+          {/* Actions */}
+          <div className="text-center space-y-4">
+            <Button
+              size="lg"
+              variant="light"
+              className="text-gray-600 hover:text-gray-800"
+              startContent={<ArrowLeft className="w-5 h-5" />}
+              onClick={() => {
+                setShowThankYou(false);
+                setPaidBill(null);
+              }}
+            >
+              Back to Table
+            </Button>
+            
+            <p className="text-sm text-gray-500">
+              Thank you for choosing <span className="font-medium">{business.name}</span>!<br />
+              We hope to see you again soon.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentBill) {
     return (

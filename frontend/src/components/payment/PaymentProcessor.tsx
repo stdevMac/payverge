@@ -18,7 +18,7 @@ import {
 } from '@nextui-org/react';
 import { Wallet, AlertCircle, CheckCircle2, ExternalLink, Clock } from 'lucide-react';
 import { useAccount, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
-import { parseUnits, formatUnits, Hash } from 'viem';
+import { parseUnits, formatUnits, Hash, pad, toHex } from 'viem';
 import { 
   useProcessPayment, 
   useUsdcBalance, 
@@ -36,7 +36,7 @@ interface PaymentProcessorProps {
   businessName: string;
   businessAddress: string;
   tipAddress: string;
-  onPaymentComplete?: () => void;
+  onPaymentComplete?: (paymentDetails: { totalPaid: number; tipAmount: number }) => void;
 }
 
 type PaymentStep = 
@@ -94,13 +94,28 @@ export default function PaymentProcessor({
       },
     });
 
-  const { data: paymentReceipt, isSuccess: paymentSuccess, error: paymentError } = 
+  const { data: paymentReceipt, isSuccess: paymentSuccess, error: paymentError, isLoading: paymentLoading } = 
     useWaitForTransactionReceipt({
       hash: paymentTx.hash,
       query: {
         enabled: !!paymentTx.hash && !paymentTx.isConfirmed,
       },
     });
+
+  // Debug effect for payment transaction status
+  useEffect(() => {
+    if (paymentTx.hash) {
+      console.log('Payment transaction status:', {
+        hash: paymentTx.hash,
+        isLoading: paymentLoading,
+        isSuccess: paymentSuccess,
+        hasReceipt: !!paymentReceipt,
+        hasError: !!paymentError,
+        errorMessage: paymentError?.message,
+        isConfirmed: paymentTx.isConfirmed
+      });
+    }
+  }, [paymentTx.hash, paymentLoading, paymentSuccess, paymentReceipt, paymentError, paymentTx.isConfirmed]);
 
   // Calculate amounts in Wei (USDC has 6 decimals)
   const amountInWei = parseUnits(amount.toString(), 6);
@@ -120,6 +135,13 @@ export default function PaymentProcessor({
   const handleTipPreset = (percentage: number) => {
     const tip = amount * percentage;
     setTipAmount(tip.toFixed(2));
+  };
+
+  // Helper function to check if a preset is selected
+  const isPresetSelected = (preset: number) => {
+    const expectedTip = amount * preset;
+    const currentTip = parseFloat(tipAmount) || 0;
+    return Math.abs(currentTip - expectedTip) < 0.01; // Allow for small floating point differences
   };
 
   const handleNext = () => {
@@ -146,6 +168,10 @@ export default function PaymentProcessor({
       if (!hasSufficientAllowance) {
         console.log('Submitting USDC approval for:', formatUnits(totalAmountInWei, 6), 'USDC');
         const txHash = await approveUsdc(totalAmountInWei);
+        
+        console.log('Raw approval txHash:', txHash);
+        console.log('TxHash length:', txHash?.length);
+        console.log('TxHash type:', typeof txHash);
         
         setApprovalTx({ hash: txHash, isConfirmed: false });
         setPaymentStep('waiting-approval');
@@ -193,31 +219,54 @@ export default function PaymentProcessor({
         throw new Error('Contract address not configured. Please check environment variables.');
       }
 
-      const onChainBillId = `0x${billId.toString(16).padStart(64, '0')}` as `0x${string}`;
-      
-      console.log('Processing payment on-chain:', {
-        billId: onChainBillId,
+      // Generate proper bytes32 bill ID to match backend format
+      // Backend uses: common.BytesToHash(big.NewInt(int64(billIDInt)).Bytes())
+      // This is equivalent to padding the bill ID as a number to 32 bytes
+      const onChainBillId = pad(toHex(BigInt(billId)), { size: 32 });
+      const amountInWei = parseUnits(amount.toString(), 6);
+      const tipAmountInWei = parseUnits(tipAmount || '0', 6);
+
+      console.log('Processing payment with params:', {
+        billId: billId,
+        onChainBillId: onChainBillId,
         amount: formatUnits(amountInWei, 6),
         tip: formatUnits(tipAmountInWei, 6),
-        contractAddress: contractConfig.payments
+        contractAddress: contractConfig.payments,
+        userAddress: address,
+        usdcBalance: usdcBalance ? formatUnits(usdcBalance, 6) : 'unknown',
+        usdcAllowance: usdcAllowance ? formatUnits(usdcAllowance, 6) : 'unknown'
       });
 
+      console.log('Calling processPayment...');
       const txHash = await processPayment({
         billId: onChainBillId,
         amount: amountInWei,
         tipAmount: tipAmountInWei,
       });
 
+      console.log('Raw payment txHash:', txHash);
+      console.log('Payment TxHash length:', txHash?.length);
+      console.log('Payment TxHash type:', typeof txHash);
+      
+      if (!txHash || txHash.length !== 66) {
+        throw new Error(`Invalid transaction hash received: ${txHash}`);
+      }
+      
       setPaymentTx({ hash: txHash, isConfirmed: false });
       setPaymentStep('waiting-payment');
-      console.log('Payment transaction submitted:', txHash);
+      console.log('Payment transaction submitted successfully:', txHash);
     } catch (err: any) {
       console.error('Payment failed:', err);
+      console.error('Payment error details:', {
+        message: err.message,
+        code: err.code,
+        data: err.data,
+        stack: err.stack
+      });
       setError(err.message || 'Payment transaction failed');
       setPaymentStep('error');
     }
   };
-
   const notifyBackend = async (txHash: Hash) => {
     try {
       const result = await updateBillPayment(billId, {
@@ -260,6 +309,13 @@ export default function PaymentProcessor({
 
   // Effect to handle payment confirmation
   useEffect(() => {
+    console.log('Payment confirmation effect:', { 
+      paymentSuccess, 
+      paymentReceipt: !!paymentReceipt, 
+      paymentTxConfirmed: paymentTx.isConfirmed,
+      paymentTxHash: paymentTx.hash 
+    });
+    
     if (paymentSuccess && paymentReceipt && !paymentTx.isConfirmed) {
       console.log('Payment confirmed:', paymentReceipt.transactionHash);
       setPaymentTx(prev => ({ ...prev, isConfirmed: true }));
@@ -270,7 +326,10 @@ export default function PaymentProcessor({
         .then(() => {
           setPaymentStep('success');
           if (onPaymentComplete) {
-            onPaymentComplete();
+            onPaymentComplete({
+              totalPaid: totalAmount,
+              tipAmount: parseFloat(tipAmount || '0')
+            });
           }
         })
         .catch((error) => {
@@ -278,7 +337,10 @@ export default function PaymentProcessor({
           // Still show success since blockchain transaction succeeded
           setPaymentStep('success');
           if (onPaymentComplete) {
-            onPaymentComplete();
+            onPaymentComplete({
+              totalPaid: totalAmount,
+              tipAmount: parseFloat(tipAmount || '0')
+            });
           }
         });
     }
@@ -286,9 +348,15 @@ export default function PaymentProcessor({
 
   // Effect to handle payment errors
   useEffect(() => {
+    console.log('Payment error effect:', { 
+      paymentError: !!paymentError, 
+      paymentErrorMessage: paymentError?.message,
+      paymentTxHash: paymentTx.hash 
+    });
+    
     if (paymentError && paymentTx.hash) {
       console.error('Payment transaction failed:', paymentError);
-      setError('Payment transaction failed');
+      setError(`Payment transaction failed: ${paymentError.message || 'Unknown error'}`);
       setPaymentStep('error');
     }
   }, [paymentError, paymentTx.hash]);
@@ -317,7 +385,10 @@ export default function PaymentProcessor({
   }, []);
 
   const handleSuccess = () => {
-    onPaymentComplete?.();
+    onPaymentComplete?.({
+      totalPaid: totalAmount,
+      tipAmount: parseFloat(tipAmount || '0')
+    });
     handleClose();
   };
 
@@ -377,10 +448,10 @@ export default function PaymentProcessor({
                 <Button
                   key={preset}
                   size="lg"
-                  variant={tipValue === amount * preset ? "solid" : "bordered"}
-                  color={tipValue === amount * preset ? "primary" : "default"}
+                  variant={isPresetSelected(preset) ? "solid" : "bordered"}
+                  color={isPresetSelected(preset) ? "primary" : "default"}
                   onPress={() => handleTipPreset(preset)}
-                  className={`h-14 font-semibold transition-all duration-200 ${tipValue === amount * preset
+                  className={`h-14 font-semibold transition-all duration-200 ${isPresetSelected(preset)
                       ? 'shadow-lg scale-105'
                       : 'hover:scale-102 hover:shadow-md'
                     }`}
