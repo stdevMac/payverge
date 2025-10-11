@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuth } from '@/hooks/useAuth';
-import { useWaitForTransactionReceipt } from 'wagmi';
 import { getCookie } from '@/config/aws-s3/cookie-management/store.helpers';
 import { isTokenValid, decodeJwt } from '@/utils/jwt';
 import { getUserProfile } from '@/api/users/profile';
@@ -33,6 +32,8 @@ import {
   formatUsdcAmount 
 } from '../../../../../contracts/hooks';
 import { Address } from 'viem';
+import WithdrawalHistory from '../../../../../components/business/WithdrawalHistory';
+import { createWithdrawal } from '../../../../../api/withdrawals';
 
 interface BusinessDashboardProps {
   params: {
@@ -135,10 +136,15 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   };
 
   const handleClaimEarnings = async () => {
+    if (!claimableBalance || !Array.isArray(claimableBalance) || 
+        (claimableBalance[0] === BigInt(0) && claimableBalance[1] === BigInt(0))) {
+      return;
+    }
+
+    setClaimingEarnings(true);
+    setClaimingStep('Preparing transaction...');
+    
     try {
-      setClaimingEarnings(true);
-      setClaimingStep('Preparing transaction...');
-      setTransactionHash('');
       
       // Step 1: Initiate transaction
       setClaimingStep('Please confirm the transaction in your wallet');
@@ -148,13 +154,35 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       // Step 2: Transaction submitted
       setClaimingStep('Transaction submitted! Waiting for blockchain confirmation...');
       
+      // Step 3: Create withdrawal record in backend
+      try {
+        const paymentAmount = parseFloat(formatUsdcAmount(claimableBalance[0] || BigInt(0)));
+        const tipAmount = parseFloat(formatUsdcAmount(claimableBalance[1] || BigInt(0)));
+        const totalAmount = paymentAmount + tipAmount;
+
+        await createWithdrawal(businessId, {
+          transaction_hash: hash,
+          payment_amount: paymentAmount,
+          tip_amount: tipAmount,
+          total_amount: totalAmount,
+          withdrawal_address: address || '',
+          blockchain_network: 'base-sepolia' // or get from chain config
+        });
+        
+        setClaimingStep('Withdrawal recorded! Waiting for confirmation...');
+      } catch (backendError) {
+        console.error('Failed to record withdrawal in backend:', backendError);
+        // Continue anyway - blockchain transaction is what matters
+      }
+      
       // Wait for a reasonable time for the transaction to be mined
       // In a real app, you'd use proper transaction receipt waiting
-      await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds
+      await new Promise(resolve => setTimeout(resolve, 5000));
       
+      // Step 4: Transaction confirmed (in a real app, you'd wait for actual confirmation)
       setClaimingStep('Transaction confirmed! Updating balances...');
       
-      // Step 3: Refresh data
+      // Refetch the claimable balance
       await refetchClaimableBalance();
       await refetchBusinessInfo();
       
@@ -627,6 +655,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 </div>
               </CardBody>
             </Card>
+
+            {/* Withdrawal History */}
+            <WithdrawalHistory businessId={businessId} isAuthenticated={isAuthenticated} authLoading={authLoading} />
 
             {/* Transaction Processing Overlay */}
             {claimingEarnings && (

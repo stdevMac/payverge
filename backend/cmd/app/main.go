@@ -351,6 +351,13 @@ func main() {
 		protectedRoutes.POST("/referrals/process", server.ProcessReferral)
 		protectedRoutes.POST("/referrals/claim", server.ClaimCommission)
 		protectedRoutes.PUT("/referrals/referrer/:wallet_address/code", server.UpdateReferralCode)
+
+		// Withdrawal History routes (protected - require authentication)
+		withdrawalHandler := handlers.NewWithdrawalHandler(database.GetDBWrapper())
+		protectedRoutes.POST("/businesses/:id/withdrawals", withdrawalHandler.CreateWithdrawal)
+		protectedRoutes.GET("/businesses/:id/withdrawals", withdrawalHandler.GetWithdrawalHistory)
+		protectedRoutes.GET("/businesses/:id/withdrawals/:withdrawalId", withdrawalHandler.GetWithdrawal)
+		protectedRoutes.PUT("/businesses/:id/withdrawals/:withdrawalId/status", withdrawalHandler.UpdateWithdrawalStatus)
 	}
 
 	// Admin routes (require authentication and admin role)

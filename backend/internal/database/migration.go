@@ -40,8 +40,34 @@ func (db *DB) OptimizeDatabase() error {
 		return fmt.Errorf("failed to apply indexes: %w", err)
 	}
 
+	// Add the WithdrawalHistory model to auto-migration
+	if err := db.conn.AutoMigrate(
+		&User{},
+		&Code{},
+		&ErrorLog{},
+		&FaucetTransaction{},
+		&Subscriber{},
+		&MultisigTx{},
+		&Business{},
+		&Menu{},
+		&Table{},
+		&Bill{},
+		&Payment{},
+		&AlternativePayment{},
+		&Counter{},
+		&Staff{},
+		&StaffInvitation{},
+		&StaffLoginCode{},
+		&Referrer{},
+		&ReferralRecord{},
+		&ReferralCommissionClaim{},
+		&WithdrawalHistory{},
+	); err != nil {
+		return fmt.Errorf("failed to auto-migrate database: %w", err)
+	}
+
 	// Analyze tables for query optimization
-	tables := []string{"bills", "payments", "alternative_payments", "businesses", "tables"}
+	tables := []string{"bills", "payments", "alternative_payment", "businesses", "tables"}
 	for _, table := range tables {
 		if err := db.conn.Exec(fmt.Sprintf("ANALYZE %s", table)).Error; err != nil {
 			fmt.Printf("Warning: Failed to analyze table %s: %v\n", table, err)

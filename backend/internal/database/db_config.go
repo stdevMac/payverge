@@ -99,6 +99,11 @@ func GetDBWrapper() *DB {
 	}
 }
 
+// GetGorm returns the underlying GORM database instance
+func (db *DB) GetGorm() *gorm.DB {
+	return db.conn
+}
+
 // Database methods for the DB wrapper
 
 // GetBill retrieves a bill by ID
@@ -222,5 +227,7 @@ func autoMigrate() error {
 		&Referrer{},
 		&ReferralRecord{},
 		&ReferralCommissionClaim{},
+		// Withdrawal history model
+		&WithdrawalHistory{},
 	)
 }

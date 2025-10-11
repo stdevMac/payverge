@@ -256,6 +256,23 @@ const (
 	PaymentStatusFailed    PaymentStatus = "failed"
 )
 
+// WithdrawalHistory represents a business withdrawal/claim transaction
+type WithdrawalHistory struct {
+	ID                uint      `gorm:"primaryKey" json:"id"`
+	BusinessID        uint      `gorm:"index;not null" json:"business_id"`
+	TransactionHash   string    `gorm:"uniqueIndex;not null" json:"transaction_hash"`
+	PaymentAmount     float64   `gorm:"default:0" json:"payment_amount"`     // Amount from payment earnings
+	TipAmount         float64   `gorm:"default:0" json:"tip_amount"`         // Amount from tip earnings
+	TotalAmount       float64   `gorm:"not null" json:"total_amount"`        // Total withdrawn
+	WithdrawalAddress string    `gorm:"not null" json:"withdrawal_address"`  // Address that received the funds
+	BlockchainNetwork string    `gorm:"not null" json:"blockchain_network"`  // e.g., "base-sepolia", "ethereum"
+	Status            string    `gorm:"default:'pending'" json:"status"`     // pending, confirmed, failed
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+	ConfirmedAt       *time.Time `json:"confirmed_at"`
+	Business          Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+}
+
 // AlternativePayment represents a non-crypto payment (cash, card, etc.)
 type AlternativePayment struct {
 	ID              uint                     `gorm:"primaryKey" json:"id"`
