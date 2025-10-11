@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardBody, Spinner, Button, Image } from '@nextui-org/react';
 import { ArrowLeft, Menu } from 'lucide-react';
 import Link from 'next/link';
-import GuestBill from '../../../../components/guest/GuestBill';
+import dynamic from 'next/dynamic';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
+
+// Lazy load heavy components
+const GuestBill = dynamic(() => import('../../../../components/guest/GuestBill'), {
+  loading: () => <div className="flex justify-center p-8"><Spinner size="lg" /></div>
+});
 import { 
   getTableByCode, 
   getOpenBillByTableCode,
@@ -50,17 +55,25 @@ export default function GuestBillPage() {
   const loadTableData = useCallback(async () => {
     setLoading(true);
     try {
-      const tableResponse = await getTableByCode(tableCode);
-      setTableData(tableResponse);
+      // Load table data and bill data in parallel for better performance
+      const [tableResponse, billResponse] = await Promise.allSettled([
+        getTableByCode(tableCode),
+        getOpenBillByTableCode(tableCode)
+      ]);
 
-      try {
-        const billResponse = await getOpenBillByTableCode(tableCode);
-        setCurrentBill(billResponse);
-      } catch {
+      if (tableResponse.status === 'fulfilled') {
+        setTableData(tableResponse.value);
+      } else {
+        console.error('Error loading table data:', tableResponse.reason);
+      }
+
+      if (billResponse.status === 'fulfilled') {
+        setCurrentBill(billResponse.value);
+      } else {
         setCurrentBill(null);
       }
     } catch (error) {
-      console.error('Error loading table data:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +81,6 @@ export default function GuestBillPage() {
 
   const handlePaymentComplete = useCallback(async (paymentDetails: { totalPaid: number; tipAmount: number }) => {
     try {
-      console.log('Payment completed successfully!', paymentDetails);
       
       // Store the current bill and payment details for the thank you screen
       if (currentBill) {
@@ -91,24 +103,35 @@ export default function GuestBillPage() {
   }, [currentBill]);
 
   useEffect(() => {
-    console.log('Bill page mounted, loading data for table:', tableCode);
     loadTableData();
-  }, [tableCode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadTableData]);
 
-  // Add debugging for any state changes
-  useEffect(() => {
-    console.log('Bill page state changed:', { 
-      loading, 
-      hasTableData: !!tableData, 
-      hasBill: !!currentBill,
-      tableCode 
-    });
-  }, [loading, tableData, currentBill, tableCode]);
+  // Memoize business data to prevent unnecessary re-renders
+  const businessData = useMemo(() => tableData?.business, [tableData?.business]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-white">
+        <PersistentGuestNav 
+          tableCode={tableCode}
+          currentBill={null}
+        />
+        
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          {/* Loading skeleton */}
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="bg-gray-100 rounded-2xl p-6 mb-6">
+              <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+            <div className="h-12 bg-gray-200 rounded-lg w-full"></div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -128,7 +151,23 @@ export default function GuestBillPage() {
     );
   }
 
-  const { business } = tableData;
+  const business = businessData;
+
+  // Early return if business data is not available
+  if (!business) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardBody className="text-center py-8">
+            <h2 className="text-xl font-semibold mb-2">Business Not Found</h2>
+            <p className="text-default-500">
+              Unable to load business information for this table.
+            </p>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
 
   // Show thank you screen after payment
   if (showThankYou && paidBill) {

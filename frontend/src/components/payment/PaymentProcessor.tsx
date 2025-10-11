@@ -102,20 +102,6 @@ export default function PaymentProcessor({
       },
     });
 
-  // Debug effect for payment transaction status
-  useEffect(() => {
-    if (paymentTx.hash) {
-      console.log('Payment transaction status:', {
-        hash: paymentTx.hash,
-        isLoading: paymentLoading,
-        isSuccess: paymentSuccess,
-        hasReceipt: !!paymentReceipt,
-        hasError: !!paymentError,
-        errorMessage: paymentError?.message,
-        isConfirmed: paymentTx.isConfirmed
-      });
-    }
-  }, [paymentTx.hash, paymentLoading, paymentSuccess, paymentReceipt, paymentError, paymentTx.isConfirmed]);
 
   // Calculate amounts in Wei (USDC has 6 decimals)
   const amountInWei = parseUnits(amount.toString(), 6);
@@ -166,16 +152,9 @@ export default function PaymentProcessor({
       }
 
       if (!hasSufficientAllowance) {
-        console.log('Submitting USDC approval for:', formatUnits(totalAmountInWei, 6), 'USDC');
         const txHash = await approveUsdc(totalAmountInWei);
-        
-        console.log('Raw approval txHash:', txHash);
-        console.log('TxHash length:', txHash?.length);
-        console.log('TxHash type:', typeof txHash);
-        
         setApprovalTx({ hash: txHash, isConfirmed: false });
         setPaymentStep('waiting-approval');
-        console.log('Approval transaction submitted:', txHash);
       } else {
         // Already has sufficient allowance, proceed to bill creation
         await handleBillCreation();
@@ -192,19 +171,15 @@ export default function PaymentProcessor({
     setError('');
 
     try {
-      console.log('Creating on-chain bill for bill ID:', billId);
       const result = await createOnChainBill(billId, {
         business_address: businessAddress,
         total_amount: totalAmount
       });
       
-      console.log('On-chain bill created successfully:', result);
       setBillCreated(true);
       await handlePayment();
     } catch (err: any) {
-      console.error('Bill creation failed:', err);
       // Continue anyway - bill might already exist
-      console.log('Continuing to payment despite bill creation error');
       await handlePayment();
     }
   };
@@ -226,27 +201,11 @@ export default function PaymentProcessor({
       const amountInWei = parseUnits(amount.toString(), 6);
       const tipAmountInWei = parseUnits(tipAmount || '0', 6);
 
-      console.log('Processing payment with params:', {
-        billId: billId,
-        onChainBillId: onChainBillId,
-        amount: formatUnits(amountInWei, 6),
-        tip: formatUnits(tipAmountInWei, 6),
-        contractAddress: contractConfig.payments,
-        userAddress: address,
-        usdcBalance: usdcBalance ? formatUnits(usdcBalance, 6) : 'unknown',
-        usdcAllowance: usdcAllowance ? formatUnits(usdcAllowance, 6) : 'unknown'
-      });
-
-      console.log('Calling processPayment...');
       const txHash = await processPayment({
         billId: onChainBillId,
         amount: amountInWei,
         tipAmount: tipAmountInWei,
       });
-
-      console.log('Raw payment txHash:', txHash);
-      console.log('Payment TxHash length:', txHash?.length);
-      console.log('Payment TxHash type:', typeof txHash);
       
       if (!txHash || txHash.length !== 66) {
         throw new Error(`Invalid transaction hash received: ${txHash}`);
@@ -254,15 +213,8 @@ export default function PaymentProcessor({
       
       setPaymentTx({ hash: txHash, isConfirmed: false });
       setPaymentStep('waiting-payment');
-      console.log('Payment transaction submitted successfully:', txHash);
     } catch (err: any) {
       console.error('Payment failed:', err);
-      console.error('Payment error details:', {
-        message: err.message,
-        code: err.code,
-        data: err.data,
-        stack: err.stack
-      });
       setError(err.message || 'Payment transaction failed');
       setPaymentStep('error');
     }
@@ -276,7 +228,6 @@ export default function PaymentProcessor({
         payment_method: 'crypto',
         blockchain_network: 'base-sepolia' // or get from chain config
       });
-      console.log('Backend notified successfully:', result);
       return result;
     } catch (error) {
       console.error('Failed to notify backend:', error);
@@ -287,7 +238,6 @@ export default function PaymentProcessor({
   // Effect to handle approval confirmation
   useEffect(() => {
     if (approvalSuccess && approvalReceipt && !approvalTx.isConfirmed) {
-      console.log('Approval confirmed:', approvalReceipt.transactionHash);
       setApprovalTx(prev => ({ ...prev, isConfirmed: true }));
       
       // Refetch allowance to get updated value
@@ -309,15 +259,7 @@ export default function PaymentProcessor({
 
   // Effect to handle payment confirmation
   useEffect(() => {
-    console.log('Payment confirmation effect:', { 
-      paymentSuccess, 
-      paymentReceipt: !!paymentReceipt, 
-      paymentTxConfirmed: paymentTx.isConfirmed,
-      paymentTxHash: paymentTx.hash 
-    });
-    
     if (paymentSuccess && paymentReceipt && !paymentTx.isConfirmed) {
-      console.log('Payment confirmed:', paymentReceipt.transactionHash);
       setPaymentTx(prev => ({ ...prev, isConfirmed: true }));
       setPaymentStep('confirming');
       
@@ -348,12 +290,6 @@ export default function PaymentProcessor({
 
   // Effect to handle payment errors
   useEffect(() => {
-    console.log('Payment error effect:', { 
-      paymentError: !!paymentError, 
-      paymentErrorMessage: paymentError?.message,
-      paymentTxHash: paymentTx.hash 
-    });
-    
     if (paymentError && paymentTx.hash) {
       console.error('Payment transaction failed:', paymentError);
       setError(`Payment transaction failed: ${paymentError.message || 'Unknown error'}`);

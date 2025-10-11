@@ -36,7 +36,7 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
           {/* Back to Table */}
           <Link 
             href={`/t/${tableCode}`}
-            onClick={() => console.log('Navigation: Clicking Table link to:', `/t/${tableCode}`)}
+            onClick={() => {}}
           >
             <div className={`group flex flex-col items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
               isTablePage 
@@ -56,7 +56,7 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
           {/* Menu */}
           <Link 
             href={`/t/${tableCode}/menu`}
-            onClick={() => console.log('Navigation: Clicking Menu link to:', `/t/${tableCode}/menu`)}
+            onClick={() => {}}
           >
             <div className={`group flex flex-col items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
               isMenuPage 

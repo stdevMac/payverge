@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardBody, Button, Spinner, Image, Badge, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Divider } from '@nextui-org/react';
 import { ArrowLeft, MapPin, ShoppingCart, Plus, Minus, ChefHat } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import GuestMenu from '../../../../components/guest/GuestMenu';
+import dynamic from 'next/dynamic';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
+
+// Lazy load heavy components
+const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu'), {
+  loading: () => <div className="flex justify-center p-8"><Spinner size="lg" /></div>
+});
 import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
@@ -55,17 +60,25 @@ export default function GuestMenuPage() {
   const loadTableData = useCallback(async () => {
     setLoading(true);
     try {
-      const tableResponse = await getTableByCode(tableCode);
-      setTableData(tableResponse);
+      // Load table data and bill data in parallel for better performance
+      const [tableResponse, billResponse] = await Promise.allSettled([
+        getTableByCode(tableCode),
+        getOpenBillByTableCode(tableCode)
+      ]);
 
-      try {
-        const billResponse = await getOpenBillByTableCode(tableCode);
-        setCurrentBill(billResponse);
-      } catch {
+      if (tableResponse.status === 'fulfilled') {
+        setTableData(tableResponse.value);
+      } else {
+        console.error('Error loading table data:', tableResponse.reason);
+      }
+
+      if (billResponse.status === 'fulfilled') {
+        setCurrentBill(billResponse.value);
+      } else {
         setCurrentBill(null);
       }
     } catch (error) {
-      console.error('Error loading table data:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -117,7 +130,8 @@ export default function GuestMenuPage() {
     setCart([]);
   }, []);
 
-  const getCartTotal = useCallback(() => {
+  // Memoize expensive cart calculations
+  const cartTotal = useMemo(() => {
     return cart.reduce((total, item) => {
       const baseTotal = item.price * item.quantity;
       const addOnsTotal = item.addOns 
@@ -127,9 +141,12 @@ export default function GuestMenuPage() {
     }, 0);
   }, [cart]);
 
-  const getCartItemCount = useCallback(() => {
+  const cartItemCount = useMemo(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
+
+  // Memoize business data to prevent unnecessary re-renders
+  const businessData = useMemo(() => tableData?.business, [tableData?.business]);
 
   const handleCreateBill = useCallback(async () => {
     if (!tableData) return;
@@ -396,9 +413,9 @@ export default function GuestMenuPage() {
               onPress={() => setShowCart(true)}
             >
               <ShoppingCart className="w-6 h-6" />
-              {getCartItemCount() > 0 && (
+              {cartItemCount > 0 && (
                 <Badge
-                  content={getCartItemCount()}
+                  content={cartItemCount}
                   color="primary"
                   className="absolute -top-1 -right-1"
                 >
@@ -511,7 +528,7 @@ export default function GuestMenuPage() {
                 
                 <div className="flex justify-between items-center text-lg font-semibold">
                   <span>Total:</span>
-                  <span>${getCartTotal().toFixed(2)}</span>
+                  <span>${cartTotal.toFixed(2)}</span>
                 </div>
               </div>
             )}

@@ -1,6 +1,16 @@
 import React from 'react';
-import { GuestTableView } from '../../../components/guest/GuestTableView';
+import dynamic from 'next/dynamic';
+import { Spinner } from '@nextui-org/react';
 import { getTableByCode } from '../../../api/bills';
+
+// Lazy load the heavy GuestTableView component
+const GuestTableView = dynamic(() => import('../../../components/guest/GuestTableView').then(mod => ({ default: mod.GuestTableView })), {
+  loading: () => (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <Spinner size="lg" />
+    </div>
+  )
+});
 
 interface TablePageProps {
   params: {
