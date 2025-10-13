@@ -147,7 +147,8 @@ export interface MenuCategory {
 export interface Menu {
   id: number;
   business_id: number;
-  categories: MenuCategory[];
+  categories: MenuCategory[] | string; // Can be array or JSON string
+  parsed_categories?: MenuCategory[]; // Translated categories when language is specified
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -155,10 +156,18 @@ export interface Menu {
 
 // Phase 2: Enhanced Menu Management API Functions
 
-// Get menu for a business
-export const getMenu = async (businessId: number): Promise<Menu> => {
-  const response = await axiosInstance.get<Menu>(`/inside/businesses/${businessId}/menu`);
+// Get menu for a business with optional language
+export const getMenu = async (businessId: number, language?: string): Promise<Menu & { language?: string }> => {
+  const params = language ? { language } : {};
+  const response = await axiosInstance.get<Menu & { language?: string }>(`/inside/businesses/${businessId}/menu`, { params });
   return response.data;
+};
+
+// Translate entire menu for a business
+export const translateMenu = async (businessId: number, languageCode: string): Promise<void> => {
+  await axiosInstance.post(`/inside/businesses/${businessId}/menu/translate`, {
+    language_code: languageCode
+  });
 };
 
 // Add a new category to menu
@@ -284,6 +293,7 @@ export const businessApi = {
   updateBusiness,
   deleteBusiness,
   getMenu,
+  translateMenu,
   addMenuCategory,
   updateMenuCategory,
   deleteMenuCategory,

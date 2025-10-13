@@ -24,6 +24,7 @@ import (
 	"payverge/internal/metrics"
 	"payverge/internal/notifications"
 	"payverge/internal/server"
+	"payverge/internal/services"
 	"payverge/internal/telegram"
 	"payverge/internal/websocket"
 
@@ -55,6 +56,7 @@ func main() {
 		fromEmail              = flag.String("from-email", "", "From email")
 		fromEmailNews          = flag.String("from-email-news", "", "From email news")
 		fromEmailUpdates       = flag.String("from-email-updates", "", "From email updates")
+		googleTranslateAPIKey  = flag.String("google-translate-api-key", "", "Google Translate API Key")
 	)
 	flag.Parse()
 	if *production {
@@ -110,6 +112,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize blockchain service: %v", err)
 	}
+
+	// Initialize exchange rate and translation services
+	exchangeRateService := services.NewExchangeRateService(db)
+	translationService := services.NewTranslationService(db, *googleTranslateAPIKey)
+	log.Println("Translation service initialized")
+	log.Println("Api key Google: ", *googleTranslateAPIKey)
+	
+	// Make translation service available to the server package
+	server.SetTranslationService(translationService)
+
+	// Initialize default currencies and languages
+	if err := exchangeRateService.InitializeDefaultCurrencies(); err != nil {
+		log.Printf("Failed to initialize default currencies: %v", err)
+	}
+	if err := translationService.InitializeDefaultLanguages(); err != nil {
+		log.Printf("Failed to initialize default languages: %v", err)
+	}
+
+	// Start periodic exchange rate fetching
+	exchangeRateService.StartPeriodicFetch()
 
 	// Initialize WebSocket Hub
 	wsHub := websocket.NewHub()
@@ -245,6 +267,13 @@ func main() {
 		publicRoutes.POST("/referrals/check-code", server.CheckReferralCodeAvailability)
 		publicRoutes.GET("/referrals/stats", server.GetReferralStats)
 		publicRoutes.GET("/referrals/referrer/code/:referral_code", server.GetReferrerByCode)
+
+		// Multi-currency routes (public - no auth required for exchange rates)
+		currencyHandler := handlers.NewCurrencyHandler(database.GetDBWrapper(), exchangeRateService, translationService)
+		publicRoutes.GET("/currencies", currencyHandler.GetSupportedCurrencies)
+		publicRoutes.GET("/languages", currencyHandler.GetSupportedLanguages)
+		publicRoutes.GET("/exchange-rate", currencyHandler.GetExchangeRate)
+		publicRoutes.GET("/convert", currencyHandler.ConvertAmount)
 	}
 
 	// Protected routes (require authentication)
@@ -287,6 +316,7 @@ func main() {
 		// Menu routes
 		protectedRoutes.POST("/businesses/:id/menu", server.CreateMenu)
 		protectedRoutes.GET("/businesses/:id/menu", server.GetMenu)
+		protectedRoutes.POST("/businesses/:id/menu/translate", server.TranslateMenu)
 
 		// Phase 2: Enhanced Menu Management routes
 		protectedRoutes.POST("/businesses/:id/menu/categories", server.AddMenuCategory)
@@ -312,7 +342,7 @@ func main() {
 		protectedRoutes.POST("/bills/:bill_id/items", server.AddBillItem)
 		protectedRoutes.DELETE("/bills/:bill_id/items/:item_id", server.RemoveBillItem)
 		protectedRoutes.POST("/bills/:bill_id/close", server.CloseBill)
-		
+
 		// Crypto Payment routes (public for guests)
 		publicRoutes.POST("/guest/bills/:bill_id/create-onchain", paymentHandler.CreateOnChainBill)
 		publicRoutes.POST("/guest/bills/:bill_id/crypto-payment", paymentHandler.ProcessCryptoPayment)
@@ -358,6 +388,20 @@ func main() {
 		protectedRoutes.GET("/businesses/:id/withdrawals", withdrawalHandler.GetWithdrawalHistory)
 		protectedRoutes.GET("/businesses/:id/withdrawals/:withdrawalId", withdrawalHandler.GetWithdrawal)
 		protectedRoutes.PUT("/businesses/:id/withdrawals/:withdrawalId/status", withdrawalHandler.UpdateWithdrawalStatus)
+
+		// Multi-currency and multilingual routes (protected - require authentication)
+		currencyHandler := handlers.NewCurrencyHandler(database.GetDBWrapper(), exchangeRateService, translationService)
+		protectedRoutes.GET("/businesses/:id/currencies", currencyHandler.GetBusinessCurrencies)
+		protectedRoutes.PUT("/businesses/:id/currencies", currencyHandler.UpdateBusinessCurrencies)
+		protectedRoutes.GET("/businesses/:id/languages", currencyHandler.GetBusinessLanguages)
+		protectedRoutes.PUT("/businesses/:id/languages", currencyHandler.UpdateBusinessLanguages)
+		protectedRoutes.GET("/translations", currencyHandler.GetTranslatedContent)
+		protectedRoutes.PUT("/translations", currencyHandler.UpdateTranslation)
+		protectedRoutes.GET("/menu-translations", currencyHandler.GetMenuTranslations)
+
+		// Batch translation routes
+		protectedRoutes.POST("/businesses/:id/translate", server.TranslateEntireMenu)
+		protectedRoutes.GET("/translation-jobs/:jobId/status", server.GetTranslationStatus)
 	}
 
 	// Admin routes (require authentication and admin role)

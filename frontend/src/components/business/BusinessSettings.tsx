@@ -26,7 +26,8 @@ import {
   Star,
   Link,
   MapPin,
-  DollarSign
+  DollarSign,
+  Languages
 } from 'lucide-react';
 import { businessApi, BusinessAddress, UpdateBusinessRequest } from '@/api/business';
 import { PrimarySpinner } from '@/components/ui/spinners/PrimarySpinner';
@@ -34,6 +35,7 @@ import SimpleImageUpload from './SimpleImageUpload';
 import BannerImageUploader from './BannerImageUploader';
 import CustomURLInput from './CustomURLInput';
 import { useToast } from '@/contexts/ToastContext';
+import CurrencyLanguageSettings from './CurrencyLanguageSettings';
 
 interface BusinessSettingsProps {
   businessId: number;
@@ -285,6 +287,11 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
       key: 'payments',
       title: 'Payment Settings',
       icon: CreditCard,
+    },
+    {
+      key: 'localization',
+      title: 'Currency & Languages',
+      icon: Languages,
     }
   ];
 
@@ -394,6 +401,9 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                         onProfileChange={setProfile} 
                         handleInputChange={handleInputChange} 
                       />
+                    )}
+                    {tab.key === 'localization' && (
+                      <CurrencyLanguageSettings businessId={businessId} />
                     )}
                   </div>
                 </Tab>

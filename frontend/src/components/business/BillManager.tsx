@@ -687,7 +687,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                       <div className="text-center py-8">
                         <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
                         <h3 className="text-lg font-medium text-default-500 mb-2">No Items</h3>
-                        <p className="text-default-400">This bill doesn't have any items yet.</p>
+                        <p className="text-default-400">This bill doesn&apos;t have any items yet.</p>
                       </div>
                     ) : (
                       <div className="space-y-3">

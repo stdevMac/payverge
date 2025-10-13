@@ -63,6 +63,8 @@ ARG POSTMARK_TOKEN=postmark_token
 ARG POSTMARK_FROM_TRANSACTIONAL=postmark_from_transactional
 ARG POSTMARK_FROM_NEWS=postmark_from_news
 ARG POSTMARK_FROM_UPDATES=postmark_from_updates
+ARG GOOGLE_CLOUD_PROJECT_ID=google_cloud_project_id
+ARG GOOGLE_TRANSLATE_API_KEY=google_translate_api_key
 
 # Command to run the executable
 ENTRYPOINT ["./server"]

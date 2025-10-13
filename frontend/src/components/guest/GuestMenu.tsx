@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -22,6 +22,8 @@ import { useRouter } from 'next/navigation';
 import { MenuCategory, MenuItem, Business } from '../../api/business';
 import { BillWithItemsResponse } from '../../api/bills';
 import { ImageCarousel } from './ImageCarousel';
+import { useTranslation } from '../../contexts/TranslationContext';
+import { SmartTranslatedText } from '../common/SmartTranslatedText';
 
 interface GuestMenuProps {
   categories: MenuCategory[];
@@ -48,6 +50,17 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
 }) => {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
+  const { loadTranslations } = useTranslation();
+  
+  // Load translations for Spanish (or detect user's preferred language)
+  const [currentLanguage] = useState('es'); // TODO: Make this dynamic based on user preference
+  
+  useEffect(() => {
+    // Load bulk translations when component mounts
+    if (business?.id && currentLanguage !== 'en') {
+      loadTranslations(business.id, currentLanguage);
+    }
+  }, [business?.id, currentLanguage, loadTranslations]);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
@@ -241,7 +254,14 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
-              {category.name}
+              <SmartTranslatedText
+                entityType="category"
+                entityId={index.toString()}
+                fieldName="name"
+                originalText={category.name}
+                languageCode={currentLanguage}
+                defaultLanguageCode="en"
+              />
             </button>
           ))}
         </div>
@@ -337,7 +357,14 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="text-xl font-light text-gray-900 tracking-wide">
-                              {item.name}
+                              <SmartTranslatedText
+                                entityType="menu_item"
+                                entityId={item.id || "0"}
+                                fieldName="name"
+                                originalText={item.name}
+                                languageCode={currentLanguage}
+                                defaultLanguageCode="en"
+                              />
                             </h3>
                             <Button
                               isIconOnly
@@ -354,7 +381,14 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                           </div>
                           {item.description && (
                             <p className="text-gray-600 font-light leading-relaxed mb-3">
-                              {item.description}
+                              <SmartTranslatedText
+                                entityType="menu_item"
+                                entityId={item.id || "0"}
+                                fieldName="description"
+                                originalText={item.description}
+                                languageCode={currentLanguage}
+                                defaultLanguageCode="en"
+                              />
                             </p>
                           )}
                           

@@ -3,14 +3,17 @@ package server
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"payverge/internal/database"
+	"payverge/internal/services"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Business creation request
@@ -384,13 +387,19 @@ func CreateMenu(c *gin.Context) {
 	}
 }
 
-// GetMenu retrieves a menu for a business
+// GetMenu retrieves a menu for a business with optional language translation
 func GetMenu(c *gin.Context) {
 	businessIDStr := c.Param("id")
 	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
 		return
+	}
+
+	// Get optional language parameter
+	languageCode := c.Query("language")
+	if languageCode == "" {
+		languageCode = "en" // Default to English
 	}
 
 	menu, categories, err := database.GetMenuByBusinessID(uint(businessID))
@@ -404,6 +413,7 @@ func GetMenu(c *gin.Context) {
 				"is_active":   true,
 				"created_at":  "",
 				"updated_at":  "",
+				"language":    languageCode,
 			})
 			return
 		}
@@ -411,15 +421,361 @@ func GetMenu(c *gin.Context) {
 		return
 	}
 
+	// If language is not English, apply translations
+	if languageCode != "en" {
+		categories = applyTranslationsToMenu(categories, languageCode)
+	}
+
 	response := struct {
 		*database.Menu
 		ParsedCategories []database.MenuCategory `json:"parsed_categories"`
+		Language         string                  `json:"language"`
 	}{
 		Menu:             menu,
 		ParsedCategories: categories,
+		Language:         languageCode,
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+// applyTranslationsToMenu applies translations to menu categories and items
+func applyTranslationsToMenu(categories []database.MenuCategory, languageCode string) []database.MenuCategory {
+	db := database.GetDBWrapper()
+	translatedCategories := make([]database.MenuCategory, len(categories))
+	
+	log.Printf("🔍 Starting translation retrieval for language: %s", languageCode)
+	
+	for i, category := range categories {
+		translatedCategory := category
+		log.Printf("🔄 Retrieving translations for category %d: '%s'", i, category.Name)
+		
+		// Translate category name
+		var categoryNameTranslation database.Translation
+		if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+			"category", i, "name", languageCode).Order("id DESC").First(&categoryNameTranslation).Error; err == nil {
+			log.Printf("✅ Found category name translation: '%s' -> '%s'", category.Name, categoryNameTranslation.TranslatedText)
+			translatedCategory.Name = categoryNameTranslation.TranslatedText
+		} else {
+			log.Printf("❌ No category name translation found for entity_id=%d, field=name, language=%s", i, languageCode)
+		}
+		
+		// Translate category description
+		var categoryDescTranslation database.Translation
+		if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+			"category", i, "description", languageCode).Order("id DESC").First(&categoryDescTranslation).Error; err == nil {
+			log.Printf("✅ Found category description translation: '%s' -> '%s'", category.Description, categoryDescTranslation.TranslatedText)
+			translatedCategory.Description = categoryDescTranslation.TranslatedText
+		} else {
+			log.Printf("❌ No category description translation found for entity_id=%d, field=description, language=%s", i, languageCode)
+		}
+		
+		// Translate menu items
+		translatedItems := make([]database.MenuItem, len(category.Items))
+		for j, item := range category.Items {
+			translatedItem := item
+			
+			// Use position-based ID: categoryIndex * 1000 + itemIndex
+			entityID := i*1000 + j
+			log.Printf("🍽️ Retrieving translations for item %d in category %d: '%s' (entity_id=%d)", j, i, item.Name, entityID)
+			
+			// Translate item name
+			var itemNameTranslation database.Translation
+			if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+				"menu_item", entityID, "name", languageCode).Order("id DESC").First(&itemNameTranslation).Error; err == nil {
+				log.Printf("✅ Found item name translation: '%s' -> '%s'", item.Name, itemNameTranslation.TranslatedText)
+				translatedItem.Name = itemNameTranslation.TranslatedText
+			} else {
+				log.Printf("❌ No item name translation found for entity_id=%d, field=name, language=%s", entityID, languageCode)
+			}
+			
+			// Translate item description
+			var itemDescTranslation database.Translation
+			if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+				"menu_item", entityID, "description", languageCode).Order("id DESC").First(&itemDescTranslation).Error; err == nil {
+				log.Printf("✅ Found item description translation: '%s' -> '%s'", item.Description, itemDescTranslation.TranslatedText)
+				translatedItem.Description = itemDescTranslation.TranslatedText
+			} else {
+				log.Printf("❌ No item description translation found for entity_id=%d, field=description, language=%s", entityID, languageCode)
+			}
+
+			// Translate item options
+			translatedOptions := make([]database.MenuItemOption, len(item.Options))
+			for k, option := range item.Options {
+				translatedOption := option
+				optionEntityID := entityID*1000 + k
+				
+				var optionTranslation database.Translation
+				if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+					"menu_item_option", optionEntityID, "name", languageCode).Order("id DESC").First(&optionTranslation).Error; err == nil {
+					log.Printf("✅ Found option translation: '%s' -> '%s'", option.Name, optionTranslation.TranslatedText)
+					translatedOption.Name = optionTranslation.TranslatedText
+				} else {
+					log.Printf("❌ No option translation found for entity_id=%d, field=name, language=%s", optionEntityID, languageCode)
+				}
+				translatedOptions[k] = translatedOption
+			}
+			translatedItem.Options = translatedOptions
+
+			// Translate allergens
+			translatedAllergens := make([]string, len(item.Allergens))
+			for k, allergen := range item.Allergens {
+				allergenEntityID := entityID*10000 + k
+				
+				var allergenTranslation database.Translation
+				if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+					"allergen", allergenEntityID, "name", languageCode).Order("id DESC").First(&allergenTranslation).Error; err == nil {
+					log.Printf("✅ Found allergen translation: '%s' -> '%s'", allergen, allergenTranslation.TranslatedText)
+					translatedAllergens[k] = allergenTranslation.TranslatedText
+				} else {
+					log.Printf("❌ No allergen translation found for entity_id=%d, field=name, language=%s", allergenEntityID, languageCode)
+					translatedAllergens[k] = allergen // Keep original if no translation
+				}
+			}
+			translatedItem.Allergens = translatedAllergens
+
+			// Translate dietary tags
+			translatedTags := make([]string, len(item.DietaryTags))
+			for k, tag := range item.DietaryTags {
+				tagEntityID := entityID*100000 + k
+				
+				var tagTranslation database.Translation
+				if err := db.GetGorm().Where("entity_type = ? AND entity_id = ? AND field_name = ? AND language_code = ?", 
+					"dietary_tag", tagEntityID, "name", languageCode).Order("id DESC").First(&tagTranslation).Error; err == nil {
+					log.Printf("✅ Found dietary tag translation: '%s' -> '%s'", tag, tagTranslation.TranslatedText)
+					translatedTags[k] = tagTranslation.TranslatedText
+				} else {
+					log.Printf("❌ No dietary tag translation found for entity_id=%d, field=name, language=%s", tagEntityID, languageCode)
+					translatedTags[k] = tag // Keep original if no translation
+				}
+			}
+			translatedItem.DietaryTags = translatedTags
+			
+			translatedItems[j] = translatedItem
+		}
+		
+		translatedCategory.Items = translatedItems
+		translatedCategories[i] = translatedCategory
+	}
+	
+	return translatedCategories
+}
+
+// TranslateMenu translates the entire menu for a business into a specific language
+func TranslateMenu(c *gin.Context) {
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	var req struct {
+		LanguageCode string `json:"language_code" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get the menu
+	_, categories, err := database.GetMenuByBusinessID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Menu not found"})
+		return
+	}
+
+	// Get database wrapper and translation service
+	db := database.GetDBWrapper()
+	servicesTranslationService := GetTranslationService()
+	
+	if servicesTranslationService == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Translation service not available"})
+		return
+	}
+
+	// Translate all categories and items
+	for i, category := range categories {
+		log.Printf("🔄 Processing category %d: '%s'", i, category.Name)
+		
+		// Translate category name
+		if category.Name != "" {
+			// Get translation using Google Translate
+			translatedTexts, err := servicesTranslationService.TranslateText(category.Name, []string{req.LanguageCode})
+			if err == nil && translatedTexts[req.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "category",
+					EntityID:          uint(i),
+					FieldName:         "name",
+					LanguageCode:      req.LanguageCode,
+					OriginalText:      category.Name,
+					TranslatedText:    translatedTexts[req.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				log.Printf("💾 Storing category name translation: entity_id=%d, original='%s', translated='%s'", 
+					i, category.Name, translatedTexts[req.LanguageCode])
+				db.TranslationService.SaveTranslation(translation)
+			} else {
+				log.Printf("❌ Failed to translate category name '%s': %v", category.Name, err)
+			}
+		}
+
+		// Translate category description
+		if category.Description != "" {
+			translatedTexts, err := servicesTranslationService.TranslateText(category.Description, []string{req.LanguageCode})
+			if err == nil && translatedTexts[req.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "category",
+					EntityID:          uint(i),
+					FieldName:         "description",
+					LanguageCode:      req.LanguageCode,
+					OriginalText:      category.Description,
+					TranslatedText:    translatedTexts[req.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				log.Printf("💾 Storing category description translation: entity_id=%d, original='%s', translated='%s'", 
+					i, category.Description, translatedTexts[req.LanguageCode])
+				db.TranslationService.SaveTranslation(translation)
+			} else {
+				log.Printf("❌ Failed to translate category description '%s': %v", category.Description, err)
+			}
+		}
+
+		// Translate menu items
+		for j, item := range category.Items {
+			// Use position-based ID: categoryIndex * 1000 + itemIndex
+			entityID := i*1000 + j
+			log.Printf("🍽️ Processing item %d in category %d: '%s' (entity_id=%d)", j, i, item.Name, entityID)
+
+			// Translate item name
+			if item.Name != "" {
+				translatedTexts, err := servicesTranslationService.TranslateText(item.Name, []string{req.LanguageCode})
+				if err == nil && translatedTexts[req.LanguageCode] != "" {
+					translation := &database.Translation{
+						EntityType:        "menu_item",
+						EntityID:          uint(entityID),
+						FieldName:         "name",
+						LanguageCode:      req.LanguageCode,
+						OriginalText:      item.Name,
+						TranslatedText:    translatedTexts[req.LanguageCode],
+						IsAutoTranslated:  true,
+						TranslationSource: "google_translate",
+					}
+					log.Printf("💾 Storing item name translation: entity_id=%d, original='%s', translated='%s'", 
+						entityID, item.Name, translatedTexts[req.LanguageCode])
+					db.TranslationService.SaveTranslation(translation)
+				} else {
+					log.Printf("❌ Failed to translate item name '%s' to %s: %v", item.Name, req.LanguageCode, err)
+				}
+			}
+
+			// Translate item description
+			if item.Description != "" {
+				translatedTexts, err := servicesTranslationService.TranslateText(item.Description, []string{req.LanguageCode})
+				if err == nil && translatedTexts[req.LanguageCode] != "" {
+					translation := &database.Translation{
+						EntityType:        "menu_item",
+						EntityID:          uint(entityID),
+						FieldName:         "description",
+						LanguageCode:      req.LanguageCode,
+						OriginalText:      item.Description,
+						TranslatedText:    translatedTexts[req.LanguageCode],
+						IsAutoTranslated:  true,
+						TranslationSource: "google_translate",
+					}
+					log.Printf("💾 Storing item description translation: entity_id=%d, original='%s', translated='%s'", 
+						entityID, item.Description, translatedTexts[req.LanguageCode])
+					db.TranslationService.SaveTranslation(translation)
+				} else {
+					log.Printf("❌ Failed to translate item description '%s': %v", item.Description, err)
+				}
+			}
+
+			// Translate item options
+			for k, option := range item.Options {
+				if option.Name != "" {
+					optionEntityID := entityID*1000 + k // Unique ID for each option
+					translatedTexts, err := servicesTranslationService.TranslateText(option.Name, []string{req.LanguageCode})
+					if err == nil && translatedTexts[req.LanguageCode] != "" {
+						translation := &database.Translation{
+							EntityType:        "menu_item_option",
+							EntityID:          uint(optionEntityID),
+							FieldName:         "name",
+							LanguageCode:      req.LanguageCode,
+							OriginalText:      option.Name,
+							TranslatedText:    translatedTexts[req.LanguageCode],
+							IsAutoTranslated:  true,
+							TranslationSource: "google_translate",
+						}
+						log.Printf("💾 Storing option translation: entity_id=%d, original='%s', translated='%s'", 
+							optionEntityID, option.Name, translatedTexts[req.LanguageCode])
+						db.TranslationService.SaveTranslation(translation)
+					} else {
+						log.Printf("❌ Failed to translate option '%s': %v", option.Name, err)
+					}
+				}
+			}
+
+			// Translate allergens
+			for k, allergen := range item.Allergens {
+				if allergen != "" {
+					allergenEntityID := entityID*10000 + k // Unique ID for each allergen
+					translatedTexts, err := servicesTranslationService.TranslateText(allergen, []string{req.LanguageCode})
+					if err == nil && translatedTexts[req.LanguageCode] != "" {
+						translation := &database.Translation{
+							EntityType:        "allergen",
+							EntityID:          uint(allergenEntityID),
+							FieldName:         "name",
+							LanguageCode:      req.LanguageCode,
+							OriginalText:      allergen,
+							TranslatedText:    translatedTexts[req.LanguageCode],
+							IsAutoTranslated:  true,
+							TranslationSource: "google_translate",
+						}
+						log.Printf("💾 Storing allergen translation: entity_id=%d, original='%s', translated='%s'", 
+							allergenEntityID, allergen, translatedTexts[req.LanguageCode])
+						db.TranslationService.SaveTranslation(translation)
+					} else {
+						log.Printf("❌ Failed to translate allergen '%s': %v", allergen, err)
+					}
+				}
+			}
+
+			// Translate dietary tags
+			for k, tag := range item.DietaryTags {
+				if tag != "" {
+					tagEntityID := entityID*100000 + k // Unique ID for each dietary tag
+					translatedTexts, err := servicesTranslationService.TranslateText(tag, []string{req.LanguageCode})
+					if err == nil && translatedTexts[req.LanguageCode] != "" {
+						translation := &database.Translation{
+							EntityType:        "dietary_tag",
+							EntityID:          uint(tagEntityID),
+							FieldName:         "name",
+							LanguageCode:      req.LanguageCode,
+							OriginalText:      tag,
+							TranslatedText:    translatedTexts[req.LanguageCode],
+							IsAutoTranslated:  true,
+							TranslationSource: "google_translate",
+						}
+						log.Printf("💾 Storing dietary tag translation: entity_id=%d, original='%s', translated='%s'", 
+							tagEntityID, tag, translatedTexts[req.LanguageCode])
+						db.TranslationService.SaveTranslation(translation)
+					} else {
+						log.Printf("❌ Failed to translate dietary tag '%s': %v", tag, err)
+					}
+				}
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Menu translated successfully",
+		"language_code": req.LanguageCode,
+		"business_id": businessID,
+	})
 }
 
 // Helper function to validate Ethereum addresses
@@ -504,6 +860,13 @@ func AddMenuCategory(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Auto-translate the new category
+	go func() {
+		if err := autoTranslateCategory(uint(businessID), category.Name, category.Description); err != nil {
+			log.Printf("Failed to translate category: %v", err)
+		}
+	}()
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Category added successfully"})
 }
@@ -636,6 +999,13 @@ func AddMenuItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Auto-translate the new menu item
+	go func() {
+		if err := autoTranslateMenuItem(uint(businessID), req.Item.Name, req.Item.Description); err != nil {
+			log.Printf("Failed to translate menu item: %v", err)
+		}
+	}()
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Menu item added successfully"})
 }
@@ -1621,4 +1991,288 @@ func ApproveCashPayment(c *gin.Context) {
 		"bill":  updatedBill,
 		"items": items,
 	})
+}
+
+// Language and Currency Management Handlers
+
+// GetSupportedLanguages returns all supported languages
+func GetSupportedLanguages(c *gin.Context) {
+	db := database.GetDBWrapper()
+	languages, err := db.LanguageService.GetSupportedLanguages()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get supported languages"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"languages": languages})
+}
+
+// GetSupportedCurrencies returns all supported currencies
+func GetSupportedCurrencies(c *gin.Context) {
+	db := database.GetDBWrapper()
+	currencies, err := db.CurrencyService.GetSupportedCurrencies()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get supported currencies"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"currencies": currencies})
+}
+
+// GetBusinessLanguages returns languages configured for a business
+func GetBusinessLanguages(c *gin.Context) {
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Verify business ownership
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+		return
+	}
+
+	db := database.GetDBWrapper()
+	languages, err := db.LanguageService.GetBusinessLanguages(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get business languages"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"languages": languages})
+}
+
+// GetBusinessCurrencies returns currencies configured for a business
+func GetBusinessCurrencies(c *gin.Context) {
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Verify business ownership
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+		return
+	}
+
+	db := database.GetDBWrapper()
+	currencies, err := db.CurrencyService.GetBusinessCurrencies(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get business currencies"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"currencies": currencies})
+}
+
+// SetBusinessLanguagesRequest represents the request to set business languages
+type SetBusinessLanguagesRequest struct {
+	LanguageCodes []string `json:"language_codes" binding:"required"`
+	DefaultCode   string   `json:"default_code" binding:"required"`
+}
+
+// SetBusinessLanguages sets the languages for a business
+func SetBusinessLanguages(c *gin.Context) {
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Verify business ownership
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+		return
+	}
+
+	var req SetBusinessLanguagesRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validate that default language is in the list
+	defaultFound := false
+	for _, code := range req.LanguageCodes {
+		if code == req.DefaultCode {
+			defaultFound = true
+			break
+		}
+	}
+	if !defaultFound {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Default language must be in the language codes list"})
+		return
+	}
+
+	db := database.GetDBWrapper()
+	err = db.LanguageService.SetBusinessLanguages(uint(businessID), req.LanguageCodes, req.DefaultCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set business languages"})
+		return
+	}
+
+	// Auto-translate existing menu content when languages are updated
+	go func() {
+		if err := translateExistingMenuContent(uint(businessID)); err != nil {
+			log.Printf("Failed to translate existing menu content for business %d: %v", businessID, err)
+		}
+	}()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Business languages updated successfully"})
+}
+
+// autoTranslateMenuItem creates translations for a menu item using the translation service
+func autoTranslateMenuItem(businessID uint, name, description string) error {
+	db := database.GetDBWrapper()
+	translationService := services.NewTranslationService(db, "")
+	
+	// Use a hash of the name as ID to ensure consistency
+	itemID := uint(len(name) + len(description)) // Simple but consistent ID
+	
+	// Use the translation service to handle the translation
+	return translationService.TranslateMenuItem(businessID, itemID, name, description)
+}
+
+// autoTranslateCategory creates translations for a category using the translation service
+func autoTranslateCategory(businessID uint, name, description string) error {
+	db := database.GetDBWrapper()
+	translationService := services.NewTranslationService(db, "")
+	
+	// Use a hash of the name as ID to ensure consistency
+	categoryID := uint(len(name) + len(description)) // Simple but consistent ID
+	
+	// Use the translation service to handle the translation
+	return translationService.TranslateCategory(businessID, categoryID, name, description)
+}
+
+
+// translateExistingMenuContent translates all existing menu content for a business
+func translateExistingMenuContent(businessID uint) error {
+	log.Printf("Starting translation of existing menu content for business %d", businessID)
+
+	// Get the menu for this business
+	_, categories, err := database.GetMenuByBusinessID(businessID)
+	if err != nil {
+		return fmt.Errorf("failed to get menu: %w", err)
+	}
+
+	// Translate all categories and their items
+	for categoryIndex, category := range categories {
+		categoryID := uint(categoryIndex + 1) // Use index + 1 as ID
+		
+		// Translate category
+		if err := autoTranslateCategory(businessID, category.Name, category.Description); err != nil {
+			log.Printf("Failed to translate category %d: %v", categoryID, err)
+		}
+
+		// Translate all items in this category
+		for itemIndex, item := range category.Items {
+			itemID := uint(categoryIndex*100 + itemIndex + 1) // Create unique item ID
+			if err := autoTranslateMenuItem(businessID, item.Name, item.Description); err != nil {
+				log.Printf("Failed to translate menu item %d: %v", itemID, err)
+			}
+		}
+	}
+
+	log.Printf("Completed translation of existing menu content for business %d", businessID)
+	return nil
+}
+
+// SetBusinessCurrenciesRequest represents the request to set business currencies
+type SetBusinessCurrenciesRequest struct {
+	CurrencyCodes []string `json:"currency_codes" binding:"required"`
+	PreferredCode string   `json:"preferred_code" binding:"required"`
+}
+
+// SetBusinessCurrencies sets the currencies for a business
+func SetBusinessCurrencies(c *gin.Context) {
+	businessID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Verify business ownership
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+		return
+	}
+
+	var req SetBusinessCurrenciesRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validate that preferred currency is in the list
+	preferredFound := false
+	for _, code := range req.CurrencyCodes {
+		if code == req.PreferredCode {
+			preferredFound = true
+			break
+		}
+	}
+	if !preferredFound {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Preferred currency must be in the currency codes list"})
+		return
+	}
+
+	db := database.GetDBWrapper()
+	err = db.CurrencyService.SetBusinessCurrencies(uint(businessID), req.CurrencyCodes, req.PreferredCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set business currencies"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Business currencies updated successfully"})
 }

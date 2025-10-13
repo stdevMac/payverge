@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
+import { TranslationProvider } from '../../../../contexts/TranslationContext';
 
 // Lazy load heavy components
 const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu'), {
@@ -364,7 +365,8 @@ export default function GuestMenuPage() {
   });
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <TranslationProvider>
+      <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
@@ -575,6 +577,7 @@ export default function GuestMenuPage() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+      </div>
+    </TranslationProvider>
   );
 }

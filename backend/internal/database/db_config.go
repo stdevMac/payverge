@@ -40,6 +40,9 @@ type DB struct {
 	StaffService              *StaffService
 	StaffInvitationService    *StaffInvitationService
 	StaffLoginCodeService     *StaffLoginCodeService
+	CurrencyService           *CurrencyService
+	LanguageService           *LanguageService
+	TranslationService        *TranslationService
 }
 
 // NewDB creates a new DB instance
@@ -82,10 +85,10 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-// GetDBWrapper returns a DB wrapper instance
+// GetDBWrapper returns a DB instance with all services initialized
 func GetDBWrapper() *DB {
 	return &DB{
-		conn: db,
+		conn:                      db,
 		BusinessService:           NewBusinessService(),
 		TableService:              NewTableService(),
 		BillService:               NewBillService(),
@@ -96,12 +99,15 @@ func GetDBWrapper() *DB {
 		StaffService:              NewStaffService(),
 		StaffInvitationService:    NewStaffInvitationService(),
 		StaffLoginCodeService:     NewStaffLoginCodeService(),
+		CurrencyService:           NewCurrencyService(db),
+		LanguageService:           NewLanguageService(db),
+		TranslationService:        NewTranslationService(db),
 	}
 }
 
 // GetGorm returns the underlying GORM database instance
-func (db *DB) GetGorm() *gorm.DB {
-	return db.conn
+func (d *DB) GetGorm() *gorm.DB {
+	return d.conn
 }
 
 // Database methods for the DB wrapper
@@ -229,5 +235,12 @@ func autoMigrate() error {
 		&ReferralCommissionClaim{},
 		// Withdrawal history model
 		&WithdrawalHistory{},
+		// Multi-currency and multilingual models
+		&SupportedCurrency{},
+		&ExchangeRate{},
+		&BusinessCurrency{},
+		&SupportedLanguage{},
+		&BusinessLanguage{},
+		&Translation{},
 	)
 }

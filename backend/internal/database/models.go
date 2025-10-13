@@ -100,6 +100,9 @@ type Business struct {
 	CounterEnabled  bool            `gorm:"default:false" json:"counter_enabled"`
 	CounterCount    int             `gorm:"default:3" json:"counter_count"`
 	CounterPrefix   string          `gorm:"default:'C'" json:"counter_prefix"`
+	// Multi-currency and multilingual support
+	DefaultCurrency string          `gorm:"default:'USD'" json:"default_currency"`    // Default display currency
+	DefaultLanguage string          `gorm:"default:'en'" json:"default_language"`     // Default menu language
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }

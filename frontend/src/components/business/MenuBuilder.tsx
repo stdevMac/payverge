@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Card,
   CardHeader,
@@ -24,10 +24,11 @@ import {
   AccordionItem,
 } from '@nextui-org/react';
 import { businessApi, MenuItem, MenuCategory, MenuItemOption } from '../../api/business';
+import { getSupportedLanguages, getBusinessLanguages, updateBusinessLanguages, SupportedLanguage, BusinessLanguage } from '../../api/currency';
 import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
 import MultipleImageUpload from './MultipleImageUpload';
-import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign, Search, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign, Search, X, Globe, Languages } from 'lucide-react';
 
 interface MenuBuilderProps {
   businessId: number;
@@ -40,11 +41,22 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  // Language states
+  const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
+  const [businessLanguages, setBusinessLanguages] = useState<BusinessLanguage[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<string>('en');
+  const [isLanguageLoading, setIsLanguageLoading] = useState(false);
+  const [currentViewLanguage, setCurrentViewLanguage] = useState<string>('en');
+  
   // Modal states
   const { isOpen: isAddCategoryOpen, onOpen: onAddCategoryOpen, onOpenChange: onAddCategoryOpenChange } = useDisclosure();
   const { isOpen: isEditCategoryOpen, onOpen: onEditCategoryOpen, onOpenChange: onEditCategoryOpenChange } = useDisclosure();
   const { isOpen: isAddItemOpen, onOpen: onAddItemOpen, onOpenChange: onAddItemOpenChange } = useDisclosure();
   const { isOpen: isEditItemOpen, onOpen: onEditItemOpen, onOpenChange: onEditItemOpenChange } = useDisclosure();
+  
+  // Translation states
+  const [isTranslating, setIsTranslating] = useState(false);
   
   // Selection states
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
@@ -79,25 +91,32 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState<'all' | 'available' | 'unavailable'>('all');
 
-  const loadMenu = useCallback(async () => {
+  const loadMenu = useCallback(async (language?: string) => {
     try {
       setIsLoading(true);
       setError(null);
-      const menuData = await businessApi.getMenu(businessId);
+      const menuData = await businessApi.getMenu(businessId, language);
       
-      if (menuData && menuData.categories) {
+      if (menuData) {
         let categories;
         
-        // Handle string or array categories
-        if (typeof menuData.categories === 'string') {
-          try {
-            categories = JSON.parse(menuData.categories);
-          } catch (parseError) {
-            console.error('Failed to parse menu categories:', parseError);
-            categories = [];
+        // Use parsed_categories if available (contains translations), otherwise fall back to categories
+        if (menuData.parsed_categories && Array.isArray(menuData.parsed_categories)) {
+          categories = menuData.parsed_categories;
+        } else if (menuData.categories) {
+          // Handle string or array categories
+          if (typeof menuData.categories === 'string') {
+            try {
+              categories = JSON.parse(menuData.categories);
+            } catch (parseError) {
+              console.error('Failed to parse menu categories:', parseError);
+              categories = [];
+            }
+          } else {
+            categories = menuData.categories;
           }
         } else {
-          categories = menuData.categories;
+          categories = [];
         }
         
         // Ensure categories is an array
@@ -120,10 +139,93 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     }
   }, [businessId]);
 
+  // Simple translate menu function
+  const handleTranslateMenu = useCallback(async (languageCode: string) => {
+    try {
+      setIsTranslating(true);
+      setError(null);
+      
+      // Call backend to translate entire menu
+      await businessApi.translateMenu(businessId, languageCode);
+      
+      // Reload menu with translated content
+      await loadMenu(languageCode);
+      setCurrentViewLanguage(languageCode);
+      
+    } catch (error) {
+      console.error('Failed to translate menu:', error);
+      setError('Failed to translate menu');
+    } finally {
+      setIsTranslating(false);
+    }
+  }, [businessId, loadMenu]);
+
   // Load menu data
   useEffect(() => {
     loadMenu();
   }, [loadMenu]);
+
+  // Load language data
+  const loadLanguages = useCallback(async () => {
+    try {
+      setIsLanguageLoading(true);
+      
+      // Load supported languages
+      const supported = await getSupportedLanguages();
+      setSupportedLanguages(supported);
+      
+      // Load business languages
+      const business = await getBusinessLanguages(businessId);
+      setBusinessLanguages(business);
+      
+      // Set selected languages and default
+      const selectedCodes = business.map(bl => bl.language_code);
+      setSelectedLanguages(selectedCodes);
+      
+      const defaultLang = business.find(bl => bl.is_default);
+      if (defaultLang) {
+        setDefaultLanguage(defaultLang.language_code);
+        setCurrentViewLanguage(defaultLang.language_code);
+      }
+    } catch (error) {
+      console.error('Failed to load languages:', error);
+    } finally {
+      setIsLanguageLoading(false);
+    }
+  }, [businessId]);
+
+  useEffect(() => {
+    loadLanguages();
+  }, [loadLanguages]);
+
+  // Handle language selection changes
+  // Check if there are unsaved language changes
+  const hasLanguageChanges = useMemo(() => {
+    const currentCodes = businessLanguages.map(bl => bl.language_code).sort();
+    const selectedCodes = selectedLanguages.slice().sort();
+    const currentDefault = businessLanguages.find(bl => bl.is_default)?.language_code;
+    
+    return JSON.stringify(currentCodes) !== JSON.stringify(selectedCodes) || 
+           currentDefault !== defaultLanguage;
+  }, [businessLanguages, selectedLanguages, defaultLanguage]);
+
+  const handleLanguageUpdate = useCallback(async (languageCodes: string[], defaultCode: string) => {
+    try {
+      setIsLanguageLoading(true);
+      await updateBusinessLanguages(businessId, {
+        language_codes: languageCodes,
+        default_code: defaultCode
+      });
+      
+      // Reload languages to get updated data
+      await loadLanguages();
+    } catch (error) {
+      console.error('Failed to update languages:', error);
+      setError('Failed to update languages');
+    } finally {
+      setIsLanguageLoading(false);
+    }
+  }, [businessId, loadLanguages]);
 
   // Helper functions
   const resetCategoryForm = () => {
@@ -444,6 +546,151 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
           </Button>
         </div>
 
+        {/* Unified Language Management Section */}
+        <Card className="border-gray-200">
+          <CardBody className="p-6">
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <Globe className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Menu Languages</h3>
+                  <p className="text-sm text-gray-600">Manage languages and translations for your menu</p>
+                </div>
+              </div>
+
+              {/* Language Selection Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
+                {/* Select Languages */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Supported Languages</label>
+                  <Select
+                    placeholder="Select languages"
+                    selectionMode="multiple"
+                    selectedKeys={new Set(selectedLanguages)}
+                    onSelectionChange={(keys) => {
+                      const newSelection = Array.from(keys) as string[];
+                      setSelectedLanguages(newSelection);
+                      if (newSelection.length > 0 && !newSelection.includes(defaultLanguage)) {
+                        setDefaultLanguage(newSelection[0]);
+                      }
+                    }}
+                    isLoading={isLanguageLoading}
+                    size="sm"
+                  >
+                    {supportedLanguages.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.native_name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+
+                {/* Default Language */}
+                {selectedLanguages.length > 1 && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Default Language</label>
+                    <Select
+                      placeholder="Choose default"
+                      selectedKeys={new Set([defaultLanguage])}
+                      onSelectionChange={(keys) => {
+                        const newDefault = Array.from(keys)[0] as string;
+                        if (newDefault) setDefaultLanguage(newDefault);
+                      }}
+                      isLoading={isLanguageLoading}
+                      size="sm"
+                    >
+                      {selectedLanguages.map((langCode) => {
+                        const lang = supportedLanguages.find(l => l.code === langCode);
+                        return lang ? (
+                          <SelectItem key={lang.code} value={lang.code}>
+                            {lang.native_name}
+                          </SelectItem>
+                        ) : null;
+                      })}
+                    </Select>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  {hasLanguageChanges && (
+                    <Button
+                      color="primary"
+                      size="sm"
+                      onPress={() => handleLanguageUpdate(selectedLanguages, defaultLanguage)}
+                      isLoading={isLanguageLoading}
+                      isDisabled={selectedLanguages.length === 0}
+                    >
+                      Save Languages
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* View & Translate Row */}
+              {businessLanguages.length > 1 && (
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    {/* View Language Switcher */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">View Menu As:</label>
+                      <div className="flex flex-wrap gap-2">
+                        {businessLanguages.map((bl) => {
+                          const lang = supportedLanguages.find(l => l.code === bl.language_code);
+                          if (!lang) return null;
+                          
+                          const isActive = currentViewLanguage === bl.language_code;
+                          
+                          return (
+                            <Button
+                              key={bl.language_code}
+                              size="sm"
+                              variant={isActive ? "solid" : "bordered"}
+                              color={isActive ? "primary" : "default"}
+                              onPress={() => {
+                                setCurrentViewLanguage(bl.language_code);
+                                loadMenu(bl.language_code);
+                              }}
+                            >
+                              {lang.native_name}
+                              {bl.is_default && " (Default)"}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Translate Button */}
+                    {currentViewLanguage !== 'en' && (
+                      <Button
+                        color="secondary"
+                        size="sm"
+                        variant="flat"
+                        onPress={() => handleTranslateMenu(currentViewLanguage)}
+                        startContent={<Languages className="w-4 h-4" />}
+                        isLoading={isTranslating}
+                        className="min-w-[140px]"
+                      >
+                        {isTranslating ? 'Translating...' : `Translate to ${supportedLanguages.find(l => l.code === currentViewLanguage)?.native_name}`}
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Status */}
+                  <div className="text-xs text-gray-500">
+                    {currentViewLanguage === defaultLanguage 
+                      ? "Showing original content" 
+                      : "Showing translated content"}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </Card>
+
         {/* Search and Filter Section */}
         <Card className="border-gray-200">
           <CardBody className="p-4">
@@ -603,9 +850,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start w-full">
                   <div className="flex-1">
-                    <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-2">{category.name}</h3>
+                    <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-2">
+                      {category.name}
+                    </h3>
                     {category.description && (
-                      <p className="text-gray-600 font-light leading-relaxed">{category.description}</p>
+                      <p className="text-gray-600 font-light leading-relaxed">
+                        {category.description}
+                      </p>
                     )}
                     <Chip size="sm" variant="flat" color="primary" className="mt-2">
                       {category.items.length} {category.items.length === 1 ? 'item' : 'items'}
@@ -919,6 +1170,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   value={categoryDescription}
                   onValueChange={setCategoryDescription}
                 />
+
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={() => {
@@ -1417,6 +1669,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     </div>
                   )}
                 </div>
+
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={() => {
@@ -1437,6 +1690,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
           )}
         </ModalContent>
       </Modal>
+
     </div>
   );
 }

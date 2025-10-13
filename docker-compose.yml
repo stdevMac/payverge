@@ -28,6 +28,7 @@ services:
         - FROM_EMAIL_UPDATES=${FROM_EMAIL_UPDATES:-updates@yourapp.com}
         - POSTHOG_API_KEY=${POSTHOG_API_KEY:-posthog_key}
         - POSTHOG_HOST=${POSTHOG_HOST:-https://app.posthog.com}
+        - GOOGLE_TRANSLATE_API_KEY=${GOOGLE_TRANSLATE_API_KEY:-google_translate_api_key}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     networks:
@@ -75,6 +76,8 @@ services:
       - ${FROM_EMAIL_NEWS:-news@yourapp.com}
       - --from-email-updates
       - ${FROM_EMAIL_UPDATES:-updates@yourapp.com}
+      - --google-translate-api-key
+      - ${GOOGLE_TRANSLATE_API_KEY:-google_translate_api_key}
 
   # Frontend Service
   frontend:

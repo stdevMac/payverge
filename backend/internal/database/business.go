@@ -17,6 +17,14 @@ import (
 
 // CreateBusiness creates a new business in the database
 func CreateBusiness(business *Business) error {
+	// Set default values if not provided
+	if business.DefaultCurrency == "" {
+		business.DefaultCurrency = "USD"
+	}
+	if business.DefaultLanguage == "" {
+		business.DefaultLanguage = "en"
+	}
+	
 	if err := db.Create(business).Error; err != nil {
 		return fmt.Errorf("failed to create business: %w", err)
 	}
@@ -58,6 +66,39 @@ func DeleteBusiness(id uint) error {
 		return fmt.Errorf("failed to delete business: %w", err)
 	}
 	return nil
+}
+
+// UpdateBusinessDefaults updates the default currency and language for a business
+func UpdateBusinessDefaults(businessID uint, defaultCurrency, defaultLanguage string) error {
+	updates := make(map[string]interface{})
+	
+	if defaultCurrency != "" {
+		updates["default_currency"] = defaultCurrency
+	}
+	if defaultLanguage != "" {
+		updates["default_language"] = defaultLanguage
+	}
+	
+	if len(updates) == 0 {
+		return fmt.Errorf("no updates provided")
+	}
+	
+	if err := db.Model(&Business{}).Where("id = ?", businessID).Updates(updates).Error; err != nil {
+		return fmt.Errorf("failed to update business defaults: %w", err)
+	}
+	return nil
+}
+
+// GetBusinessDefaults returns the default currency and language for a business
+func GetBusinessDefaults(businessID uint) (string, string, error) {
+	var business Business
+	if err := db.Select("default_currency, default_language").Where("id = ?", businessID).First(&business).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", "", fmt.Errorf("business not found")
+		}
+		return "", "", fmt.Errorf("failed to get business defaults: %w", err)
+	}
+	return business.DefaultCurrency, business.DefaultLanguage, nil
 }
 
 // Menu operations
