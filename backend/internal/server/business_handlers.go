@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"payverge/internal/database"
-	"payverge/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -863,7 +862,10 @@ func AddMenuCategory(c *gin.Context) {
 
 	// Auto-translate the new category
 	go func() {
-		if err := autoTranslateCategory(uint(businessID), category.Name, category.Description); err != nil {
+		// Get the category index by counting existing categories
+		_, categories, _ := database.GetMenuByBusinessID(uint(businessID))
+		categoryIndex := len(categories) - 1 // New category is at the end
+		if err := autoTranslateCategory(uint(businessID), categoryIndex, category.Name, category.Description); err != nil {
 			log.Printf("Failed to translate category: %v", err)
 		}
 	}()
@@ -920,6 +922,13 @@ func UpdateMenuCategory(c *gin.Context) {
 		return
 	}
 
+	// Auto-translate the updated category
+	go func() {
+		if err := autoTranslateCategory(uint(businessID), categoryIndex, category.Name, category.Description); err != nil {
+			log.Printf("Failed to translate updated category: %v", err)
+		}
+	}()
+
 	c.JSON(http.StatusOK, gin.H{"message": "Category updated successfully"})
 }
 
@@ -954,6 +963,13 @@ func DeleteMenuCategory(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to modify this business"})
 		return
 	}
+
+	// Delete translations for the category before deleting the category
+	go func() {
+		if err := deleteTranslationsForCategory(uint(businessID), categoryIndex); err != nil {
+			log.Printf("Failed to delete category translations: %v", err)
+		}
+	}()
 
 	if err := database.DeleteMenuCategory(uint(businessID), categoryIndex); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -1002,8 +1018,13 @@ func AddMenuItem(c *gin.Context) {
 
 	// Auto-translate the new menu item
 	go func() {
-		if err := autoTranslateMenuItem(uint(businessID), req.Item.Name, req.Item.Description); err != nil {
-			log.Printf("Failed to translate menu item: %v", err)
+		// Get the item index by counting existing items in the category
+		_, categories, _ := database.GetMenuByBusinessID(uint(businessID))
+		if req.CategoryIndex < len(categories) {
+			itemIndex := len(categories[req.CategoryIndex].Items) - 1 // New item is at the end
+			if err := autoTranslateMenuItem(uint(businessID), req.CategoryIndex, itemIndex, req.Item.Name, req.Item.Description, req.Item.Options, req.Item.Allergens, req.Item.DietaryTags); err != nil {
+				log.Printf("Failed to translate menu item: %v", err)
+			}
 		}
 	}()
 
@@ -1047,6 +1068,13 @@ func UpdateMenuItem(c *gin.Context) {
 		return
 	}
 
+	// Auto-translate the updated menu item
+	go func() {
+		if err := autoTranslateMenuItem(uint(businessID), req.CategoryIndex, req.ItemIndex, req.Item.Name, req.Item.Description, req.Item.Options, req.Item.Allergens, req.Item.DietaryTags); err != nil {
+			log.Printf("Failed to translate updated menu item: %v", err)
+		}
+	}()
+
 	c.JSON(http.StatusOK, gin.H{"message": "Menu item updated successfully"})
 }
 
@@ -1087,6 +1115,13 @@ func DeleteMenuItem(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to modify this business"})
 		return
 	}
+
+	// Delete translations for the menu item before deleting the item
+	go func() {
+		if err := deleteTranslationsForMenuItem(uint(businessID), categoryIndex, itemIndex); err != nil {
+			log.Printf("Failed to delete menu item translations: %v", err)
+		}
+	}()
 
 	if err := database.DeleteMenuItem(uint(businessID), categoryIndex, itemIndex); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -2159,29 +2194,6 @@ func SetBusinessLanguages(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Business languages updated successfully"})
 }
 
-// autoTranslateMenuItem creates translations for a menu item using the translation service
-func autoTranslateMenuItem(businessID uint, name, description string) error {
-	db := database.GetDBWrapper()
-	translationService := services.NewTranslationService(db, "")
-	
-	// Use a hash of the name as ID to ensure consistency
-	itemID := uint(len(name) + len(description)) // Simple but consistent ID
-	
-	// Use the translation service to handle the translation
-	return translationService.TranslateMenuItem(businessID, itemID, name, description)
-}
-
-// autoTranslateCategory creates translations for a category using the translation service
-func autoTranslateCategory(businessID uint, name, description string) error {
-	db := database.GetDBWrapper()
-	translationService := services.NewTranslationService(db, "")
-	
-	// Use a hash of the name as ID to ensure consistency
-	categoryID := uint(len(name) + len(description)) // Simple but consistent ID
-	
-	// Use the translation service to handle the translation
-	return translationService.TranslateCategory(businessID, categoryID, name, description)
-}
 
 
 // translateExistingMenuContent translates all existing menu content for a business
@@ -2196,18 +2208,15 @@ func translateExistingMenuContent(businessID uint) error {
 
 	// Translate all categories and their items
 	for categoryIndex, category := range categories {
-		categoryID := uint(categoryIndex + 1) // Use index + 1 as ID
-		
 		// Translate category
-		if err := autoTranslateCategory(businessID, category.Name, category.Description); err != nil {
-			log.Printf("Failed to translate category %d: %v", categoryID, err)
+		if err := autoTranslateCategory(businessID, categoryIndex, category.Name, category.Description); err != nil {
+			log.Printf("Failed to translate category %d: %v", categoryIndex, err)
 		}
 
 		// Translate all items in this category
 		for itemIndex, item := range category.Items {
-			itemID := uint(categoryIndex*100 + itemIndex + 1) // Create unique item ID
-			if err := autoTranslateMenuItem(businessID, item.Name, item.Description); err != nil {
-				log.Printf("Failed to translate menu item %d: %v", itemID, err)
+			if err := autoTranslateMenuItem(businessID, categoryIndex, itemIndex, item.Name, item.Description, item.Options, item.Allergens, item.DietaryTags); err != nil {
+				log.Printf("Failed to translate menu item %d in category %d: %v", itemIndex, categoryIndex, err)
 			}
 		}
 	}
@@ -2275,4 +2284,250 @@ func SetBusinessCurrencies(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Business currencies updated successfully"})
+}
+
+// Translation helper functions for menu management
+
+// autoTranslateCategory translates a category to all business languages
+func autoTranslateCategory(businessID uint, categoryIndex int, name, description string) error {
+	db := database.GetDBWrapper()
+	translationService := GetTranslationService()
+	
+	if translationService == nil {
+		return errors.New("translation service not available")
+	}
+
+	// Get business languages
+	businessLanguages, err := db.LanguageService.GetBusinessLanguages(businessID)
+	if err != nil {
+		return fmt.Errorf("failed to get business languages: %v", err)
+	}
+
+	// Skip if no languages configured
+	if len(businessLanguages) == 0 {
+		return nil
+	}
+
+	// Translate to each business language
+	for _, bl := range businessLanguages {
+		// Skip default language (usually English)
+		if bl.IsDefault {
+			continue
+		}
+
+		// Translate category name
+		if name != "" {
+			translatedTexts, err := translationService.TranslateText(name, []string{bl.LanguageCode})
+			if err == nil && translatedTexts[bl.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "category",
+					EntityID:          uint(categoryIndex),
+					FieldName:         "name",
+					LanguageCode:      bl.LanguageCode,
+					OriginalText:      name,
+					TranslatedText:    translatedTexts[bl.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				db.TranslationService.SaveTranslation(translation)
+			}
+		}
+
+		// Translate category description
+		if description != "" {
+			translatedTexts, err := translationService.TranslateText(description, []string{bl.LanguageCode})
+			if err == nil && translatedTexts[bl.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "category",
+					EntityID:          uint(categoryIndex),
+					FieldName:         "description",
+					LanguageCode:      bl.LanguageCode,
+					OriginalText:      description,
+					TranslatedText:    translatedTexts[bl.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				db.TranslationService.SaveTranslation(translation)
+			}
+		}
+	}
+
+	return nil
+}
+
+// autoTranslateMenuItem translates a menu item to all business languages
+func autoTranslateMenuItem(businessID uint, categoryIndex, itemIndex int, name, description string, options []database.MenuItemOption, allergens, dietaryTags []string) error {
+	db := database.GetDBWrapper()
+	translationService := GetTranslationService()
+	
+	if translationService == nil {
+		return errors.New("translation service not available")
+	}
+
+	// Get business languages
+	businessLanguages, err := db.LanguageService.GetBusinessLanguages(businessID)
+	if err != nil {
+		return fmt.Errorf("failed to get business languages: %v", err)
+	}
+
+	// Skip if no languages configured
+	if len(businessLanguages) == 0 {
+		return nil
+	}
+
+	// Calculate entity ID using same logic as TranslateMenu
+	entityID := categoryIndex*1000 + itemIndex
+
+	// Translate to each business language
+	for _, bl := range businessLanguages {
+		// Skip default language (usually English)
+		if bl.IsDefault {
+			continue
+		}
+
+		// Translate item name
+		if name != "" {
+			translatedTexts, err := translationService.TranslateText(name, []string{bl.LanguageCode})
+			if err == nil && translatedTexts[bl.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "menu_item",
+					EntityID:          uint(entityID),
+					FieldName:         "name",
+					LanguageCode:      bl.LanguageCode,
+					OriginalText:      name,
+					TranslatedText:    translatedTexts[bl.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				db.TranslationService.SaveTranslation(translation)
+			}
+		}
+
+		// Translate item description
+		if description != "" {
+			translatedTexts, err := translationService.TranslateText(description, []string{bl.LanguageCode})
+			if err == nil && translatedTexts[bl.LanguageCode] != "" {
+				translation := &database.Translation{
+					EntityType:        "menu_item",
+					EntityID:          uint(entityID),
+					FieldName:         "description",
+					LanguageCode:      bl.LanguageCode,
+					OriginalText:      description,
+					TranslatedText:    translatedTexts[bl.LanguageCode],
+					IsAutoTranslated:  true,
+					TranslationSource: "google_translate",
+				}
+				db.TranslationService.SaveTranslation(translation)
+			}
+		}
+
+		// Translate options
+		for k, option := range options {
+			if option.Name != "" {
+				optionEntityID := entityID*1000 + k
+				translatedTexts, err := translationService.TranslateText(option.Name, []string{bl.LanguageCode})
+				if err == nil && translatedTexts[bl.LanguageCode] != "" {
+					translation := &database.Translation{
+						EntityType:        "menu_item_option",
+						EntityID:          uint(optionEntityID),
+						FieldName:         "name",
+						LanguageCode:      bl.LanguageCode,
+						OriginalText:      option.Name,
+						TranslatedText:    translatedTexts[bl.LanguageCode],
+						IsAutoTranslated:  true,
+						TranslationSource: "google_translate",
+					}
+					db.TranslationService.SaveTranslation(translation)
+				}
+			}
+		}
+
+		// Translate allergens
+		for k, allergen := range allergens {
+			if allergen != "" {
+				allergenEntityID := entityID*10000 + k
+				translatedTexts, err := translationService.TranslateText(allergen, []string{bl.LanguageCode})
+				if err == nil && translatedTexts[bl.LanguageCode] != "" {
+					translation := &database.Translation{
+						EntityType:        "allergen",
+						EntityID:          uint(allergenEntityID),
+						FieldName:         "name",
+						LanguageCode:      bl.LanguageCode,
+						OriginalText:      allergen,
+						TranslatedText:    translatedTexts[bl.LanguageCode],
+						IsAutoTranslated:  true,
+						TranslationSource: "google_translate",
+					}
+					db.TranslationService.SaveTranslation(translation)
+				}
+			}
+		}
+
+		// Translate dietary tags
+		for k, tag := range dietaryTags {
+			if tag != "" {
+				tagEntityID := entityID*100000 + k
+				translatedTexts, err := translationService.TranslateText(tag, []string{bl.LanguageCode})
+				if err == nil && translatedTexts[bl.LanguageCode] != "" {
+					translation := &database.Translation{
+						EntityType:        "dietary_tag",
+						EntityID:          uint(tagEntityID),
+						FieldName:         "name",
+						LanguageCode:      bl.LanguageCode,
+						OriginalText:      tag,
+						TranslatedText:    translatedTexts[bl.LanguageCode],
+						IsAutoTranslated:  true,
+						TranslationSource: "google_translate",
+					}
+					db.TranslationService.SaveTranslation(translation)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+// deleteTranslationsForCategory removes all translations for a category
+func deleteTranslationsForCategory(businessID uint, categoryIndex int) error {
+	db := database.GetDBWrapper()
+	
+	// Delete category name and description translations
+	if err := db.GetGorm().Where("entity_type = ? AND entity_id = ?", "category", categoryIndex).Delete(&database.Translation{}).Error; err != nil {
+		return fmt.Errorf("failed to delete category translations: %v", err)
+	}
+
+	log.Printf("🗑️ Deleted translations for category %d", categoryIndex)
+	return nil
+}
+
+// deleteTranslationsForMenuItem removes all translations for a menu item
+func deleteTranslationsForMenuItem(businessID uint, categoryIndex, itemIndex int) error {
+	db := database.GetDBWrapper()
+	
+	// Calculate entity ID using same logic as TranslateMenu
+	entityID := categoryIndex*1000 + itemIndex
+
+	// Delete menu item name and description translations
+	if err := db.GetGorm().Where("entity_type = ? AND entity_id = ?", "menu_item", entityID).Delete(&database.Translation{}).Error; err != nil {
+		return fmt.Errorf("failed to delete menu item translations: %v", err)
+	}
+
+	// Delete option translations (entity_id starts with entityID*1000)
+	if err := db.GetGorm().Where("entity_type = ? AND entity_id >= ? AND entity_id < ?", "menu_item_option", entityID*1000, (entityID+1)*1000).Delete(&database.Translation{}).Error; err != nil {
+		return fmt.Errorf("failed to delete option translations: %v", err)
+	}
+
+	// Delete allergen translations (entity_id starts with entityID*10000)
+	if err := db.GetGorm().Where("entity_type = ? AND entity_id >= ? AND entity_id < ?", "allergen", entityID*10000, (entityID+1)*10000).Delete(&database.Translation{}).Error; err != nil {
+		return fmt.Errorf("failed to delete allergen translations: %v", err)
+	}
+
+	// Delete dietary tag translations (entity_id starts with entityID*100000)
+	if err := db.GetGorm().Where("entity_type = ? AND entity_id >= ? AND entity_id < ?", "dietary_tag", entityID*100000, (entityID+1)*100000).Delete(&database.Translation{}).Error; err != nil {
+		return fmt.Errorf("failed to delete dietary tag translations: %v", err)
+	}
+
+	log.Printf("🗑️ Deleted translations for menu item %d in category %d", itemIndex, categoryIndex)
+	return nil
 }

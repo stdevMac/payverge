@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -16,16 +16,18 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import { Receipt, Clock, CreditCard, Wallet, Users } from 'lucide-react';
-import { BillWithItemsResponse } from '../../api/bills';
-import { Business } from '../../api/business';
+import { BillWithItemsResponse, getMenuByTableCode } from '../../api/bills';
+import { Business, MenuCategory, MenuItem } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
+import { useTranslation } from '../../contexts/TranslationContext';
 // import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
 
 interface GuestBillProps {
   bill: BillWithItemsResponse;
   business: Business;
   tableCode: string;
+  selectedLanguage?: string;
   onPaymentComplete: (paymentDetails: { totalPaid: number; tipAmount: number }) => void;
   compact?: boolean;
 }
@@ -34,12 +36,137 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   bill,
   business,
   tableCode,
+  selectedLanguage,
   onPaymentComplete,
   compact = false,
 }) => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSplittingModalOpen, setIsSplittingModalOpen] = useState(false);
   const { isOpen: isCashierModalOpen, onOpen: onCashierModalOpen, onClose: onCashierModalClose } = useDisclosure();
+  const { getTranslation, loadTranslations, translations } = useTranslation();
+  const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
+  const [originalCategories, setOriginalCategories] = useState<MenuCategory[]>([]);
+
+  // Load translated menu when language is selected
+  const loadTranslatedMenu = async (languageCode: string) => {
+    console.log('Bill: Loading translated menu for table:', tableCode, 'language:', languageCode);
+    try {
+      const menuData = await getMenuByTableCode(tableCode, languageCode);
+      console.log('Bill: Menu data received:', {
+        hasCategories: !!menuData.categories,
+        hasParsedCategories: !!menuData.parsed_categories,
+        language: menuData.language
+      });
+      
+      // Use translated categories if available, otherwise fall back to original
+      const categories = menuData.parsed_categories || menuData.categories;
+      console.log('Bill: Setting translated categories:', {
+        categoriesLength: categories?.length,
+        firstCategoryName: categories?.[0]?.name,
+        firstCategoryItems: categories?.[0]?.items?.map((item: MenuItem) => ({ id: item.id, name: item.name }))
+      });
+      
+      setTranslatedCategories(categories || []);
+    } catch (error) {
+      console.error('Bill: Error loading translated menu:', error);
+      setTranslatedCategories([]);
+    }
+  };
+
+  // Load original English menu for matching purposes
+  const loadOriginalMenu = async () => {
+    console.log('Bill: Loading original English menu for table:', tableCode);
+    try {
+      const menuData = await getMenuByTableCode(tableCode, 'en');
+      const categories = menuData.parsed_categories || menuData.categories;
+      console.log('Bill: Setting original categories:', {
+        categoriesLength: categories?.length,
+        firstCategoryName: categories?.[0]?.name
+      });
+      setOriginalCategories(categories || []);
+    } catch (error) {
+      console.error('Bill: Error loading original menu:', error);
+      setOriginalCategories([]);
+    }
+  };
+
+  // Load translations when component mounts and language is selected
+  useEffect(() => {
+    // Always load the original English menu for matching
+    loadOriginalMenu();
+    
+    if (business?.id && selectedLanguage && selectedLanguage !== 'en') {
+      loadTranslations(business.id, selectedLanguage);
+      loadTranslatedMenu(selectedLanguage);
+    } else if (selectedLanguage === 'en') {
+      setTranslatedCategories([]);
+    }
+  }, [business?.id, selectedLanguage, loadTranslations, tableCode]);
+
+  // Function to get translated item name by matching against translated menu
+  const getTranslatedItemName = (item: any) => {
+    if (!selectedLanguage || selectedLanguage === 'en' || !translatedCategories.length) {
+      return item.name;
+    }
+
+    console.log('Bill: Trying to translate item:', {
+      itemName: item.name,
+      itemId: item.menu_item_id,
+      selectedLanguage,
+      translatedCategoriesCount: translatedCategories.length,
+      originalCategoriesCount: originalCategories.length
+    });
+
+    // Strategy 1: Try to find the item in the original English menu first, then get its translation
+    if (originalCategories.length > 0) {
+      for (let catIndex = 0; catIndex < originalCategories.length; catIndex++) {
+        const originalCategory = originalCategories[catIndex];
+        if (originalCategory.items && Array.isArray(originalCategory.items)) {
+          for (let itemIndex = 0; itemIndex < originalCategory.items.length; itemIndex++) {
+            const originalMenuItem = originalCategory.items[itemIndex];
+            
+            // Try to match the bill item with the original menu item
+            if (originalMenuItem.name && item.name && 
+                originalMenuItem.name.toLowerCase() === item.name.toLowerCase()) {
+              
+              // Found match in original menu, now get the translated version
+              const translatedCategory = translatedCategories[catIndex];
+              if (translatedCategory?.items?.[itemIndex]) {
+                const translatedMenuItem = translatedCategory.items[itemIndex];
+                console.log('Bill: Found translation via position matching:', item.name, '->', translatedMenuItem.name);
+                return translatedMenuItem.name;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Strategy 2: Direct matching in translated menu (fallback)
+    for (const category of translatedCategories) {
+      if (category.items && Array.isArray(category.items)) {
+        for (const menuItem of category.items) {
+          // Try to match by menu_item_id first (most reliable)
+          if (item.menu_item_id && menuItem.id && item.menu_item_id.toString() === menuItem.id.toString()) {
+            console.log('Bill: Found translation match by ID:', item.name, '->', menuItem.name);
+            return menuItem.name;
+          }
+          
+          // Try exact name match (case insensitive)
+          if (menuItem.name && item.name && menuItem.name.toLowerCase() === item.name.toLowerCase()) {
+            console.log('Bill: Found translation match by exact name:', item.name, '->', menuItem.name);
+            return menuItem.name;
+          }
+        }
+      }
+    }
+    
+    const availableItems = translatedCategories.flatMap(cat => cat.items?.map((menuItem: MenuItem) => ({ id: menuItem.id, name: menuItem.name })) || []);
+    console.log('Bill: No translation found for item:', item.name, 'Available items:', availableItems);
+    console.log('Bill: Detailed available items:', JSON.stringify(availableItems, null, 2));
+    // Return original name if no translation found
+    return item.name;
+  };
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2)}`;
@@ -108,13 +235,13 @@ export const GuestBill: React.FC<GuestBillProps> = ({
     totalAmount: bill.bill.total_amount,
     items: bill.items.map((item, index) => ({
       id: item.id?.toString() || `item_${bill.bill.id}_${index}`, // Use stable ID based on bill ID and index
-      name: item.name,
+      name: getTranslatedItemName(item),
       price: item.price,
       quantity: item.quantity,
       subtotal: item.subtotal
     }))
   }), [bill.bill.id, bill.bill.bill_number, bill.bill.subtotal, bill.bill.tax_amount, 
-       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items]);
+       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items, selectedLanguage, translatedCategories, originalCategories, getTranslatedItemName]);
 
   const handleSplitPaymentInitiate = (personId: string, amount: number, tipAmount: number) => {
     // Close splitting modal and open payment processor with split amount
@@ -171,7 +298,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           {consolidatedItems.map((item, index) => (
             <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
               <div className="flex-1">
-                <p className="font-medium text-gray-900 tracking-wide">{item.name}</p>
+                <p className="font-medium text-gray-900 tracking-wide">{getTranslatedItemName(item)}</p>
                 <p className="text-sm text-gray-500 font-light mt-1">
                   Quantity: {item.quantity} × {formatCurrency(item.price)}
                 </p>

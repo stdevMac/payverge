@@ -13,9 +13,10 @@ import { TranslationProvider } from '../../../../contexts/TranslationContext';
 const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu'), {
   loading: () => <div className="flex justify-center p-8"><Spinner size="lg" /></div>
 });
-import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode } from '../../../../api/bills';
+import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode, getMenuByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
+import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 
 interface Table {
   id: number;
@@ -57,6 +58,8 @@ export default function GuestMenuPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
 
   const loadTableData = useCallback(async () => {
     setLoading(true);
@@ -84,6 +87,59 @@ export default function GuestMenuPage() {
       setLoading(false);
     }
   }, [tableCode]);
+
+  const loadTranslatedMenu = useCallback(async (languageCode: string) => {
+    console.log('Loading translated menu for table:', tableCode, 'language:', languageCode);
+    try {
+      const menuData = await getMenuByTableCode(tableCode, languageCode);
+      console.log('Menu data received:', {
+        hasCategories: !!menuData.categories,
+        hasParsedCategories: !!menuData.parsed_categories,
+        categoriesType: typeof menuData.categories,
+        language: menuData.language
+      });
+      
+      // Use translated categories if available, otherwise fall back to original
+      const categories = menuData.parsed_categories || menuData.categories;
+      
+      console.log('Setting translated categories:', {
+        categoriesLength: categories?.length,
+        firstCategoryName: categories?.[0]?.name
+      });
+      
+      setTranslatedCategories(categories || []);
+    } catch (error) {
+      console.error('Error loading translated menu:', error);
+      // Fall back to original categories if translation fails
+      if (tableData?.categories) {
+        console.log('Falling back to original categories');
+        setTranslatedCategories(tableData.categories);
+      }
+    }
+  }, [tableCode, tableData?.categories]);
+
+  const handleLanguageChange = useCallback((languageCode: string) => {
+    console.log('Menu page: Language changed to:', languageCode);
+    setSelectedLanguage(languageCode);
+    loadTranslatedMenu(languageCode);
+  }, [loadTranslatedMenu]);
+
+  // Initialize language and menu data when table data loads
+  useEffect(() => {
+    if (tableData?.business?.id && tableData?.categories) {
+      const savedLanguage = localStorage.getItem(`guest-language-${tableData.business.id}`);
+      
+      if (savedLanguage && !selectedLanguage) {
+        console.log('Menu page: Restoring saved language and loading translated menu:', savedLanguage);
+        setSelectedLanguage(savedLanguage);
+        // Load translated menu immediately
+        loadTranslatedMenu(savedLanguage);
+      } else if (!selectedLanguage) {
+        console.log('No saved language, initializing with original categories');
+        setTranslatedCategories(tableData.categories);
+      }
+    }
+  }, [tableData?.business?.id, tableData?.categories, selectedLanguage, loadTranslatedMenu]);
 
   const addToCart = useCallback((
     itemName: string, 
@@ -355,13 +411,28 @@ export default function GuestMenuPage() {
 
   const { business, categories } = tableData;
 
+  // Use translated categories if available, otherwise fall back to original
+  const displayCategories = translatedCategories.length > 0 ? translatedCategories : categories;
+  
   // Safety check for categories data (similar to BillCreator fix)
-  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeCategories = Array.isArray(displayCategories) ? displayCategories : [];
 
   console.log('Menu page - categories data:', { 
-    categories, 
+    originalCategories: categories,
+    translatedCategories,
+    displayCategories,
     safeCategories, 
-    isArray: Array.isArray(categories) 
+    selectedLanguage,
+    isArray: Array.isArray(displayCategories),
+    translatedCategoriesLength: translatedCategories.length,
+    safeCategoriesLength: safeCategories.length,
+    firstOriginalCategory: categories?.[0]?.name,
+    firstTranslatedCategory: translatedCategories?.[0]?.name,
+    firstDisplayCategory: displayCategories?.[0]?.name,
+    // Debug menu items
+    firstOriginalItem: categories?.[0]?.items?.[0]?.name,
+    firstTranslatedItem: translatedCategories?.[0]?.items?.[0]?.name,
+    firstDisplayItem: displayCategories?.[0]?.items?.[0]?.name
   });
 
   return (
@@ -406,6 +477,14 @@ export default function GuestMenuPage() {
               </div>
             </div>
 
+            {/* Language Selector */}
+            <GuestLanguageSelector
+              businessId={business.id}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              className="hidden sm:flex"
+            />
+
             {/* Shopping Cart Button */}
             <Button
               isIconOnly
@@ -429,13 +508,27 @@ export default function GuestMenuPage() {
         </div>
       </div>
 
+      {/* Mobile Language Selector */}
+      <div className="relative z-10 sm:hidden bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-6 py-3">
+          <GuestLanguageSelector
+            businessId={business.id}
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={handleLanguageChange}
+            className="flex justify-center"
+          />
+        </div>
+      </div>
+
       {/* Menu Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">
         <GuestMenu
+          key={`menu-${selectedLanguage}-${safeCategories.length}-${safeCategories[0]?.items?.[0]?.name || 'empty'}`}
           categories={safeCategories}
           business={business}
           tableCode={tableCode}
           currentBill={currentBill}
+          selectedLanguage={selectedLanguage}
           onAddToBill={handleAddToBill}
           onAddToCart={addToCart}
         />

@@ -207,7 +207,7 @@ export default function BatchTranslationModal({
                       <div className="bg-green-50 p-3 rounded-lg">
                         <p className="text-sm text-green-800">
                           ✨ Your menu is now available in multiple languages! 
-                          Use the "View Menu In" selector to see the translations.
+                          Use the &quot;View Menu In&quot; selector to see the translations.
                         </p>
                       </div>
                     )}

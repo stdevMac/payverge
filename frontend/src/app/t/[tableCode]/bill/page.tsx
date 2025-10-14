@@ -7,6 +7,7 @@ import { ArrowLeft, Menu } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
+import { TranslationProvider } from '../../../../contexts/TranslationContext';
 
 // Lazy load heavy components
 const GuestBill = dynamic(() => import('../../../../components/guest/GuestBill'), {
@@ -18,6 +19,8 @@ import {
   BillWithItemsResponse 
 } from '../../../../api/bills';
 import { Business, MenuCategory } from '../../../../api/business';
+import { getMenuByTableCode } from '../../../../api/bills';
+import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 
 interface Table {
   id: number;
@@ -51,6 +54,8 @@ export default function GuestBillPage() {
     totalPaid: number;
     tipAmount: number;
   } | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
 
   const loadTableData = useCallback(async () => {
     setLoading(true);
@@ -78,6 +83,44 @@ export default function GuestBillPage() {
       setLoading(false);
     }
   }, [tableCode]);
+
+  const loadTranslatedMenu = useCallback(async (languageCode: string) => {
+    try {
+      const menuData = await getMenuByTableCode(tableCode, languageCode);
+      // Use translated categories if available, otherwise fall back to original
+      const categories = menuData.parsed_categories || menuData.categories;
+      setTranslatedCategories(categories || []);
+    } catch (error) {
+      console.error('Error loading translated menu:', error);
+      // Fall back to original categories if translation fails
+      if (tableData?.categories) {
+        setTranslatedCategories(tableData.categories);
+      }
+    }
+  }, [tableCode, tableData?.categories]);
+
+  const handleLanguageChange = useCallback((languageCode: string) => {
+    console.log('Bill page: Language changed to:', languageCode);
+    setSelectedLanguage(languageCode);
+    loadTranslatedMenu(languageCode);
+  }, [loadTranslatedMenu]);
+
+  // Initialize language and menu data when table data loads
+  useEffect(() => {
+    if (tableData?.business?.id && tableData?.categories) {
+      const savedLanguage = localStorage.getItem(`guest-language-${tableData.business.id}`);
+      
+      if (savedLanguage && !selectedLanguage) {
+        console.log('Bill page: Restoring saved language and loading translated menu:', savedLanguage);
+        setSelectedLanguage(savedLanguage);
+        // Load translated menu immediately
+        loadTranslatedMenu(savedLanguage);
+      } else if (!selectedLanguage) {
+        console.log('Bill page: No saved language, initializing with original categories');
+        setTranslatedCategories(tableData.categories);
+      }
+    }
+  }, [tableData?.business?.id, tableData?.categories, selectedLanguage, loadTranslatedMenu]);
 
   const handlePaymentComplete = useCallback(async (paymentDetails: { totalPaid: number; tipAmount: number }) => {
     try {
@@ -412,7 +455,8 @@ export default function GuestBillPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <TranslationProvider>
+      <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
@@ -454,6 +498,14 @@ export default function GuestBillPage() {
                 <p className="text-gray-500 font-light">Bill #{currentBill.bill.bill_number}</p>
               </div>
             </div>
+
+            {/* Language Selector */}
+            <GuestLanguageSelector
+              businessId={business.id}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              className="hidden sm:flex"
+            />
             
             <Link 
               href={`/t/${tableCode}/menu`}
@@ -470,12 +522,25 @@ export default function GuestBillPage() {
         </div>
       </div>
 
+      {/* Mobile Language Selector */}
+      <div className="relative z-10 sm:hidden bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-6 py-3">
+          <GuestLanguageSelector
+            businessId={business.id}
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={handleLanguageChange}
+            className="flex justify-center"
+          />
+        </div>
+      </div>
+
       {/* Bill Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">
         <GuestBill
           bill={currentBill}
           business={business}
           tableCode={tableCode}
+          selectedLanguage={selectedLanguage}
           onPaymentComplete={handlePaymentComplete}
         />
       </div>
@@ -485,6 +550,7 @@ export default function GuestBillPage() {
         tableCode={tableCode}
         currentBill={currentBill}
       />
-    </div>
+      </div>
+    </TranslationProvider>
   );
 }

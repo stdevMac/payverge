@@ -158,13 +158,16 @@ func CreateBillByTableCode(c *gin.Context) {
 	})
 }
 
-// GetMenuByTableCode retrieves menu information by table code
+// GetMenuByTableCode retrieves menu information by table code with optional language translation
 func GetMenuByTableCode(c *gin.Context) {
 	code := c.Param("code")
 	if code == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Table code is required"})
 		return
 	}
+
+	// Get optional language parameter
+	languageCode := c.Query("language")
 
 	table, err := database.GetTableByCode(code)
 	if err != nil {
@@ -180,6 +183,18 @@ func GetMenuByTableCode(c *gin.Context) {
 			Categories: "[]",
 		}
 		categories = []database.MenuCategory{}
+	}
+
+	// If language is specified, apply translations
+	if languageCode != "" && len(categories) > 0 {
+		translatedCategories := applyTranslationsToMenu(categories, languageCode)
+		c.JSON(http.StatusOK, gin.H{
+			"menu":              menu,
+			"categories":        categories,        // Original categories
+			"parsed_categories": translatedCategories, // Translated categories
+			"language":          languageCode,
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
