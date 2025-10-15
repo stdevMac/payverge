@@ -147,10 +147,21 @@ export const convertAmount = async (
   fromCurrency: string,
   toCurrency: string
 ): Promise<ConversionResponse> => {
-  const response = await axiosInstance.get<ConversionResponse>('/convert', {
-    params: { amount, from: fromCurrency, to: toCurrency }
+  // First get the exchange rate
+  const rateResponse = await axiosInstance.get('/exchange-rate', {
+    params: { from: fromCurrency, to: toCurrency }
   });
-  return response.data;
+  
+  // Calculate the converted amount
+  const rate = rateResponse.data.rate;
+  const convertedAmount = amount * rate;
+  
+  return {
+    original_amount: amount,
+    from_currency: fromCurrency,
+    to_currency: toCurrency,
+    converted_amount: convertedAmount
+  };
 };
 
 // Protected API functions (require authentication)
@@ -340,17 +351,29 @@ export const saveCategoryTranslation = async (
 
 // Utility functions
 export const formatCurrency = (amount: number, currencyCode: string, symbol?: string): string => {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currencyCode,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  // Handle undefined or null currency codes
+  if (!currencyCode) {
+    return `${amount.toFixed(2)}`;
+  }
+  
+  // List of known cryptocurrency and non-standard currency codes that Intl.NumberFormat doesn't support
+  const nonStandardCurrencies = ['USDC', 'USDT', 'BTC', 'ETH', 'MATIC', 'BNB'];
+  
+  // Check if it's a non-standard currency code
+  if (nonStandardCurrencies.includes(currencyCode.toUpperCase())) {
+    return `${symbol || currencyCode} ${amount.toFixed(2)}`;
+  }
 
   try {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currencyCode,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     return formatter.format(amount);
   } catch (error) {
-    // Fallback for unsupported currency codes
+    // Fallback for any other unsupported currency codes
     return `${symbol || currencyCode} ${amount.toFixed(2)}`;
   }
 };

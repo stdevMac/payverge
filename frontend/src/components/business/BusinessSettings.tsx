@@ -15,11 +15,11 @@ import {
   Switch,
   Image,
 } from '@nextui-org/react';
-import { 
-  Settings, 
-  Palette, 
-  Globe, 
-  CreditCard, 
+import {
+  Settings,
+  Palette,
+  Globe,
+  CreditCard,
   Upload,
   Building2,
   Paintbrush,
@@ -35,7 +35,7 @@ import SimpleImageUpload from './SimpleImageUpload';
 import BannerImageUploader from './BannerImageUploader';
 import CustomURLInput from './CustomURLInput';
 import { useToast } from '@/contexts/ToastContext';
-import CurrencyLanguageSettings from './CurrencyLanguageSettings';
+import CurrencySettings from './CurrencySettings';
 
 interface BusinessSettingsProps {
   businessId: number;
@@ -86,7 +86,7 @@ interface BusinessPageSettings {
 export default function BusinessSettings({ businessId }: BusinessSettingsProps) {
   const [activeTab, setActiveTab] = useState('profile');
   const { showSuccess, showError } = useToast();
-  
+
   const [profile, setProfile] = useState<BusinessProfile>({
     name: '',
     logo: '',
@@ -166,13 +166,13 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
           custom_url: business.custom_url || '',
           phone: business.phone || '',
           website: business.website || '',
-          social_media: business.social_media ? 
-            (typeof business.social_media === 'string' ? 
+          social_media: business.social_media ?
+            (typeof business.social_media === 'string' ?
               JSON.parse(business.social_media) : business.social_media) : {
-            instagram: '',
-            facebook: '',
-            twitter: '',
-          },
+              instagram: '',
+              facebook: '',
+              twitter: '',
+            },
         });
 
         // Load business page settings
@@ -181,8 +181,8 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
           custom_url: business.custom_url || '', // Keep for reference but use profile.custom_url
           hero_image: '', // Not implemented yet
           about_text: business.description || '', // Keep for reference but use profile.description
-          banner_images: business.banner_images ? 
-            (typeof business.banner_images === 'string' ? 
+          banner_images: business.banner_images ?
+            (typeof business.banner_images === 'string' ?
               JSON.parse(business.banner_images) : business.banner_images) : [],
           show_reviews: business.show_reviews !== undefined ? business.show_reviews : true,
           google_reviews_enabled: business.google_reviews_enabled || false,
@@ -204,7 +204,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
       setIsSaving(true);
       setError(null);
       setSuccessMessage(null);
-      
+
       const updateData: UpdateBusinessRequest = {
         name: profile.name,
         logo: profile.logo,
@@ -226,9 +226,9 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
         show_reviews: businessPageSettings.show_reviews,
         google_reviews_enabled: businessPageSettings.google_reviews_enabled,
       };
-      
+
       await businessApi.updateBusiness(businessId, updateData);
-      
+
       // Show success toast
       showSuccess(
         'Settings Updated!',
@@ -238,7 +238,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update business settings';
       setError(errorMessage);
-      
+
       // Show error toast
       showError(
         'Update Failed',
@@ -372,23 +372,23 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                 >
                   <div className="p-6">
                     {tab.key === 'profile' && (
-                      <BusinessProfileTab 
-                        profile={profile} 
-                        onProfileChange={setProfile} 
-                        handleInputChange={handleInputChange} 
+                      <BusinessProfileTab
+                        profile={profile}
+                        onProfileChange={setProfile}
+                        handleInputChange={handleInputChange}
                         handleAddressChange={handleAddressChange}
                         businessId={businessId}
                       />
                     )}
                     {tab.key === 'design' && (
-                      <DesignBrandingTab 
-                        settings={designSettings} 
-                        onSettingsChange={setDesignSettings} 
+                      <DesignBrandingTab
+                        settings={designSettings}
+                        onSettingsChange={setDesignSettings}
                       />
                     )}
                     {tab.key === 'business-page' && (
-                      <BusinessPageTab 
-                        settings={businessPageSettings} 
+                      <BusinessPageTab
+                        settings={businessPageSettings}
                         onSettingsChange={setBusinessPageSettings}
                         profile={profile}
                         onProfileChange={handleInputChange}
@@ -396,14 +396,16 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                       />
                     )}
                     {tab.key === 'payments' && (
-                      <PaymentSettingsTab 
-                        profile={profile} 
-                        onProfileChange={setProfile} 
-                        handleInputChange={handleInputChange} 
+                      <PaymentSettingsTab
+                        profile={profile}
+                        onProfileChange={setProfile}
+                        handleInputChange={handleInputChange}
                       />
                     )}
                     {tab.key === 'localization' && (
-                      <CurrencyLanguageSettings businessId={businessId} />
+                      <div className="space-y-6">
+                        <CurrencySettings businessId={businessId} onSave={loadBusinessProfile} />
+                      </div>
                     )}
                   </div>
                 </Tab>
@@ -415,8 +417,8 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
 
       {/* Save Button - Fixed at bottom */}
       <div className="mt-8 flex justify-end">
-        <Button 
-          color="primary" 
+        <Button
+          color="primary"
           size="lg"
           onPress={handleSave}
           isLoading={isSaving}
@@ -431,8 +433,8 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
 }
 
 // Tab Components
-function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handleAddressChange, businessId }: { 
-  profile: BusinessProfile, 
+function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handleAddressChange, businessId }: {
+  profile: BusinessProfile,
   onProfileChange: (profile: BusinessProfile) => void,
   handleInputChange: (field: keyof BusinessProfile, value: string | number | boolean) => void,
   handleAddressChange: (field: keyof BusinessAddress, value: string) => void,
@@ -461,7 +463,7 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
               size="lg"
               variant="bordered"
             />
-            
+
             <Input
               label="Phone Number"
               placeholder="+1 (555) 123-4567"
@@ -481,7 +483,7 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
               size="lg"
               variant="bordered"
             />
-            
+
             <CustomURLInput
               value={profile.custom_url || ''}
               onChange={(value) => handleInputChange('custom_url', value)}
@@ -546,7 +548,7 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             size="lg"
             variant="bordered"
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="City"
@@ -565,7 +567,7 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
               variant="bordered"
             />
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Postal Code"
@@ -614,12 +616,12 @@ function DesignBrandingTab({ settings, onSettingsChange }: { settings: DesignSet
   );
 }
 
-function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange, businessId }: { 
-  settings: BusinessPageSettings, 
+function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange, businessId }: {
+  settings: BusinessPageSettings,
   onSettingsChange: (settings: BusinessPageSettings) => void,
   profile: BusinessProfile,
   onProfileChange: (field: keyof BusinessProfile, value: any) => void,
-  businessId: number 
+  businessId: number
 }) {
   const handleBannerUpload = useCallback((banners: string[]) => {
     onSettingsChange({
@@ -744,7 +746,7 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
           <p className="text-sm text-default-600">
             Upload up to 3 banner images to showcase your restaurant. These will appear at the top of your business page.
           </p>
-          
+
           <BannerImageUploader
             bannerImages={bannerImages}
             onBannersChange={handleBannerUpload}
@@ -801,8 +803,8 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
   );
 }
 
-function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: { 
-  profile: BusinessProfile, 
+function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
+  profile: BusinessProfile,
   onProfileChange: (profile: BusinessProfile) => void,
   handleInputChange: (field: keyof BusinessProfile, value: string | number | boolean) => void
 }) {
@@ -829,7 +831,7 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
             variant="bordered"
             isRequired
           />
-          
+
           <Input
             label="Tipping Address"
             placeholder="0x5678...efgh"
@@ -869,7 +871,7 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
               size="lg"
               variant="bordered"
             />
-            
+
             <Input
               label="Tax Rate (%)"
               type="number"
@@ -885,7 +887,7 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
               variant="bordered"
             />
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
               <div>
@@ -897,7 +899,7 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
                 onValueChange={(value) => handleInputChange('tax_inclusive', value)}
               />
             </div>
-            
+
             <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
               <div>
                 <span className="font-medium">Service Fee Inclusive</span>
@@ -909,7 +911,7 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
               />
             </div>
           </div>
-          
+
           <div className="bg-default-50 p-6 rounded-lg border">
             <h4 className="font-semibold mb-4 text-default-900">Fee Summary</h4>
             <div className="space-y-3">

@@ -27,6 +27,7 @@ import {
   useContractConfig 
 } from '../../contracts/hooks';
 import { updateBillPayment, createOnChainBill } from '../../api/bills';
+import CurrencyConverter from '../common/CurrencyConverter';
 
 interface PaymentProcessorProps {
   isOpen: boolean;
@@ -36,6 +37,8 @@ interface PaymentProcessorProps {
   businessName: string;
   businessAddress: string;
   tipAddress: string;
+  defaultCurrency?: string;
+  displayCurrency?: string;
   onPaymentComplete?: (paymentDetails: { totalPaid: number; tipAmount: number }) => void;
 }
 
@@ -65,6 +68,8 @@ export default function PaymentProcessor({
   businessName,
   businessAddress,
   tipAddress,
+  defaultCurrency = 'USD',
+  displayCurrency = 'USD',
   onPaymentComplete
 }: PaymentProcessorProps) {
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('amount');

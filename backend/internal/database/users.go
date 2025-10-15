@@ -10,6 +10,7 @@ func RegisterUser(user structs.User) error {
 	dbUser := User{
 		Address:                 user.Address,
 		ReferralCode:           user.ReferralCode,
+		Role:                    string(user.Role),
 		NotificationPreferences: user.NotificationPreferences,
 	}
 
@@ -27,6 +28,7 @@ func GetUserByAddress(address string) (structs.User, error) {
 	return structs.User{
 		Address:                 dbUser.Address,
 		ReferralCode:           dbUser.ReferralCode,
+		Role:                    structs.Role(dbUser.Role),
 		NotificationPreferences: dbUser.NotificationPreferences,
 	}, nil
 }
@@ -41,6 +43,7 @@ func GetUserByReferralCode(referralCode string) (structs.User, error) {
 	return structs.User{
 		Address:                 dbUser.Address,
 		ReferralCode:           dbUser.ReferralCode,
+		Role:                    structs.Role(dbUser.Role),
 		NotificationPreferences: dbUser.NotificationPreferences,
 	}, nil
 }
@@ -55,6 +58,7 @@ func GetUserByTokenId(tokenId string) (structs.User, error) {
 	return structs.User{
 		Address:                 dbUser.Address,
 		ReferralCode:           dbUser.ReferralCode,
+		Role:                    structs.Role(dbUser.Role),
 		NotificationPreferences: dbUser.NotificationPreferences,
 	}, nil
 }
@@ -63,6 +67,7 @@ func UpdateUser(user structs.User) error {
 	dbUser := User{
 		Address:                 user.Address,
 		ReferralCode:           user.ReferralCode,
+		Role:                    string(user.Role),
 		NotificationPreferences: user.NotificationPreferences,
 	}
 
@@ -82,7 +87,8 @@ func GetAllUsers() ([]structs.User, error) {
 		users[i] = structs.User{
 			Address:                 dbUser.Address,
 			ReferralCode:           dbUser.ReferralCode,
-				NotificationPreferences: dbUser.NotificationPreferences,
+			Role:                    structs.Role(dbUser.Role),
+			NotificationPreferences: dbUser.NotificationPreferences,
 		}
 	}
 

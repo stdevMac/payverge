@@ -23,7 +23,7 @@ import {
   Accordion,
   AccordionItem,
 } from '@nextui-org/react';
-import { businessApi, MenuItem, MenuCategory, MenuItemOption } from '../../api/business';
+import { businessApi, MenuItem, MenuCategory, MenuItemOption, Business } from '../../api/business';
 import { getSupportedLanguages, getBusinessLanguages, updateBusinessLanguages, SupportedLanguage, BusinessLanguage } from '../../api/currency';
 import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
@@ -40,6 +40,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [menu, setMenu] = useState<MenuCategory[]>(initialMenu);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Business state for currency settings
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [defaultCurrency, setDefaultCurrency] = useState('USD');
   
   // Language states
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
@@ -72,7 +76,6 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   const [itemName, setItemName] = useState('');
   const [itemDescription, setItemDescription] = useState('');
   const [itemPrice, setItemPrice] = useState('');
-  const [itemCurrency, setItemCurrency] = useState('USD');
   const [itemImage, setItemImage] = useState('');
   const [itemImages, setItemImages] = useState<string[]>([]);
   const [itemAvailable, setItemAvailable] = useState(true);
@@ -90,6 +93,16 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   // Search functionality
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState<'all' | 'available' | 'unavailable'>('all');
+
+  const loadBusiness = useCallback(async () => {
+    try {
+      const businessData = await businessApi.getBusiness(businessId);
+      setBusiness(businessData);
+      setDefaultCurrency(businessData.default_currency || 'USD');
+    } catch (error) {
+      console.error('Failed to load business data:', error);
+    }
+  }, [businessId]);
 
   const loadMenu = useCallback(async (language?: string) => {
     try {
@@ -160,10 +173,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     }
   }, [businessId, loadMenu]);
 
-  // Load menu data
+  // Load business and menu data
   useEffect(() => {
+    loadBusiness();
     loadMenu();
-  }, [loadMenu]);
+  }, [loadBusiness, loadMenu]);
 
   // Load language data
   const loadLanguages = useCallback(async () => {
@@ -238,7 +252,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemName('');
     setItemDescription('');
     setItemPrice('');
-    setItemCurrency('USD');
+    // Currency now comes from business default
     setItemImage('');
     setItemImages([]);
     setItemAvailable(true);
@@ -257,7 +271,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemName(item.name);
     setItemDescription(item.description);
     setItemPrice(item.price.toString());
-    setItemCurrency(item.currency || 'USD');
+    // Currency is now set from business default, no longer per-item
     setItemImage(item.image || '');
     setItemImages(item.images || []);
     setItemAvailable(item.is_available);
@@ -340,7 +354,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         name: itemName,
         description: itemDescription,
         price: parseFloat(itemPrice),
-        currency: itemCurrency,
+        currency: defaultCurrency,
         image: itemImage,
         images: itemImages,
         is_available: itemAvailable,
@@ -378,7 +392,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         name: itemName,
         description: itemDescription,
         price: parseFloat(itemPrice),
-        currency: itemCurrency,
+        currency: defaultCurrency,
         image: itemImage,
         images: itemImages,
         is_available: itemAvailable,
@@ -1229,16 +1243,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
                         isRequired
                       />
-                      <Select
-                        label="Currency"
-                        selectedKeys={[itemCurrency]}
-                        onSelectionChange={(keys) => setItemCurrency(Array.from(keys)[0] as string)}
-                        className="w-32"
-                      >
-                        <SelectItem key="USD" value="USD">USD</SelectItem>
-                        <SelectItem key="EUR" value="EUR">EUR</SelectItem>
-                        <SelectItem key="GBP" value="GBP">GBP</SelectItem>
-                      </Select>
+                      <div className="w-32">
+                        <label className="text-sm text-gray-600 mb-1 block">Currency</label>
+                        <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
+                          <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">From business settings</p>
+                      </div>
                     </div>
                   </div>
                   <Textarea
@@ -1480,16 +1491,13 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
                         isRequired
                       />
-                      <Select
-                        label="Currency"
-                        selectedKeys={[itemCurrency]}
-                        onSelectionChange={(keys) => setItemCurrency(Array.from(keys)[0] as string)}
-                        className="w-32"
-                      >
-                        <SelectItem key="USD" value="USD">USD</SelectItem>
-                        <SelectItem key="EUR" value="EUR">EUR</SelectItem>
-                        <SelectItem key="GBP" value="GBP">GBP</SelectItem>
-                      </Select>
+                      <div className="w-32">
+                        <label className="text-sm text-gray-600 mb-1 block">Currency</label>
+                        <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
+                          <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">From business settings</p>
+                      </div>
                     </div>
                   </div>
                   <Textarea

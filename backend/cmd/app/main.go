@@ -118,7 +118,7 @@ func main() {
 	translationService := services.NewTranslationService(db, *googleTranslateAPIKey)
 	log.Println("Translation service initialized")
 	log.Println("Api key Google: ", *googleTranslateAPIKey)
-	
+
 	// Make translation service available to the server package
 	server.SetTranslationService(translationService)
 

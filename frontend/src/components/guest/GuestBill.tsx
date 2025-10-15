@@ -21,6 +21,7 @@ import { Business, MenuCategory, MenuItem } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
 import { useTranslation } from '../../contexts/TranslationContext';
+import CurrencyConverter, { CurrencyPrice } from '../common/CurrencyConverter';
 // import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
 
 interface GuestBillProps {
@@ -28,6 +29,8 @@ interface GuestBillProps {
   business: Business;
   tableCode: string;
   selectedLanguage?: string;
+  defaultCurrency?: string;
+  displayCurrency?: string;
   onPaymentComplete: (paymentDetails: { totalPaid: number; tipAmount: number }) => void;
   compact?: boolean;
 }
@@ -37,6 +40,8 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   business,
   tableCode,
   selectedLanguage,
+  defaultCurrency = 'USD',
+  displayCurrency = 'USD',
   onPaymentComplete,
   compact = false,
 }) => {
@@ -300,10 +305,20 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               <div className="flex-1">
                 <p className="font-medium text-gray-900 tracking-wide">{getTranslatedItemName(item)}</p>
                 <p className="text-sm text-gray-500 font-light mt-1">
-                  Quantity: {item.quantity} × {formatCurrency(item.price)}
+                  Quantity: {item.quantity} × <CurrencyPrice 
+                    amount={item.price}
+                    fromCurrency={defaultCurrency}
+                    displayCurrency={displayCurrency}
+                  />
                 </p>
               </div>
-              <p className="font-medium text-lg text-gray-900 tracking-wide">{formatCurrency(item.subtotal)}</p>
+              <p className="font-medium text-lg text-gray-900 tracking-wide">
+                <CurrencyPrice 
+                  amount={item.subtotal}
+                  fromCurrency={defaultCurrency}
+                  displayCurrency={displayCurrency}
+                />
+              </p>
             </div>
           ))}
         </div>
@@ -335,7 +350,14 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           <div className="border-t border-gray-200 pt-4">
             <div className="flex justify-between font-medium text-xl text-gray-900 tracking-wide">
               <span>Total:</span>
-              <span>{formatCurrency(bill.bill.total_amount)}</span>
+              <div>
+                <CurrencyConverter 
+                  amount={bill.bill.total_amount}
+                  fromCurrency={defaultCurrency}
+                  displayCurrency={displayCurrency}
+                  showUSDCConversion={true}
+                />
+              </div>
             </div>
           </div>
           
@@ -457,6 +479,8 @@ export const GuestBill: React.FC<GuestBillProps> = ({
         businessName={business.name}
         businessAddress={bill.bill.settlement_address}
         tipAddress={bill.bill.tipping_address}
+        defaultCurrency={defaultCurrency}
+        displayCurrency={displayCurrency}
         onPaymentComplete={(paymentDetails) => {
           setIsPaymentModalOpen(false);
           onPaymentComplete(paymentDetails);

@@ -14,7 +14,7 @@ const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu')
   loading: () => <div className="flex justify-center p-8"><Spinner size="lg" /></div>
 });
 import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode, getMenuByTableCode } from '../../../../api/bills';
-import { Business, MenuCategory } from '../../../../api/business';
+import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
 import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 
@@ -57,6 +57,12 @@ export default function GuestMenuPage() {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  
+  // Currency settings
+  const [businessCurrencies, setBusinessCurrencies] = useState({
+    default_currency: 'USD',
+    display_currency: 'USD'
+  });
   const [orderLoading, setOrderLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
@@ -72,6 +78,17 @@ export default function GuestMenuPage() {
 
       if (tableResponse.status === 'fulfilled') {
         setTableData(tableResponse.value);
+        
+        // Load business currency settings
+        try {
+          const business = await businessApi.getBusiness(tableResponse.value.business.id);
+          setBusinessCurrencies({
+            default_currency: business.default_currency || 'USD',
+            display_currency: business.display_currency || 'USD'
+          });
+        } catch (error) {
+          console.error('Error loading business currency settings:', error);
+        }
       } else {
         console.error('Error loading table data:', tableResponse.reason);
       }
@@ -529,6 +546,8 @@ export default function GuestMenuPage() {
           tableCode={tableCode}
           currentBill={currentBill}
           selectedLanguage={selectedLanguage}
+          defaultCurrency={businessCurrencies.default_currency}
+          displayCurrency={businessCurrencies.display_currency}
           onAddToBill={handleAddToBill}
           onAddToCart={addToCart}
         />

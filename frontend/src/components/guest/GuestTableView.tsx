@@ -25,6 +25,7 @@ import {
   BillWithItemsResponse,
 } from '../../api/bills';
 import { Business, MenuCategory } from '../../api/business';
+import { formatCurrency } from '../../api/currency';
 import { useBillWebSocket } from '../../hooks/useBillWebSocket';
 import PaymentNotification from '../notifications/PaymentNotification';
 import BillUpdateNotification from '../notifications/BillUpdateNotification';
@@ -121,7 +122,7 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
     onPaymentReceived: (payment) => {
       setPaymentNotification({
         amount: payment.amount,
-        currency: payment.currency || 'USD',
+        currency: payment.currency || businessData?.display_currency || businessData?.default_currency || 'USD',
         billNumber: currentBill?.bill.bill_number || 'Unknown',
         timestamp: new Date().toISOString()
       });
@@ -289,7 +290,10 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
                             </Chip>
                           </div>
                           <p className="text-green-600 font-medium text-lg">
-                            ${currentBill.bill.total_amount.toFixed(2)} • {currentBill.items.length} items
+                            {formatCurrency(
+                              currentBill.bill.total_amount, 
+                              business.display_currency || business.default_currency || 'USD'
+                            )} • {currentBill.items.length} items
                           </p>
                         </div>
                       </div>

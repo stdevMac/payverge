@@ -18,7 +18,7 @@ import {
   getOpenBillByTableCode,
   BillWithItemsResponse 
 } from '../../../../api/bills';
-import { Business, MenuCategory } from '../../../../api/business';
+import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { getMenuByTableCode } from '../../../../api/bills';
 import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 
@@ -56,6 +56,12 @@ export default function GuestBillPage() {
   } | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
+  
+  // Currency settings
+  const [businessCurrencies, setBusinessCurrencies] = useState({
+    default_currency: 'USD',
+    display_currency: 'USD'
+  });
 
   const loadTableData = useCallback(async () => {
     setLoading(true);
@@ -68,6 +74,17 @@ export default function GuestBillPage() {
 
       if (tableResponse.status === 'fulfilled') {
         setTableData(tableResponse.value);
+        
+        // Load business currency settings
+        try {
+          const business = await businessApi.getBusiness(tableResponse.value.business.id);
+          setBusinessCurrencies({
+            default_currency: business.default_currency || 'USD',
+            display_currency: business.display_currency || 'USD'
+          });
+        } catch (error) {
+          console.error('Error loading business currency settings:', error);
+        }
       } else {
         console.error('Error loading table data:', tableResponse.reason);
       }
@@ -541,6 +558,8 @@ export default function GuestBillPage() {
           business={business}
           tableCode={tableCode}
           selectedLanguage={selectedLanguage}
+          defaultCurrency={businessCurrencies.default_currency}
+          displayCurrency={businessCurrencies.display_currency}
           onPaymentComplete={handlePaymentComplete}
         />
       </div>

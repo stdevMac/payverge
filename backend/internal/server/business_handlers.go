@@ -61,6 +61,9 @@ type UpdateBusinessRequest struct {
 	BusinessPageEnabled  bool                    `json:"business_page_enabled"`
 	ShowReviews          bool                    `json:"show_reviews"`
 	GoogleReviewsEnabled bool                    `json:"google_reviews_enabled"`
+	// Currency settings
+	DefaultCurrency      string                  `json:"default_currency"`
+	DisplayCurrency      string                  `json:"display_currency"`
 }
 
 // CreateBusiness creates a new business for the authenticated user
@@ -260,6 +263,13 @@ func UpdateBusiness(c *gin.Context) {
 	business.BusinessPageEnabled = req.BusinessPageEnabled
 	business.ShowReviews = req.ShowReviews
 	business.GoogleReviewsEnabled = req.GoogleReviewsEnabled
+	// Update currency settings
+	if req.DefaultCurrency != "" {
+		business.DefaultCurrency = req.DefaultCurrency
+	}
+	if req.DisplayCurrency != "" {
+		business.DisplayCurrency = req.DisplayCurrency
+	}
 	
 	business.UpdatedAt = time.Now()
 

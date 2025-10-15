@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { MenuCategory, MenuItem, Business } from '../../api/business';
 import { BillWithItemsResponse } from '../../api/bills';
 import { ImageCarousel } from './ImageCarousel';
+import { CurrencyPrice } from '../common/CurrencyConverter';
 
 interface GuestMenuProps {
   categories: MenuCategory[];
@@ -29,6 +30,8 @@ interface GuestMenuProps {
   tableCode: string;
   currentBill: BillWithItemsResponse | null;
   selectedLanguage?: string;
+  defaultCurrency?: string;
+  displayCurrency?: string;
   onAddToBill: (itemName: string, price: number, quantity?: number) => void;
   onAddToCart?: (
     itemName: string, 
@@ -45,6 +48,8 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   tableCode,
   currentBill,
   selectedLanguage,
+  defaultCurrency = 'USD',
+  displayCurrency = 'USD',
   onAddToBill,
   onAddToCart,
 }) => {
@@ -399,7 +404,11 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         </div>
                         <div className="text-right ml-6">
                           <p className="text-2xl font-light text-gray-900 tracking-wide">
-                            {formatCurrency(item.price)}
+                            <CurrencyPrice 
+                              amount={item.price || 0}
+                              fromCurrency={defaultCurrency}
+                              displayCurrency={displayCurrency}
+                            />
                           </p>
                         </div>
                       </div>
@@ -523,7 +532,13 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                   {selectedItem?.name}
                 </h2>
                 <p className="text-lg font-light text-gray-900 tracking-wide">
-                  {selectedItem && formatCurrency(selectedItem.price)}
+                  {selectedItem && (
+                    <CurrencyPrice 
+                      amount={selectedItem.price || 0}
+                      fromCurrency={defaultCurrency}
+                      displayCurrency={displayCurrency}
+                    />
+                  )}
                 </p>
               </ModalHeader>
               <ModalBody>

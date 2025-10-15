@@ -32,6 +32,9 @@ export interface Business {
   business_page_enabled?: boolean;
   show_reviews?: boolean;
   google_reviews_enabled?: boolean;
+  // Currency settings
+  default_currency?: string;
+  display_currency?: string;
   created_at: string;
   updated_at: string;
 }
@@ -68,6 +71,9 @@ export interface UpdateBusinessRequest {
   business_page_enabled?: boolean;
   show_reviews?: boolean;
   google_reviews_enabled?: boolean;
+  // Currency settings
+  default_currency?: string;
+  display_currency?: string;
 }
 
 // Create a new business

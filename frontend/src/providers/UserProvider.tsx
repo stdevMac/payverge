@@ -89,11 +89,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           const tokenData = decodeJwt(token) as SessionToken;
           // Override the role from API with the one from session token
           userData.role = tokenData.role;
-
-          console.log('[UserProvider] Got user data:', { 
-            address: userData.address, 
-            language: userData.language_selected 
-          });
           
           // Set user data first
           setUser(userData);

@@ -108,29 +108,63 @@ func (s *ExchangeRateService) GetExchangeRate(fromCurrency, toCurrency string) (
 		return 1.0, nil
 	}
 
+	// Try direct lookup first
 	rate, err := s.db.CurrencyService.GetExchangeRate(fromCurrency, toCurrency)
+	if err == nil {
+		// Check if rate is too old (more than 1 hour)
+		if time.Since(rate.FetchedAt) > time.Hour {
+			log.Printf("Exchange rate for %s to %s is stale, fetching new rates...", fromCurrency, toCurrency)
+			if err := s.FetchLatestRates(); err != nil {
+				log.Printf("Failed to fetch fresh rates: %v", err)
+			}
+		}
+		return rate.Rate, nil
+	}
+
+	// Direct lookup failed, try cross-currency conversion via USDC
+	log.Printf("Direct rate not found for %s to %s, trying cross-currency conversion via USDC", fromCurrency, toCurrency)
+	
+	// Get USDC to fromCurrency rate
+	fromRate, err := s.db.CurrencyService.GetExchangeRate("USDC", fromCurrency)
 	if err != nil {
+		log.Printf("USDC to %s rate not found, fetching latest rates...", fromCurrency)
 		// Try to fetch latest rates if not found
 		if fetchErr := s.FetchLatestRates(); fetchErr != nil {
 			return 0, fmt.Errorf("exchange rate not found and failed to fetch: %w", fetchErr)
 		}
-
 		// Try again after fetching
-		rate, err = s.db.CurrencyService.GetExchangeRate(fromCurrency, toCurrency)
+		fromRate, err = s.db.CurrencyService.GetExchangeRate("USDC", fromCurrency)
 		if err != nil {
-			return 0, fmt.Errorf("exchange rate not found for %s to %s", fromCurrency, toCurrency)
+			return 0, fmt.Errorf("USDC to %s rate not found", fromCurrency)
 		}
 	}
 
-	// Check if rate is too old (more than 1 hour)
-	if time.Since(rate.FetchedAt) > time.Hour {
-		log.Printf("Exchange rate for %s to %s is stale, fetching new rates...", fromCurrency, toCurrency)
+	// Get USDC to toCurrency rate
+	toRate, err := s.db.CurrencyService.GetExchangeRate("USDC", toCurrency)
+	if err != nil {
+		log.Printf("USDC to %s rate not found", toCurrency)
+		return 0, fmt.Errorf("USDC to %s rate not found", toCurrency)
+	}
+
+	// Calculate cross rate: fromCurrency -> toCurrency = (USDC/toCurrency) / (USDC/fromCurrency)
+	// Example: ARS -> USD = (USDC/USD) / (USDC/ARS) = 1.0 / 1465.0 = 0.000683
+	if fromRate.Rate == 0 {
+		return 0, fmt.Errorf("invalid USDC to %s rate: zero", fromCurrency)
+	}
+
+	crossRate := toRate.Rate / fromRate.Rate
+	log.Printf("Cross-currency conversion: %s to %s = %.8f (via USDC: %f / %f)", 
+		fromCurrency, toCurrency, crossRate, toRate.Rate, fromRate.Rate)
+
+	// Check if rates are too old (more than 1 hour)
+	if time.Since(fromRate.FetchedAt) > time.Hour || time.Since(toRate.FetchedAt) > time.Hour {
+		log.Printf("Exchange rates are stale, fetching new rates...")
 		if err := s.FetchLatestRates(); err != nil {
 			log.Printf("Failed to fetch fresh rates: %v", err)
 		}
 	}
 
-	return rate.Rate, nil
+	return crossRate, nil
 }
 
 // ConvertAmount converts an amount from one currency to another

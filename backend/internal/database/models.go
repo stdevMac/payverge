@@ -11,6 +11,7 @@ type User struct {
 	Address                 string                           `gorm:"uniqueIndex;not null" json:"address"`
 	ReferralCode           string                           `gorm:"uniqueIndex" json:"referral_code"`
 	TokenID                *string                          `json:"token_id"`
+	Role                    string                           `gorm:"default:user" json:"role"`
 	NotificationPreferences structs.NotificationPreferences `gorm:"embedded" json:"notification_preferences"`
 	CreatedAt              time.Time                        `json:"created_at"`
 	UpdatedAt              time.Time                        `json:"updated_at"`
@@ -101,7 +102,8 @@ type Business struct {
 	CounterCount    int             `gorm:"default:3" json:"counter_count"`
 	CounterPrefix   string          `gorm:"default:'C'" json:"counter_prefix"`
 	// Multi-currency and multilingual support
-	DefaultCurrency string          `gorm:"default:'USD'" json:"default_currency"`    // Default display currency
+	DefaultCurrency string          `gorm:"default:'USD'" json:"default_currency"`    // Currency for setting prices (internal)
+	DisplayCurrency string          `gorm:"default:'USD'" json:"display_currency"`    // Currency shown to customers
 	DefaultLanguage string          `gorm:"default:'en'" json:"default_language"`     // Default menu language
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
