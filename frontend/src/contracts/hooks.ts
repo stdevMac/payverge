@@ -4,12 +4,12 @@ import { useChainId, useAccount } from 'wagmi';
 import { Address, parseUnits, formatUnits } from 'viem';
 import { PAYVERGE_PAYMENTS_ABI, PAYVERGE_REFERRALS_ABI, PAYVERGE_PROFIT_SPLIT_ABI } from './abi';
 import { getContractConfig } from './config';
-import { 
-  Bill, 
-  Payment, 
-  BusinessInfo, 
-  CreateBillParams, 
-  ProcessPaymentParams, 
+import {
+  Bill,
+  Payment,
+  BusinessInfo,
+  CreateBillParams,
+  ProcessPaymentParams,
   RegisterBusinessParams,
   ClaimableAmounts,
   Referrer,
@@ -30,7 +30,7 @@ export const useContractConfig = () => {
 // Read hooks
 export const useBill = (billId: string) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -41,7 +41,7 @@ export const useBill = (billId: string) => {
 
 export const useBillPayments = (billId: string) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -52,7 +52,7 @@ export const useBillPayments = (billId: string) => {
 
 export const useBusinessInfo = (businessAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -63,7 +63,7 @@ export const useBusinessInfo = (businessAddress: Address) => {
 
 export const useBusinessBillCount = (businessAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -74,7 +74,7 @@ export const useBusinessBillCount = (businessAddress: Address) => {
 
 export const useGetClaimableAmounts = (businessAddress: Address, tippingAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -85,7 +85,7 @@ export const useGetClaimableAmounts = (businessAddress: Address, tippingAddress:
 
 export const useClaimableBalance = (businessAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -96,7 +96,7 @@ export const useClaimableBalance = (businessAddress: Address) => {
 
 export const usePlatformFeeRate = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -106,7 +106,7 @@ export const usePlatformFeeRate = () => {
 
 export const useUsdcToken = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -118,7 +118,7 @@ export const useDailyPaymentLimit = (userAddress?: Address) => {
   const config = useContractConfig();
   const { address } = useAccount();
   const targetAddress = userAddress || address;
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -134,7 +134,7 @@ export const useRemainingDailyLimit = (userAddress?: Address) => {
   const config = useContractConfig();
   const { address } = useAccount();
   const targetAddress = userAddress || address;
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -151,7 +151,7 @@ export const useRemainingDailyLimit = (userAddress?: Address) => {
 export const useProcessPayment = () => {
   const config = useContractConfig();
   const { writeContractAsync } = useWriteContract();
-  
+
   const processPayment = async (params: ProcessPaymentParams) => {
     return await writeContractAsync({
       address: config.payments,
@@ -164,14 +164,14 @@ export const useProcessPayment = () => {
       ],
     });
   };
-  
+
   return { processPayment };
 };
 
 export const useRegisterBusiness = () => {
   const config = useContractConfig();
   const { writeContractAsync } = useWriteContract();
-  
+
   const registerBusiness = async (params: RegisterBusinessParams) => {
     const hash = await writeContractAsync({
       address: config.payments,
@@ -184,17 +184,17 @@ export const useRegisterBusiness = () => {
         params.referralCode || '', // Always provide referralCode, empty string if not provided
       ],
     });
-    
+
     return hash;
   };
-  
+
   return { registerBusiness };
 };
 
 export const useUpdateBusinessPaymentAddress = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const updatePaymentAddress = (newPaymentAddress: Address) => {
     return writeContract({
       address: config.payments,
@@ -203,14 +203,14 @@ export const useUpdateBusinessPaymentAddress = () => {
       args: [newPaymentAddress],
     });
   };
-  
+
   return { updatePaymentAddress };
 };
 
 export const useUpdateBusinessTippingAddress = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const updateTippingAddress = (newTippingAddress: Address) => {
     return writeContract({
       address: config.payments,
@@ -219,14 +219,14 @@ export const useUpdateBusinessTippingAddress = () => {
       args: [newTippingAddress],
     });
   };
-  
+
   return { updateTippingAddress };
 };
 
 export const useClaimEarnings = () => {
   const config = useContractConfig();
   const { writeContractAsync } = useWriteContract();
-  
+
   const claimEarnings = async () => {
     return await writeContractAsync({
       address: config.payments,
@@ -234,14 +234,14 @@ export const useClaimEarnings = () => {
       functionName: 'claimEarnings',
     });
   };
-  
+
   return { claimEarnings };
 };
 
 export const useCreateBill = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const createBill = (params: CreateBillParams) => {
     return writeContract({
       address: config.payments,
@@ -256,7 +256,7 @@ export const useCreateBill = () => {
       ],
     });
   };
-  
+
   return { createBill };
 };
 
@@ -266,7 +266,7 @@ export const useWatchBillCreated = (
   businessAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -281,7 +281,7 @@ export const useWatchPaymentProcessed = (
   billId?: string
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -296,7 +296,7 @@ export const useWatchBusinessRegistered = (
   businessAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -311,7 +311,7 @@ export const useUsdcBalance = (address?: Address) => {
   const config = useContractConfig();
   const { address: connectedAddress } = useAccount();
   const targetAddress = address || connectedAddress;
-  
+
   return useReadContract({
     address: config.usdcAddress,
     abi: [
@@ -335,7 +335,7 @@ export const useUsdcAllowance = (spender?: Address) => {
   const config = useContractConfig();
   const { address } = useAccount();
   const spenderAddress = spender || config.payments;
-  
+
   return useReadContract({
     address: config.usdcAddress,
     abi: [
@@ -361,10 +361,10 @@ export const useUsdcAllowance = (spender?: Address) => {
 export const useApproveUsdc = () => {
   const config = useContractConfig();
   const { writeContractAsync } = useWriteContract();
-  
+
   const approveUsdc = async (amount: bigint, spender?: Address) => {
     const spenderAddress = spender || config.payments;
-    
+
     const hash = await writeContractAsync({
       address: config.usdcAddress,
       abi: [
@@ -382,10 +382,10 @@ export const useApproveUsdc = () => {
       functionName: 'approve',
       args: [spenderAddress, amount],
     });
-    
+
     return hash;
   };
-  
+
   return { approveUsdc };
 };
 
@@ -402,7 +402,7 @@ export const parseUsdcAmount = (amount: string): bigint => {
 
 export const useBillParticipants = (billId: string) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -413,7 +413,7 @@ export const useBillParticipants = (billId: string) => {
 
 export const useParticipantInfo = (billId: string, participant: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -424,7 +424,7 @@ export const useParticipantInfo = (billId: string, participant: Address) => {
 
 export const useHasParticipated = (billId: string, participant: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -435,7 +435,7 @@ export const useHasParticipated = (billId: string, participant: Address) => {
 
 export const useBillSummary = (billId: string) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -446,7 +446,7 @@ export const useBillSummary = (billId: string) => {
 
 export const useRegistrationFee = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.payments,
     abi: PAYVERGE_PAYMENTS_ABI,
@@ -459,7 +459,7 @@ export const useRegistrationFee = () => {
 // Read hooks for referrals
 export const useReferrer = (referrerAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -470,7 +470,7 @@ export const useReferrer = (referrerAddress: Address) => {
 
 export const useReferralCodeAvailability = (referralCode: string) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -481,7 +481,7 @@ export const useReferralCodeAvailability = (referralCode: string) => {
 
 export const useReferralRecords = (referrerAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -492,7 +492,7 @@ export const useReferralRecords = (referrerAddress: Address) => {
 
 export const useTotalReferrers = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -502,7 +502,7 @@ export const useTotalReferrers = () => {
 
 export const useBasicReferrerFee = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -512,7 +512,7 @@ export const useBasicReferrerFee = () => {
 
 export const usePremiumReferrerFee = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -524,7 +524,7 @@ export const usePremiumReferrerFee = () => {
 export const useRegisterBasicReferrer = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const registerBasicReferrer = (referralCode: string) => {
     return writeContract({
       address: config.referrals,
@@ -533,14 +533,14 @@ export const useRegisterBasicReferrer = () => {
       args: [referralCode],
     });
   };
-  
+
   return { registerBasicReferrer };
 };
 
 export const useRegisterPremiumReferrer = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const registerPremiumReferrer = (referralCode: string) => {
     return writeContract({
       address: config.referrals,
@@ -549,14 +549,14 @@ export const useRegisterPremiumReferrer = () => {
       args: [referralCode],
     });
   };
-  
+
   return { registerPremiumReferrer };
 };
 
 export const useUpgradeToPremium = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const upgradeToPremium = () => {
     return writeContract({
       address: config.referrals,
@@ -564,14 +564,14 @@ export const useUpgradeToPremium = () => {
       functionName: 'upgradeToPremium',
     });
   };
-  
+
   return { upgradeToPremium };
 };
 
 export const useUpdateReferralCode = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const updateReferralCode = (newReferralCode: string) => {
     return writeContract({
       address: config.referrals,
@@ -580,14 +580,14 @@ export const useUpdateReferralCode = () => {
       args: [newReferralCode],
     });
   };
-  
+
   return { updateReferralCode };
 };
 
 export const useClaimCommissions = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const claimCommissions = () => {
     return writeContract({
       address: config.referrals,
@@ -595,14 +595,14 @@ export const useClaimCommissions = () => {
       functionName: 'claimCommissions',
     });
   };
-  
+
   return { claimCommissions };
 };
 
 export const useDeactivateReferrer = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const deactivateReferrer = (referrerAddress: Address) => {
     return writeContract({
       address: config.referrals,
@@ -611,7 +611,7 @@ export const useDeactivateReferrer = () => {
       args: [referrerAddress],
     });
   };
-  
+
   return { deactivateReferrer };
 };
 
@@ -621,7 +621,7 @@ export const useWatchReferrerRegistered = (
   referrerAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -636,7 +636,7 @@ export const useWatchReferralProcessed = (
   referrerAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -651,7 +651,7 @@ export const useWatchCommissionClaimed = (
   referrerAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.referrals,
     abi: PAYVERGE_REFERRALS_ABI,
@@ -666,22 +666,12 @@ export const useWatchCommissionClaimed = (
 // Read hooks for profit split
 export const useBeneficiary = (beneficiaryAddress: Address) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
     functionName: 'getBeneficiary',
     args: [beneficiaryAddress],
-  });
-};
-
-export const useActiveBeneficiaries = () => {
-  const config = useContractConfig();
-  
-  return useReadContract({
-    address: config.profitSplit,
-    abi: PAYVERGE_PROFIT_SPLIT_ABI,
-    functionName: 'getActiveBeneficiaries',
   });
 };
 
@@ -695,19 +685,9 @@ export const useBeneficiaryCount = () => {
   });
 };
 
-export const useTotalDistributed = () => {
-  const config = useContractConfig();
-  
-  return useReadContract({
-    address: config.profitSplit,
-    abi: PAYVERGE_PROFIT_SPLIT_ABI,
-    functionName: 'totalDistributed',
-  });
-};
-
 export const useDistributionStats = () => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
@@ -717,7 +697,7 @@ export const useDistributionStats = () => {
 
 export const useCalculatePayouts = (amount: bigint) => {
   const config = useContractConfig();
-  
+
   return useReadContract({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
@@ -733,7 +713,7 @@ export const useCalculatePayouts = (amount: bigint) => {
 export const useAddBeneficiary = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const addBeneficiary = (beneficiary: Address, name: string, percentage: number) => {
     return writeContract({
       address: config.profitSplit,
@@ -742,14 +722,14 @@ export const useAddBeneficiary = () => {
       args: [beneficiary, name, percentage],
     });
   };
-  
+
   return { addBeneficiary };
 };
 
 export const useUpdateBeneficiaryPercentage = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const updateBeneficiaryPercentage = (beneficiary: Address, newPercentage: number) => {
     return writeContract({
       address: config.profitSplit,
@@ -758,14 +738,14 @@ export const useUpdateBeneficiaryPercentage = () => {
       args: [beneficiary, newPercentage],
     });
   };
-  
+
   return { updateBeneficiaryPercentage };
 };
 
 export const useRemoveBeneficiary = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const removeBeneficiary = (beneficiary: Address) => {
     return writeContract({
       address: config.profitSplit,
@@ -774,14 +754,14 @@ export const useRemoveBeneficiary = () => {
       args: [beneficiary],
     });
   };
-  
+
   return { removeBeneficiary };
 };
 
 export const useDistributeProfits = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const distributeProfits = (amount: bigint) => {
     return writeContract({
       address: config.profitSplit,
@@ -790,14 +770,14 @@ export const useDistributeProfits = () => {
       args: [amount],
     });
   };
-  
+
   return { distributeProfits };
 };
 
 export const useDistributeAllProfits = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const distributeAllProfits = () => {
     return writeContract({
       address: config.profitSplit,
@@ -805,14 +785,14 @@ export const useDistributeAllProfits = () => {
       functionName: 'distributeAllProfits',
     });
   };
-  
+
   return { distributeAllProfits };
 };
 
 export const useDepositForDistribution = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const depositForDistribution = (amount: bigint) => {
     return writeContract({
       address: config.profitSplit,
@@ -821,14 +801,14 @@ export const useDepositForDistribution = () => {
       args: [amount],
     });
   };
-  
+
   return { depositForDistribution };
 };
 
 export const useGrantDistributorRole = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const grantDistributorRole = (account: Address) => {
     return writeContract({
       address: config.profitSplit,
@@ -837,14 +817,14 @@ export const useGrantDistributorRole = () => {
       args: [account],
     });
   };
-  
+
   return { grantDistributorRole };
 };
 
 export const useRevokeDistributorRole = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const revokeDistributorRole = (account: Address) => {
     return writeContract({
       address: config.profitSplit,
@@ -853,7 +833,7 @@ export const useRevokeDistributorRole = () => {
       args: [account],
     });
   };
-  
+
   return { revokeDistributorRole };
 };
 
@@ -863,7 +843,7 @@ export const useWatchBeneficiaryAdded = (
   beneficiaryAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
@@ -877,7 +857,7 @@ export const useWatchProfitDistributed = (
   onProfitDistributed: (log: any) => void
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
@@ -891,7 +871,7 @@ export const useWatchBeneficiaryPayout = (
   beneficiaryAddress?: Address
 ) => {
   const config = useContractConfig();
-  
+
   return useWatchContractEvent({
     address: config.profitSplit,
     abi: PAYVERGE_PROFIT_SPLIT_ABI,
@@ -907,7 +887,7 @@ export const useWatchBeneficiaryPayout = (
 export const useApproveUsdcForReferrals = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const approveUsdcForReferrals = (amount: bigint) => {
     return writeContract({
       address: config.usdcAddress,
@@ -927,14 +907,14 @@ export const useApproveUsdcForReferrals = () => {
       args: [config.referrals, amount],
     });
   };
-  
+
   return { approveUsdcForReferrals };
 };
 
 export const useApproveUsdcForProfitSplit = () => {
   const config = useContractConfig();
   const { writeContract } = useWriteContract();
-  
+
   const approveUsdcForProfitSplit = (amount: bigint) => {
     return writeContract({
       address: config.usdcAddress,
@@ -954,7 +934,7 @@ export const useApproveUsdcForProfitSplit = () => {
       args: [config.profitSplit, amount],
     });
   };
-  
+
   return { approveUsdcForProfitSplit };
 };
 
@@ -962,7 +942,7 @@ export const useApproveUsdcForProfitSplit = () => {
 export const useUsdcAllowanceForReferrals = () => {
   const config = useContractConfig();
   const { address } = useAccount();
-  
+
   return useReadContract({
     address: config.usdcAddress,
     abi: [
@@ -988,7 +968,7 @@ export const useUsdcAllowanceForReferrals = () => {
 export const useUsdcAllowanceForProfitSplit = () => {
   const config = useContractConfig();
   const { address } = useAccount();
-  
+
   return useReadContract({
     address: config.usdcAddress,
     abi: [
@@ -1008,5 +988,143 @@ export const useUsdcAllowanceForProfitSplit = () => {
     query: {
       enabled: !!address,
     },
+  });
+};
+
+
+// ============ Admin Dashboard Hooks ============
+
+// Get platform fee rate (this exists in the contract)
+export const useCurrentPlatformFeeRate = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: [
+      {
+        name: 'platformFeeRate',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'platformFeeRate',
+  });
+};
+
+// Get current registration fee (this exists in the contract)
+export const useCurrentRegistrationFee = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: [
+      {
+        name: 'getRegistrationFee',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'getRegistrationFee',
+  });
+};
+
+// Get total referrers from referral contract (this exists in the contract)
+export const useTotalReferrersOnChain = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.referrals,
+    abi: [
+      {
+        name: 'totalReferrers',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'totalReferrers',
+  });
+};
+
+// Get total distributed from profit split contract (this exists in the contract)
+export const useTotalDistributed = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.profitSplit,
+    abi: [
+      {
+        name: 'totalDistributed',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'totalDistributed',
+  });
+};
+
+// Get active beneficiaries from profit split contract (this exists in the contract)
+export const useActiveBeneficiaries = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.profitSplit,
+    abi: [
+      {
+        name: 'getActiveBeneficiaries',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [],
+        outputs: [{ name: '', type: 'address[]' }],
+      },
+    ],
+    functionName: 'getActiveBeneficiaries',
+  });
+};
+
+// Get USDC balance of profit split contract (pending distributions)
+export const useProfitSplitBalance = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.usdcAddress,
+    abi: [
+      {
+        name: 'balanceOf',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [config.profitSplit],
+  });
+};
+
+// Get USDC balance of payments contract (collected fees)
+export const usePaymentsContractBalance = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.usdcAddress,
+    abi: [
+      {
+        name: 'balanceOf',
+        type: 'function',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [config.payments],
   });
 };

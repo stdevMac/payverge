@@ -410,6 +410,11 @@ func main() {
 	{
 		adminRoutes.GET("/get_all_users", server.GetAllUsers)
 
+		// Admin Dashboard Statistics
+		adminRoutes.GET("/stats", server.GetAdminStats)
+		adminRoutes.GET("/businesses", server.GetBusinessList)
+		adminRoutes.GET("/users", server.GetUserList)
+
 		// Admin Operations
 
 		// Subscriber Routes
