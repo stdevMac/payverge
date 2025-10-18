@@ -67,7 +67,7 @@ export const TopMenuMain = () => {
       <div>
         <Link href="/">
           <span className={`${titleFont} antialiased font-bold text-2xl`}>
-            Token Fleet
+            Payverge
           </span>
         </Link>
       </div>
