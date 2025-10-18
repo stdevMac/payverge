@@ -11,6 +11,7 @@ import Web3ModalProvider from "@/context";
 import { Toaster } from "react-hot-toast";
 import WithMaintenance from "@/components/WithMaintenance";
 import WithComingSoon from "@/components/WithComingSoon";
+import { SimpleTranslationProvider } from '@/i18n/SimpleTranslationProvider';
 
 export const metadata: Metadata = {
   title: "Payverge",
@@ -27,7 +28,7 @@ export default function RootLayout({
   
   // Get language from cookie or default to 'en'
   const cookies = headers().get('cookie') || '';
-  const langCookie = cookies.split(';').find(c => c.trim().startsWith('NEXT_LOCALE='));
+  const langCookie = cookies.split(';').find(c => c.trim().startsWith('locale='));
   const lang = langCookie ? langCookie.split('=')[1] : 'en';
 
   return (
@@ -36,11 +37,13 @@ export default function RootLayout({
         {/* <WithMaintenance>
           <WithComingSoon> */}
             <Toaster position="top-right" />
-            <StoreContextProvider>
-              <Web3ModalProvider initialState={initialState}>
-                <Providers>{children}</Providers>
-              </Web3ModalProvider>
-            </StoreContextProvider>
+            <SimpleTranslationProvider>
+              <StoreContextProvider>
+                <Web3ModalProvider initialState={initialState}>
+                  <Providers>{children}</Providers>
+                </Web3ModalProvider>
+              </StoreContextProvider>
+            </SimpleTranslationProvider>
           {/* </WithComingSoon>
         </WithMaintenance> */}
       </body>

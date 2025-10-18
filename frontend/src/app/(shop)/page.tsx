@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import { TypewriterText } from "@/components/ui/TypewriterText";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -12,13 +12,29 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
   const router = useRouter();
 
-  // Dynamic content for typewriter effect - dream-focused
-  const dreamWords = [
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+
+  const t = (key: string) => {
+    const result = getTranslation(`landing.${key}`, currentLocale);
+    return Array.isArray(result) ? result : result as string;
+  };
+  
+  const tString = (key: string): string => {
+    const result = getTranslation(`landing.${key}`, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
+  // Dynamic content for typewriter effect - get from translations
+  const dreamWords = getTranslation('landing.hero.dreamWords', currentLocale) as string[] || [
     "instantly",
-    "effortlessly",
+    "effortlessly", 
     "globally",
     "fairly",
     "seamlessly",
@@ -86,27 +102,26 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center animate-fade-in">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 hover:bg-white hover:shadow-sm transition-all duration-300">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                Coming soon 
+                {t('hero.badge')}
               </div>
 
               <h1 className="text-5xl lg:text-7xl font-medium text-gray-900 mb-8 leading-tight tracking-tight">
-                From the table to your wallet,<br />
+                {t('hero.title')}<br />
                 <TypewriterText
                   words={dreamWords}
                   className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-semibold italic"
                 />
               </h1>
               <p className="text-lg font-light leading-relaxed max-w-2xl mx-auto text-gray-600 mb-12 tracking-wide">
-                Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC,
-                and you&apos;re paid instantly. No banks. No friction.
+                {t('hero.subtitle')}
               </p>
               {/* Not yet to be deployed! */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Button size="large" onClick={() => router.push('/business/register')}>
-                Register Business
+                {t('hero.cta.register')}
               </Button>
               <Button variant="secondary" size="large" onClick={() => router.push('/dashboard')}>
-                Access Dashboard
+                {t('hero.cta.dashboard')}
               </Button>
             </div>
               {/* <div className="text-center">
@@ -125,20 +140,17 @@ export default function Home() {
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                  Why Payverge
+                  {t('vision.badge')}
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                  Hospitality deserves <span className="italic font-light tracking-wider">better</span>
+                  {t('vision.title')} <span className="italic font-light tracking-wider">{t('vision.titleEmphasis')}</span>
                 </h2>
                 <div className="text-lg font-light leading-relaxed text-gray-600 tracking-wide text-left max-w-3xl mx-auto space-y-4">
                   <p>
-                    For too long, restaurants, cafés, and bars have been chained to slow, expensive, and outdated payment systems.
-                    Fees eat into margins. Settlements take days. Tips get lost in the process. Guests are forced into clunky card
-                    machines and awkward bill splits.
+                    {t('vision.description1')}
                   </p>
                   <p>
-                    At Payverge, we believe payments should be as effortless as the meal itself. We&apos;re not building just another
-                    payment processor, <strong>we&apos;re building a new standard.</strong>
+                    {t('vision.description2')} <strong>{t('vision.description2Bold')}</strong>
                   </p>
                 </div>
               </div>
@@ -146,7 +158,7 @@ export default function Home() {
               {/* Key Benefits - Fast. Fair. Global. */}
               <div className="text-center mb-12">
                 <h3 className="text-2xl lg:text-3xl font-light text-gray-900 mb-8 tracking-wide">
-                  Fast. Fair. Global.
+                  {t('vision.benefitsTitle')}
                 </h3>
               </div>
 
@@ -157,8 +169,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Instant Settlement</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Get paid in USDC the moment your guests finish their meal.</p>
+                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('benefits.instant.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{t('benefits.instant.description')}</p>
                 </div>
 
                 <div className="group bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:border-purple-300">
@@ -167,8 +179,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Smart Bill Splitting</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Guests can split payments automatically. No coordination needed.</p>
+                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('benefits.fair.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{t('benefits.fair.description')}</p>
                 </div>
 
                 <div className="group bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:border-indigo-300">
@@ -177,8 +189,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Global Payments</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Accept guests from anywhere in the world as if they were local.</p>
+                  <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('benefits.global.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{t('benefits.global.description')}</p>
                 </div>
               </div>
             </div>
@@ -191,14 +203,11 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '1s' }}></div>
-                How It Works
+                {t('features.badge')}
               </div>
               <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                Payments as easy as <span className="italic font-light tracking-wider">dining</span>
+                {t('features.title')}
               </h2>
-              <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                Three simple steps to transform your payment experience
-              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
@@ -212,8 +221,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Scan</h3>
-                <p className="text-gray-600 font-light leading-relaxed">Guest scans a QR code at their table.</p>
+                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('features.scan.title')}</h3>
+                <p className="text-gray-600 font-light leading-relaxed">{t('features.scan.description')}</p>
               </div>
 
               {/* Step 2: Pay */}
@@ -226,8 +235,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Pay or Split</h3>
-                <p className="text-gray-600 font-light leading-relaxed">Choose to pay the full amount or split it automatically with friends.</p>
+                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('features.pay.title')}</h3>
+                <p className="text-gray-600 font-light leading-relaxed">{t('features.pay.description')}</p>
               </div>
 
               {/* Step 3: Done */}
@@ -240,8 +249,8 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">Done</h3>
-                <p className="text-gray-600 font-light leading-relaxed">Money flows directly to your wallet, tips included.</p>
+                <h3 className="text-xl font-light text-gray-900 mb-3 tracking-wide">{t('features.settle.title')}</h3>
+                <p className="text-gray-600 font-light leading-relaxed">{t('features.settle.description')}</p>
               </div>
             </div>
           </div>
@@ -254,22 +263,21 @@ export default function Home() {
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-                  Coming Soon
+                  {tString('roadmap.badge')}
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                  We&apos;re just getting <span className="italic font-light tracking-wider">started</span>
+                  {tString('roadmap.title')} <span className="italic font-light tracking-wider">{tString('roadmap.titleEmphasis')}</span>
                 </h2>
                 <div className="text-lg font-light leading-relaxed text-gray-600 tracking-wide text-left max-w-3xl mx-auto space-y-4">
                   <p>
-                    Payverge will roll out with restaurants, cafés, and bars worldwide. We&apos;re working closely with early
-                    partners to shape the future of hospitality payments.
+                    {tString('roadmap.description')}
                   </p>
                 </div>
               </div>
 
               <div className="text-center">
                 <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
-                  Become an Early Partner
+                  {tString('roadmap.cta')}
                 </Button>
               </div>
             </div>
@@ -282,13 +290,13 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '2s' }}></div>
-                Complete platform
+                {tString('platform.badge')}
               </div>
               <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                Beyond payments, a complete <span className="italic font-light tracking-wider">restaurant tech</span>
+                {tString('platform.title')} <span className="italic font-light tracking-wider">{tString('platform.titleEmphasis')}</span>
               </h2>
               <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                Everything you need to run a modern restaurant, plus crypto payments
+                {tString('platform.subtitle')}
               </p>
             </div>
 
@@ -299,9 +307,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Beautiful Digital Menus</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.menus.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Automatically generated menus with photos, real-time pricing, and instant updates across all tables
+                  {tString('platform.features.menus.description')}
                 </p>
               </div>
 
@@ -311,9 +319,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Google Reviews Integration</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.reviews.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Automatically request reviews after successful payments to boost your online reputation
+                  {tString('platform.features.reviews.description')}
                 </p>
               </div>
 
@@ -323,9 +331,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Real-time Analytics</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.analytics.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Track sales, crypto payment trends, and make data-driven decisions for your business
+                  {tString('platform.features.analytics.description')}
                 </p>
               </div>
 
@@ -335,9 +343,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Staff Management</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.staff.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Transparent crypto tip distribution and performance analytics for your team
+                  {tString('platform.features.staff.description')}
                 </p>
               </div>
 
@@ -347,9 +355,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h8v-2H4v2zM4 11h8V9H4v2zM4 7h8V5H4v2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Order Management</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.orders.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Kitchen display system and order tracking from menu to payment
+                  {tString('platform.features.orders.description')}
                 </p>
               </div>
 
@@ -359,18 +367,64 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Instant QR Codes</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('platform.features.qr.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Generate unique QR codes for each table with automatic bill creation and payment tracking
+                  {tString('platform.features.qr.description')}
                 </p>
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-6 font-light tracking-wide">All features included • Annual subscription • 2% per transaction</p>
-              {/* <Button size="large" onClick={() => router.push('/business/register')}>
-                Start Your Business
-              </Button> */}
+        {/* Benefits Section */}
+        <section className="py-16 lg:py-20 bg-gray-50">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center mb-16">
+              <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '2.5s' }}></div>
+                Benefits
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
+                Why restaurants choose Payverge
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Instant Settlements</h3>
+                <p className="text-gray-600 text-sm font-light leading-relaxed">
+                  Money hits your wallet the moment guests pay. No 2-3 day delays.
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Lower Fees</h3>
+                <p className="text-gray-600 text-sm font-light leading-relaxed">
+                  Transparent pricing with no hidden costs or surprise monthly charges.
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Global Reach</h3>
+                <p className="text-gray-600 text-sm font-light leading-relaxed">
+                  Accept payments from anywhere in the world with USDC.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -382,13 +436,13 @@ export default function Home() {
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '2.5s' }}></div>
-                  Trusted by hospitality
+                  {tString('social.badge')}
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                  Built for <span className="italic font-light tracking-wider">modern restaurants</span>
+                  {tString('social.title')} <span className="italic font-light tracking-wider">{tString('social.titleEmphasis')}</span>
                 </h2>
                 <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                  From coffee shops to fine dining, crypto payments for every hospitality business
+                  {tString('social.subtitle')}
                 </p>
               </div>
 
@@ -399,7 +453,7 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">Restaurants</h3>
+                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">{tString('social.businessTypes.restaurants')}</h3>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -407,7 +461,7 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M10.5 3L12 2l1.5 1H21l-1 6H4l-1-6h7.5z" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">Coffee Shops</h3>
+                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">{tString('social.businessTypes.coffee')}</h3>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -415,7 +469,7 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">Bars & Lounges</h3>
+                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">{tString('social.businessTypes.bars')}</h3>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -423,7 +477,7 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">Hotels</h3>
+                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">{tString('social.businessTypes.hotels')}</h3>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -431,33 +485,33 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2M9 12l2 2 4-4" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">Event Venues</h3>
+                  <h3 className="text-sm font-medium text-gray-900 tracking-wide">{tString('social.businessTypes.events')}</h3>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
-                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">Instant</div>
-                  <div className="text-sm text-gray-600 font-medium mb-1">Settlement</div>
-                  <div className="text-xs text-gray-500 font-light">USDC in your wallet immediately</div>
+                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">{tString('social.stats.instant.value')}</div>
+                  <div className="text-sm text-gray-600 font-medium mb-1">{tString('social.stats.instant.label')}</div>
+                  <div className="text-xs text-gray-500 font-light">{tString('social.stats.instant.description')}</div>
                 </div>
 
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
-                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">2%</div>
-                  <div className="text-sm text-gray-600 font-medium mb-1">Flat Fee</div>
-                  <div className="text-xs text-gray-500 font-light">No hidden charges</div>
+                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">{tString('social.stats.fee.value')}</div>
+                  <div className="text-sm text-gray-600 font-medium mb-1">{tString('social.stats.fee.label')}</div>
+                  <div className="text-xs text-gray-500 font-light">{tString('social.stats.fee.description')}</div>
                 </div>
 
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
-                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">0%</div>
-                  <div className="text-sm text-gray-600 font-medium mb-1">Chargebacks</div>
-                  <div className="text-xs text-gray-500 font-light">Crypto payments are final</div>
+                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">{tString('social.stats.chargebacks.value')}</div>
+                  <div className="text-sm text-gray-600 font-medium mb-1">{tString('social.stats.chargebacks.label')}</div>
+                  <div className="text-xs text-gray-500 font-light">{tString('social.stats.chargebacks.description')}</div>
                 </div>
 
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center">
-                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">24/7</div>
-                  <div className="text-sm text-gray-600 font-medium mb-1">Support</div>
-                  <div className="text-xs text-gray-500 font-light">Always here to help</div>
+                  <div className="text-3xl lg:text-4xl font-light text-gray-900 mb-2 tracking-wide">{tString('social.stats.support.value')}</div>
+                  <div className="text-sm text-gray-600 font-medium mb-1">{tString('social.stats.support.label')}</div>
+                  <div className="text-xs text-gray-500 font-light">{tString('social.stats.support.description')}</div>
                 </div>
               </div>
             </div>
@@ -470,13 +524,13 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '3s' }}></div>
-                Join the Movement
+                {t('waitlist.badge')}
               </div>
               <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                The future of dining runs on <span className="italic font-light tracking-wider">Payverge</span>
+                {t('waitlist.title')}
               </h2>
               <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                Start accepting instant USDC payments, reduce fees, and give your guests a seamless experience
+                {t('waitlist.subtitle')}
               </p>
             </div>
 
@@ -512,7 +566,7 @@ export default function Home() {
                 <form onSubmit={handleWaitlistSubmit} className="max-w-sm mx-auto space-y-4">
                   <input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={tString('waitlist.form.email')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -520,14 +574,14 @@ export default function Home() {
                   />
                   <input
                     type="text"
-                    placeholder="Business name (optional)"
+                    placeholder={tString('waitlist.form.businessName')}
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     className="w-full px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-light"
                   />
                   <input
                     type="text"
-                    placeholder="Message (optional)"
+                    placeholder={tString('waitlist.form.message')}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     className="w-full px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-light"
@@ -537,7 +591,7 @@ export default function Home() {
                     disabled={isSubmitting}
                     className="w-full"
                   >
-                    {isSubmitting ? "Joining..." : "Join us!"}
+                    {isSubmitting ? tString('waitlist.form.submitting') : tString('waitlist.form.submit')}
                   </Button>
                 </form>
               </div>
@@ -551,8 +605,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Built on USDC</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Trusted, stable cryptocurrency infrastructure</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.usdc.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.usdc.description')}</p>
                 </div>
 
                 <div className="text-center">
@@ -561,8 +615,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Hospitality-First</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Designed specifically for restaurants and hospitality</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.hospitality.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.hospitality.description')}</p>
                 </div>
 
                 <div className="text-center">
@@ -571,8 +625,8 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Simple Pricing</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">Just 2% per transaction with no hidden fees</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.global.title')}</h3>
+                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.global.description')}</p>
                 </div>
               </div>
             </div>
@@ -606,16 +660,16 @@ export default function Home() {
               {/* Modal content */}
               <div className="text-center">
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Welcome to the Early Partner Program! 🚀
+                  {tString('waitlist.success.title')}
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  Thanks for joining! We&apos;ll contact you with special pricing details and early access to Payverge.
+                  {tString('waitlist.success.message')}
                 </p>
 
                 {/* Share section */}
                 <div className="border-t pt-6">
                   <p className="text-sm text-gray-500 mb-4">
-                    Help us spread the word!
+                    {tString('waitlist.success.sharePrompt')}
                   </p>
                   <button
                     onClick={handleShareOnX}
@@ -624,7 +678,7 @@ export default function Home() {
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
-                    Share on X
+                    {tString('waitlist.success.shareButton')}
                   </button>
                 </div>
               </div>
@@ -643,16 +697,16 @@ export default function Home() {
                 </div>
 
                 <div className="flex gap-6 text-sm">
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">About</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Contact</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Privacy</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Terms</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.about')}</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.contact')}</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.privacy')}</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.terms')}</a>
                 </div>
               </div>
 
               <div className="text-center pt-8 border-t border-gray-200">
                 <p className="text-sm text-gray-500 font-light">
-                  &ldquo;Payverge operates exclusively on USDC. No banks. No borders. Just better payments.&rdquo;
+                  &ldquo;{t('footer.tagline')}&rdquo;
                 </p>
               </div>
             </div>

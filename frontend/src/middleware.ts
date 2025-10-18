@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { isAdmin } from "@/utils/auth";
 import { decodeJwt } from "@/utils/jwt";
+import { locales, defaultLocale } from '@/i18n/config';
 
 interface SessionToken {
   address: string;
@@ -10,10 +11,10 @@ interface SessionToken {
 }
 
 export function middleware(request: NextRequest) {
-  // Check if the path starts with /admin
   const pathname = request.nextUrl.pathname;
   
-  if (pathname.startsWith("/admin")) {
+  // Handle admin routes with authentication
+  if (pathname.startsWith("/admin") || pathname.match(/^\/[a-z]{2}\/admin/)) {
     // Get the session token from cookies
     const sessionToken = request.cookies.get("session_token")?.value;
 
@@ -37,10 +38,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Continue with normal request processing
   return NextResponse.next();
 }
 
 export const config = {
-  // Match admin routes
-  matcher: ["/admin/:path*"],
+  // Match all routes except API, static files, and images
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };

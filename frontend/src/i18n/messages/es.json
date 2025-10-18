@@ -1,0 +1,190 @@
+{
+  "landing": {
+    "hero": {
+      "badge": "Próximamente",
+      "title": "De la mesa a tu billetera,",
+      "subtitle": "Payverge hace que los pagos gastronómicos sean sin fronteras, justos y sin esfuerzo. Los huéspedes escanean, pagan en USDC, y te pagan al instante. Sin bancos. Sin fricción.",
+      "dreamWords": ["instantáneamente", "sin esfuerzo", "globalmente", "justamente", "sin problemas", "sin fronteras"],
+      "cta": {
+        "register": "Registrar Negocio",
+        "dashboard": "Acceder al Panel",
+        "waitlist": "Ser Socio Temprano"
+      }
+    },
+    "vision": {
+      "badge": "Por qué Payverge",
+      "title": "La hospitalidad merece",
+      "titleEmphasis": "algo mejor",
+      "description1": "Durante demasiado tiempo, restaurantes, cafés y bares han estado encadenados a sistemas de pago lentos, caros y obsoletos. Las comisiones reducen los márgenes. Los pagos tardan días. Las propinas se pierden en el proceso. Los huéspedes se ven obligados a usar máquinas de tarjetas torpes y divisiones de cuentas incómodas.",
+      "description2": "En Payverge, creemos que los pagos deberían ser tan fáciles como la comida misma. No estamos construyendo solo otro procesador de pagos,",
+      "description2Bold": "estamos construyendo un nuevo estándar.",
+      "benefitsTitle": "Rápido. Justo. Global."
+    },
+    "benefits": {
+      "instant": {
+        "title": "Liquidación Instantánea",
+        "description": "Recibe el pago en USDC en el momento en que tus huéspedes terminan su comida."
+      },
+      "fair": {
+        "title": "Tarifas Justas",
+        "description": "Sin costos ocultos. Sin cargos sorpresa. Solo tarifas transparentes y bajas."
+      },
+      "global": {
+        "title": "Alcance Global",
+        "description": "Acepta pagos desde cualquier parte del mundo, en cualquier moneda."
+      }
+    },
+    "features": {
+      "badge": "Cómo funciona",
+      "title": "Tres pasos para transformar tu negocio",
+      "scan": {
+        "title": "Los Huéspedes Escanean",
+        "description": "Tus huéspedes simplemente escanean un código QR en su mesa para ver tu menú y hacer pedidos."
+      },
+      "pay": {
+        "title": "Pagan en USDC",
+        "description": "Pagos seguros e instantáneos en USDC. Sin lectores de tarjetas, sin manejo de efectivo, sin demoras."
+      },
+      "settle": {
+        "title": "Recibes el Pago",
+        "description": "Los fondos llegan a tu billetera al instante. Sin esperas, sin retenciones, sin sorpresas."
+      }
+    },
+    "stats": {
+      "badge": "Construido para escalar",
+      "title": "Los números hablan por sí mismos",
+      "settlement": {
+        "value": "< 30s",
+        "label": "Tiempo Promedio de Liquidación"
+      },
+      "fees": {
+        "value": "2.5%",
+        "label": "Tarifa de Transacción"
+      },
+      "uptime": {
+        "value": "99.9%",
+        "label": "Tiempo de Actividad de Red"
+      },
+      "countries": {
+        "value": "180+",
+        "label": "Países Soportados"
+      }
+    },
+    "waitlist": {
+      "badge": "Únete a la revolución",
+      "title": "Sé de los primeros en experimentar el futuro de los pagos de hospitalidad",
+      "subtitle": "Únete a nuestra lista de espera y obtén acceso temprano a Payverge cuando lancemos.",
+      "form": {
+        "email": "Tu dirección de correo electrónico",
+        "businessName": "Nombre del negocio (opcional)",
+        "message": "Cuéntanos sobre tu negocio (opcional)",
+        "submit": "Unirse a Lista de Espera",
+        "submitting": "Uniéndose..."
+      },
+      "success": {
+        "title": "¡Bienvenido al Programa de Socios Tempranos! 🚀",
+        "message": "¡Gracias por unirte! Te contactaremos con detalles de precios especiales y acceso temprano a Payverge.",
+        "sharePrompt": "¡Ayúdanos a correr la voz!",
+        "shareButton": "Compartir en X",
+        "closeButton": "Cerrar"
+      }
+    },
+    "roadmap": {
+      "badge": "Próximamente",
+      "title": "Apenas estamos",
+      "titleEmphasis": "comenzando",
+      "description": "Payverge se implementará con restaurantes, cafés y bares en todo el mundo. Estamos trabajando estrechamente con socios tempranos para dar forma al futuro de los pagos de hospitalidad.",
+      "cta": "Ser Socio Temprano"
+    },
+    "platform": {
+      "badge": "Plataforma completa",
+      "title": "Más allá de los pagos, una",
+      "titleEmphasis": "tecnología restaurantera completa",
+      "subtitle": "Todo lo que necesitas para administrar un restaurante moderno, además de pagos cripto",
+      "features": {
+        "menus": {
+          "title": "Menús Digitales Hermosos",
+          "description": "Menús generados automáticamente con fotos, precios en tiempo real y actualizaciones instantáneas en todas las mesas"
+        },
+        "reviews": {
+          "title": "Integración con Google Reviews",
+          "description": "Solicita automáticamente reseñas después de pagos exitosos para impulsar tu reputación en línea"
+        },
+        "analytics": {
+          "title": "Análisis en Tiempo Real",
+          "description": "Rastrea ventas, tendencias de pagos cripto y toma decisiones basadas en datos para tu negocio"
+        },
+        "staff": {
+          "title": "Gestión de Personal",
+          "description": "Distribución transparente de propinas cripto y análisis de rendimiento para tu equipo"
+        },
+        "orders": {
+          "title": "Gestión de Pedidos",
+          "description": "Sistema de pantalla de cocina y seguimiento de pedidos desde el menú hasta el pago"
+        },
+        "qr": {
+          "title": "Códigos QR Instantáneos",
+          "description": "Genera códigos QR de mesa al instante y actualízalos en tiempo real"
+        }
+      }
+    },
+    "social": {
+      "badge": "Confiado por la hospitalidad",
+      "title": "Construido para",
+      "titleEmphasis": "restaurantes modernos",
+      "subtitle": "Desde cafeterías hasta alta cocina, pagos cripto para cada negocio de hospitalidad",
+      "businessTypes": {
+        "restaurants": "Restaurantes",
+        "coffee": "Cafeterías",
+        "bars": "Bares y Lounges",
+        "hotels": "Hoteles",
+        "events": "Lugares de Eventos"
+      },
+      "stats": {
+        "instant": {
+          "value": "Instantáneo",
+          "label": "Liquidación",
+          "description": "USDC en tu billetera inmediatamente"
+        },
+        "fee": {
+          "value": "2%",
+          "label": "Tarifa Fija",
+          "description": "Sin cargos ocultos"
+        },
+        "chargebacks": {
+          "value": "0%",
+          "label": "Contracargos",
+          "description": "Los pagos cripto son finales"
+        },
+        "support": {
+          "value": "24/7",
+          "label": "Soporte",
+          "description": "Siempre aquí para ayudar"
+        }
+      }
+    },
+    "trust": {
+      "usdc": {
+        "title": "Construido en USDC",
+        "description": "Infraestructura de criptomoneda confiable y estable"
+      },
+      "hospitality": {
+        "title": "Hospitalidad Primero",
+        "description": "Diseñado específicamente para restaurantes, cafés y bares"
+      },
+      "global": {
+        "title": "Red Global",
+        "description": "Acepta pagos de clientes en todo el mundo"
+      }
+    },
+    "footer": {
+      "tagline": "Payverge opera exclusivamente con USDC. Sin bancos. Sin fronteras. Solo mejores pagos.",
+      "links": {
+        "about": "Acerca de",
+        "contact": "Contacto",
+        "privacy": "Privacidad",
+        "terms": "Términos"
+      }
+    }
+  }
+}
