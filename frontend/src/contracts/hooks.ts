@@ -1128,3 +1128,495 @@ export const usePaymentsContractBalance = () => {
     args: [config.payments],
   });
 };
+
+// ==================== COUPON & SUBSCRIPTION HOOKS ====================
+
+// Coupon Management Hooks
+export const useCreateCoupon = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const createCoupon = async (
+    couponCode: string,
+    discountAmount: bigint,
+    expiryTime: bigint
+  ) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'createCoupon',
+      args: [couponCode, discountAmount, expiryTime],
+    });
+  };
+
+  return { createCoupon };
+};
+
+export const useDeactivateCoupon = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const deactivateCoupon = async (couponCode: string) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'deactivateCoupon',
+      args: [couponCode],
+    });
+  };
+
+  return { deactivateCoupon };
+};
+
+export const useGetCouponInfo = (couponHash: `0x${string}`) => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getCouponInfo',
+    args: [couponHash],
+  });
+};
+
+// Helper hook to validate coupon code and get discount
+export const useValidateCoupon = (couponCode: string) => {
+  // Create coupon hash using keccak256 (same as smart contract)
+  const couponHash = couponCode ? 
+    `0x${require('js-sha3').keccak256(couponCode)}` as `0x${string}` : 
+    `0x${'0'.repeat(64)}` as `0x${string}`;
+  
+  const { data: couponInfo, error, isLoading } = useGetCouponInfo(couponHash);
+  
+  // Type the coupon info properly
+  const typedCouponInfo = couponInfo as {
+    discountAmount: bigint;
+    expiryTime: bigint;
+    isUsed: boolean;
+    isActive: boolean;
+  } | undefined;
+  
+  // Validate coupon
+  const isValid = typedCouponInfo && !error && 
+    typedCouponInfo.isActive && 
+    !typedCouponInfo.isUsed && 
+    Number(typedCouponInfo.expiryTime) > Math.floor(Date.now() / 1000);
+  
+  return {
+    isValid,
+    discountAmount: typedCouponInfo?.discountAmount || BigInt(0),
+    expiryTime: typedCouponInfo?.expiryTime || BigInt(0),
+    isLoading,
+    error,
+    couponInfo: typedCouponInfo
+  };
+};
+
+// Business Registration with Coupon
+export const useRegisterBusinessWithCoupon = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const registerBusinessWithCoupon = async (
+    name: string,
+    paymentAddress: Address,
+    tippingAddress: Address,
+    couponCode: string
+  ) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'registerBusinessWithCoupon',
+      args: [name, paymentAddress, tippingAddress, couponCode],
+    });
+  };
+
+  return { registerBusinessWithCoupon };
+};
+
+// Subscription Management Hooks
+export const useCalculateSubscriptionTime = (paymentAmount: bigint) => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'calculateSubscriptionTime',
+    args: [paymentAmount],
+  });
+};
+
+export const useCalculatePaymentForTime = (subscriptionSeconds: bigint) => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'calculatePaymentForTime',
+    args: [subscriptionSeconds],
+  });
+};
+
+export const useGetBusinessSubscriptionStatus = (businessAddress: Address) => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getBusinessSubscriptionStatus',
+    args: [businessAddress],
+  });
+};
+
+export const useRenewSubscription = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const renewSubscription = async (paymentAmount: bigint) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'renewSubscription',
+      args: [paymentAmount],
+    });
+  };
+
+  return { renewSubscription };
+};
+
+export const useRenewSubscriptionWithCoupon = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const renewSubscriptionWithCoupon = async (
+    paymentAmount: bigint,
+    couponCode: string
+  ) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'renewSubscriptionWithCoupon',
+      args: [paymentAmount, couponCode],
+    });
+  };
+
+  return { renewSubscriptionWithCoupon };
+};
+
+export const useProposeRegistrationFeeUpdate = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const proposeRegistrationFeeUpdate = async (newFee: bigint) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'proposeRegistrationFeeUpdate',
+      args: [newFee],
+    });
+  };
+
+  return { proposeRegistrationFeeUpdate };
+};
+
+export const useExecuteRegistrationFeeUpdate = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const executeRegistrationFeeUpdate = async () => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'executeRegistrationFeeUpdate',
+    });
+  };
+
+  return { executeRegistrationFeeUpdate };
+};
+
+export const useCancelRegistrationFeeUpdate = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const cancelRegistrationFeeUpdate = async () => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'cancelRegistrationFeeUpdate',
+    });
+  };
+
+  return { cancelRegistrationFeeUpdate };
+};
+
+export const useGetPendingRegistrationFeeInfo = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'getPendingRegistrationFeeInfo',
+  });
+};
+
+// Contract Configuration Hooks
+export const useSetReferralsContract = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const setReferralsContract = async (referralsContractAddress: Address) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'setReferralsContract',
+      args: [referralsContractAddress],
+    });
+  };
+
+  return { setReferralsContract };
+};
+
+export const useSetProfitSplitContract = () => {
+  const config = useContractConfig();
+  const { writeContractAsync } = useWriteContract();
+
+  const setProfitSplitContract = async (profitSplitContractAddress: Address) => {
+    return await writeContractAsync({
+      address: config.payments,
+      abi: PAYVERGE_PAYMENTS_ABI,
+      functionName: 'setProfitSplitContract',
+      args: [profitSplitContractAddress],
+    });
+  };
+
+  return { setProfitSplitContract };
+};
+
+// Event Watching for Coupons & Subscriptions
+export const useWatchCouponCreated = (
+  onCouponCreated: (log: any) => void
+) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'CouponCreated',
+    onLogs: onCouponCreated,
+  });
+};
+
+export const useWatchCouponUsed = (
+  onCouponUsed: (log: any) => void,
+  businessAddress?: Address
+) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'CouponUsed',
+    args: businessAddress ? { business: businessAddress } : undefined,
+    onLogs: onCouponUsed,
+  });
+};
+
+export const useWatchBusinessRegisteredWithCoupon = (
+  onBusinessRegistered: (log: any) => void,
+  businessAddress?: Address
+) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'BusinessRegisteredWithCoupon',
+    args: businessAddress ? { businessAddress } : undefined,
+    onLogs: onBusinessRegistered,
+  });
+};
+
+export const useWatchBusinessSubscriptionRenewed = (
+  onSubscriptionRenewed: (log: any) => void,
+  businessAddress?: Address
+) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'BusinessSubscriptionRenewed',
+    args: businessAddress ? { business: businessAddress } : undefined,
+    onLogs: onSubscriptionRenewed,
+  });
+};
+
+export const useWatchBusinessSubscriptionRenewedWithCoupon = (
+  onSubscriptionRenewed: (log: any) => void,
+  businessAddress?: Address
+) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'BusinessSubscriptionRenewedWithCoupon',
+    args: businessAddress ? { business: businessAddress } : undefined,
+    onLogs: onSubscriptionRenewed,
+  });
+};
+
+// Utility hooks for subscription calculations
+export const useSubscriptionTimeInDays = (paymentAmount: bigint) => {
+  const { data: subscriptionSeconds } = useCalculateSubscriptionTime(paymentAmount);
+  
+  if (!subscriptionSeconds) return 0;
+  
+  // Convert seconds to days (86400 seconds per day)
+  return Number(subscriptionSeconds) / 86400;
+};
+
+export const usePaymentForDays = (days: number) => {
+  const subscriptionSeconds = BigInt(days * 86400); // Convert days to seconds
+  const { data: paymentAmount } = useCalculatePaymentForTime(subscriptionSeconds);
+  
+  return paymentAmount || BigInt(0);
+};
+
+// Helper hook to format USDC amounts
+export const useFormatUSDC = () => {
+  const formatUSDC = (amount: bigint) => {
+    return formatUnits(amount, 6); // USDC has 6 decimals
+  };
+
+  const parseUSDC = (amount: string) => {
+    return parseUnits(amount, 6);
+  };
+
+  return { formatUSDC, parseUSDC };
+};
+
+// Subscription Plans Configuration
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description: string;
+  monthlyPrice: bigint; // USDC in wei (6 decimals)
+  yearlyPrice: bigint; // USDC in wei (6 decimals)
+  features: string[];
+  maxTables: number;
+  maxMenuItems: number;
+  analyticsEnabled: boolean;
+  prioritySupport: boolean;
+  customBranding: boolean;
+}
+
+export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
+  {
+    id: 'basic',
+    name: 'Basic',
+    description: 'Perfect for small restaurants and cafes',
+    monthlyPrice: parseUnits('29.99', 6), // $29.99/month
+    yearlyPrice: parseUnits('299.99', 6), // $299.99/year (2 months free)
+    features: [
+      'Up to 10 tables',
+      'Up to 50 menu items',
+      'Basic payment processing',
+      'QR code generation',
+      'Basic analytics',
+      'Email support'
+    ],
+    maxTables: 10,
+    maxMenuItems: 50,
+    analyticsEnabled: true,
+    prioritySupport: false,
+    customBranding: false,
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    description: 'Ideal for growing restaurants with multiple locations',
+    monthlyPrice: parseUnits('79.99', 6), // $79.99/month
+    yearlyPrice: parseUnits('799.99', 6), // $799.99/year (2 months free)
+    features: [
+      'Up to 50 tables',
+      'Unlimited menu items',
+      'Advanced payment processing',
+      'Split billing',
+      'Advanced analytics & reports',
+      'Multi-currency support',
+      'Priority support',
+      'Custom branding'
+    ],
+    maxTables: 50,
+    maxMenuItems: -1, // unlimited
+    analyticsEnabled: true,
+    prioritySupport: true,
+    customBranding: true,
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    description: 'For large restaurant chains and franchises',
+    monthlyPrice: parseUnits('199.99', 6), // $199.99/month
+    yearlyPrice: parseUnits('1999.99', 6), // $1999.99/year (2 months free)
+    features: [
+      'Unlimited tables',
+      'Unlimited menu items',
+      'White-label solution',
+      'API access',
+      'Advanced integrations',
+      'Dedicated account manager',
+      'Custom features',
+      '24/7 phone support'
+    ],
+    maxTables: -1, // unlimited
+    maxMenuItems: -1, // unlimited
+    analyticsEnabled: true,
+    prioritySupport: true,
+    customBranding: true,
+  },
+];
+
+// Get subscription plan by ID
+export const getSubscriptionPlan = (planId: string): SubscriptionPlan | undefined => {
+  return SUBSCRIPTION_PLANS.find(plan => plan.id === planId);
+};
+
+// Calculate subscription price with discounts
+export const calculateSubscriptionPrice = (
+  plan: SubscriptionPlan,
+  frequency: 'monthly' | 'yearly',
+  couponDiscount?: bigint,
+  referralDiscount?: number // percentage (e.g., 10 for 10%)
+): { originalPrice: bigint; finalPrice: bigint; totalDiscount: bigint } => {
+  const originalPrice = frequency === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice;
+  let finalPrice = originalPrice;
+  let totalDiscount = BigInt(0);
+
+  // Apply referral discount (percentage)
+  if (referralDiscount && referralDiscount > 0) {
+    const referralDiscountAmount = (originalPrice * BigInt(referralDiscount)) / BigInt(100);
+    finalPrice -= referralDiscountAmount;
+    totalDiscount += referralDiscountAmount;
+  }
+
+  // Apply coupon discount (fixed amount)
+  if (couponDiscount && couponDiscount > 0) {
+    const couponDiscountAmount = couponDiscount > finalPrice ? finalPrice : couponDiscount;
+    finalPrice -= couponDiscountAmount;
+    totalDiscount += couponDiscountAmount;
+  }
+
+  // Ensure final price is not negative
+  if (finalPrice < 0) {
+    finalPrice = BigInt(0);
+  }
+
+  return {
+    originalPrice,
+    finalPrice,
+    totalDiscount,
+  };
+};
+

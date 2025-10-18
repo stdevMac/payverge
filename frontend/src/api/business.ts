@@ -35,6 +35,20 @@ export interface Business {
   // Currency settings
   default_currency?: string;
   display_currency?: string;
+  // Subscription Management Fields (Pay-as-you-go model)
+  subscription_status?: string; // active, expired, suspended, cancelled
+  last_payment_date?: string;
+  subscription_end_date?: string; // When current subscription expires
+  last_payment_amount?: string; // USDC amount in wei from last payment
+  total_paid?: string; // Total USDC paid for subscriptions (wei)
+  yearly_fee?: string; // Full year price in USDC wei ($120 default)
+  time_remaining?: number; // Seconds remaining in subscription
+  referral_code_used?: string;
+  coupon_code_used?: string;
+  discount_applied?: string; // USDC amount in wei
+  registration_tx_hash?: string; // Initial registration transaction
+  last_renewal_tx_hash?: string; // Last renewal transaction
+  reminders_sent?: number;
   created_at: string;
   updated_at: string;
 }

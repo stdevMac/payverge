@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
-import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check, Wallet, DollarSign, Edit3, ExternalLink } from 'lucide-react';
+import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check, Wallet, DollarSign, Edit3, ExternalLink, CreditCard } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAppKitAccount } from '@reown/appkit/react';
@@ -34,6 +34,7 @@ import {
 import { Address } from 'viem';
 import WithdrawalHistory from '../../../../../components/business/WithdrawalHistory';
 import { createWithdrawal } from '../../../../../api/withdrawals';
+import SubscriptionManagement from '../../../../../components/business/SubscriptionManagement';
 
 interface BusinessDashboardProps {
   params: {
@@ -859,6 +860,24 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       case 'staff':
         return <StaffManagement businessId={businessId.toString()} />;
 
+      case 'subscription':
+        return <SubscriptionManagement 
+          subscriptionData={{
+            status: business?.subscription_status as 'active' | 'expired' | 'suspended' | 'cancelled' || 'active',
+            lastPaymentDate: business?.last_payment_date || '',
+            subscriptionEndDate: business?.subscription_end_date || '',
+            lastPaymentAmount: business?.last_payment_amount || '0',
+            totalPaid: business?.total_paid || '0',
+            yearlyFee: business?.yearly_fee || '120000000',
+            timeRemaining: business?.time_remaining || 0,
+            remindersSent: business?.reminders_sent || 0,
+          }}
+          onRenewSubscription={() => {
+            // TODO: Implement renewal logic
+            console.log('Renew subscription');
+          }}
+        />;
+
       case 'settings':
         return <BusinessSettings businessId={businessId} />;
 
@@ -897,6 +916,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               { key: 'overview', icon: BarChart3, label: 'Overview' },
               { key: 'analytics', icon: BarChart3, label: 'Analytics' },
               { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
+              { key: 'subscription', icon: CreditCard, label: 'Subscription' },
               { key: 'menu', icon: Menu, label: 'Menu' },
               { key: 'tables', icon: Users, label: 'Tables' },
               { key: 'counters', icon: Coffee, label: 'Counters' },
@@ -977,6 +997,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       { key: 'overview', icon: BarChart3, label: 'Overview' },
                       { key: 'analytics', icon: BarChart3, label: 'Analytics' },
                       { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
+                      { key: 'subscription', icon: CreditCard, label: 'Subscription' },
                       { key: 'menu', icon: Menu, label: 'Menu' },
                       { key: 'tables', icon: Users, label: 'Tables' },
                       { key: 'counters', icon: Coffee, label: 'Counters' },

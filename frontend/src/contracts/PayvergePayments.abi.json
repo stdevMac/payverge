@@ -118,7 +118,33 @@
   },
   {
     "type": "function",
+    "name": "MIN_SUBSCRIPTION_PAYMENT",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "RATE_LIMIT_WINDOW",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "SECONDS_PER_YEAR",
     "inputs": [],
     "outputs": [
       {
@@ -442,6 +468,11 @@
         "internalType": "uint64"
       },
       {
+        "name": "subscriptionExpiry",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
         "name": "totalVolume",
         "type": "uint256",
         "internalType": "uint256"
@@ -461,6 +492,44 @@
     "outputs": [
       {
         "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "calculatePaymentForTime",
+    "inputs": [
+      {
+        "name": "subscriptionSeconds",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "paymentAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "calculateSubscriptionTime",
+    "inputs": [
+      {
+        "name": "paymentAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "subscriptionSeconds",
         "type": "uint256",
         "internalType": "uint256"
       }
@@ -538,6 +607,59 @@
   },
   {
     "type": "function",
+    "name": "couponExists",
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "coupons",
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "discountAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryTime",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "isUsed",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "isActive",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "createBill",
     "inputs": [
       {
@@ -564,6 +686,42 @@
         "name": "nonce",
         "type": "bytes32",
         "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createCoupon",
+    "inputs": [
+      {
+        "name": "couponCode",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "discountAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryTime",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deactivateCoupon",
+    "inputs": [
+      {
+        "name": "couponCode",
+        "type": "string",
+        "internalType": "string"
       }
     ],
     "outputs": [],
@@ -925,6 +1083,11 @@
             "internalType": "uint64"
           },
           {
+            "name": "subscriptionExpiry",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
             "name": "totalVolume",
             "type": "uint256",
             "internalType": "uint256"
@@ -935,6 +1098,35 @@
             "internalType": "uint256"
           }
         ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getBusinessSubscriptionStatus",
+    "inputs": [
+      {
+        "name": "business",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "isActive",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "subscriptionExpiry",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "timeRemaining",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -964,6 +1156,47 @@
         "name": "tips",
         "type": "uint256",
         "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getCouponInfo",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct PayvergePayments.CouponInfo",
+        "components": [
+          {
+            "name": "discountAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "expiryTime",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "isUsed",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "isActive",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
       }
     ],
     "stateMutability": "view"
@@ -1173,11 +1406,6 @@
         "internalType": "address"
       },
       {
-        "name": "_platformTreasury",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
         "name": "_platformFeeRate",
         "type": "uint256",
         "internalType": "uint256"
@@ -1333,19 +1561,6 @@
   },
   {
     "type": "function",
-    "name": "platformTreasury",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
     "name": "processPayment",
     "inputs": [
       {
@@ -1462,6 +1677,34 @@
   },
   {
     "type": "function",
+    "name": "registerBusinessWithCoupon",
+    "inputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "paymentAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tippingAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "couponCode",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "registrationFeeUpdateTimestamp",
     "inputs": [],
     "outputs": [
@@ -1472,6 +1715,37 @@
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "renewSubscription",
+    "inputs": [
+      {
+        "name": "paymentAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renewSubscriptionWithCoupon",
+    "inputs": [
+      {
+        "name": "paymentAmount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "couponCode",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -1895,6 +2169,55 @@
   },
   {
     "type": "event",
+    "name": "BusinessRegisteredWithCoupon",
+    "inputs": [
+      {
+        "name": "businessAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "paymentAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "tippingAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "originalFee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "discount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "BusinessRegisteredWithReferral",
     "inputs": [
       {
@@ -1950,6 +2273,68 @@
   },
   {
     "type": "event",
+    "name": "BusinessSubscriptionRenewed",
+    "inputs": [
+      {
+        "name": "business",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "paymentAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newExpiryTime",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BusinessSubscriptionRenewedWithCoupon",
+    "inputs": [
+      {
+        "name": "business",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "originalAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "discountAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newExpiryTime",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      },
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "BusinessTippingAddressUpdated",
     "inputs": [
       {
@@ -1963,6 +2348,69 @@
         "type": "address",
         "indexed": false,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CouponCreated",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "discountAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "expiryTime",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CouponDeactivated",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CouponUsed",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "business",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "discountAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -2343,6 +2791,66 @@
   },
   {
     "type": "error",
+    "name": "BusinessSubscriptionExpired",
+    "inputs": [
+      {
+        "name": "business",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CouponAlreadyUsed",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CouponAndReferralNotAllowed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CouponExpired",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CouponNotActive",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "CouponNotFound",
+    "inputs": [
+      {
+        "name": "couponHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
     "name": "ERC1967InvalidImplementation",
     "inputs": [
       {
@@ -2403,6 +2911,17 @@
     "type": "error",
     "name": "InvalidInitialization",
     "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidSubscriptionPayment",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
   },
   {
     "type": "error",

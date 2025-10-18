@@ -38,6 +38,10 @@ type CreateBusinessRequest struct {
 	ShowReviews          bool                    `json:"show_reviews"`
 	GoogleReviewsEnabled bool                    `json:"google_reviews_enabled"`
 	ReferredByCode       string                  `json:"referred_by_code"` // Referral code used during registration
+	// Subscription fields (Pay-as-you-go model)
+	PaymentAmount        string                  `json:"payment_amount"` // USDC amount for subscription
+	CouponCode           string                  `json:"coupon_code"`
+	ReferralCode         string                  `json:"referral_code"`
 }
 
 // Business update request
@@ -121,6 +125,12 @@ func CreateBusiness(c *gin.Context) {
 		BusinessPageEnabled:  req.BusinessPageEnabled,
 		ShowReviews:          req.ShowReviews,
 		GoogleReviewsEnabled: req.GoogleReviewsEnabled,
+		ReferredByCode:       req.ReferredByCode,
+		// Subscription fields (will be updated from smart contract data)
+		SubscriptionStatus:   "active", // Default status
+		YearlyFee:           "120000000", // Default $120 USDC in wei
+		CouponCodeUsed:      req.CouponCode,
+		ReferralCodeUsed:    req.ReferralCode,
 		CreatedAt:            time.Now(),
 		UpdatedAt:            time.Now(),
 	}

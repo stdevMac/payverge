@@ -17,15 +17,66 @@ import BusinessTutorialModal from '../../../../components/business/BusinessTutor
 import SmartContractLoadingOverlay from '../../../../components/business/SmartContractLoadingOverlay';
 import BusinessRegistrationSuccess from '../../../../components/business/BusinessRegistrationSuccess';
 import { UserInterface as User } from '@/interface/users/users-interface';
-import { useRegisterBusiness, useReferrer, formatUsdcAmount, useRegistrationFee, useUsdcBalance, useUsdcAllowance, useApproveUsdc, parseUsdcAmount } from '@/contracts/hooks';
+import { 
+  useRegisterBusiness, 
+  useApproveUsdc, 
+  useUsdcBalance, 
+  useUsdcAllowance, 
+  useReferrer, 
+  useRegistrationFee,
+  useCalculateSubscriptionTime,
+  formatUsdcAmount,
+  parseUsdcAmount,
+  useValidateCoupon,
+  useRegisterBusinessWithCoupon
+} from '@/contracts/hooks';
 import { RegisterBusinessParams, Referrer } from '@/contracts/types';
 import { Address } from 'viem';
-import { checkReferralCodeAvailability } from '@/api/referrals';
+import { checkReferralCodeAvailability, CheckReferralCodeResponse } from '@/api/referrals';
 import { uploadFileToS3, uploadProtectedFileToS3 } from '@/api/files/useUploadFileToS3/useUploadFileToS3';
 
 
 // Multi-step form steps
-type FormStep = 'business' | 'location' | 'settings' | 'review';
+type FormStep = 'business' | 'location' | 'settings' | 'subscription' | 'review';
+
+// Subscription Payment Configuration
+interface SubscriptionOption {
+  months: number;
+  suggestedAmount: string;
+  description: string;
+  popular?: boolean;
+}
+
+// Dynamic subscription options based on registration fee
+const getSubscriptionOptions = (registrationFee?: unknown): SubscriptionOption[] => {
+  const yearlyFee = registrationFee && typeof registrationFee === 'bigint' 
+    ? Number(formatUsdcAmount(registrationFee)) 
+    : 100; // More reasonable default closer to actual registration fee
+  
+  return [
+    {
+      months: 1,
+      suggestedAmount: (yearlyFee / 12).toFixed(2),
+      description: 'Try for 1 month',
+    },
+    {
+      months: 3,
+      suggestedAmount: (yearlyFee / 4).toFixed(2),
+      description: 'Get started - 3 months',
+    },
+    {
+      months: 6,
+      suggestedAmount: (yearlyFee / 2).toFixed(2),
+      description: 'Save more - 6 months',
+      popular: true,
+    },
+    {
+      months: 12,
+      suggestedAmount: yearlyFee.toFixed(2),
+      description: 'Best value - Full year',
+    },
+  ];
+};
 
 interface ExtendedCreateBusinessRequest extends CreateBusinessRequest {
   referred_by_code?: string;
@@ -40,6 +91,10 @@ interface ExtendedCreateBusinessRequest extends CreateBusinessRequest {
   show_reviews?: boolean;
   google_reviews_enabled?: boolean;
   counter_enabled?: boolean;
+  // Subscription fields (Pay-as-you-go model)
+  payment_amount?: string; // USDC amount for subscription
+  coupon_code?: string;
+  referral_code?: string;
 }
 
 export default function BusinessRegisterPage() {
@@ -70,6 +125,35 @@ export default function BusinessRegisterPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [referralCodeValid, setReferralCodeValid] = useState<boolean | null>(null);
   const [checkingReferralCode, setCheckingReferralCode] = useState(false);
+  
+  // Dynamic subscription options based on registration fee
+  const subscriptionOptions = getSubscriptionOptions(registrationFee);
+  
+  // Subscription state
+  const [selectedOption, setSelectedOption] = useState<SubscriptionOption>(subscriptionOptions[2]); // Default to 6 months
+  
+  // Update selected option when registration fee loads
+  useEffect(() => {
+    if (registrationFee) {
+      const updatedOptions = getSubscriptionOptions(registrationFee);
+      setSelectedOption(updatedOptions[2]); // Keep 6 months selected but with correct amount
+    }
+  }, [registrationFee]);
+  const [customAmount, setCustomAmount] = useState('');
+  const [useCustomAmount, setUseCustomAmount] = useState(false);
+  const [discountType, setDiscountType] = useState<'none' | 'coupon' | 'referral'>('none');
+  const [couponCode, setCouponCode] = useState('');
+  const [referralCode, setReferralCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState<bigint>(BigInt(0));
+  const [referralDiscount, setReferralDiscount] = useState<number>(0);
+  const [subscriptionTime, setSubscriptionTime] = useState<number>(0); // in seconds
+  
+  // Validate coupon with smart contract
+  const { 
+    isValid: isCouponValid, 
+    discountAmount: couponDiscountAmount, 
+    isLoading: isCouponLoading 
+  } = useValidateCoupon(discountType === 'coupon' && couponCode ? couponCode : '');
   
   const [formData, setFormData] = useState<ExtendedCreateBusinessRequest>({
     name: "",
@@ -103,12 +187,34 @@ export default function BusinessRegisterPage() {
   const steps: { key: FormStep; title: string; description: string; icon: any }[] = [
     { key: 'business', title: 'Business Info', description: 'Name, logo & contact details', icon: Building2 },
     { key: 'location', title: 'Location & Wallets', description: 'Address & payment setup', icon: MapPin },
-    { key: 'settings', title: 'Settings & Referral', description: 'Fees, features & referral', icon: Settings },
+    { key: 'settings', title: 'Settings & Features', description: 'Fees, features & preferences', icon: Settings },
+    { key: 'subscription', title: 'Payment', description: 'Choose payment amount', icon: DollarSign },
     { key: 'review', title: 'Review & Submit', description: 'Confirm and create', icon: Check },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.key === currentStep);
   const progress = ((currentStepIndex + 1) / steps.length) * 100;
+
+  // Calculate subscription time based on payment amount
+  const paymentAmountWei = useCustomAmount && customAmount 
+    ? parseUsdcAmount(customAmount) 
+    : parseUsdcAmount(selectedOption.suggestedAmount);
+  const { data: calculatedSubscriptionTime } = useCalculateSubscriptionTime(paymentAmountWei);
+
+  // Helper function to format subscription time
+  const formatSubscriptionTime = (seconds: number) => {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
+    
+    if (years >= 1) {
+      return `${years} year${years > 1 ? 's' : ''}`;
+    } else if (months >= 1) {
+      return `${months} month${months > 1 ? 's' : ''}`;
+    } else {
+      return `${days} day${days > 1 ? 's' : ''}`;
+    }
+  };
 
   // Authentication check
   useEffect(() => {
@@ -426,9 +532,20 @@ export default function BusinessRegisterPage() {
         return formData.settlement_address.trim().length > 0 && 
                formData.tipping_address.trim().length > 0;
       case 'settings':
-        return referralCodeValid !== false; // null (empty) or true is ok
+        return true; // Settings step is always valid
+      case 'subscription':
+        const paymentValid = useCustomAmount ? 
+          (customAmount.trim().length > 0 && parseFloat(customAmount) > 0) : 
+          selectedOption !== null;
+        
+        // Check discount validation
+        const discountValid = discountType === 'none' || 
+          (discountType === 'coupon' && couponCode.trim().length > 0 && isCouponValid) ||
+          (discountType === 'referral' && referralCode.trim().length > 0 && referralCodeValid === true);
+        
+        return paymentValid && discountValid;
       case 'review':
-        return isStepValid('business') && isStepValid('location');
+        return isStepValid('business') && isStepValid('location') && isStepValid('subscription');
       default:
         return true;
     }
@@ -1131,62 +1248,337 @@ export default function BusinessRegisterPage() {
                         </div>
                       </div>
 
-                      {/* Referral Code */}
-                      <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
-                            <Hash size={18} className="text-white" />
-                          </div>
-                          Referral Code (Optional)
-                        </h3>
-                        <div className="max-w-md">
-                          <Input
-                            label="Referral Code"
-                            placeholder="Enter referral code"
-                            value={formData.referred_by_code || ''}
-                            onChange={(e) => {
-                              const code = e.target.value.toUpperCase();
-                              updateFormData('referred_by_code', code);
-                              if (code.length >= 3) {
-                                validateReferralCode(code);
-                              } else {
-                                setReferralCodeValid(null);
-                              }
-                            }}
-                            variant="bordered"
-                            size="lg"
-                            startContent={<Hash size={20} className="text-gray-400" />}
-                            isInvalid={referralCodeValid === false}
-                            color={referralCodeValid === true ? "success" : referralCodeValid === false ? "danger" : "default"}
-                            description={
-                              referralCodeValid === true 
-                                ? "✅ Valid referral code! You'll get a discount on registration."
-                                : referralCodeValid === false 
-                                ? "❌ Invalid referral code. Please check and try again."
-                                : "Enter a referral code to get a discount (optional)"
-                            }
-                            endContent={
-                              checkingReferralCode ? (
-                                <Spinner size="sm" />
-                              ) : referralCodeValid === true ? (
-                                <Check size={20} className="text-green-500" />
-                              ) : null
-                            }
-                            classNames={{
-                              inputWrapper: "h-14 border-2",
-                              label: "font-medium"
-                            }}
-                          />
-                          
-                          {referrerData && (referrerData as Referrer).isActive ? (
-                            <div className="mt-6 p-4 bg-green-50 border border-gray-200 rounded-xl">
-                              <p className="text-sm text-green-800">
-                                <strong>Great news!</strong> You&apos;re already a referrer on Payverge. 
-                                You can still use someone else&apos;s referral code to get a discount on your business registration.
-                              </p>
-                            </div>
-                          ) : null}
+                    </div>
+                  </div>
+                )}
+
+                {/* Subscription Payment Step */}
+                {currentStep === 'subscription' && (
+                  <div className="space-y-8">
+                    <div className="text-center mb-10">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <DollarSign className="text-white" size={32} />
+                      </div>
+                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Choose Your Payment</h2>
+                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">Pay what you want - get subscription time proportionally</p>
+                    </div>
+
+                    <div className="max-w-4xl mx-auto">
+                      {/* Payment Options */}
+                      <div className="mb-8">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Suggested Payment Options</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                          {subscriptionOptions.map((option) => (
+                            <Card
+                              key={option.months}
+                              isPressable
+                              isHoverable
+                              onPress={() => {
+                                setSelectedOption(option);
+                                setUseCustomAmount(false);
+                                setCustomAmount('');
+                              }}
+                              className={`relative transition-all duration-200 ${
+                                !useCustomAmount && selectedOption.months === option.months 
+                                  ? 'ring-2 ring-blue-500 shadow-lg scale-105' 
+                                  : 'hover:shadow-md'
+                              } ${option.popular ? 'border-2 border-blue-500' : ''}`}
+                            >
+                              {option.popular && (
+                                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                                  <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                    Popular
+                                  </span>
+                                </div>
+                              )}
+                              <CardBody className="p-4 text-center">
+                                <div className="text-2xl font-bold text-gray-900 mb-1">
+                                  ${option.suggestedAmount}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-2">
+                                  {option.description}
+                                </div>
+                                <div className="text-xs text-blue-600">
+                                  {!useCustomAmount && selectedOption.months === option.months && calculatedSubscriptionTime 
+                                    ? formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))
+                                    : `~${option.months} month${option.months > 1 ? 's' : ''}`
+                                  }
+                                </div>
+                              </CardBody>
+                            </Card>
+                          ))}
                         </div>
+                        
+                        {/* Custom Amount Option */}
+                        <Card 
+                          className={`transition-all duration-200 ${
+                            useCustomAmount ? 'ring-2 ring-blue-500 shadow-lg' : 'hover:shadow-md'
+                          }`}
+                        >
+                          <CardBody className="p-6">
+                            <div className="flex items-center gap-4">
+                              <Checkbox
+                                isSelected={useCustomAmount}
+                                onValueChange={(checked) => {
+                                  setUseCustomAmount(checked);
+                                  if (!checked) {
+                                    setCustomAmount('');
+                                  }
+                                }}
+                                color="primary"
+                              >
+                                <span className="font-medium">Pay custom amount</span>
+                              </Checkbox>
+                              {useCustomAmount && (
+                                <Input
+                                  placeholder="Enter amount"
+                                  value={customAmount}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const yearlyFee = registrationFee && typeof registrationFee === 'bigint' 
+                                      ? Number(formatUsdcAmount(registrationFee)) 
+                                      : 120;
+                                    
+                                    // Allow the input but we'll show warnings for amounts above yearly fee
+                                    setCustomAmount(value);
+                                  }}
+                                  variant="bordered"
+                                  size="sm"
+                                  startContent={<DollarSign size={16} className="text-gray-400" />}
+                                  classNames={{
+                                    inputWrapper: "h-10 border-2",
+                                  }}
+                                  className="w-40"
+                                />
+                              )}
+                            </div>
+                            {useCustomAmount && (
+                              <div className="mt-2 space-y-1">
+                                {(() => {
+                                  const yearlyFee = registrationFee && typeof registrationFee === 'bigint' 
+                                    ? Number(formatUsdcAmount(registrationFee)) 
+                                    : 120;
+                                  const customAmountNum = parseFloat(customAmount || '0');
+                                  const isOverYearlyFee = customAmountNum > yearlyFee;
+                                  
+                                  return (
+                                    <>
+                                      <p className="text-sm text-gray-600">
+                                        You&apos;ll get subscription time proportional to the yearly fee (${yearlyFee} = 1 year)
+                                      </p>
+                                      {isOverYearlyFee && (
+                                        <p className="text-sm font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                                          ⚠️ Amount above ${yearlyFee} will still only give 1 year maximum
+                                        </p>
+                                      )}
+                                      {customAmount && calculatedSubscriptionTime ? (
+                                        <p className="text-sm font-medium text-blue-600">
+                                          Estimated time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                        </p>
+                                      ) : null}
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                            )}
+                          </CardBody>
+                        </Card>
+                      </div>
+
+                      {/* Discount Options */}
+                      <div className="space-y-6">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4">Discount Options (Choose One)</h3>
+                          
+                          {/* Discount Type Selection */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <Card 
+                              isPressable
+                              onPress={() => {
+                                setDiscountType('none');
+                                setCouponCode('');
+                                setReferralCode('');
+                              }}
+                              className={`transition-all duration-200 ${
+                                discountType === 'none' ? 'ring-2 ring-blue-500 shadow-lg' : 'hover:shadow-md'
+                              }`}
+                            >
+                              <CardBody className="p-4 text-center">
+                                <div className="text-lg font-medium text-gray-900">No Discount</div>
+                                <div className="text-sm text-gray-600">Pay full amount</div>
+                              </CardBody>
+                            </Card>
+                            
+                            <Card 
+                              isPressable
+                              onPress={() => {
+                                setDiscountType('coupon');
+                                setReferralCode('');
+                              }}
+                              className={`transition-all duration-200 ${
+                                discountType === 'coupon' ? 'ring-2 ring-blue-500 shadow-lg' : 'hover:shadow-md'
+                              }`}
+                            >
+                              <CardBody className="p-4 text-center">
+                                <div className="text-lg font-medium text-gray-900">Coupon Code</div>
+                                <div className="text-sm text-gray-600">Enter coupon for discount</div>
+                              </CardBody>
+                            </Card>
+                            
+                            <Card 
+                              isPressable
+                              onPress={() => {
+                                setDiscountType('referral');
+                                setCouponCode('');
+                              }}
+                              className={`transition-all duration-200 ${
+                                discountType === 'referral' ? 'ring-2 ring-blue-500 shadow-lg' : 'hover:shadow-md'
+                              }`}
+                            >
+                              <CardBody className="p-4 text-center">
+                                <div className="text-lg font-medium text-gray-900">Referral Code</div>
+                                <div className="text-sm text-gray-600">Enter referral for discount</div>
+                              </CardBody>
+                            </Card>
+                          </div>
+
+                          {/* Discount Input */}
+                          {discountType === 'coupon' && (
+                            <div className="space-y-2">
+                              <Input
+                                label="Coupon Code"
+                                placeholder="Enter coupon code"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                variant="bordered"
+                                size="lg"
+                                startContent={<Hash size={20} className="text-gray-400" />}
+                                classNames={{
+                                  inputWrapper: "h-14 border-2",
+                                  label: "font-medium"
+                                }}
+                                color={
+                                  couponCode ? (
+                                    isCouponLoading ? "default" :
+                                    isCouponValid ? "success" : "danger"
+                                  ) : "default"
+                                }
+                                description={
+                                  couponCode && !isCouponLoading ? (
+                                    isCouponValid ? 
+                                      `✅ Valid coupon! Discount: $${formatUsdcAmount(couponDiscountAmount)}` :
+                                      "❌ Invalid or expired coupon code"
+                                  ) : "Enter a coupon code to get a discount"
+                                }
+                              />
+                            </div>
+                          )}
+                          
+                          {discountType === 'referral' && (
+                            <Input
+                              label="Referral Code"
+                              placeholder="Enter referral code"
+                              value={referralCode}
+                              onChange={(e) => {
+                                setReferralCode(e.target.value);
+                                if (e.target.value.length >= 3) {
+                                  // Validate referral code
+                                  setCheckingReferralCode(true);
+                                  checkReferralCodeAvailability(e.target.value)
+                                    .then((response) => {
+                                      setReferralCodeValid(response.available);
+                                      setCheckingReferralCode(false);
+                                    })
+                                    .catch(() => {
+                                      setReferralCodeValid(false);
+                                      setCheckingReferralCode(false);
+                                    });
+                                } else {
+                                  setReferralCodeValid(null);
+                                }
+                              }}
+                              variant="bordered"
+                              size="lg"
+                              startContent={<Hash size={20} className="text-gray-400" />}
+                              isInvalid={referralCodeValid === false}
+                              color={referralCodeValid === true ? "success" : referralCodeValid === false ? "danger" : "default"}
+                              description={
+                                referralCodeValid === true 
+                                  ? "✅ Valid referral code! You&apos;ll get a discount on registration."
+                                  : referralCodeValid === false 
+                                  ? "❌ Invalid referral code. Please check and try again."
+                                  : "Enter a referral code to get a discount"
+                              }
+                              endContent={
+                                checkingReferralCode ? (
+                                  <Spinner size="sm" />
+                                ) : referralCodeValid === true ? (
+                                  <Check size={20} className="text-green-500" />
+                                ) : null
+                              }
+                              classNames={{
+                                inputWrapper: "h-14 border-2",
+                                label: "font-medium"
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Payment Summary */}
+                        <Card className="bg-gradient-to-br from-gray-50 to-blue-50/30">
+                          <CardBody className="p-6">
+                            <h4 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Subscription Payment</span>
+                                <span className="font-medium">
+                                  ${useCustomAmount ? customAmount || '0.00' : selectedOption.suggestedAmount}
+                                </span>
+                              </div>
+                              {discountType === 'coupon' && isCouponValid && (
+                                <div className="flex justify-between text-green-600">
+                                  <span>Coupon Discount</span>
+                                  <span>-${formatUsdcAmount(couponDiscountAmount)}</span>
+                                </div>
+                              )}
+                              {discountType === 'referral' && referralCodeValid && (
+                                <div className="flex justify-between text-green-600">
+                                  <span>Referral Discount</span>
+                                  <span>-$0.00</span>
+                                </div>
+                              )}
+                              <Divider />
+                              <div className="flex justify-between text-lg font-semibold">
+                                <span>Total</span>
+                                <span>
+                                  ${(() => {
+                                    const originalAmount = parseFloat(useCustomAmount ? customAmount || '0' : selectedOption.suggestedAmount);
+                                    let finalAmount = originalAmount;
+                                    
+                                    // Apply coupon discount
+                                    if (discountType === 'coupon' && isCouponValid) {
+                                      const discount = Number(formatUsdcAmount(couponDiscountAmount));
+                                      finalAmount = Math.max(0, finalAmount - discount);
+                                    }
+                                    
+                                    // Apply referral discount (placeholder for now)
+                                    if (discountType === 'referral' && referralCodeValid) {
+                                      // TODO: Calculate referral discount from smart contract
+                                      finalAmount = Math.max(0, finalAmount);
+                                    }
+                                    
+                                    return finalAmount.toFixed(2);
+                                  })()}
+                                </span>
+                              </div>
+                              {calculatedSubscriptionTime ? (
+                                <div className="text-sm text-gray-600 mt-2">
+                                  Estimated subscription time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                </div>
+                              ) : null}
+                            </div>
+                          </CardBody>
+                        </Card>
                       </div>
                     </div>
                   </div>
@@ -1298,29 +1690,70 @@ export default function BusinessRegisterPage() {
                         </div>
                       </div>
 
-                      {/* Registration Fee */}
+                      {/* Payment Summary */}
                       <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
                         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-3">
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <DollarSign size={18} className="text-white" />
                           </div>
-                          Registration Fee
+                          Payment Summary
                         </h3>
                         <div className="bg-white p-4 rounded-xl">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Platform Registration Fee</span>
-                            <p className="text-lg font-semibold text-gray-900">
-                              {registrationFee ? `${formatUsdcAmount(BigInt(registrationFee.toString()))} USDC` : 'Loading...'}
-                            </p>
-                          </div>
-                          {formData.referred_by_code && referralCodeValid && (
-                            <div className="mt-3 pt-3 border-t border-gray-200">
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-emerald-600 font-medium">Referral Discount Applied</span>
-                                <span className="text-emerald-600 font-medium">-10% or -15%</span>
-                              </div>
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Subscription Payment</span>
+                              <p className="text-lg font-semibold text-gray-900">
+                                ${useCustomAmount ? customAmount || '0.00' : selectedOption.suggestedAmount}
+                              </p>
                             </div>
-                          )}
+                            {discountType === 'coupon' && isCouponValid && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium text-green-600">Coupon Discount</span>
+                                <span className="text-lg font-semibold text-green-600">
+                                  -${formatUsdcAmount(couponDiscountAmount)}
+                                </span>
+                              </div>
+                            )}
+                            {discountType === 'referral' && referralCodeValid && (
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium text-green-600">Referral Discount</span>
+                                <span className="text-lg font-semibold text-green-600">
+                                  -$0.00
+                                </span>
+                              </div>
+                            )}
+                            <Divider />
+                            <div className="flex justify-between items-center">
+                              <span className="text-lg font-bold text-gray-900">Total Payment</span>
+                              <p className="text-2xl font-bold text-gray-900">
+                                ${(() => {
+                                  const originalAmount = parseFloat(useCustomAmount ? customAmount || '0' : selectedOption.suggestedAmount);
+                                  let finalAmount = originalAmount;
+                                  
+                                  // Apply coupon discount
+                                  if (discountType === 'coupon' && isCouponValid) {
+                                    const discount = Number(formatUsdcAmount(couponDiscountAmount));
+                                    finalAmount = Math.max(0, finalAmount - discount);
+                                  }
+                                  
+                                  // Apply referral discount (placeholder for now)
+                                  if (discountType === 'referral' && referralCodeValid) {
+                                    // TODO: Calculate referral discount from smart contract
+                                    finalAmount = Math.max(0, finalAmount);
+                                  }
+                                  
+                                  return finalAmount.toFixed(2);
+                                })()}
+                              </p>
+                            </div>
+                            {calculatedSubscriptionTime ? (
+                              <div className="mt-3 pt-3 border-t border-gray-200">
+                                <p className="text-sm text-gray-600">
+                                  Subscription time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                </p>
+                              </div>
+                            ) : null}
+                          </div>
                           <div className="mt-3 pt-3 border-t border-gray-200">
                             <p className="text-xs text-gray-500">
                               Current USDC Balance: {usdcBalance ? formatUsdcAmount(BigInt(usdcBalance.toString())) : '0'} USDC

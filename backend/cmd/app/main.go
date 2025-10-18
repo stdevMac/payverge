@@ -274,6 +274,15 @@ func main() {
 		publicRoutes.GET("/languages", currencyHandler.GetSupportedLanguages)
 		publicRoutes.GET("/exchange-rate", currencyHandler.GetExchangeRate)
 		publicRoutes.GET("/convert", currencyHandler.ConvertAmount)
+
+		// Coupon validation routes (public - no auth required for validation)
+		couponService, err := services.NewCouponService(*rpcUrl, *payvergeContractAddr)
+		if err != nil {
+			log.Printf("Warning: Failed to initialize coupon service for public routes: %v", err)
+		} else {
+			couponHandlers := handlers.NewCouponHandlers(couponService)
+			publicRoutes.GET("/coupons/validate/:code", couponHandlers.ValidateCoupon)
+		}
 	}
 
 	// Protected routes (require authentication)
@@ -425,12 +434,20 @@ func main() {
 		adminRoutes.DELETE("/multisig-tx", server.DeleteMultisigTx)
 		adminRoutes.PATCH("/multisig-tx", server.PatchMultisigTx)
 
-		// Codes Routes
-		adminRoutes.POST("/create_code", server.CreateCode)
-		adminRoutes.GET("/get_code", server.GetCode)
-		adminRoutes.PUT("/update_code", server.UpdateCode)
-		adminRoutes.DELETE("/delete_code", server.DeleteCode)
-		adminRoutes.GET("/get_all_codes", server.GetAllCodes)
+		// New Coupon Routes (smart contract integrated)
+		// Initialize coupon service and handlers
+		couponService, err := services.NewCouponService(*rpcUrl, *payvergeContractAddr)
+		if err != nil {
+			log.Printf("Warning: Failed to initialize coupon service: %v", err)
+		}
+		couponHandlers := handlers.NewCouponHandlers(couponService)
+
+		adminRoutes.POST("/coupons", couponHandlers.CreateCoupon)
+		adminRoutes.GET("/coupons", couponHandlers.GetAllCoupons)
+		adminRoutes.GET("/coupons/:codeOrHash", couponHandlers.GetCoupon)
+		adminRoutes.DELETE("/coupons/:code", couponHandlers.DeactivateCoupon)
+		adminRoutes.POST("/coupons/mark-used", couponHandlers.MarkCouponUsed)
+		adminRoutes.POST("/coupons/sync", couponHandlers.SyncWithBlockchain)
 
 		// Admin referral management
 		adminRoutes.PUT("/referrals/referrer/:wallet_address/deactivate", server.DeactivateReferrer)

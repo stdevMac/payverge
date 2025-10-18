@@ -105,6 +105,21 @@ type Business struct {
 	DefaultCurrency string          `gorm:"default:'USD'" json:"default_currency"`    // Currency for setting prices (internal)
 	DisplayCurrency string          `gorm:"default:'USD'" json:"display_currency"`    // Currency shown to customers
 	DefaultLanguage string          `gorm:"default:'en'" json:"default_language"`     // Default menu language
+	// Subscription Management Fields (Pay-as-you-go model)
+	SubscriptionStatus    string     `gorm:"default:'active'" json:"subscription_status"` // active, expired, suspended, cancelled
+	LastPaymentDate       *time.Time `json:"last_payment_date"`
+	SubscriptionEndDate   *time.Time `json:"subscription_end_date"` // When current subscription expires
+	LastPaymentAmount     string     `json:"last_payment_amount"` // USDC amount in wei from last payment
+	TotalPaid             string     `gorm:"default:'0'" json:"total_paid"` // Total USDC paid for subscriptions (wei)
+	YearlyFee             string     `gorm:"default:'120000000'" json:"yearly_fee"` // Full year price in USDC wei ($120 default)
+	TimeRemaining         int64      `gorm:"default:0" json:"time_remaining"` // Seconds remaining in subscription
+	ReferralCodeUsed      string     `json:"referral_code_used"`
+	CouponCodeUsed        string     `json:"coupon_code_used"`
+	DiscountApplied       string     `json:"discount_applied"` // USDC amount in wei
+	RegistrationTxHash    string     `json:"registration_tx_hash"` // Initial registration transaction
+	LastRenewalTxHash     string     `json:"last_renewal_tx_hash"` // Last renewal transaction
+	RemindersSent         int        `gorm:"default:0" json:"reminders_sent"`
+	
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }

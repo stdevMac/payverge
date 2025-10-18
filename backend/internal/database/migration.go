@@ -40,10 +40,11 @@ func (db *DB) OptimizeDatabase() error {
 		return fmt.Errorf("failed to apply indexes: %w", err)
 	}
 
-	// Add the WithdrawalHistory model to auto-migration
+	// Add all models to auto-migration
 	if err := db.conn.AutoMigrate(
 		&User{},
 		&Code{},
+		&Coupon{}, // New coupon model
 		&ErrorLog{},
 		&FaucetTransaction{},
 		&Subscriber{},

@@ -137,6 +137,19 @@
   },
   {
     "type": "function",
+    "name": "availableExpenseFunds",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "beneficiaries",
     "inputs": [
       {
@@ -262,7 +275,27 @@
   },
   {
     "type": "function",
+    "name": "distributeAllProfitsWithExpenses",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "distributeProfits",
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "distributeProfitsWithExpenses",
     "inputs": [
       {
         "name": "_amount",
@@ -374,6 +407,19 @@
   },
   {
     "type": "function",
+    "name": "expenseReservePercentage",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getActiveBeneficiaries",
     "inputs": [],
     "outputs": [
@@ -381,6 +427,19 @@
         "name": "",
         "type": "address[]",
         "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAvailableExpenseFunds",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -541,6 +600,29 @@
   },
   {
     "type": "function",
+    "name": "getExpenseStats",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "reservePercentage",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "availableFunds",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalWithdrawn",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getRoleAdmin",
     "inputs": [
       {
@@ -623,11 +705,6 @@
         "internalType": "address"
       },
       {
-        "name": "_platformTreasury",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
         "name": "_admin",
         "type": "address",
         "internalType": "address"
@@ -665,19 +742,6 @@
         "name": "",
         "type": "bool",
         "internalType": "bool"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "platformTreasury",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "address"
       }
     ],
     "stateMutability": "view"
@@ -759,6 +823,19 @@
   },
   {
     "type": "function",
+    "name": "setExpenseReservePercentage",
+    "inputs": [
+      {
+        "name": "_percentage",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "supportsInterface",
     "inputs": [
       {
@@ -779,6 +856,19 @@
   {
     "type": "function",
     "name": "totalDistributed",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalExpensesWithdrawn",
     "inputs": [],
     "outputs": [
       {
@@ -870,6 +960,29 @@
       }
     ],
     "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "withdrawExpenseFunds",
+    "inputs": [
+      {
+        "name": "_amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_reason",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "event",
@@ -1013,6 +1126,62 @@
       },
       {
         "name": "triggeredBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ExpenseFundsWithdrawn",
+    "inputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "withdrawnBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ExpenseReserveUpdated",
+    "inputs": [
+      {
+        "name": "oldPercentage",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newPercentage",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "updatedBy",
         "type": "address",
         "indexed": true,
         "internalType": "address"
@@ -1243,6 +1412,11 @@
   },
   {
     "type": "error",
+    "name": "EmptyExpenseReason",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "EnforcedPause",
     "inputs": []
   },
@@ -1263,12 +1437,22 @@
   },
   {
     "type": "error",
+    "name": "InsufficientExpenseFunds",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "InvalidBeneficiaryAddress",
     "inputs": []
   },
   {
     "type": "error",
     "name": "InvalidDistributionAmount",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidExpensePercentage",
     "inputs": []
   },
   {
