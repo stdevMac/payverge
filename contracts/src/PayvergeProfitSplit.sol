@@ -38,6 +38,11 @@ contract PayvergeProfitSplit is
     uint256 public totalDistributed;
     uint256 public distributionCount;
     uint256 public lastDistributionTime;
+    
+    // Expense management
+    uint256 public expenseReservePercentage; // Percentage to reserve for expenses (in basis points)
+    uint256 public availableExpenseFunds; // Current expense funds available
+    uint256 public totalExpensesWithdrawn; // Track total expenses withdrawn
 
     // Beneficiary information
     struct Beneficiary {
@@ -87,6 +92,10 @@ contract PayvergeProfitSplit is
 
     event EmergencyWithdrawal(address indexed token, uint256 amount, address indexed to, address indexed triggeredBy);
 
+    event ExpenseReserveUpdated(uint256 oldPercentage, uint256 newPercentage, address indexed updatedBy);
+    
+    event ExpenseFundsWithdrawn(uint256 amount, address indexed to, string reason, address indexed withdrawnBy);
+
     // Custom errors
     error InvalidPercentage();
     error BeneficiaryNotFound();
@@ -98,6 +107,9 @@ contract PayvergeProfitSplit is
     error NoActiveBeneficiaries();
     error InvalidBeneficiaryAddress();
     error EmptyBeneficiaryName();
+    error InsufficientExpenseFunds();
+    error InvalidExpensePercentage();
+    error EmptyExpenseReason();
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -394,6 +406,123 @@ contract PayvergeProfitSplit is
     function depositForDistribution(uint256 _amount) external nonReentrant whenNotPaused {
         require(_amount > 0, "Invalid amount");
         usdcToken.safeTransferFrom(msg.sender, address(this), _amount);
+    }
+
+    // Expense Management Functions
+
+    /**
+     * @dev Set percentage of profits to reserve for expenses
+     * @param _percentage Percentage in basis points (500 = 5%, max 5000 = 50%)
+     */
+    function setExpenseReservePercentage(uint256 _percentage) external onlyRole(ADMIN_ROLE) whenNotPaused {
+        if (_percentage > 5000) revert InvalidExpensePercentage(); // Max 50% for expenses
+        
+        uint256 oldPercentage = expenseReservePercentage;
+        expenseReservePercentage = _percentage;
+        
+        emit ExpenseReserveUpdated(oldPercentage, _percentage, msg.sender);
+    }
+
+    /**
+     * @dev Withdraw funds for operational expenses
+     * @param _amount Amount to withdraw for expenses
+     * @param _to Address to send expense funds to
+     * @param _reason Reason for expense withdrawal
+     */
+    function withdrawExpenseFunds(uint256 _amount, address _to, string calldata _reason) 
+        external 
+        onlyRole(ADMIN_ROLE) 
+        nonReentrant 
+        whenNotPaused
+    {
+        if (_to == address(0)) revert InvalidBeneficiaryAddress();
+        if (_amount == 0) revert InvalidDistributionAmount();
+        if (_amount > availableExpenseFunds) revert InsufficientExpenseFunds();
+        if (bytes(_reason).length == 0) revert EmptyExpenseReason();
+        
+        availableExpenseFunds -= _amount;
+        totalExpensesWithdrawn += _amount;
+        
+        usdcToken.safeTransfer(_to, _amount);
+        
+        emit ExpenseFundsWithdrawn(_amount, _to, _reason, msg.sender);
+    }
+
+    /**
+     * @dev Distribute profits with expense allocation (expenses are deducted first)
+     * @param _amount Total amount to process (expenses + beneficiary distribution)
+     */
+    function distributeProfitsWithExpenses(uint256 _amount) 
+        external 
+        onlyRole(DISTRIBUTOR_ROLE) 
+        nonReentrant 
+        whenNotPaused 
+    {
+        if (_amount < MIN_DISTRIBUTION_AMOUNT) revert InvalidDistributionAmount();
+        if (usdcToken.balanceOf(address(this)) < _amount) revert InsufficientBalance();
+        if (totalPercentageAllocated == 0) revert NoActiveBeneficiaries();
+
+        // Calculate expense allocation FIRST
+        uint256 expenseAmount = (_amount * expenseReservePercentage) / MAX_PERCENTAGE;
+        uint256 distributionAmount = _amount - expenseAmount;
+        
+        // Add to expense funds (expenses have priority)
+        if (expenseAmount > 0) {
+            availableExpenseFunds += expenseAmount;
+        }
+        
+        // Distribute remaining amount to beneficiaries (only if above minimum)
+        if (distributionAmount >= MIN_DISTRIBUTION_AMOUNT) {
+            _distributeProfits(distributionAmount);
+        }
+    }
+
+    /**
+     * @dev Distribute all available profits with expense allocation
+     */
+    function distributeAllProfitsWithExpenses() external onlyRole(DISTRIBUTOR_ROLE) nonReentrant whenNotPaused {
+        uint256 balance = usdcToken.balanceOf(address(this));
+        if (balance >= MIN_DISTRIBUTION_AMOUNT) {
+            if (totalPercentageAllocated == 0) revert NoActiveBeneficiaries();
+            
+            // Calculate expense allocation FIRST
+            uint256 expenseAmount = (balance * expenseReservePercentage) / MAX_PERCENTAGE;
+            uint256 distributionAmount = balance - expenseAmount;
+            
+            // Add to expense funds (expenses have priority)
+            if (expenseAmount > 0) {
+                availableExpenseFunds += expenseAmount;
+            }
+            
+            // Distribute remaining amount to beneficiaries (only if above minimum)
+            if (distributionAmount >= MIN_DISTRIBUTION_AMOUNT) {
+                _distributeProfits(distributionAmount);
+            }
+        }
+    }
+
+    /**
+     * @dev Get available expense funds
+     * @return Available expense funds amount
+     */
+    function getAvailableExpenseFunds() external view returns (uint256) {
+        return availableExpenseFunds;
+    }
+
+    /**
+     * @dev Get expense management stats
+     * @return reservePercentage Current expense reserve percentage
+     * @return availableFunds Available expense funds
+     * @return totalWithdrawn Total expenses withdrawn
+     */
+    function getExpenseStats() 
+        external 
+        view 
+        returns (uint256 reservePercentage, uint256 availableFunds, uint256 totalWithdrawn) 
+    {
+        reservePercentage = expenseReservePercentage;
+        availableFunds = availableExpenseFunds;
+        totalWithdrawn = totalExpensesWithdrawn;
     }
 
     // Admin functions

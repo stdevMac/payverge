@@ -413,10 +413,8 @@ contract FullIntegrationTest is Test {
      * @dev Test contract version and upgrade compatibility
      */
     function testContractVersions() public view {
-        assertEq(payments.version(), "2.1.0-profit-split-only");
+        assertEq(payments.version(), "2.2.0-coupons-and-subscriptions");
         assertEq(referrals.version(), "1.0.0");
         assertEq(profitSplit.version(), "1.0.0");
-
-        console.log("SUCCESS: All contract versions verified");
     }
 }

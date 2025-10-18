@@ -147,8 +147,34 @@ contract PayvergePaymentsSecurityTest is Test {
         usdc.approve(address(payverge), type(uint256).max);
     }
 
+    // Helper function to ensure business has valid subscription
+    function ensureValidSubscription(address business) internal {
+        // Check if business is registered first
+        PayvergePayments.BusinessInfo memory info = payverge.getBusinessInfo(business);
+        if (!info.isActive) {
+            return; // Business not registered, skip
+        }
+        
+        (, , uint256 timeRemaining) = payverge.getBusinessSubscriptionStatus(business);
+        if (timeRemaining == 0) {
+            // Subscription expired, renew it for full year
+            vm.prank(business);
+            usdc.approve(address(payverge), 100 * 10 ** 6);
+            vm.prank(business);
+            payverge.renewSubscription(100 * 10 ** 6); // Renew for full year
+        }
+    }
+
+    // Modifier to ensure all businesses have valid subscriptions
+    modifier withValidSubscriptions() {
+        ensureValidSubscription(businessOwner);
+        // Only check reentrantAttacker if it's been registered as a business
+        ensureValidSubscription(address(reentrantAttacker));
+        _;
+    }
+
     // Test 1: Reentrancy Attack Prevention
-    function testReentrancyAttackPrevention() public {
+    function testReentrancyAttackPrevention() public withValidSubscriptions {
         // Wait for rate limit from setup
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
 
@@ -158,6 +184,9 @@ contract PayvergePaymentsSecurityTest is Test {
 
         // Wait for rate limit before creating bill
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
+        
+        // Ensure attacker business has valid subscription after time warp
+        ensureValidSubscription(address(reentrantAttacker));
 
         // Fund attacker's claimable balance by making them receive a payment
         bytes32 attackerBillId = keccak256("attacker-bill");
@@ -207,7 +236,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 4: Payment Amount Validation
-    function testPaymentAmountValidation() public {
+    function testPaymentAmountValidation() public withValidSubscriptions {
         bytes32 billId = keccak256("validation-test");
 
         // Wait for rate limit from previous tests
@@ -238,7 +267,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 5: Nonce Replay Protection
-    function testNonceReplayProtection() public {
+    function testNonceReplayProtection() public withValidSubscriptions {
         bytes32 billId = keccak256("nonce-test");
         bytes32 nonce = keccak256("test-nonce");
 
@@ -260,7 +289,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 6: Rate Limiting
-    function testRateLimiting() public {
+    function testRateLimiting() public withValidSubscriptions {
         bytes32 billId1 = keccak256("rate-test-1");
         bytes32 billId2 = keccak256("rate-test-2");
 
@@ -285,7 +314,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 7: Excessive Payment Prevention
-    function testExcessivePaymentPrevention() public {
+    function testExcessivePaymentPrevention() public withValidSubscriptions {
         bytes32 billId = keccak256("excessive-test");
 
         // Wait for rate limit from previous tests
@@ -302,11 +331,14 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 8: Successful Payment Flow
-    function testSuccessfulPaymentFlow() public {
+    function testSuccessfulPaymentFlow() public withValidSubscriptions {
         bytes32 billId = keccak256("success-test");
 
         // Wait for rate limit from previous tests
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
+
+        // Ensure business has valid subscription after time warp
+        ensureValidSubscription(businessOwner);
 
         // Create bill
         vm.prank(admin);
@@ -338,7 +370,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 9: Earnings Claiming
-    function testEarningsClaiming() public {
+    function testEarningsClaiming() public withValidSubscriptions {
         bytes32 billId = keccak256("earnings-test");
 
         // Wait for rate limit from previous tests
@@ -453,7 +485,7 @@ contract PayvergePaymentsSecurityTest is Test {
     // ==================== EDGE CASE TESTS ====================
 
     // Test 11: Extreme Payment Amounts
-    function testExtremePaymentAmounts() public {
+    function testExtremePaymentAmounts() public withValidSubscriptions {
         bytes32 billId = keccak256("extreme-amounts");
 
         // Wait for rate limit
@@ -493,7 +525,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 12: Partial Payment Edge Cases
-    function testPartialPaymentEdgeCases() public {
+    function testPartialPaymentEdgeCases() public withValidSubscriptions {
         bytes32 billId = keccak256("partial-edge");
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
@@ -521,7 +553,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 13: Concurrent Payment Attempts
-    function testConcurrentPaymentAttempts() public {
+    function testConcurrentPaymentAttempts() public withValidSubscriptions {
         bytes32 billId = keccak256("concurrent");
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
@@ -561,7 +593,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 14: Business Address Update Edge Cases
-    function testBusinessAddressUpdateEdgeCases() public {
+    function testBusinessAddressUpdateEdgeCases() public withValidSubscriptions {
         address newPaymentAddr = address(0x100);
         address newTippingAddr = address(0x101);
 
@@ -597,7 +629,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 15: Platform Fee Edge Cases
-    function testPlatformFeeEdgeCases() public {
+    function testPlatformFeeEdgeCases() public withValidSubscriptions {
         // Set platform fee to maximum
         uint256 maxFee = payverge.MAX_PLATFORM_FEE();
         vm.prank(admin);
@@ -644,11 +676,16 @@ contract PayvergePaymentsSecurityTest is Test {
     // ==================== COMPLEX SCENARIO TESTS ====================
 
     // Test 16: Multi-Business Complex Scenario
-    function testMultiBusinessComplexScenario() public {
+    function testMultiBusinessComplexScenario() public withValidSubscriptions {
         // Setup multiple businesses
         address business1 = address(0x201);
         address business2 = address(0x202);
         address business3 = address(0x203);
+
+        // Fund businesses for potential subscription renewals
+        usdc.mint(business1, 1000 * 10 ** 6);
+        usdc.mint(business2, 1000 * 10 ** 6);
+        usdc.mint(business3, 1000 * 10 ** 6);
 
         // Register businesses
         vm.prank(business1);
@@ -666,15 +703,22 @@ contract PayvergePaymentsSecurityTest is Test {
         bytes32 bill3 = keccak256("retail-bill");
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
+        
+        // Ensure all businesses have valid subscriptions after time warp
+        ensureValidSubscription(business1);
+        ensureValidSubscription(business2);
+        ensureValidSubscription(business3);
 
         vm.prank(admin);
         payverge.createBill(bill1, business1, 50 * 10 ** 6, "{}", keccak256("rest-nonce"));
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
+        ensureValidSubscription(business2);
         vm.prank(admin);
         payverge.createBill(bill2, business2, 15 * 10 ** 6, "{}", keccak256("coffee-nonce"));
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
+        ensureValidSubscription(business3);
         vm.prank(admin);
         payverge.createBill(bill3, business3, 200 * 10 ** 6, "{}", keccak256("retail-nonce"));
 
@@ -729,7 +773,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 17: Rate Limiting Complex Scenarios
-    function testRateLimitingComplexScenarios() public {
+    function testRateLimitingComplexScenarios() public withValidSubscriptions {
         uint256 rateWindow = payverge.RATE_LIMIT_WINDOW();
 
         // Test rapid bill creation attempts
@@ -769,7 +813,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 18: Gas Exhaustion and DoS Resistance
-    function testGasExhaustionResistance() public {
+    function testGasExhaustionResistance() public withValidSubscriptions {
         bytes32 billId = keccak256("gas-test");
 
         vm.warp(block.timestamp + payverge.RATE_LIMIT_WINDOW() + 1);
@@ -847,7 +891,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 20: Emergency Pause Scenarios
-    function testEmergencyPauseScenarios() public {
+    function testEmergencyPauseScenarios() public withValidSubscriptions {
         bytes32 billId = keccak256("pause-test");
 
         // Create bill before pause
@@ -889,7 +933,7 @@ contract PayvergePaymentsSecurityTest is Test {
     // ==================== INVARIANT TESTS ====================
 
     // Test 21: Token Balance Invariants
-    function testTokenBalanceInvariants() public {
+    function testTokenBalanceInvariants() public withValidSubscriptions {
         uint256 initialContractBalance = usdc.balanceOf(address(payverge));
         uint256 initialTotalSupply = usdc.totalSupply();
 
@@ -926,7 +970,7 @@ contract PayvergePaymentsSecurityTest is Test {
     }
 
     // Test 22: Business Earnings Invariants
-    function testBusinessEarningsInvariants() public {
+    function testBusinessEarningsInvariants() public withValidSubscriptions {
         uint256 totalPayments = 0;
         uint256 totalTips = 0;
         uint256 numBills = 3;
@@ -969,7 +1013,7 @@ contract PayvergePaymentsSecurityTest is Test {
 
     // ============ UNIFIED PAYMENT SYSTEM TESTS ============
 
-    function testUnifiedPaymentSystem_SinglePayer() public {
+    function testUnifiedPaymentSystem_SinglePayer() public withValidSubscriptions {
         bytes32 billId = keccak256("test_bill_single");
 
         // Skip time to avoid rate limiting
@@ -995,7 +1039,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(paymentCount, 1);
     }
 
-    function testUnifiedPaymentSystem_MultipleParticipants() public {
+    function testUnifiedPaymentSystem_MultipleParticipants() public withValidSubscriptions {
         bytes32 billId = keccak256("test_bill_multiple");
         address customer2 = address(0x4);
         address customer3 = address(0x5);
@@ -1048,7 +1092,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(customer3Paid, 25 * 10 ** 6);
     }
 
-    function testUnifiedPaymentSystem_MultiplePaymentsSamePerson() public {
+    function testUnifiedPaymentSystem_MultiplePaymentsSamePerson() public withValidSubscriptions {
         bytes32 billId = keccak256("test_bill_multiple_payments");
 
         // Skip time to avoid rate limiting
@@ -1080,7 +1124,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(paymentCount, 3);
     }
 
-    function testUnifiedPaymentSystem_PartialPayments() public {
+    function testUnifiedPaymentSystem_PartialPayments() public withValidSubscriptions {
         bytes32 billId = keccak256("test_bill_partial");
         address customer2 = address(0x4);
 
@@ -1119,7 +1163,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertTrue(isPaid);
     }
 
-    function testUnifiedPaymentSystem_WithTips() public {
+    function testUnifiedPaymentSystem_WithTips() public withValidSubscriptions {
         bytes32 billId = keccak256("test_bill_tips");
         uint256 tipAmount = 10 * 10 ** 6; // 10 USDC tip
 
@@ -1147,7 +1191,7 @@ contract PayvergePaymentsSecurityTest is Test {
 
     // ============ EDGE CASES AND ATTACK VECTORS ============
 
-    function testEdgeCase_ExactPaymentAmount() public {
+    function testEdgeCase_ExactPaymentAmount() public withValidSubscriptions {
         bytes32 billId = keccak256("test_exact_payment");
 
         // Skip time to avoid rate limiting
@@ -1172,7 +1216,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.processPayment(billId, 100, 0);
     }
 
-    function testEdgeCase_MinimumPaymentAmount() public {
+    function testEdgeCase_MinimumPaymentAmount() public withValidSubscriptions {
         bytes32 billId = keccak256("test_min_payment");
 
         // Skip time to avoid rate limiting
@@ -1192,7 +1236,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.processPayment(billId, 100, 0); // Exactly MIN_PAYMENT_AMOUNT
     }
 
-    function testEdgeCase_MaxParticipants() public {
+    function testEdgeCase_MaxParticipants() public withValidSubscriptions {
         bytes32 billId = keccak256("test_max_participants");
         uint256 largeAmount = 2000 * 10 ** 6; // 2000 USDC to allow many small payments
 
@@ -1222,7 +1266,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(participants.length, 50);
     }
 
-    function testAttack_OverpaymentAttempt() public {
+    function testAttack_OverpaymentAttempt() public withValidSubscriptions {
         bytes32 billId = keccak256("test_overpayment_attack");
 
         // Skip time to avoid rate limiting
@@ -1247,7 +1291,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.processPayment(billId, 51 * 10 ** 6, 0);
     }
 
-    function testAttack_PaymentToCompletedBill() public {
+    function testAttack_PaymentToCompletedBill() public withValidSubscriptions {
         bytes32 billId = keccak256("test_completed_bill_attack");
 
         // Skip time to avoid rate limiting
@@ -1275,7 +1319,7 @@ contract PayvergePaymentsSecurityTest is Test {
         payverge.processPayment(billId, 100, 0);
     }
 
-    function testAttack_DustPaymentGriefing() public {
+    function testAttack_DustPaymentGriefing() public withValidSubscriptions {
         bytes32 billId = keccak256("test_dust_attack");
 
         // Skip time to avoid rate limiting
@@ -1309,7 +1353,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertTrue(isPaid);
     }
 
-    function testEdgeCase_ZeroTipAmount() public {
+    function testEdgeCase_ZeroTipAmount() public withValidSubscriptions {
         bytes32 billId = keccak256("test_zero_tip");
 
         // Skip time to avoid rate limiting
@@ -1329,7 +1373,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertTrue(claimablePayments > 0); // Should have business payment
     }
 
-    function testEdgeCase_LargeTipAmount() public {
+    function testEdgeCase_LargeTipAmount() public withValidSubscriptions {
         bytes32 billId = keccak256("test_large_tip");
         uint256 largeTip = 1000 * 10 ** 6; // 1000 USDC tip (larger than bill)
 
@@ -1349,7 +1393,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(claimableTips, largeTip);
     }
 
-    function testInvariant_ParticipantCountConsistency() public {
+    function testInvariant_ParticipantCountConsistency() public withValidSubscriptions {
         bytes32 billId = keccak256("test_participant_consistency");
         address customer2 = address(0x4);
 
@@ -1388,7 +1432,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertFalse(payverge.hasParticipatedInBill(billId, address(0x999)));
     }
 
-    function testInvariant_PaymentSumEqualsTotal() public {
+    function testInvariant_PaymentSumEqualsTotal() public withValidSubscriptions {
         bytes32 billId = keccak256("test_payment_sum");
         address[] memory customers = new address[](5);
         uint256[] memory amounts = new uint256[](5);
@@ -1640,7 +1684,7 @@ contract PayvergePaymentsSecurityTest is Test {
 
     // ============ EMERGENCY FUNCTION TESTS ============
 
-    function testPauseUnpauseFlow() public {
+    function testPauseUnpauseFlow() public withValidSubscriptions {
         bytes32 billId = keccak256("test_pause_bill");
 
         // Skip time to avoid rate limiting
@@ -1695,7 +1739,7 @@ contract PayvergePaymentsSecurityTest is Test {
 
     // ============ VIEW FUNCTION TESTS ============
 
-    function testGetBusinessBillCount() public {
+    function testGetBusinessBillCount() public withValidSubscriptions {
         // Skip time to avoid rate limiting
         vm.warp(block.timestamp + 1647);
 
@@ -1714,7 +1758,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(payverge.getBusinessBillCount(businessOwner), 3);
     }
 
-    function testGetBillFunction() public {
+    function testGetBillFunction() public withValidSubscriptions {
         bytes32 billId = keccak256("test_get_bill");
 
         // Skip time to avoid rate limiting
@@ -1752,7 +1796,7 @@ contract PayvergePaymentsSecurityTest is Test {
         assertEq(nonExistent.paymentAddress, address(0));
     }
 
-    function testGetBillPayments() public {
+    function testGetBillPayments() public withValidSubscriptions {
         bytes32 billId = keccak256("test_get_payments");
 
         // Skip time to avoid rate limiting
@@ -1815,7 +1859,7 @@ contract PayvergePaymentsSecurityTest is Test {
 
     function testVersionFunction() public view {
         string memory version = payverge.version();
-        assertEq(version, "2.1.0-profit-split-only");
+        assertEq(version, "2.2.0-coupons-and-subscriptions");
     }
 
     // ============ ERROR CONDITION TESTS ============

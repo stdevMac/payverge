@@ -50,6 +50,8 @@ contract PayvergePayments is
     uint256 public constant RATE_LIMIT_WINDOW = 60; // 1 minute rate limit window
     uint256 public constant MAX_REGISTRATION_FEE = 1000 * 10 ** 6; // $1000 max registration fee
     uint256 public constant MAX_SPLIT_PARTICIPANTS = 20; // Maximum number of split participants
+    uint256 public constant SECONDS_PER_YEAR = 365 days; // Seconds in a year for subscription calculations
+    uint256 public constant MIN_SUBSCRIPTION_PAYMENT = 1 * 10 ** 6; // Minimum $1 USDC for subscription
 
     // State variables
     IERC20 public usdcToken;
@@ -91,8 +93,16 @@ contract PayvergePayments is
         address tippingAddress; // 20 bytes
         bool isActive; // 1 byte
         uint64 registrationDate; // 8 bytes (sufficient until year 2554)
+        uint64 subscriptionExpiry; // 8 bytes - when subscription expires
         uint256 totalVolume; // 32 bytes
         uint256 totalTips; // 32 bytes
+    }
+
+    struct CouponInfo {
+        uint256 discountAmount; // 32 bytes - fixed discount amount in USDC
+        uint64 expiryTime; // 8 bytes - when coupon expires
+        bool isUsed; // 1 byte - whether coupon has been used
+        bool isActive; // 1 byte - whether coupon is active (admin can deactivate)
     }
 
     struct Payment {
@@ -147,9 +157,14 @@ contract PayvergePayments is
     mapping(bytes32 => AlternativePayment[]) public billAlternativePayments;
     mapping(bytes32 => uint256) public totalAlternativeAmount;
 
+    // Coupon system - using hash of coupon code for security
+    mapping(bytes32 => CouponInfo) public coupons; // couponHash => CouponInfo
+    mapping(bytes32 => bool) public couponExists; // couponHash => exists
+
     // Modifiers
     modifier onlyActiveBusiness(address business) {
         require(businessInfo[business].isActive, "Business not active");
+        require(block.timestamp <= businessInfo[business].subscriptionExpiry, "Business subscription expired");
         _;
     }
 
@@ -193,6 +208,15 @@ contract PayvergePayments is
         address indexed referrer,
         string referralCode
     );
+    event BusinessRegisteredWithCoupon(
+        address indexed businessAddress,
+        string name,
+        address paymentAddress,
+        address tippingAddress,
+        uint256 originalFee,
+        uint256 discount,
+        bytes32 indexed couponHash
+    );
     event BusinessPaymentAddressUpdated(address indexed businessAddress, address newPaymentAddress);
     event BusinessTippingAddressUpdated(address indexed businessAddress, address newTippingAddress);
     event BillCreated(
@@ -228,6 +252,19 @@ contract PayvergePayments is
         address indexed confirmedBy
     );
     event BillCompletedWithAlternativePayments(bytes32 indexed billId, uint256 totalCrypto, uint256 totalAlternative);
+    
+    // Coupon and subscription events
+    event CouponCreated(bytes32 indexed couponHash, uint256 discountAmount, uint64 expiryTime);
+    event CouponDeactivated(bytes32 indexed couponHash);
+    event CouponUsed(bytes32 indexed couponHash, address indexed business, uint256 discountAmount);
+    event BusinessSubscriptionRenewed(address indexed business, uint256 paymentAmount, uint64 newExpiryTime);
+    event BusinessSubscriptionRenewedWithCoupon(
+        address indexed business, 
+        uint256 originalAmount, 
+        uint256 discountAmount, 
+        uint64 newExpiryTime, 
+        bytes32 indexed couponHash
+    );
 
     // Custom errors
     error BillNotFound(bytes32 billId);
@@ -239,6 +276,13 @@ contract PayvergePayments is
     error UnauthorizedBillModification(address caller, address creator);
     error NothingToClaim();
     error NonceAlreadyUsed(bytes32 nonce);
+    error CouponNotFound(bytes32 couponHash);
+    error CouponExpired(bytes32 couponHash);
+    error CouponAlreadyUsed(bytes32 couponHash);
+    error CouponNotActive(bytes32 couponHash);
+    error CouponAndReferralNotAllowed();
+    error BusinessSubscriptionExpired(address business);
+    error InvalidSubscriptionPayment(uint256 amount);
 
     /**
      * @dev Initialize the contract
@@ -294,6 +338,75 @@ contract PayvergePayments is
     }
 
     /**
+     * @dev Register a new business with coupon code
+     * @param name Business name
+     * @param paymentAddress Address to receive payments
+     * @param tippingAddress Address to receive tips
+     * @param couponCode Coupon code for discount (incompatible with referrals)
+     */
+    function registerBusinessWithCoupon(
+        string calldata name,
+        address paymentAddress,
+        address tippingAddress,
+        string calldata couponCode
+    ) external whenNotPaused {
+        require(paymentAddress != address(0) && tippingAddress != address(0), "Zero address");
+        require(!businessInfo[msg.sender].isActive, "Business already registered");
+        require(bytes(couponCode).length > 0, "Empty coupon code");
+
+        // Validate and use coupon
+        uint256 discountAmount = _validateAndUseCoupon(couponCode);
+        bytes32 couponHash = keccak256(abi.encodePacked(couponCode));
+        
+        // Calculate final payment amount
+        uint256 finalFee = businessRegistrationFee > discountAmount ? 
+            businessRegistrationFee - discountAmount : 0;
+        
+        // Ensure minimum payment for subscription time calculation
+        if (finalFee > 0) {
+
+        
+        // Transfer payment
+        usdcToken.safeTransferFrom(msg.sender, address(this), finalFee);
+        
+        }
+        // Calculate subscription time based on ORIGINAL fee (before discount)
+        uint256 subscriptionSeconds = calculateSubscriptionTime(businessRegistrationFee);
+        uint64 subscriptionExpiry = uint64(block.timestamp + subscriptionSeconds);
+        
+        // Register business
+        businessInfo[msg.sender] = BusinessInfo({
+            paymentAddress: paymentAddress,
+            tippingAddress: tippingAddress,
+            isActive: true,
+            registrationDate: uint64(block.timestamp),
+            subscriptionExpiry: subscriptionExpiry,
+            totalVolume: 0,
+            totalTips: 0
+        });
+        
+        // Send payment to profit split contract if configured
+        if (address(profitSplitContract) != address(0)) {
+            usdcToken.safeTransfer(address(profitSplitContract), finalFee);
+            try profitSplitContract.depositForDistribution(finalFee) {
+                // Successfully deposited for distribution
+            } catch {
+                // If deposit fails, funds are still in the profit split contract
+            }
+        }
+        
+        emit BusinessRegisteredWithCoupon(
+            msg.sender,
+            name,
+            paymentAddress,
+            tippingAddress,
+            businessRegistrationFee,
+            discountAmount,
+            couponHash
+        );
+    }
+
+    /**
      * @dev Update business payment address (only business owner)
      */
     function updateBusinessPaymentAddress(address newPaymentAddress)
@@ -339,6 +452,7 @@ contract PayvergePayments is
         require(businessAddress != address(0), "Zero address");
         require(!usedNonces["createBill"][nonce], "Nonce already used");
         require(businessInfo[businessAddress].isActive, "Business not active");
+        require(block.timestamp <= businessInfo[businessAddress].subscriptionExpiry, "Business subscription expired");
 
         usedNonces["createBill"][nonce] = true;
 
@@ -828,6 +942,10 @@ contract PayvergePayments is
             // Note: If no profit split contract is set, registration fees remain in contract
         }
 
+        // Calculate subscription time based on original registration fee (before any referral discount)
+        uint256 subscriptionSeconds = calculateSubscriptionTime(businessRegistrationFee);
+        uint64 subscriptionExpiry = uint64(block.timestamp + subscriptionSeconds);
+
         // Register business
         businessInfo[msg.sender] = BusinessInfo({
             paymentAddress: paymentAddress,
@@ -835,6 +953,7 @@ contract PayvergePayments is
             totalVolume: 0,
             totalTips: 0,
             registrationDate: uint64(block.timestamp),
+            subscriptionExpiry: subscriptionExpiry,
             isActive: true
         });
 
@@ -893,6 +1012,249 @@ contract PayvergePayments is
         }
     }
 
+    // ============ COUPON MANAGEMENT FUNCTIONS ============
+
+    /**
+     * @dev Create a new coupon (admin only)
+     * @param couponCode The coupon code (will be hashed for security)
+     * @param discountAmount Fixed discount amount in USDC
+     * @param expiryTime When the coupon expires (timestamp)
+     */
+    function createCoupon(
+        string calldata couponCode,
+        uint256 discountAmount,
+        uint64 expiryTime
+    ) external onlyRole(ADMIN_ROLE) {
+        require(bytes(couponCode).length > 0, "Empty coupon code");
+        require(discountAmount > 0, "Invalid discount amount");
+        require(expiryTime > block.timestamp, "Expiry time must be in future");
+
+        bytes32 couponHash = keccak256(abi.encodePacked(couponCode));
+        require(!couponExists[couponHash], "Coupon already exists");
+
+        coupons[couponHash] = CouponInfo({
+            discountAmount: discountAmount,
+            expiryTime: expiryTime,
+            isUsed: false,
+            isActive: true
+        });
+        couponExists[couponHash] = true;
+
+        emit CouponCreated(couponHash, discountAmount, expiryTime);
+    }
+
+    /**
+     * @dev Deactivate a coupon (admin only)
+     * @param couponCode The coupon code to deactivate
+     */
+    function deactivateCoupon(string calldata couponCode) external onlyRole(ADMIN_ROLE) {
+        bytes32 couponHash = keccak256(abi.encodePacked(couponCode));
+        if (!couponExists[couponHash]) revert CouponNotFound(couponHash);
+
+        coupons[couponHash].isActive = false;
+        emit CouponDeactivated(couponHash);
+    }
+
+    /**
+     * @dev Get coupon information by hash (for verification)
+     * @param couponHash Hash of the coupon code
+     * @return CouponInfo struct
+     */
+    function getCouponInfo(bytes32 couponHash) external view returns (CouponInfo memory) {
+        if (!couponExists[couponHash]) revert CouponNotFound(couponHash);
+        return coupons[couponHash];
+    }
+
+    /**
+     * @dev Validate and use a coupon (internal function)
+     * @param couponCode The coupon code to validate and use
+     * @return discountAmount The discount amount if valid
+     */
+    function _validateAndUseCoupon(string calldata couponCode) internal returns (uint256 discountAmount) {
+        bytes32 couponHash = keccak256(abi.encodePacked(couponCode));
+        
+        if (!couponExists[couponHash]) revert CouponNotFound(couponHash);
+        
+        CouponInfo storage coupon = coupons[couponHash];
+        
+        if (!coupon.isActive) revert CouponNotActive(couponHash);
+        if (coupon.isUsed) revert CouponAlreadyUsed(couponHash);
+        if (block.timestamp > coupon.expiryTime) revert CouponExpired(couponHash);
+        
+        // Mark coupon as used
+        coupon.isUsed = true;
+        discountAmount = coupon.discountAmount;
+        
+        emit CouponUsed(couponHash, msg.sender, discountAmount);
+    }
+
+    // ============ SUBSCRIPTION TIME MANAGEMENT ============
+
+    /**
+     * @dev Calculate subscription time based on payment amount
+     * @param paymentAmount Amount being paid for subscription
+     * @return subscriptionSeconds Number of seconds of subscription time
+     */
+    function calculateSubscriptionTime(uint256 paymentAmount) public view returns (uint256 subscriptionSeconds) {
+        if (paymentAmount == 0) return 0;
+        
+        // Special case: if registration fee is 0 (free registration), give full year subscription
+        if (businessRegistrationFee == 0) return SECONDS_PER_YEAR;
+        
+        if (paymentAmount >= businessRegistrationFee) return SECONDS_PER_YEAR;
+        
+        // Pro-rated calculation: (paymentAmount / fullYearPrice) * secondsPerYear
+        subscriptionSeconds = (paymentAmount * SECONDS_PER_YEAR) / businessRegistrationFee;
+    }
+
+    /**
+     * @dev Calculate payment amount needed for specific subscription time
+     * @param subscriptionSeconds Number of seconds of subscription time desired
+     * @return paymentAmount Amount needed to pay for that time
+     */
+    function calculatePaymentForTime(uint256 subscriptionSeconds) public view returns (uint256 paymentAmount) {
+        if (subscriptionSeconds == 0) return 0;
+        
+        // Special case: if registration fee is 0 (free registration), no payment needed
+        if (businessRegistrationFee == 0) return 0;
+        
+        if (subscriptionSeconds >= SECONDS_PER_YEAR) return businessRegistrationFee;
+        
+        // Pro-rated calculation: (subscriptionSeconds / secondsPerYear) * fullYearPrice
+        paymentAmount = (subscriptionSeconds * businessRegistrationFee) / SECONDS_PER_YEAR;
+        
+        // Ensure minimum payment
+        if (paymentAmount < MIN_SUBSCRIPTION_PAYMENT) {
+            paymentAmount = MIN_SUBSCRIPTION_PAYMENT;
+        }
+    }
+
+    /**
+     * @dev Get business subscription status
+     * @param business Business address to check
+     * @return isActive Whether business is active
+     * @return subscriptionExpiry When subscription expires
+     * @return timeRemaining Seconds remaining in subscription
+     */
+    function getBusinessSubscriptionStatus(address business) 
+        external 
+        view 
+        returns (bool isActive, uint64 subscriptionExpiry, uint256 timeRemaining) 
+    {
+        BusinessInfo memory info = businessInfo[business];
+        isActive = info.isActive;
+        subscriptionExpiry = info.subscriptionExpiry;
+        
+        if (block.timestamp >= subscriptionExpiry) {
+            timeRemaining = 0;
+        } else {
+            timeRemaining = subscriptionExpiry - block.timestamp;
+        }
+    }
+
+    /**
+     * @dev Renew business subscription
+     * @param paymentAmount Amount to pay for renewal
+     */
+    function renewSubscription(uint256 paymentAmount) external nonReentrant whenNotPaused {
+        if (paymentAmount < MIN_SUBSCRIPTION_PAYMENT) revert InvalidSubscriptionPayment(paymentAmount);
+        if (!businessInfo[msg.sender].isActive) revert ZeroAddress(); // Business not registered
+        
+        uint256 subscriptionSeconds = calculateSubscriptionTime(paymentAmount);
+        
+        // Transfer payment
+        usdcToken.safeTransferFrom(msg.sender, address(this), paymentAmount);
+        
+        // Add time to current expiry (or from now if already expired)
+        uint64 currentExpiry = businessInfo[msg.sender].subscriptionExpiry;
+        uint64 newExpiry;
+        
+        if (block.timestamp > currentExpiry) {
+            // Subscription already expired, start from now
+            newExpiry = uint64(block.timestamp + subscriptionSeconds);
+        } else {
+            // Subscription still active, extend from current expiry
+            newExpiry = uint64(currentExpiry + subscriptionSeconds);
+        }
+        
+        businessInfo[msg.sender].subscriptionExpiry = newExpiry;
+        
+        // Send payment to profit split contract if configured
+        if (address(profitSplitContract) != address(0)) {
+            usdcToken.safeTransfer(address(profitSplitContract), paymentAmount);
+            try profitSplitContract.depositForDistribution(paymentAmount) {
+                // Successfully deposited for distribution
+            } catch {
+                // If deposit fails, funds are still in the profit split contract
+            }
+        }
+        
+        emit BusinessSubscriptionRenewed(msg.sender, paymentAmount, newExpiry);
+    }
+
+    /**
+     * @dev Renew business subscription with coupon
+     * @param paymentAmount Original amount before discount
+     * @param couponCode Coupon code to apply
+     */
+    function renewSubscriptionWithCoupon(
+        uint256 paymentAmount, 
+        string calldata couponCode
+    ) external nonReentrant whenNotPaused {
+        if (paymentAmount < MIN_SUBSCRIPTION_PAYMENT) revert InvalidSubscriptionPayment(paymentAmount);
+        if (!businessInfo[msg.sender].isActive) revert ZeroAddress(); // Business not registered
+        
+        // Validate and use coupon
+        uint256 discountAmount = _validateAndUseCoupon(couponCode);
+        bytes32 couponHash = keccak256(abi.encodePacked(couponCode));
+        
+        // Calculate final payment amount
+        uint256 finalPayment = paymentAmount > discountAmount ? paymentAmount - discountAmount : 0;
+        if (finalPayment < MIN_SUBSCRIPTION_PAYMENT) {
+            finalPayment = MIN_SUBSCRIPTION_PAYMENT;
+        }
+        
+        // Calculate subscription time based on ORIGINAL amount (before discount)
+        uint256 subscriptionSeconds = calculateSubscriptionTime(paymentAmount);
+        
+        // Transfer final payment amount
+        usdcToken.safeTransferFrom(msg.sender, address(this), finalPayment);
+        
+        // Add time to current expiry (or from now if already expired)
+        uint64 currentExpiry = businessInfo[msg.sender].subscriptionExpiry;
+        uint64 newExpiry;
+        
+        if (block.timestamp > currentExpiry) {
+            // Subscription already expired, start from now
+            newExpiry = uint64(block.timestamp + subscriptionSeconds);
+        } else {
+            // Subscription still active, extend from current expiry
+            newExpiry = uint64(currentExpiry + subscriptionSeconds);
+        }
+        
+        businessInfo[msg.sender].subscriptionExpiry = newExpiry;
+        
+        // Send payment to profit split contract if configured
+        if (address(profitSplitContract) != address(0)) {
+            usdcToken.safeTransfer(address(profitSplitContract), finalPayment);
+            try profitSplitContract.depositForDistribution(finalPayment) {
+                // Successfully deposited for distribution
+            } catch {
+                // If deposit fails, funds are still in the profit split contract
+            }
+        }
+        
+        emit BusinessSubscriptionRenewedWithCoupon(
+            msg.sender, 
+            paymentAmount, 
+            discountAmount, 
+            newExpiry, 
+            couponHash
+        );
+    }
+
+    // ============ EXISTING ADMIN FUNCTIONS ============
+
     /**
      * @dev Set the referrals contract address (admin only)
      * @param _referralsContract Address of the PayvergeReferrals contract
@@ -934,6 +1296,6 @@ contract PayvergePayments is
      * @dev Get contract version
      */
     function version() external pure returns (string memory) {
-        return "2.1.0-profit-split-only";
+        return "2.2.0-coupons-and-subscriptions";
     }
 }

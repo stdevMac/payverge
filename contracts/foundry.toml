@@ -7,6 +7,11 @@ remappings = [
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/"
 ]
 
+# Optimizer settings to reduce contract size
+optimizer = true
+optimizer_runs = 1000  # Higher runs = smaller contract size
+via_ir = true  # Enable intermediate representation for better optimization
+
 # Optimize test performance
 fuzz = { runs = 100 }  # Reduced from default 256
 invariant = { runs = 50, depth = 15 }  # Reduced from defaults

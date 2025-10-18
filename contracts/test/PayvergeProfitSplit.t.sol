@@ -49,6 +49,10 @@ contract PayvergeProfitSplitTest is Test {
         bytes32 indexed distributionId, address indexed beneficiary, uint256 amount, uint256 percentage
     );
 
+    event ExpenseReserveUpdated(uint256 oldPercentage, uint256 newPercentage, address indexed updatedBy);
+    
+    event ExpenseFundsWithdrawn(uint256 amount, address indexed to, string reason, address indexed withdrawnBy);
+
     function setUp() public {
         // Deploy USDC mock
         usdc = new MockUSDC();
@@ -447,5 +451,302 @@ contract PayvergeProfitSplitTest is Test {
 
         assertEq(ben1.totalReceived, expectedPayout1);
         assertEq(ben2.totalReceived, expectedPayout2);
+    }
+
+    // ============ EXPENSE MANAGEMENT TESTS ============
+
+    function testSetExpenseReservePercentage() public {
+        uint256 newPercentage = 1000; // 10%
+
+        vm.expectEmit(true, false, false, true);
+        emit ExpenseReserveUpdated(0, newPercentage, admin);
+
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(newPercentage);
+
+        (uint256 reservePercentage,,) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, newPercentage);
+    }
+
+    function testSetExpenseReservePercentageMaxLimit() public {
+        // Should allow 50% (5000 basis points)
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(5000);
+
+        (uint256 reservePercentage,,) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, 5000);
+
+        // Should revert for more than 50%
+        vm.prank(admin);
+        vm.expectRevert(PayvergeProfitSplit.InvalidExpensePercentage.selector);
+        profitSplit.setExpenseReservePercentage(5001);
+    }
+
+    function testDistributeProfitsWithExpenses() public {
+        // Set 20% expense reserve
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(2000); // 20%
+
+        // Add beneficiaries
+        vm.startPrank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 6000); // 60%
+        profitSplit.addBeneficiary(partner2, "Partner 2", 4000); // 40%
+        vm.stopPrank();
+
+        uint256 totalAmount = 1000 * 10 ** 6; // $1000
+        uint256 expectedExpenseAmount = (totalAmount * 2000) / 10000; // $200
+        uint256 expectedDistributionAmount = totalAmount - expectedExpenseAmount; // $800
+        uint256 expectedPayout1 = (expectedDistributionAmount * 6000) / 10000; // $480
+        uint256 expectedPayout2 = (expectedDistributionAmount * 4000) / 10000; // $320
+
+        uint256 balance1Before = usdc.balanceOf(partner1);
+        uint256 balance2Before = usdc.balanceOf(partner2);
+
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(totalAmount);
+
+        // Check beneficiary payouts (should be reduced due to expense allocation)
+        assertEq(usdc.balanceOf(partner1), balance1Before + expectedPayout1);
+        assertEq(usdc.balanceOf(partner2), balance2Before + expectedPayout2);
+
+        // Check expense funds
+        assertEq(profitSplit.getAvailableExpenseFunds(), expectedExpenseAmount);
+
+        // Check expense stats
+        (uint256 reservePercentage, uint256 availableFunds, uint256 totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, 2000);
+        assertEq(availableFunds, expectedExpenseAmount);
+        assertEq(totalWithdrawn, 0);
+    }
+
+    function testDistributeAllProfitsWithExpenses() public {
+        // Set 15% expense reserve
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(1500); // 15%
+
+        // Add beneficiaries
+        vm.startPrank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 5000); // 50%
+        profitSplit.addBeneficiary(partner2, "Partner 2", 5000); // 50%
+        vm.stopPrank();
+
+        uint256 contractBalance = usdc.balanceOf(address(profitSplit));
+        uint256 expectedExpenseAmount = (contractBalance * 1500) / 10000; // 15%
+        uint256 expectedDistributionAmount = contractBalance - expectedExpenseAmount; // 85%
+        uint256 expectedPayoutEach = expectedDistributionAmount / 2; // 50% each of distribution amount
+
+        uint256 balance1Before = usdc.balanceOf(partner1);
+        uint256 balance2Before = usdc.balanceOf(partner2);
+
+        vm.prank(distributor);
+        profitSplit.distributeAllProfitsWithExpenses();
+
+        // Check beneficiary payouts
+        assertEq(usdc.balanceOf(partner1), balance1Before + expectedPayoutEach);
+        assertEq(usdc.balanceOf(partner2), balance2Before + expectedPayoutEach);
+
+        // Check expense funds
+        assertEq(profitSplit.getAvailableExpenseFunds(), expectedExpenseAmount);
+    }
+
+    function testWithdrawExpenseFunds() public {
+        // Set expense reserve and distribute to accumulate expense funds
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(2500); // 25%
+
+        vm.startPrank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000); // 100%
+        vm.stopPrank();
+
+        uint256 distributionAmount = 1000 * 10 ** 6; // $1000
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(distributionAmount);
+
+        uint256 availableExpenseFunds = profitSplit.getAvailableExpenseFunds();
+        assertEq(availableExpenseFunds, 250 * 10 ** 6); // $250
+
+        // Withdraw expense funds
+        uint256 withdrawAmount = 100 * 10 ** 6; // $100
+        string memory reason = "Server hosting costs";
+        uint256 treasuryBalanceBefore = usdc.balanceOf(treasury);
+
+        vm.expectEmit(true, true, false, true);
+        emit ExpenseFundsWithdrawn(withdrawAmount, treasury, reason, admin);
+
+        vm.prank(admin);
+        profitSplit.withdrawExpenseFunds(withdrawAmount, treasury, reason);
+
+        // Check treasury received funds
+        assertEq(usdc.balanceOf(treasury), treasuryBalanceBefore + withdrawAmount);
+
+        // Check expense funds reduced
+        assertEq(profitSplit.getAvailableExpenseFunds(), availableExpenseFunds - withdrawAmount);
+
+        // Check expense stats
+        (,, uint256 totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(totalWithdrawn, withdrawAmount);
+    }
+
+    function testWithdrawExpenseFundsInsufficientFunds() public {
+        // Try to withdraw more than available
+        vm.prank(admin);
+        vm.expectRevert(PayvergeProfitSplit.InsufficientExpenseFunds.selector);
+        profitSplit.withdrawExpenseFunds(100 * 10 ** 6, treasury, "Test withdrawal");
+    }
+
+    function testWithdrawExpenseFundsInvalidInputs() public {
+        // First accumulate some expense funds
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(1000); // 10%
+        
+        vm.prank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000);
+        
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(1000 * 10 ** 6);
+
+        // Invalid recipient address
+        vm.prank(admin);
+        vm.expectRevert(PayvergeProfitSplit.InvalidBeneficiaryAddress.selector);
+        profitSplit.withdrawExpenseFunds(100 * 10 ** 6, address(0), "Test");
+
+        // Zero amount
+        vm.prank(admin);
+        vm.expectRevert(PayvergeProfitSplit.InvalidDistributionAmount.selector);
+        profitSplit.withdrawExpenseFunds(0, treasury, "Test");
+
+        // Empty reason
+        vm.prank(admin);
+        vm.expectRevert(PayvergeProfitSplit.EmptyExpenseReason.selector);
+        profitSplit.withdrawExpenseFunds(100 * 10 ** 6, treasury, "");
+    }
+
+    function testExpenseManagementAccessControl() public {
+        // Non-admin cannot set expense percentage
+        vm.prank(distributor);
+        vm.expectRevert();
+        profitSplit.setExpenseReservePercentage(1000);
+
+        // Non-admin cannot withdraw expense funds
+        vm.prank(distributor);
+        vm.expectRevert();
+        profitSplit.withdrawExpenseFunds(100 * 10 ** 6, treasury, "Test");
+    }
+
+    function testExpenseStatsView() public {
+        // Initial state
+        (uint256 reservePercentage, uint256 availableFunds, uint256 totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, 0);
+        assertEq(availableFunds, 0);
+        assertEq(totalWithdrawn, 0);
+
+        // Set expense percentage
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(1000); // 10%
+
+        // Add beneficiary and distribute
+        vm.prank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000);
+
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(1000 * 10 ** 6);
+
+        // Check updated stats
+        (reservePercentage, availableFunds, totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, 1000);
+        assertEq(availableFunds, 100 * 10 ** 6); // 10% of $1000
+        assertEq(totalWithdrawn, 0);
+
+        // Withdraw some funds
+        vm.prank(admin);
+        profitSplit.withdrawExpenseFunds(30 * 10 ** 6, treasury, "Office rent");
+
+        // Check final stats
+        (reservePercentage, availableFunds, totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(reservePercentage, 1000);
+        assertEq(availableFunds, 70 * 10 ** 6); // $100 - $30
+        assertEq(totalWithdrawn, 30 * 10 ** 6);
+    }
+
+    function testExpenseAllocationWithZeroPercentage() public {
+        // With 0% expense reserve, all should go to beneficiaries
+        vm.prank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000);
+
+        uint256 distributionAmount = 1000 * 10 ** 6;
+        uint256 balance1Before = usdc.balanceOf(partner1);
+
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(distributionAmount);
+
+        // All should go to beneficiary
+        assertEq(usdc.balanceOf(partner1), balance1Before + distributionAmount);
+        assertEq(profitSplit.getAvailableExpenseFunds(), 0);
+    }
+
+    function testMultipleExpenseWithdrawals() public {
+        // Setup expense reserve
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(3000); // 30%
+
+        vm.prank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000);
+
+        // Distribute to accumulate expense funds
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(1000 * 10 ** 6);
+
+        uint256 totalExpenseFunds = profitSplit.getAvailableExpenseFunds();
+        assertEq(totalExpenseFunds, 300 * 10 ** 6); // $300
+
+        // Multiple withdrawals
+        vm.startPrank(admin);
+        profitSplit.withdrawExpenseFunds(100 * 10 ** 6, treasury, "Server costs");
+        profitSplit.withdrawExpenseFunds(50 * 10 ** 6, treasury, "Marketing");
+        profitSplit.withdrawExpenseFunds(75 * 10 ** 6, treasury, "Legal fees");
+        vm.stopPrank();
+
+        // Check remaining funds and total withdrawn
+        assertEq(profitSplit.getAvailableExpenseFunds(), 75 * 10 ** 6); // $300 - $225
+        (,, uint256 totalWithdrawn) = profitSplit.getExpenseStats();
+        assertEq(totalWithdrawn, 225 * 10 ** 6);
+    }
+
+    function testFuzzExpenseAllocation(uint256 amount, uint16 expensePercentage) public {
+        // Skip if amount is too small
+        vm.assume(amount >= 1 * 10 ** 6); // At least $1 USDC
+        vm.assume(amount <= 1000000 * 10 ** 6); // At most $1M USDC
+        vm.assume(expensePercentage <= 5000); // At most 50%
+
+        // Setup
+        vm.prank(admin);
+        profitSplit.setExpenseReservePercentage(expensePercentage);
+
+        vm.prank(admin);
+        profitSplit.addBeneficiary(partner1, "Partner 1", 10000);
+
+        // Ensure contract has enough balance
+        if (usdc.balanceOf(address(profitSplit)) < amount) {
+            usdc.mint(address(profitSplit), amount);
+        }
+
+        uint256 expectedExpenseAmount = (amount * expensePercentage) / 10000;
+        uint256 expectedDistributionAmount = amount - expectedExpenseAmount;
+
+        uint256 balance1Before = usdc.balanceOf(partner1);
+
+        vm.prank(distributor);
+        profitSplit.distributeProfitsWithExpenses(amount);
+
+        // Verify expense allocation
+        assertEq(profitSplit.getAvailableExpenseFunds(), expectedExpenseAmount);
+        
+        // Verify beneficiary received correct amount (only if distribution amount meets minimum)
+        if (expectedDistributionAmount >= 1 * 10 ** 6) { // MIN_DISTRIBUTION_AMOUNT
+            assertEq(usdc.balanceOf(partner1), balance1Before + expectedDistributionAmount);
+        } else {
+            // If distribution amount is below minimum, no distribution should happen
+            assertEq(usdc.balanceOf(partner1), balance1Before);
+        }
     }
 }

@@ -94,7 +94,7 @@ contract DeployPayvergePaymentsTest is Test {
         assertEq(payvergeContract.platformFeeRate(), PLATFORM_FEE_BPS);
         assertEq(payvergeContract.billCreatorAddress(), billCreator);
         assertEq(payvergeContract.getRegistrationFee(), REGISTRATION_FEE);
-        assertEq(payvergeContract.version(), "2.1.0-profit-split-only");
+        assertEq(payvergeContract.version(), "2.2.0-coupons-and-subscriptions");
 
         // Test role assignments
         assertTrue(payvergeContract.hasRole(payvergeContract.ADMIN_ROLE(), deployer));
@@ -179,7 +179,7 @@ contract DeployPayvergePaymentsTest is Test {
         PayvergePayments payvergeContract = PayvergePayments(address(proxy));
 
         // Verify initial version
-        assertEq(payvergeContract.version(), "2.1.0-profit-split-only");
+        assertEq(payvergeContract.version(), "2.2.0-coupons-and-subscriptions");
 
         // Deploy new implementation (for upgrade testing)
         new PayvergePayments();
