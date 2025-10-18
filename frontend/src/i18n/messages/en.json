@@ -186,5 +186,267 @@
         "terms": "Terms"
       }
     }
+  },
+  "businessRegister": {
+    "header": {
+      "badge": "Business Registration",
+      "title": "Register Your",
+      "titleEmphasis": "Business",
+      "subtitle": "Join the future of hospitality payments with crypto-native solutions"
+    },
+    "steps": {
+      "business": {
+        "title": "Business Info",
+        "description": "Name, logo & contact details"
+      },
+      "location": {
+        "title": "Location & Wallets", 
+        "description": "Address & payment setup"
+      },
+      "settings": {
+        "title": "Settings & Features",
+        "description": "Fees, features & preferences"
+      },
+      "subscription": {
+        "title": "Payment",
+        "description": "Choose payment amount"
+      },
+      "review": {
+        "title": "Review & Submit",
+        "description": "Confirm and create"
+      }
+    },
+    "businessInfo": {
+      "title": "Business Information",
+      "description": "Tell us about your business",
+      "fields": {
+        "name": {
+          "label": "Business Name",
+          "placeholder": "Enter your business name",
+          "required": "Business name is required"
+        },
+        "description": {
+          "label": "Business Description",
+          "placeholder": "Describe your business (optional)"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "Enter phone number (optional)"
+        },
+        "email": {
+          "label": "Email Address", 
+          "placeholder": "Enter email address (optional)"
+        },
+        "website": {
+          "label": "Website",
+          "placeholder": "Enter website URL (optional)"
+        },
+        "customUrl": {
+          "label": "Custom URL",
+          "placeholder": "Enter custom URL slug (optional)"
+        }
+      },
+      "logo": {
+        "title": "Business Logo",
+        "description": "Upload your business logo for better brand recognition",
+        "upload": "Upload Logo",
+        "uploading": "Uploading...",
+        "change": "Change Logo",
+        "guidelines": "Recommended: Square image, PNG or JPG, max 5MB"
+      }
+    },
+    "location": {
+      "title": "Location & Payment Setup",
+      "description": "Configure your business address and crypto wallets",
+      "address": {
+        "title": "Business Address",
+        "street": {
+          "label": "Street Address",
+          "placeholder": "123 Main Street"
+        },
+        "city": {
+          "label": "City", 
+          "placeholder": "New York"
+        },
+        "state": {
+          "label": "State/Province",
+          "placeholder": "NY"
+        },
+        "postalCode": {
+          "label": "Postal Code",
+          "placeholder": "10001"
+        },
+        "country": {
+          "label": "Country",
+          "placeholder": "United States"
+        }
+      },
+      "wallets": {
+        "title": "Crypto Wallet Addresses",
+        "settlement": {
+          "label": "Settlement Address",
+          "placeholder": "Enter USDC settlement address",
+          "description": "Where payments will be sent",
+          "useConnected": "Use This Address"
+        },
+        "tipping": {
+          "label": "Tipping Address", 
+          "placeholder": "Enter tipping address (optional)",
+          "description": "Where tips will be sent"
+        }
+      }
+    },
+    "settings": {
+      "title": "Settings & Features",
+      "description": "Configure fees and enable features",
+      "fees": {
+        "title": "Fee Configuration",
+        "taxRate": {
+          "label": "Tax Rate (%)",
+          "placeholder": "8.25"
+        },
+        "serviceFee": {
+          "label": "Service Fee (%)",
+          "placeholder": "18.0"
+        },
+        "taxInclusive": "Tax inclusive pricing",
+        "serviceInclusive": "Service fee inclusive pricing"
+      },
+      "features": {
+        "title": "Business Features",
+        "businessPage": "Business Page",
+        "businessPageDescription": "Create a public page for your business",
+        "showReviews": "Customer Reviews",
+        "showReviewsDescription": "Display customer reviews on your page",
+        "googleReviews": "Google Reviews",
+        "googleReviewsDescription": "Integrate with Google Reviews",
+        "counter": "Order Counter",
+        "counterDescription": "Display order numbers for pickup"
+      },
+      "referral": {
+        "title": "Referral Code (Optional)",
+        "placeholder": "Enter referral code",
+        "checking": "Checking...",
+        "valid": "Valid referral code",
+        "invalid": "Invalid referral code"
+      }
+    },
+    "subscription": {
+      "title": "Choose Your Payment",
+      "description": "Pay what you want - get subscription time proportionally",
+      "suggestedOptions": "Suggested Payment Options",
+      "popular": "Popular",
+      "options": {
+        "1month": "Try for 1 month",
+        "3months": "Get started - 3 months", 
+        "6months": "Save more - 6 months",
+        "12months": "Best value - Full year"
+      },
+      "custom": {
+        "enable": "Pay custom amount",
+        "placeholder": "Enter amount",
+        "description": "You'll get subscription time proportional to the yearly fee",
+        "warning": "Amount above ${amount} will still only give 1 year maximum",
+        "estimatedTime": "Estimated time: {time}"
+      },
+      "discount": {
+        "title": "Discount Options (Choose One)",
+        "none": "No Discount",
+        "noneDescription": "Pay full amount",
+        "coupon": "Coupon Code", 
+        "couponDescription": "Enter coupon for discount",
+        "couponLabel": "Coupon Code",
+        "couponPlaceholder": "Enter coupon code",
+        "referral": "Referral Code",
+        "referralDescription": "Enter referral for discount"
+      },
+      "summary": {
+        "title": "Payment Summary",
+        "subscriptionPayment": "Subscription Payment",
+        "couponDiscount": "Coupon Discount",
+        "referralDiscount": "Referral Discount",
+        "total": "Total",
+        "estimatedTime": "Estimated subscription time: {time}",
+        "baseAmount": "Base Amount",
+        "discount": "Discount",
+        "finalAmount": "Final Amount",
+        "subscriptionTime": "Subscription Time"
+      }
+    },
+    "review": {
+      "title": "Review Your Information",
+      "description": "Please review all details before submitting",
+      "sections": {
+        "business": "Business Information",
+        "location": "Payment Addresses", 
+        "settings": "Business Settings",
+        "payment": "Payment Summary"
+      },
+      "labels": {
+        "businessName": "Business Name",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website",
+        "description": "Description",
+        "settlementAddress": "Settlement Address",
+        "tippingAddress": "Tipping Address",
+        "taxRate": "Tax Rate",
+        "serviceFeeRate": "Service Fee Rate",
+        "features": "Features",
+        "businessPage": "Business Page",
+        "reviews": "Reviews",
+        "counterService": "Counter Service",
+        "subscriptionPayment": "Subscription Payment",
+        "couponDiscount": "Coupon Discount",
+        "referralDiscount": "Referral Discount",
+        "totalPayment": "Total Payment",
+        "estimatedTime": "Estimated subscription time: {time}",
+        "connectedWallet": "Connected Wallet",
+        "publicPageUrl": "This will be your public business page URL",
+        "referralCodeUsing": "Using referral code:",
+        "validDiscountApplied": " Valid - Discount Applied"
+      }
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next Step",
+      "submit": "Create Business",
+      "cancel": "Cancel"
+    },
+    "loading": {
+      "approval": "Approving USDC...",
+      "registration": "Registering business...",
+      "backend": "Saving to database...",
+      "upload": "Uploading files...",
+      "complete": "Registration complete!"
+    },
+    "errors": {
+      "walletNotConnected": "Please connect your wallet",
+      "insufficientBalance": "Insufficient USDC balance",
+      "approvalFailed": "USDC approval failed",
+      "registrationFailed": "Business registration failed",
+      "uploadFailed": "File upload failed",
+      "invalidEmail": "Please enter a valid email"
+    },
+    "validation": {
+      "couponValid": "✅ Valid coupon! Discount: ${amount}",
+      "couponInvalid": "❌ Invalid or expired coupon code",
+      "couponPrompt": "Enter a coupon code to get a discount",
+      "referralValid": "✅ Valid referral code! You'll get a discount on registration.",
+      "referralInvalid": "❌ Invalid referral code. Please check and try again.",
+      "referralPrompt": "Enter a referral code to get a discount"
+    },
+    "messages": {
+      "customAmountDescription": "You'll get subscription time proportional to the yearly fee (${amount} = 1 year)",
+      "customAmountWarning": "⚠️ Amount above ${amount} will still only give 1 year maximum",
+      "customAmountEstimate": "Estimated time: {time}",
+      "authenticationRequired": "Authentication Required",
+      "authenticationMessage": "Please connect your wallet to register your business on Payverge.",
+      "loading": "Loading...",
+      "backToDashboard": "Back to Dashboard",
+      "stepProgress": "Step {current} of {total}",
+      "complete": "Complete",
+      "tryAgain": "Try Again"
+    }
   }
 }

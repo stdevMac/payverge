@@ -34,6 +34,8 @@ import { RegisterBusinessParams, Referrer } from '@/contracts/types';
 import { Address } from 'viem';
 import { checkReferralCodeAvailability, CheckReferralCodeResponse } from '@/api/referrals';
 import { uploadFileToS3, uploadProtectedFileToS3 } from '@/api/files/useUploadFileToS3/useUploadFileToS3';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
+import SimpleLanguageSwitcher from '@/components/SimpleLanguageSwitcher';
 
 
 // Multi-step form steps
@@ -48,7 +50,7 @@ interface SubscriptionOption {
 }
 
 // Dynamic subscription options based on registration fee
-const getSubscriptionOptions = (registrationFee?: unknown): SubscriptionOption[] => {
+const getSubscriptionOptions = (registrationFee?: unknown, locale?: 'en' | 'es'): SubscriptionOption[] => {
   const yearlyFee = registrationFee && typeof registrationFee === 'bigint' 
     ? Number(formatUsdcAmount(registrationFee)) 
     : 100; // More reasonable default closer to actual registration fee
@@ -57,23 +59,23 @@ const getSubscriptionOptions = (registrationFee?: unknown): SubscriptionOption[]
     {
       months: 1,
       suggestedAmount: (yearlyFee / 12).toFixed(2),
-      description: 'Try for 1 month',
+      description: getTranslation('businessRegister.subscription.options.1month', locale || 'en') as string,
     },
     {
       months: 3,
       suggestedAmount: (yearlyFee / 4).toFixed(2),
-      description: 'Get started - 3 months',
+      description: getTranslation('businessRegister.subscription.options.3months', locale || 'en') as string,
     },
     {
       months: 6,
       suggestedAmount: (yearlyFee / 2).toFixed(2),
-      description: 'Save more - 6 months',
+      description: getTranslation('businessRegister.subscription.options.6months', locale || 'en') as string,
       popular: true,
     },
     {
       months: 12,
       suggestedAmount: yearlyFee.toFixed(2),
-      description: 'Best value - Full year',
+      description: getTranslation('businessRegister.subscription.options.12months', locale || 'en') as string,
     },
   ];
 };
@@ -104,6 +106,25 @@ export default function BusinessRegisterPage() {
   const { isAuthenticated } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+
+  const t = (key: string) => {
+    const result = getTranslation(`businessRegister.${key}`, currentLocale);
+    return Array.isArray(result) ? result : result as string;
+  };
+  
+  const tString = (key: string): string => {
+    const result = getTranslation(`businessRegister.${key}`, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   // Smart Contract Hooks
   const { registerBusiness } = useRegisterBusiness();
   const { approveUsdc } = useApproveUsdc();
@@ -127,7 +148,7 @@ export default function BusinessRegisterPage() {
   const [checkingReferralCode, setCheckingReferralCode] = useState(false);
   
   // Dynamic subscription options based on registration fee
-  const subscriptionOptions = getSubscriptionOptions(registrationFee);
+  const subscriptionOptions = getSubscriptionOptions(registrationFee, locale);
   
   // Subscription state
   const [selectedOption, setSelectedOption] = useState<SubscriptionOption>(subscriptionOptions[2]); // Default to 6 months
@@ -135,10 +156,10 @@ export default function BusinessRegisterPage() {
   // Update selected option when registration fee loads
   useEffect(() => {
     if (registrationFee) {
-      const updatedOptions = getSubscriptionOptions(registrationFee);
+      const updatedOptions = getSubscriptionOptions(registrationFee, locale);
       setSelectedOption(updatedOptions[2]); // Keep 6 months selected but with correct amount
     }
-  }, [registrationFee]);
+  }, [registrationFee, locale]);
   const [customAmount, setCustomAmount] = useState('');
   const [useCustomAmount, setUseCustomAmount] = useState(false);
   const [discountType, setDiscountType] = useState<'none' | 'coupon' | 'referral'>('none');
@@ -185,11 +206,11 @@ export default function BusinessRegisterPage() {
 
   // Form steps configuration
   const steps: { key: FormStep; title: string; description: string; icon: any }[] = [
-    { key: 'business', title: 'Business Info', description: 'Name, logo & contact details', icon: Building2 },
-    { key: 'location', title: 'Location & Wallets', description: 'Address & payment setup', icon: MapPin },
-    { key: 'settings', title: 'Settings & Features', description: 'Fees, features & preferences', icon: Settings },
-    { key: 'subscription', title: 'Payment', description: 'Choose payment amount', icon: DollarSign },
-    { key: 'review', title: 'Review & Submit', description: 'Confirm and create', icon: Check },
+    { key: 'business', title: tString('steps.business.title'), description: tString('steps.business.description'), icon: Building2 },
+    { key: 'location', title: tString('steps.location.title'), description: tString('steps.location.description'), icon: MapPin },
+    { key: 'settings', title: tString('steps.settings.title'), description: tString('steps.settings.description'), icon: Settings },
+    { key: 'subscription', title: tString('steps.subscription.title'), description: tString('steps.subscription.description'), icon: DollarSign },
+    { key: 'review', title: tString('steps.review.title'), description: tString('steps.review.description'), icon: Check },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.key === currentStep);
@@ -566,7 +587,7 @@ export default function BusinessRegisterPage() {
             <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
               <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
             </div>
-            <p className="text-gray-600 font-light tracking-wide">Loading...</p>
+            <p className="text-gray-600 font-light tracking-wide">{tString('messages.loading')}</p>
           </div>
         </div>
       </div>
@@ -590,16 +611,16 @@ export default function BusinessRegisterPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">Authentication Required</h2>
+            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">{tString('messages.authenticationRequired')}</h2>
             <p className="text-gray-600 font-light tracking-wide mb-8">{error}</p>
             
             <div className="space-y-4">
-              <p className="text-sm text-gray-500">Please authenticate to register a business.</p>
+              <p className="text-sm text-gray-500">{tString('messages.authenticationMessage')}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
               >
-                Try Again
+                {tString('messages.tryAgain')}
               </button>
             </div>
             
@@ -608,7 +629,7 @@ export default function BusinessRegisterPage() {
                 href="/dashboard"
                 className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
               >
-                ← Back to Dashboard
+                ← {tString('messages.backToDashboard')}
               </Link>
             </div>
           </div>
@@ -655,28 +676,31 @@ export default function BusinessRegisterPage() {
         <div className="max-w-5xl mx-auto px-6 py-12 relative">
           {/* Header */}
           <div className="mb-16">
-            <Link href="/dashboard">
-              <Button
-                variant="light"
-                startContent={<ArrowLeft size={16} />}
-                className="text-gray-600 mb-8 hover:text-gray-800 transition-all duration-300 hover:bg-white hover:shadow-sm rounded-xl px-4 py-2"
-              >
-                Back to Dashboard
-              </Button>
-            </Link>
+            <div className="flex justify-between items-center mb-8">
+              <Link href="/dashboard">
+                <Button
+                  variant="light"
+                  startContent={<ArrowLeft size={16} />}
+                  className="text-gray-600 hover:text-gray-800 transition-all duration-300 hover:bg-white hover:shadow-sm rounded-xl px-4 py-2"
+                >
+                  {tString('messages.backToDashboard')}
+                </Button>
+              </Link>
+              <SimpleLanguageSwitcher />
+            </div>
             <div className="text-center">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 hover:bg-white hover:shadow-sm transition-all duration-300">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                Business Registration
+                {tString('header.badge')}
               </div>
               <h1 className="text-6xl lg:text-7xl font-medium text-gray-900 mb-6 leading-tight tracking-tight">
-                Register Your
+                {tString('header.title')}
                 <span className="text-gray-900 font-semibold block">
-                  Business
+                  {tString('header.titleEmphasis')}
                 </span>
               </h1>
               <p className="text-xl font-light text-gray-600 leading-relaxed tracking-wide max-w-3xl mx-auto">
-                Set up your business to start accepting crypto payments with Payverge&apos;s cutting-edge platform
+                {tString('header.subtitle')}
               </p>
             </div>
           </div>
@@ -687,7 +711,7 @@ export default function BusinessRegisterPage() {
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                    Step {currentStepIndex + 1} of {steps.length}
+                    {tString('messages.stepProgress').replace('{current}', (currentStepIndex + 1).toString()).replace('{total}', steps.length.toString())}
                   </span>
                   <p className="text-lg font-medium text-gray-900 mt-1">
                     {steps[currentStepIndex]?.title}
@@ -697,7 +721,7 @@ export default function BusinessRegisterPage() {
                   <span className="text-2xl font-bold text-gray-900">
                     {Math.round(progress)}%
                   </span>
-                  <p className="text-sm text-gray-500">Complete</p>
+                  <p className="text-sm text-gray-500">{tString('messages.complete')}</p>
                 </div>
               </div>
               <Progress 
@@ -799,8 +823,8 @@ export default function BusinessRegisterPage() {
                       <div className="w-20 h-20 bg-gray-50 border-2 border-gray-200 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg">
                         <Building2 className="text-gray-700" size={40} />
                       </div>
-                      <h2 className="text-4xl font-medium text-gray-900 mb-4 tracking-tight">Business Information</h2>
-                      <p className="text-xl font-light text-gray-600 leading-relaxed tracking-wide max-w-2xl mx-auto">Let&apos;s get your business set up on Payverge&apos;s cutting-edge platform</p>
+                      <h2 className="text-4xl font-medium text-gray-900 mb-4 tracking-tight">{tString('businessInfo.title')}</h2>
+                      <p className="text-xl font-light text-gray-600 leading-relaxed tracking-wide max-w-2xl mx-auto">{tString('businessInfo.description')}</p>
                     </div>
 
                     <div className="max-w-3xl mx-auto space-y-10">
@@ -808,8 +832,8 @@ export default function BusinessRegisterPage() {
                       <div>
                         <div className="group">
                           <Input
-                            label="Business Name"
-                            placeholder="Enter your business name"
+                            label={tString('businessInfo.fields.name.label')}
+                            placeholder={tString('businessInfo.fields.name.placeholder')}
                             value={formData.name}
                             onChange={(e) => updateFormData('name', e.target.value)}
                             isRequired
@@ -828,8 +852,8 @@ export default function BusinessRegisterPage() {
                       {/* Logo Upload */}
                       <div className="space-y-6">
                         <div>
-                          <label className="text-base font-semibold text-gray-700 mb-2 block">Business Logo</label>
-                          <p className="text-sm text-gray-500">Upload your business logo to build brand recognition</p>
+                          <label className="text-base font-semibold text-gray-700 mb-2 block">{tString('businessInfo.logo.title')}</label>
+                          <p className="text-sm text-gray-500">{tString('businessInfo.logo.description')}</p>
                         </div>
                         <div className="bg-gray-50 p-8 rounded-2xl border-2 border-dashed border-gray-200 hover:border-gray-300 transition-all duration-300">
                           <div className="flex flex-col md:flex-row items-center gap-8">
@@ -880,14 +904,11 @@ export default function BusinessRegisterPage() {
                                 className="h-14 px-8 text-base font-semibold bg-gray-900 hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300"
                                 size="lg"
                               >
-                                {uploadingLogo ? 'Processing...' : logoPreview ? 'Change Logo' : 'Upload Logo'}
+                                {uploadingLogo ? tString('businessInfo.logo.uploading') : logoPreview ? tString('businessInfo.logo.change') : tString('businessInfo.logo.upload')}
                               </Button>
                               <div className="mt-4 space-y-1">
                                 <p className="text-sm font-medium text-gray-600">
-                                  JPEG, PNG, or WebP • Max 5MB
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  Recommended: Square format, 400x400px minimum
+                                  {tString('businessInfo.logo.guidelines')}
                                 </p>
                               </div>
                             </div>
@@ -907,7 +928,7 @@ export default function BusinessRegisterPage() {
                           size="lg"
                           startContent={<span className="text-gray-400 text-lg">@</span>}
                           isInvalid={formData.email ? !isValidEmail(formData.email) : false}
-                          errorMessage={formData.email && !isValidEmail(formData.email) ? "Please enter a valid email" : ""}
+                          errorMessage={formData.email && !isValidEmail(formData.email) ? tString('errors.invalidEmail') : ""}
                           classNames={{
                             inputWrapper: "h-14 border-2",
                             label: "font-medium"
@@ -915,8 +936,8 @@ export default function BusinessRegisterPage() {
                         />
 
                         <Input
-                          label="Phone Number"
-                          placeholder="+1 (555) 123-4567"
+                          label={tString('businessInfo.fields.phone.label')}
+                          placeholder={tString('businessInfo.fields.phone.placeholder')}
                           value={formData.phone || ''}
                           onChange={(e) => updateFormData('phone', e.target.value)}
                           variant="bordered"
@@ -931,8 +952,8 @@ export default function BusinessRegisterPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <Input
-                          label="Website"
-                          placeholder="https://yourbusiness.com"
+                          label={tString('businessInfo.fields.website.label')}
+                          placeholder={tString('businessInfo.fields.website.placeholder')}
                           value={formData.website || ''}
                           onChange={(e) => updateFormData('website', e.target.value)}
                           variant="bordered"
@@ -945,14 +966,14 @@ export default function BusinessRegisterPage() {
                         />
 
                         <Input
-                          label="Custom URL Slug"
-                          placeholder="your-business-name"
+                          label={tString('businessInfo.fields.customUrl.label')}
+                          placeholder={tString('businessInfo.fields.customUrl.placeholder')}
                           value={formData.custom_url || ''}
                           onChange={(e) => updateFormData('custom_url', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                           variant="bordered"
                           size="lg"
-                          startContent={<span className="text-gray-400 text-sm">payverge.com/</span>}
-                          description="This will be your public business page URL"
+                          startContent={<span className="text-gray-400 text-sm">payverge.io/</span>}
+                          description={tString('review.labels.publicPageUrl')}
                           classNames={{
                             inputWrapper: "h-14 border-2",
                             label: "font-medium"
@@ -961,8 +982,8 @@ export default function BusinessRegisterPage() {
                       </div>
 
                       <Textarea
-                        label="Business Description"
-                        placeholder="Describe your business, cuisine type, specialties..."
+                        label={tString('businessInfo.fields.description.label')}
+                        placeholder={tString('businessInfo.fields.description.placeholder')}
                         value={formData.description || ''}
                         onChange={(e) => updateFormData('description', e.target.value)}
                         variant="bordered"
@@ -984,8 +1005,8 @@ export default function BusinessRegisterPage() {
                       <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <MapPin className="text-gray-700" size={32} />
                       </div>
-                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Location & Payment Setup</h2>
-                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">Configure your business location and crypto wallets</p>
+                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">{tString('location.title')}</h2>
+                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">{tString('location.description')}</p>
                     </div>
 
                     <div className="max-w-3xl mx-auto space-y-10">
@@ -995,13 +1016,13 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <MapPin size={18} className="text-white" />
                           </div>
-                          Business Address
+                          {tString('location.address.title')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="md:col-span-2">
                             <Input
-                              label="Street Address"
-                              placeholder="123 Main Street"
+                              label={tString('location.address.street.label')}
+                              placeholder={tString('location.address.street.placeholder')}
                               value={formData.address.street}
                               onChange={(e) => updateAddress('street', e.target.value)}
                               variant="bordered"
@@ -1013,8 +1034,8 @@ export default function BusinessRegisterPage() {
                             />
                           </div>
                           <Input
-                            label="City"
-                            placeholder="New York"
+                            label={tString('location.address.city.label')}
+                            placeholder={tString('location.address.city.placeholder')}
                             value={formData.address.city}
                             onChange={(e) => updateAddress('city', e.target.value)}
                             variant="bordered"
@@ -1025,8 +1046,8 @@ export default function BusinessRegisterPage() {
                             }}
                           />
                           <Input
-                            label="State/Province"
-                            placeholder="NY"
+                            label={tString('location.address.state.label')}
+                            placeholder={tString('location.address.state.placeholder')}
                             value={formData.address.state}
                             onChange={(e) => updateAddress('state', e.target.value)}
                             variant="bordered"
@@ -1037,8 +1058,8 @@ export default function BusinessRegisterPage() {
                             }}
                           />
                           <Input
-                            label="Postal Code"
-                            placeholder="10001"
+                            label={tString('location.address.postalCode.label')}
+                            placeholder={tString('location.address.postalCode.placeholder')}
                             value={formData.address.postal_code}
                             onChange={(e) => updateAddress('postal_code', e.target.value)}
                             variant="bordered"
@@ -1049,8 +1070,8 @@ export default function BusinessRegisterPage() {
                             }}
                           />
                           <Input
-                            label="Country"
-                            placeholder="United States"
+                            label={tString('location.address.country.label')}
+                            placeholder={tString('location.address.country.placeholder')}
                             value={formData.address.country}
                             onChange={(e) => updateAddress('country', e.target.value)}
                             variant="bordered"
@@ -1069,18 +1090,18 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Wallet size={18} className="text-white" />
                           </div>
-                          Payment Wallets
+                          {tString('location.wallets.title')}
                         </h3>
                         <div className="space-y-6">
                           <Input
-                            label="Settlement Address"
-                            placeholder="0x..."
+                            label={tString('location.wallets.settlement.label')}
+                            placeholder={tString('location.wallets.settlement.placeholder')}
                             value={formData.settlement_address}
                             onChange={(e) => updateFormData('settlement_address', e.target.value)}
                             variant="bordered"
                             size="lg"
                             isRequired
-                            description="Where customer payments will be sent"
+                            description={tString('location.wallets.settlement.description')}
                             startContent={<Wallet size={20} className="text-gray-400" />}
                             classNames={{
                               inputWrapper: "h-14 border-2",
@@ -1088,14 +1109,14 @@ export default function BusinessRegisterPage() {
                             }}
                           />
                           <Input
-                            label="Tipping Address"
-                            placeholder="0x..."
+                            label={tString('location.wallets.tipping.label')}
+                            placeholder={tString('location.wallets.tipping.placeholder')}
                             value={formData.tipping_address}
                             onChange={(e) => updateFormData('tipping_address', e.target.value)}
                             variant="bordered"
                             size="lg"
                             isRequired
-                            description="Where customer tips will be sent"
+                            description={tString('location.wallets.tipping.description')}
                             startContent={<DollarSign size={20} className="text-gray-400" />}
                             classNames={{
                               inputWrapper: "h-14 border-2",
@@ -1106,7 +1127,7 @@ export default function BusinessRegisterPage() {
                             <div className="bg-white p-4 rounded-xl border border-gray-200">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="font-medium text-gray-900">Connected Wallet</p>
+                                  <p className="font-medium text-gray-900">{tString('review.labels.connectedWallet')}</p>
                                   <p className="text-sm text-gray-600 font-mono">{address}</p>
                                 </div>
                                 <Button
@@ -1118,7 +1139,7 @@ export default function BusinessRegisterPage() {
                                     updateFormData('tipping_address', address || '');
                                   }}
                                 >
-                                  Use This Address
+                                  {tString('location.wallets.settlement.useConnected')}
                                 </Button>
                               </div>
                             </div>
@@ -1136,8 +1157,8 @@ export default function BusinessRegisterPage() {
                       <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <Settings className="text-gray-700" size={32} />
                       </div>
-                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Business Settings</h2>
-                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">Configure fees, features, and referral options</p>
+                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">{tString('settings.title')}</h2>
+                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">{tString('settings.description')}</p>
                     </div>
 
                     <div className="max-w-3xl mx-auto space-y-10">
@@ -1147,12 +1168,12 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Percent size={18} className="text-white" />
                           </div>
-                          Fee Configuration
+                          {tString('settings.fees.title')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <Input
-                            label="Tax Rate (%)"
-                            placeholder="8.25"
+                            label={tString('settings.fees.taxRate.label')}
+                            placeholder={tString('settings.fees.taxRate.placeholder')}
                             type="number"
                             step="0.01"
                             min="0"
@@ -1168,8 +1189,8 @@ export default function BusinessRegisterPage() {
                             }}
                           />
                           <Input
-                            label="Service Fee Rate (%)"
-                            placeholder="3.00"
+                            label={tString('settings.fees.serviceFee.label')}
+                            placeholder={tString('settings.fees.serviceFee.placeholder')}
                             type="number"
                             step="0.01"
                             min="0"
@@ -1191,14 +1212,14 @@ export default function BusinessRegisterPage() {
                             onValueChange={(checked) => updateFormData('tax_inclusive', checked)}
                             classNames={{ label: "font-medium" }}
                           >
-                            Tax Inclusive Pricing
+                            {tString('settings.fees.taxInclusive')}
                           </Checkbox>
                           <Checkbox
                             isSelected={formData.service_inclusive}
                             onValueChange={(checked) => updateFormData('service_inclusive', checked)}
                             classNames={{ label: "font-medium" }}
                           >
-                            Service Fee Inclusive
+                            {tString('settings.fees.serviceInclusive')}
                           </Checkbox>
                         </div>
                       </div>
@@ -1209,13 +1230,13 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Settings size={18} className="text-white" />
                           </div>
-                          Business Features
+                          {tString('settings.features.title')}
                         </h3>
                         <div className="space-y-6">
                           <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
                             <div>
-                              <h4 className="font-semibold text-gray-900">Business Page</h4>
-                              <p className="text-sm text-gray-600">Create a public page for your business</p>
+                              <h4 className="font-semibold text-gray-900">{tString('settings.features.businessPage')}</h4>
+                              <p className="text-sm text-gray-600">{tString('settings.features.businessPageDescription')}</p>
                             </div>
                             <Switch
                               isSelected={formData.business_page_enabled}
@@ -1225,8 +1246,8 @@ export default function BusinessRegisterPage() {
                           </div>
                           <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
                             <div>
-                              <h4 className="font-semibold text-gray-900">Show Reviews</h4>
-                              <p className="text-sm text-gray-600">Display customer reviews on your page</p>
+                              <h4 className="font-semibold text-gray-900">{tString('settings.features.showReviews')}</h4>
+                              <p className="text-sm text-gray-600">{tString('settings.features.showReviewsDescription')}</p>
                             </div>
                             <Switch
                               isSelected={formData.show_reviews}
@@ -1236,8 +1257,8 @@ export default function BusinessRegisterPage() {
                           </div>
                           <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200">
                             <div>
-                              <h4 className="font-semibold text-gray-900">Counter Service</h4>
-                              <p className="text-sm text-gray-600">Enable takeaway/quick service counters</p>
+                              <h4 className="font-semibold text-gray-900">{tString('settings.features.counter')}</h4>
+                              <p className="text-sm text-gray-600">{tString('settings.features.counterDescription')}</p>
                             </div>
                             <Switch
                               isSelected={formData.counter_enabled}
@@ -1259,14 +1280,14 @@ export default function BusinessRegisterPage() {
                       <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <DollarSign className="text-white" size={32} />
                       </div>
-                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Choose Your Payment</h2>
-                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">Pay what you want - get subscription time proportionally</p>
+                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">{tString('subscription.title')}</h2>
+                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">{tString('subscription.description')}</p>
                     </div>
 
                     <div className="max-w-4xl mx-auto">
                       {/* Payment Options */}
                       <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Suggested Payment Options</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{tString('subscription.suggestedOptions')}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                           {subscriptionOptions.map((option) => (
                             <Card
@@ -1287,7 +1308,7 @@ export default function BusinessRegisterPage() {
                               {option.popular && (
                                 <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                                   <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                                    Popular
+                                    {tString('subscription.popular')}
                                   </span>
                                 </div>
                               )}
@@ -1327,11 +1348,11 @@ export default function BusinessRegisterPage() {
                                 }}
                                 color="primary"
                               >
-                                <span className="font-medium">Pay custom amount</span>
+                                <span className="font-medium">{tString('subscription.custom.enable')}</span>
                               </Checkbox>
                               {useCustomAmount && (
                                 <Input
-                                  placeholder="Enter amount"
+                                  placeholder={tString('subscription.custom.placeholder')}
                                   value={customAmount}
                                   onChange={(e) => {
                                     const value = e.target.value;
@@ -1364,16 +1385,16 @@ export default function BusinessRegisterPage() {
                                   return (
                                     <>
                                       <p className="text-sm text-gray-600">
-                                        You&apos;ll get subscription time proportional to the yearly fee (${yearlyFee} = 1 year)
+                                        {tString('messages.customAmountDescription').replace('${amount}', yearlyFee.toString())}
                                       </p>
                                       {isOverYearlyFee && (
                                         <p className="text-sm font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded">
-                                          ⚠️ Amount above ${yearlyFee} will still only give 1 year maximum
+                                          {tString('messages.customAmountWarning').replace('${amount}', yearlyFee.toString())}
                                         </p>
                                       )}
                                       {customAmount && calculatedSubscriptionTime ? (
                                         <p className="text-sm font-medium text-blue-600">
-                                          Estimated time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                          {tString('messages.customAmountEstimate').replace('{time}', formatSubscriptionTime(Number(calculatedSubscriptionTime.toString())))}
                                         </p>
                                       ) : null}
                                     </>
@@ -1388,7 +1409,7 @@ export default function BusinessRegisterPage() {
                       {/* Discount Options */}
                       <div className="space-y-6">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">Discount Options (Choose One)</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4">{tString('subscription.discount.title')}</h3>
                           
                           {/* Discount Type Selection */}
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -1404,8 +1425,8 @@ export default function BusinessRegisterPage() {
                               }`}
                             >
                               <CardBody className="p-4 text-center">
-                                <div className="text-lg font-medium text-gray-900">No Discount</div>
-                                <div className="text-sm text-gray-600">Pay full amount</div>
+                                <div className="text-lg font-medium text-gray-900">{tString('subscription.discount.none')}</div>
+                                <div className="text-sm text-gray-600">{tString('subscription.discount.noneDescription')}</div>
                               </CardBody>
                             </Card>
                             
@@ -1420,8 +1441,8 @@ export default function BusinessRegisterPage() {
                               }`}
                             >
                               <CardBody className="p-4 text-center">
-                                <div className="text-lg font-medium text-gray-900">Coupon Code</div>
-                                <div className="text-sm text-gray-600">Enter coupon for discount</div>
+                                <div className="text-lg font-medium text-gray-900">{tString('subscription.discount.coupon')}</div>
+                                <div className="text-sm text-gray-600">{tString('subscription.discount.couponDescription')}</div>
                               </CardBody>
                             </Card>
                             
@@ -1436,8 +1457,8 @@ export default function BusinessRegisterPage() {
                               }`}
                             >
                               <CardBody className="p-4 text-center">
-                                <div className="text-lg font-medium text-gray-900">Referral Code</div>
-                                <div className="text-sm text-gray-600">Enter referral for discount</div>
+                                <div className="text-lg font-medium text-gray-900">{tString('settings.referral.title')}</div>
+                                <div className="text-sm text-gray-600">{tString('subscription.discount.referralDescription')}</div>
                               </CardBody>
                             </Card>
                           </div>
@@ -1446,8 +1467,8 @@ export default function BusinessRegisterPage() {
                           {discountType === 'coupon' && (
                             <div className="space-y-2">
                               <Input
-                                label="Coupon Code"
-                                placeholder="Enter coupon code"
+                                label={tString('subscription.discount.couponLabel')}
+                                placeholder={tString('subscription.discount.couponPlaceholder')}
                                 value={couponCode}
                                 onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                                 variant="bordered"
@@ -1466,9 +1487,9 @@ export default function BusinessRegisterPage() {
                                 description={
                                   couponCode && !isCouponLoading ? (
                                     isCouponValid ? 
-                                      `✅ Valid coupon! Discount: $${formatUsdcAmount(couponDiscountAmount)}` :
-                                      "❌ Invalid or expired coupon code"
-                                  ) : "Enter a coupon code to get a discount"
+                                      tString('validation.couponValid').replace('${amount}', formatUsdcAmount(couponDiscountAmount)) :
+                                      tString('validation.couponInvalid')
+                                  ) : tString('validation.couponPrompt')
                                 }
                               />
                             </div>
@@ -1476,8 +1497,8 @@ export default function BusinessRegisterPage() {
                           
                           {discountType === 'referral' && (
                             <Input
-                              label="Referral Code"
-                              placeholder="Enter referral code"
+                              label={tString('settings.referral.title')}
+                              placeholder={tString('settings.referral.placeholder')}
                               value={referralCode}
                               onChange={(e) => {
                                 setReferralCode(e.target.value);
@@ -1504,10 +1525,10 @@ export default function BusinessRegisterPage() {
                               color={referralCodeValid === true ? "success" : referralCodeValid === false ? "danger" : "default"}
                               description={
                                 referralCodeValid === true 
-                                  ? "✅ Valid referral code! You&apos;ll get a discount on registration."
+                                  ? tString('validation.referralValid')
                                   : referralCodeValid === false 
-                                  ? "❌ Invalid referral code. Please check and try again."
-                                  : "Enter a referral code to get a discount"
+                                  ? tString('validation.referralInvalid')
+                                  : tString('validation.referralPrompt')
                               }
                               endContent={
                                 checkingReferralCode ? (
@@ -1527,29 +1548,29 @@ export default function BusinessRegisterPage() {
                         {/* Payment Summary */}
                         <Card className="bg-gradient-to-br from-gray-50 to-blue-50/30">
                           <CardBody className="p-6">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 mb-4">{tString('subscription.summary.title')}</h4>
                             <div className="space-y-2">
                               <div className="flex justify-between">
-                                <span className="text-gray-600">Subscription Payment</span>
+                                <span className="text-gray-600">{tString('subscription.summary.subscriptionPayment')}</span>
                                 <span className="font-medium">
                                   ${useCustomAmount ? customAmount || '0.00' : selectedOption.suggestedAmount}
                                 </span>
                               </div>
                               {discountType === 'coupon' && isCouponValid && (
                                 <div className="flex justify-between text-green-600">
-                                  <span>Coupon Discount</span>
+                                  <span>{tString('subscription.summary.couponDiscount')}</span>
                                   <span>-${formatUsdcAmount(couponDiscountAmount)}</span>
                                 </div>
                               )}
                               {discountType === 'referral' && referralCodeValid && (
                                 <div className="flex justify-between text-green-600">
-                                  <span>Referral Discount</span>
+                                  <span>{tString('subscription.summary.referralDiscount')}</span>
                                   <span>-$0.00</span>
                                 </div>
                               )}
                               <Divider />
                               <div className="flex justify-between text-lg font-semibold">
-                                <span>Total</span>
+                                <span>{tString('subscription.summary.total')}</span>
                                 <span>
                                   ${(() => {
                                     const originalAmount = parseFloat(useCustomAmount ? customAmount || '0' : selectedOption.suggestedAmount);
@@ -1573,7 +1594,7 @@ export default function BusinessRegisterPage() {
                               </div>
                               {calculatedSubscriptionTime ? (
                                 <div className="text-sm text-gray-600 mt-2">
-                                  Estimated subscription time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                  {tString('review.labels.estimatedTime').replace('{time}', formatSubscriptionTime(Number(calculatedSubscriptionTime.toString())))}
                                 </div>
                               ) : null}
                             </div>
@@ -1591,8 +1612,8 @@ export default function BusinessRegisterPage() {
                       <div className="w-16 h-16 bg-gray-100 border border-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <Check className="text-gray-700" size={32} />
                       </div>
-                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">Review & Submit</h2>
-                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">Please review your information before creating your business</p>
+                      <h2 className="text-3xl font-medium text-gray-900 mb-3 tracking-tight">{tString('review.title')}</h2>
+                      <p className="text-lg font-light text-gray-600 leading-relaxed tracking-wide">{tString('review.description')}</p>
                     </div>
 
                     <div className="max-w-4xl mx-auto space-y-8">
@@ -1602,35 +1623,35 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Building2 size={18} className="text-white" />
                           </div>
-                          Business Information
+                          {tString('review.sections.business')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="bg-white p-4 rounded-xl">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Business Name</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.businessName')}</span>
                             <p className="text-lg font-semibold text-gray-900 mt-1">{formData.name}</p>
                           </div>
                           {formData.email && (
                             <div className="bg-white p-4 rounded-xl">
-                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Email</span>
+                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.email')}</span>
                               <p className="text-lg font-semibold text-gray-900 mt-1">{formData.email}</p>
                             </div>
                           )}
                           {formData.phone && (
                             <div className="bg-white p-4 rounded-xl">
-                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Phone</span>
+                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.phone')}</span>
                               <p className="text-lg font-semibold text-gray-900 mt-1">{formData.phone}</p>
                             </div>
                           )}
                           {formData.website && (
                             <div className="bg-white p-4 rounded-xl">
-                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Website</span>
+                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.website')}</span>
                               <p className="text-lg font-semibold text-gray-900 mt-1">{formData.website}</p>
                             </div>
                           )}
                         </div>
                         {formData.description && (
                           <div className="bg-white p-4 rounded-xl mt-6">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Description</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.description')}</span>
                             <p className="text-gray-900 mt-1">{formData.description}</p>
                           </div>
                         )}
@@ -1642,15 +1663,15 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Wallet size={18} className="text-white" />
                           </div>
-                          Payment Addresses
+                          {tString('review.sections.location')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="bg-white p-4 rounded-xl">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Settlement Address</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.settlementAddress')}</span>
                             <p className="text-sm font-mono text-gray-900 mt-1 break-all">{formData.settlement_address}</p>
                           </div>
                           <div className="bg-white p-4 rounded-xl">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Tipping Address</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.tippingAddress')}</span>
                             <p className="text-sm font-mono text-gray-900 mt-1 break-all">{formData.tipping_address}</p>
                           </div>
                         </div>
@@ -1662,29 +1683,29 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <Settings size={18} className="text-white" />
                           </div>
-                          Business Settings
+                          {tString('review.sections.settings')}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="bg-white p-4 rounded-xl">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Tax Rate</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.taxRate')}</span>
                             <p className="text-lg font-semibold text-gray-900 mt-1">{formData.tax_rate}%</p>
                           </div>
                           <div className="bg-white p-4 rounded-xl">
-                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Service Fee Rate</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.serviceFeeRate')}</span>
                             <p className="text-lg font-semibold text-gray-900 mt-1">{formData.service_fee_rate}%</p>
                           </div>
                         </div>
                         <div className="bg-white p-4 rounded-xl mt-6">
-                          <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Features</span>
+                          <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.features')}</span>
                           <div className="flex flex-wrap gap-2 mt-2">
                             {formData.business_page_enabled && (
-                              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">Business Page</span>
+                              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">{tString('review.labels.businessPage')}</span>
                             )}
                             {formData.show_reviews && (
-                              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">Reviews</span>
+                              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">{tString('review.labels.reviews')}</span>
                             )}
                             {formData.counter_enabled && (
-                              <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">Counter Service</span>
+                              <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">{tString('review.labels.counterService')}</span>
                             )}
                           </div>
                         </div>
@@ -1696,19 +1717,19 @@ export default function BusinessRegisterPage() {
                           <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                             <DollarSign size={18} className="text-white" />
                           </div>
-                          Payment Summary
+                          {tString('review.sections.payment')}
                         </h3>
                         <div className="bg-white p-4 rounded-xl">
                           <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Subscription Payment</span>
+                              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{tString('review.labels.subscriptionPayment')}</span>
                               <p className="text-lg font-semibold text-gray-900">
                                 ${useCustomAmount ? customAmount || '0.00' : selectedOption.suggestedAmount}
                               </p>
                             </div>
                             {discountType === 'coupon' && isCouponValid && (
                               <div className="flex justify-between items-center">
-                                <span className="text-sm font-medium text-green-600">Coupon Discount</span>
+                                <span className="text-sm font-medium text-green-600">{tString('review.labels.couponDiscount')}</span>
                                 <span className="text-lg font-semibold text-green-600">
                                   -${formatUsdcAmount(couponDiscountAmount)}
                                 </span>
@@ -1716,7 +1737,7 @@ export default function BusinessRegisterPage() {
                             )}
                             {discountType === 'referral' && referralCodeValid && (
                               <div className="flex justify-between items-center">
-                                <span className="text-sm font-medium text-green-600">Referral Discount</span>
+                                <span className="text-sm font-medium text-green-600">{tString('review.labels.referralDiscount')}</span>
                                 <span className="text-lg font-semibold text-green-600">
                                   -$0.00
                                 </span>
@@ -1724,7 +1745,7 @@ export default function BusinessRegisterPage() {
                             )}
                             <Divider />
                             <div className="flex justify-between items-center">
-                              <span className="text-lg font-bold text-gray-900">Total Payment</span>
+                              <span className="text-lg font-bold text-gray-900">{tString('review.labels.totalPayment')}</span>
                               <p className="text-2xl font-bold text-gray-900">
                                 ${(() => {
                                   const originalAmount = parseFloat(useCustomAmount ? customAmount || '0' : selectedOption.suggestedAmount);
@@ -1769,14 +1790,14 @@ export default function BusinessRegisterPage() {
                             <div className="w-8 h-8 bg-gray-600 rounded-lg flex items-center justify-center">
                               <Hash size={18} className="text-white" />
                             </div>
-                            Referral Code
+                            {tString('settings.referral.title')}
                           </h3>
                           <div className="bg-white p-4 rounded-xl">
                             <p className="text-emerald-800 font-medium">
-                              Using referral code: <span className="font-bold">{formData.referred_by_code}</span>
+                              {tString('review.labels.referralCodeUsing')} <span className="font-bold">{formData.referred_by_code}</span>
                               {referralCodeValid === true && (
                                 <span className="ml-2 px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-full">
-                                  ✅ Valid - Discount Applied
+                                  {tString('review.labels.validDiscountApplied')}
                                 </span>
                               )}
                             </p>
@@ -1800,7 +1821,7 @@ export default function BusinessRegisterPage() {
                   className="h-12 px-6 border-2 font-medium"
                   size="lg"
                 >
-                  Previous
+                  {tString('navigation.back')}
                 </Button>
 
                 <div className="flex gap-4">
@@ -1810,7 +1831,7 @@ export default function BusinessRegisterPage() {
                     className="h-12 px-6 font-medium text-gray-600 hover:text-gray-800"
                     size="lg"
                   >
-                    Cancel
+                    {tString('navigation.cancel')}
                   </Button>
 
                   {currentStepIndex === steps.length - 1 ? (
@@ -1823,12 +1844,12 @@ export default function BusinessRegisterPage() {
                       className="h-12 px-8 bg-gray-900 hover:bg-gray-800 font-medium shadow-sm"
                     >
                       {loading ? (
-                        error && error.includes('Approving') ? 'Approving USDC...' :
-                        error && error.includes('blockchain') ? 'Registering on Blockchain...' :
-                        error && error.includes('profile') ? 'Creating Profile...' :
-                        'Creating Business...'
+                        error && error.includes('Approving') ? tString('loading.approval') :
+                        error && error.includes('blockchain') ? tString('loading.registration') :
+                        error && error.includes('profile') ? tString('loading.backend') :
+                        tString('loading.registration')
                       ) : (
-                        registrationFee ? `Create Business (${formatUsdcAmount(BigInt(registrationFee.toString()))} USDC)` : 'Create Business'
+                        registrationFee ? `${tString('navigation.submit')} (${formatUsdcAmount(BigInt(registrationFee.toString()))} USDC)` : tString('navigation.submit')
                       )}
                     </Button>
                   ) : (
@@ -1840,7 +1861,7 @@ export default function BusinessRegisterPage() {
                       className="h-12 px-6 bg-gray-900 hover:bg-gray-800 font-medium shadow-sm"
                       size="lg"
                     >
-                      Next Step
+                      {tString('navigation.next')}
                     </Button>
                   )}
                 </div>

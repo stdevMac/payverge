@@ -186,5 +186,267 @@
         "terms": "Términos"
       }
     }
+  },
+  "businessRegister": {
+    "header": {
+      "badge": "Registro de Negocio",
+      "title": "Registra Tu",
+      "titleEmphasis": "Negocio",
+      "subtitle": "Únete al futuro de los pagos de hospitalidad con soluciones cripto-nativas"
+    },
+    "steps": {
+      "business": {
+        "title": "Info del Negocio",
+        "description": "Nombre, logo y detalles de contacto"
+      },
+      "location": {
+        "title": "Ubicación y Billeteras", 
+        "description": "Dirección y configuración de pagos"
+      },
+      "settings": {
+        "title": "Configuración y Características",
+        "description": "Tarifas, características y preferencias"
+      },
+      "subscription": {
+        "title": "Pago",
+        "description": "Elige el monto de pago"
+      },
+      "review": {
+        "title": "Revisar y Enviar",
+        "description": "Confirmar y crear"
+      }
+    },
+    "businessInfo": {
+      "title": "Información del Negocio",
+      "description": "Cuéntanos sobre tu negocio",
+      "fields": {
+        "name": {
+          "label": "Nombre del Negocio",
+          "placeholder": "Ingresa el nombre de tu negocio",
+          "required": "El nombre del negocio es requerido"
+        },
+        "description": {
+          "label": "Descripción del Negocio",
+          "placeholder": "Describe tu negocio (opcional)"
+        },
+        "phone": {
+          "label": "Número de Teléfono",
+          "placeholder": "Ingresa número de teléfono (opcional)"
+        },
+        "email": {
+          "label": "Dirección de Correo", 
+          "placeholder": "Ingresa dirección de correo (opcional)"
+        },
+        "website": {
+          "label": "Sitio Web",
+          "placeholder": "Ingresa URL del sitio web (opcional)"
+        },
+        "customUrl": {
+          "label": "URL Personalizada",
+          "placeholder": "Ingresa slug de URL personalizada (opcional)"
+        }
+      },
+      "logo": {
+        "title": "Logo del Negocio",
+        "description": "Sube el logo de tu negocio para mejor reconocimiento de marca",
+        "upload": "Subir Logo",
+        "uploading": "Subiendo...",
+        "change": "Cambiar Logo",
+        "guidelines": "Recomendado: Imagen cuadrada, PNG o JPG, máx 5MB"
+      }
+    },
+    "location": {
+      "title": "Ubicación y Configuración de Pagos",
+      "description": "Configura la dirección de tu negocio y billeteras cripto",
+      "address": {
+        "title": "Dirección del Negocio",
+        "street": {
+          "label": "Dirección",
+          "placeholder": "123 Calle Principal"
+        },
+        "city": {
+          "label": "Ciudad",
+          "placeholder": "Ciudad de México"
+        },
+        "state": {
+          "label": "Estado/Provincia",
+          "placeholder": "CDMX"
+        },
+        "postalCode": {
+          "label": "Código Postal",
+          "placeholder": "01000"
+        },
+        "country": {
+          "label": "País",
+          "placeholder": "México"
+        }
+      },
+      "wallets": {
+        "title": "Direcciones de Billeteras Cripto",
+        "settlement": {
+          "label": "Dirección de Liquidación",
+          "placeholder": "Ingresa dirección de liquidación USDC",
+          "description": "Donde se enviarán los pagos",
+          "useConnected": "Usar Esta Dirección"
+        },
+        "tipping": {
+          "label": "Dirección de Propinas", 
+          "placeholder": "Ingresa dirección de propinas (opcional)",
+          "description": "Donde se enviarán las propinas"
+        }
+      }
+    },
+    "settings": {
+      "title": "Configuración y Características",
+      "description": "Configura tarifas y habilita características",
+      "fees": {
+        "title": "Configuración de Tarifas",
+        "taxRate": {
+          "label": "Tasa de Impuesto (%)",
+          "placeholder": "16.0"
+        },
+        "serviceFee": {
+          "label": "Tarifa de Servicio (%)",
+          "placeholder": "10.0"
+        },
+        "taxInclusive": "Precios con impuestos incluidos",
+        "serviceInclusive": "Precios con tarifa de servicio incluida"
+      },
+      "features": {
+        "title": "Características del Negocio",
+        "businessPage": "Página de Negocio",
+        "businessPageDescription": "Crear una página pública para tu negocio",
+        "showReviews": "Reseñas de Clientes",
+        "showReviewsDescription": "Mostrar reseñas de clientes en tu página",
+        "googleReviews": "Google Reviews",
+        "googleReviewsDescription": "Integrar con Google Reviews",
+        "counter": "Contador de Pedidos",
+        "counterDescription": "Mostrar números de pedido para recoger"
+      },
+      "referral": {
+        "title": "Código de Referido (Opcional)",
+        "placeholder": "Ingresa código de referido",
+        "checking": "Verificando...",
+        "valid": "Código de referido válido",
+        "invalid": "Código de referido inválido"
+      }
+    },
+    "subscription": {
+      "title": "Elige Tu Pago",
+      "description": "Paga lo que quieras - obtén tiempo de suscripción proporcionalmente",
+      "suggestedOptions": "Opciones de Pago Sugeridas",
+      "popular": "Popular",
+      "options": {
+        "1month": "Prueba por 1 mes",
+        "3months": "Comenzar - 3 meses", 
+        "6months": "Ahorra más - 6 meses",
+        "12months": "Mejor valor - Año completo"
+      },
+      "custom": {
+        "enable": "Pagar monto personalizado",
+        "placeholder": "Ingresa monto",
+        "description": "Obtendrás tiempo de suscripción proporcional a la tarifa anual",
+        "warning": "Montos superiores a ${amount} solo darán 1 año máximo",
+        "estimatedTime": "Tiempo estimado: {time}"
+      },
+      "discount": {
+        "title": "Opciones de Descuento (Elige Una)",
+        "none": "Sin Descuento",
+        "noneDescription": "Pagar monto completo",
+        "coupon": "Código de Cupón",
+        "couponDescription": "Ingresa cupón para descuento",
+        "couponLabel": "Código de Cupón",
+        "couponPlaceholder": "Ingresa código de cupón",
+        "referral": "Código de Referido",
+        "referralDescription": "Ingresa referido para descuento"
+      },
+      "summary": {
+        "title": "Resumen de Pago",
+        "subscriptionPayment": "Pago de Suscripción",
+        "couponDiscount": "Descuento de Cupón",
+        "referralDiscount": "Descuento de Referido",
+        "total": "Total",
+        "estimatedTime": "Tiempo estimado de suscripción: {time}",
+        "baseAmount": "Monto Base",
+        "discount": "Descuento",
+        "finalAmount": "Monto Final",
+        "subscriptionTime": "Tiempo de Suscripción"
+      }
+    },
+    "review": {
+      "title": "Revisa Tu Información",
+      "description": "Por favor revisa todos los detalles antes de enviar",
+      "sections": {
+        "business": "Información del Negocio",
+        "location": "Direcciones de Pago",
+        "settings": "Configuración del Negocio",
+        "payment": "Resumen de Pago"
+      },
+      "labels": {
+        "businessName": "Nombre del Negocio",
+        "email": "Email",
+        "phone": "Teléfono",
+        "website": "Sitio Web",
+        "description": "Descripción",
+        "settlementAddress": "Dirección de Liquidación",
+        "tippingAddress": "Dirección de Propinas",
+        "taxRate": "Tasa de Impuesto",
+        "serviceFeeRate": "Tasa de Tarifa de Servicio",
+        "features": "Características",
+        "businessPage": "Página de Negocio",
+        "reviews": "Reseñas",
+        "counterService": "Servicio de Mostrador",
+        "subscriptionPayment": "Pago de Suscripción",
+        "couponDiscount": "Descuento de Cupón",
+        "referralDiscount": "Descuento de Referido",
+        "totalPayment": "Pago Total",
+        "estimatedTime": "Tiempo estimado de suscripción: {time}",
+        "connectedWallet": "Billetera Conectada",
+        "publicPageUrl": "Esta será la URL de tu página pública de negocio",
+        "referralCodeUsing": "Usando código de referido:",
+        "validDiscountApplied": "✅ Válido - Descuento Aplicado"
+      }
+    },
+    "navigation": {
+      "back": "Atrás",
+      "next": "Siguiente Paso",
+      "submit": "Crear Negocio",
+      "cancel": "Cancelar"
+    },
+    "loading": {
+      "approval": "Aprobando USDC...",
+      "registration": "Registrando negocio...",
+      "backend": "Guardando en base de datos...",
+      "upload": "Subiendo archivos...",
+      "complete": "¡Registro completo!"
+    },
+    "errors": {
+      "walletNotConnected": "Por favor conecta tu billetera",
+      "insufficientBalance": "Saldo USDC insuficiente",
+      "approvalFailed": "Falló la aprobación de USDC",
+      "registrationFailed": "Falló el registro del negocio",
+      "uploadFailed": "Falló la subida del archivo",
+      "invalidEmail": "Por favor ingresa un email válido"
+    },
+    "validation": {
+      "couponValid": "✅ ¡Cupón válido! Descuento: ${amount}",
+      "couponInvalid": "❌ Código de cupón inválido o expirado",
+      "couponPrompt": "Ingresa un código de cupón para obtener descuento",
+      "referralValid": "✅ ¡Código de referido válido! Obtendrás un descuento en el registro.",
+      "referralInvalid": "❌ Código de referido inválido. Por favor verifica e intenta de nuevo.",
+      "referralPrompt": "Ingresa un código de referido para obtener descuento"
+    },
+    "messages": {
+      "customAmountDescription": "Obtendrás tiempo de suscripción proporcional a la tarifa anual (${amount} = 1 año)",
+      "customAmountWarning": "⚠️ Montos superiores a ${amount} solo darán 1 año máximo",
+      "customAmountEstimate": "Tiempo estimado: {time}",
+      "authenticationRequired": "Autenticación Requerida",
+      "authenticationMessage": "Por favor conecta tu billetera para registrar tu negocio en Payverge.",
+      "loading": "Cargando...",
+      "backToDashboard": "Volver al Panel",
+      "stepProgress": "Paso {current} de {total}",
+      "complete": "Completo",
+      "tryAgain": "Intentar de Nuevo"
+    }
   }
 }
