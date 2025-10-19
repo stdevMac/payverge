@@ -714,6 +714,237 @@
           "currency": {
             "defaultCurrency": "Moneda Predeterminada"
           }
+        },
+        "counterManager": {
+          "title": "Gestión de Mostradores",
+          "subtitle": "Configura mostradores para pedidos para llevar y servicio rápido",
+          "error": {
+            "loadSettings": "Error al cargar configuración de mostradores",
+            "updateSettings": "Error al actualizar configuración de mostradores"
+          },
+          "success": {
+            "settingsUpdated": "¡Configuración de mostradores actualizada exitosamente!"
+          },
+          "settings": {
+            "title": "Configuración de Mostradores",
+            "enableService": "Habilitar Servicio de Mostrador",
+            "enableServiceDescription": "Permitir que los clientes hagan pedidos para llevar en mostradores de servicio",
+            "counterCount": "Número de Mostradores",
+            "counterCountDescription": "¿Cuántos mostradores de servicio tienes? (1-20)",
+            "counterPrefix": "Prefijo del Nombre del Mostrador",
+            "counterPrefixDescription": "Prefijo para nombres de mostradores (ej., 'M' crea M1, M2, M3)",
+            "preview": "Vista Previa de Mostradores"
+          },
+          "buttons": {
+            "saving": "Guardando...",
+            "saveSettings": "Guardar Configuración de Mostradores"
+          },
+          "activeCounters": {
+            "title": "Mostradores Activos"
+          },
+          "status": {
+            "active": "Activo",
+            "inactive": "Inactivo"
+          },
+          "info": {
+            "title": "Acerca del Servicio de Mostrador",
+            "point1": "Los mostradores son perfectos para pedidos para llevar, cafeterías y servicio rápido",
+            "point2": "El personal puede crear cuentas para servicio de mostrador junto con servicio de mesa",
+            "point3": "Cada mostrador puede manejar una orden a la vez",
+            "point4": "Los clientes pueden pagar y recoger sus órdenes en el mostrador designado"
+          }
+        },
+        "staffManagement": {
+          "title": "Gestión de Personal",
+          "subtitle": "Invita y gestiona el personal de tu restaurante",
+          "error": {
+            "loadStaffData": "Error al cargar datos del personal",
+            "fillAllFields": "Por favor completa todos los campos",
+            "sendInvitation": "Error al enviar invitación",
+            "removeStaff": "Error al remover miembro del personal",
+            "resendInvitation": "Error al reenviar invitación",
+            "updateRole": "Error al actualizar rol del personal"
+          },
+          "success": {
+            "invitationSent": "¡Invitación de personal enviada exitosamente!",
+            "staffRemoved": "Miembro del personal removido exitosamente",
+            "invitationResent": "¡Invitación reenviada exitosamente!",
+            "roleUpdated": "¡Rol del personal actualizado exitosamente!"
+          },
+          "confirmRemove": "¿Estás seguro de que quieres remover a {name} de tu personal?",
+          "confirmResend": "¿Reenviar invitación a {name}? Esto generará un nuevo enlace de invitación y extenderá la fecha de vencimiento.",
+          "buttons": {
+            "inviteStaff": "Invitar Personal",
+            "clear": "Limpiar",
+            "cancel": "Cancelar",
+            "updateRole": "Actualizar Rol",
+            "clearSearch": "Limpiar Búsqueda"
+          },
+          "search": {
+            "title": "Buscar y Filtrar",
+            "placeholder": "Buscar por nombre, email o rol...",
+            "filterByRole": "Filtrar por rol",
+            "allRoles": "Todos los Roles",
+            "showing": "Mostrando",
+            "staffMembers": "miembros del personal",
+            "and": "y",
+            "pendingInvitations": "invitaciones pendientes",
+            "matching": "que coinciden con",
+            "only": "solamente",
+            "active": "Búsqueda activa"
+          },
+          "overview": {
+            "activeStaff": "Personal Activo",
+            "pendingInvitations": "Invitaciones Pendientes",
+            "activeThisWeek": "Activos Esta Semana"
+          },
+          "table": {
+            "activeStaffTitle": "Miembros del Personal Activos",
+            "noStaffYet": "Aún no hay miembros del personal",
+            "inviteFirstStaff": "Invita a tu primer miembro del personal para comenzar",
+            "noStaffFound": "No se encontraron miembros del personal",
+            "adjustSearch": "Intenta ajustar tus criterios de búsqueda o filtros",
+            "never": "Nunca",
+            "updateRoleTooltip": "Actualizar rol",
+            "columns": {
+              "name": "NOMBRE",
+              "email": "EMAIL",
+              "role": "ROL",
+              "lastLogin": "ÚLTIMO ACCESO",
+              "joined": "SE UNIÓ",
+              "actions": "ACCIONES"
+            }
+          },
+          "invitations": {
+            "title": "Invitaciones Pendientes",
+            "noPending": "No hay invitaciones pendientes",
+            "allAcceptedOrExpired": "Todas las invitaciones han sido aceptadas o han expirado",
+            "noFound": "No se encontraron invitaciones",
+            "adjustSearch": "Intenta ajustar tus criterios de búsqueda o filtros",
+            "cannotResendExpired": "No se puede reenviar invitación expirada",
+            "resendTooltip": "Reenviar invitación",
+            "status": {
+              "pending": "pendiente",
+              "expired": "Expirada"
+            },
+            "columns": {
+              "name": "NOMBRE",
+              "email": "EMAIL",
+              "role": "ROL",
+              "status": "ESTADO",
+              "expires": "EXPIRA",
+              "sent": "ENVIADA",
+              "actions": "ACCIONES"
+            }
+          },
+          "modals": {
+            "invite": {
+              "title": "Invitar Miembro del Personal",
+              "fullName": "Nombre Completo",
+              "fullNamePlaceholder": "Ingresa el nombre completo del miembro del personal",
+              "email": "Dirección de Email",
+              "emailPlaceholder": "Ingresa el email del miembro del personal",
+              "role": "Rol",
+              "rolePlaceholder": "Selecciona un rol",
+              "noteTitle": "Nota:",
+              "noteDescription": "El miembro del personal recibirá una invitación por email con instrucciones para crear su cuenta. Podrá iniciar sesión usando códigos de email sin necesidad de una billetera cripto.",
+              "cancel": "Cancelar",
+              "sendInvitation": "Enviar Invitación"
+            },
+            "updateRole": {
+              "title": "Actualizar Rol del Personal",
+              "updatingFor": "Actualizando rol para",
+              "newRole": "Nuevo Rol",
+              "selectRole": "Selecciona un rol",
+              "noteTitle": "Nota:",
+              "noteDescription": "Cambiar el rol actualizará inmediatamente los permisos y nivel de acceso del miembro del personal en el sistema."
+            }
+          },
+          "roles": {
+            "manager": {
+              "label": "Gerente",
+              "description": "Puede gestionar menú, mesas, cuentas (sin configuraciones financieras)"
+            },
+            "server": {
+              "label": "Mesero", 
+              "description": "Puede ver mesas, crear/cerrar cuentas"
+            },
+            "host": {
+              "label": "Anfitrión",
+              "description": "Puede ver mesas, sentar huéspedes"
+            },
+            "kitchen": {
+              "label": "Cocina",
+              "description": "Puede ver órdenes, marcar elementos listos"
+            }
+          }
+        },
+        "tableManager": {
+          "title": "Gestión de Mesas",
+          "subtitle": "Crea y gestiona las mesas de tu restaurante",
+          "loading": "Cargando mesas...",
+          "createTable": "Crear Mesa",
+          "error": {
+            "title": "Error",
+            "loadTables": "Error al cargar mesas",
+            "createTable": "Error al crear mesa",
+            "updateTable": "Error al actualizar mesa",
+            "deleteTable": "Error al eliminar mesa"
+          },
+          "buttons": {
+            "close": "Cerrar",
+            "clear": "Limpiar Búsqueda",
+            "edit": "Editar",
+            "delete": "Eliminar"
+          },
+          "search": {
+            "placeholder": "Buscar mesas por nombre...",
+            "filterByStatus": "Filtrar por estado",
+            "filters": {
+              "all": "Todas las Mesas",
+              "active": "Solo Activas",
+              "inactive": "Solo Inactivas"
+            },
+            "noResults": "No se encontraron resultados",
+            "noResultsDescription": "Ninguna mesa coincide con tus criterios de búsqueda. Intenta ajustar tus términos de búsqueda o filtros.",
+            "active": "Búsqueda activa"
+          },
+          "emptyState": {
+            "title": "Aún no se han creado mesas",
+            "description": "Crea tu primera mesa para comenzar a gestionar asientos de clientes y órdenes.",
+            "createButton": "Crear Tu Primera Mesa"
+          },
+          "status": {
+            "active": "Activa",
+            "inactive": "Inactiva"
+          },
+          "table": {
+            "tableId": "ID de Mesa"
+          },
+          "qrCode": {
+            "title": "Acceso por Código QR",
+            "subtitle": "Punto de acceso para huéspedes",
+            "tableUrl": "URL de Mesa",
+            "download": "Descargar QR",
+            "preview": "Vista Previa"
+          },
+          "confirmDelete": "¿Estás seguro de que quieres eliminar esta mesa?",
+          "modals": {
+            "create": {
+              "title": "Crear Nueva Mesa",
+              "tableName": "Nombre de Mesa",
+              "placeholder": "ej., Mesa 1, Patio A, etc.",
+              "cancel": "Cancelar",
+              "create": "Crear Mesa"
+            },
+            "edit": {
+              "title": "Editar Mesa",
+              "tableName": "Nombre de Mesa",
+              "activeStatus": "Estado Activo",
+              "cancel": "Cancelar",
+              "save": "Guardar Cambios"
+            }
+          }
         }
       }
     },

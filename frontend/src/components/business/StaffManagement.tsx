@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
   Card,
   CardBody,
@@ -36,9 +37,10 @@ interface StaffManagementProps {
   businessId: string;
 }
 
+// Role colors remain constant
 const roleLabels = {
   manager: 'Manager',
-  server: 'Server',
+  server: 'Server', 
   host: 'Host',
   kitchen: 'Kitchen',
 };
@@ -65,6 +67,31 @@ const statusColors = {
 } as const;
 
 export default function StaffManagement({ businessId }: StaffManagementProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.staffManagement.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
+  // Translated role labels and descriptions
+  const getRoleLabel = (role: Staff['role']): string => {
+    return tString(`roles.${role}.label`);
+  };
+
+  const getRoleDescription = (role: Staff['role']): string => {
+    return tString(`roles.${role}.description`);
+  };
+
   const [staff, setStaff] = useState<Staff[]>([]);
   const [invitations, setInvitations] = useState<PendingInvitation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +125,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
       setInvitations(data.pending_invitations || []);
     } catch (error) {
       console.error('Error loading staff data:', error);
-      toast.error('Failed to load staff data');
+      toast.error(tString('error.loadStaffData'));
     } finally {
       setLoading(false);
     }
@@ -111,7 +138,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
   // Handle staff invitation
   const handleInviteStaff = async () => {
     if (!inviteForm.email || !inviteForm.name || !inviteForm.role) {
-      toast.error('Please fill in all fields');
+      toast.error(tString('error.fillAllFields'));
       return;
     }
 
@@ -119,13 +146,13 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
       setInviteLoading(true);
       await StaffAPI.inviteStaff(businessId, inviteForm);
       
-      toast.success('Staff invitation sent successfully!');
+      toast.success(tString('success.invitationSent'));
       setInviteForm({ email: '', name: '', role: 'server' });
       onClose();
       loadStaffData(); // Reload to show new invitation
     } catch (error: any) {
       console.error('Error inviting staff:', error);
-      toast.error(error.message || 'Failed to send invitation');
+      toast.error(error.message || tString('error.sendInvitation'));
     } finally {
       setInviteLoading(false);
     }
@@ -133,33 +160,33 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
 
   // Handle staff removal
   const handleRemoveStaff = async (staffId: number, staffName: string) => {
-    if (!confirm(`Are you sure you want to remove ${staffName} from your staff?`)) {
+    if (!confirm(tString('confirmRemove').replace('{name}', staffName))) {
       return;
     }
 
     try {
       await StaffAPI.removeStaff(businessId, staffId);
-      toast.success('Staff member removed successfully');
+      toast.success(tString('success.staffRemoved'));
       loadStaffData(); // Reload staff list
     } catch (error) {
       console.error('Error removing staff:', error);
-      toast.error('Failed to remove staff member');
+      toast.error(tString('error.removeStaff'));
     }
   };
 
   // Handle resend invitation
   const handleResendInvitation = async (invitationId: number, staffName: string) => {
-    if (!confirm(`Resend invitation to ${staffName}? This will generate a new invitation link and extend the expiry date.`)) {
+    if (!confirm(tString('confirmResend').replace('{name}', staffName))) {
       return;
     }
 
     try {
       await StaffAPI.resendInvitation(businessId, invitationId);
-      toast.success('Invitation resent successfully!');
+      toast.success(tString('success.invitationResent'));
       loadStaffData(); // Reload to show updated expiry
     } catch (error: any) {
       console.error('Error resending invitation:', error);
-      toast.error(error.message || 'Failed to resend invitation');
+      toast.error(error.message || tString('error.resendInvitation'));
     }
   };
 
@@ -182,12 +209,12 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
     try {
       setRoleUpdateLoading(true);
       await StaffAPI.updateStaffRole(businessId, selectedStaff.id, newRole);
-      toast.success('Staff role updated successfully!');
+      toast.success(tString('success.roleUpdated'));
       onRoleModalClose();
       loadStaffData(); // Reload to show updated role
     } catch (error: any) {
       console.error('Error updating staff role:', error);
-      toast.error(error.message || 'Failed to update staff role');
+      toast.error(error.message || tString('error.updateRole'));
     } finally {
       setRoleUpdateLoading(false);
     }
@@ -270,8 +297,8 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">Staff Management</h2>
-          <p className="text-default-600 mt-1">Invite and manage your restaurant staff</p>
+          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         <Button
           color="primary"
@@ -280,7 +307,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
           onPress={handleInviteModalOpen}
           className="w-full sm:w-auto"
         >
-          Invite Staff
+          {tString('buttons.inviteStaff')}
         </Button>
       </div>
 
@@ -291,14 +318,14 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
             <div className="p-2 rounded-lg bg-primary/10">
               <Search className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Search & Filter</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('search.title')}</h3>
           </div>
         </CardHeader>
         <CardBody className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <Input
-                placeholder="Search by name, email, or role..."
+                placeholder={tString('search.placeholder')}
                 value={searchQuery}
                 onValueChange={setSearchQuery}
                 startContent={<Search className="w-4 h-4 text-default-400" />}
@@ -323,18 +350,18 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
             
             <div className="flex items-center gap-3">
               <Select
-                placeholder="Filter by role"
+                placeholder={tString('search.filterByRole')}
                 selectedKeys={[roleFilter]}
                 onSelectionChange={(keys) => setRoleFilter(Array.from(keys)[0] as any)}
                 className="w-full sm:w-48"
                 size="lg"
                 variant="bordered"
               >
-                <SelectItem key="all" value="all">All Roles</SelectItem>
-                <SelectItem key="manager" value="manager">Manager</SelectItem>
-                <SelectItem key="server" value="server">Server</SelectItem>
-                <SelectItem key="host" value="host">Host</SelectItem>
-                <SelectItem key="kitchen" value="kitchen">Kitchen</SelectItem>
+                <SelectItem key="all" value="all">{tString('search.allRoles')}</SelectItem>
+                <SelectItem key="manager" value="manager">{getRoleLabel('manager')}</SelectItem>
+                <SelectItem key="server" value="server">{getRoleLabel('server')}</SelectItem>
+                <SelectItem key="host" value="host">{getRoleLabel('host')}</SelectItem>
+                <SelectItem key="kitchen" value="kitchen">{getRoleLabel('kitchen')}</SelectItem>
               </Select>
               
               {(searchQuery || roleFilter !== 'all') && (
@@ -344,7 +371,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                   startContent={<X className="w-4 h-4" />}
                   onPress={clearSearch}
                 >
-                  Clear
+                  {tString('buttons.clear')}
                 </Button>
               )}
             </div>
@@ -355,21 +382,21 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
             <div className="mt-4 pt-4 border-t border-default-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-default-600">
-                  Showing <strong className="text-default-900">{filteredStaff.length}</strong> staff members
+                  {tString('search.showing')} <strong className="text-default-900">{filteredStaff.length}</strong> {tString('search.staffMembers')}
                   {filteredInvitations.length > 0 && (
-                    <span> and <strong className="text-default-900">{filteredInvitations.length}</strong> pending invitations</span>
+                    <span> {tString('search.and')} <strong className="text-default-900">{filteredInvitations.length}</strong> {tString('search.pendingInvitations')}</span>
                   )}
                   {searchQuery && (
-                    <span> matching &quot;<strong className="text-primary">{searchQuery}</strong>&quot;</span>
+                    <span> {tString('search.matching')} &quot;<strong className="text-primary">{searchQuery}</strong>&quot;</span>
                   )}
                   {roleFilter !== 'all' && (
-                    <span> • {roleLabels[roleFilter as Staff['role']]} only</span>
+                    <span> • {getRoleLabel(roleFilter as Staff['role'])} {tString('search.only')}</span>
                   )}
                 </div>
                 
                 {searchQuery && (
                   <Chip size="sm" variant="flat" color="primary">
-                    Search active
+                    {tString('search.active')}
                   </Chip>
                 )}
               </div>
@@ -388,7 +415,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
               </div>
               <div>
                 <p className="text-2xl font-semibold text-gray-900">{staff.length}</p>
-                <p className="text-sm text-gray-600">Active Staff</p>
+                <p className="text-sm text-gray-600">{tString('overview.activeStaff')}</p>
               </div>
             </div>
           </CardBody>
@@ -404,7 +431,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                 <p className="text-2xl font-semibold text-gray-900">
                   {invitations.filter(inv => (inv.status || 'pending') === 'pending').length}
                 </p>
-                <p className="text-sm text-gray-600">Pending Invitations</p>
+                <p className="text-sm text-gray-600">{tString('overview.pendingInvitations')}</p>
               </div>
             </div>
           </CardBody>
@@ -422,7 +449,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                     new Date(s.last_login_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
                   ).length}
                 </p>
-                <p className="text-sm text-gray-600">Active This Week</p>
+                <p className="text-sm text-gray-600">{tString('overview.activeThisWeek')}</p>
               </div>
             </div>
           </CardBody>
@@ -432,7 +459,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
       {/* Active Staff Table */}
       <Card className="border border-gray-200">
         <CardHeader className="pb-3">
-          <h3 className="text-lg font-medium text-gray-900">Active Staff Members</h3>
+          <h3 className="text-lg font-medium text-gray-900">{tString('table.activeStaffTitle')}</h3>
         </CardHeader>
         <CardBody className="pt-0">
           {filteredStaff.length === 0 ? (
@@ -440,13 +467,13 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               {staff.length === 0 ? (
                 <>
-                  <p className="text-gray-600">No staff members yet</p>
-                  <p className="text-sm text-gray-500 mt-1">Invite your first staff member to get started</p>
+                  <p className="text-gray-600">{tString('table.noStaffYet')}</p>
+                  <p className="text-sm text-gray-500 mt-1">{tString('table.inviteFirstStaff')}</p>
                 </>
               ) : (
                 <>
-                  <p className="text-gray-600">No staff members found</p>
-                  <p className="text-sm text-gray-500 mt-1">Try adjusting your search or filter criteria</p>
+                  <p className="text-gray-600">{tString('table.noStaffFound')}</p>
+                  <p className="text-sm text-gray-500 mt-1">{tString('table.adjustSearch')}</p>
                   <Button
                     variant="flat"
                     size="sm"
@@ -454,7 +481,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                     onPress={clearSearch}
                     className="mt-3"
                   >
-                    Clear Search
+                    {tString('buttons.clearSearch')}
                   </Button>
                 </>
               )}
@@ -462,12 +489,12 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
           ) : (
             <Table aria-label="Staff members table">
               <TableHeader>
-                <TableColumn>NAME</TableColumn>
-                <TableColumn>EMAIL</TableColumn>
-                <TableColumn>ROLE</TableColumn>
-                <TableColumn>LAST LOGIN</TableColumn>
-                <TableColumn>JOINED</TableColumn>
-                <TableColumn>ACTIONS</TableColumn>
+                <TableColumn>{tString('table.columns.name')}</TableColumn>
+                <TableColumn>{tString('table.columns.email')}</TableColumn>
+                <TableColumn>{tString('table.columns.role')}</TableColumn>
+                <TableColumn>{tString('table.columns.lastLogin')}</TableColumn>
+                <TableColumn>{tString('table.columns.joined')}</TableColumn>
+                <TableColumn>{tString('table.columns.actions')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {filteredStaff.map((member) => (
@@ -491,7 +518,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                       <div className="text-sm text-gray-600">
                         {member.last_login_at 
                           ? formatDate(member.last_login_at)
-                          : 'Never'
+                          : tString('table.never')
                         }
                       </div>
                     </TableCell>
@@ -508,7 +535,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                           variant="light"
                           color="primary"
                           onPress={() => handleUpdateRole(member)}
-                          title="Update role"
+                          title={tString('table.updateRoleTooltip')}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -536,7 +563,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
       {(invitations.length > 0 || (searchQuery || roleFilter !== 'all')) && (
         <Card className="border border-gray-200">
           <CardHeader className="pb-3">
-            <h3 className="text-lg font-medium text-gray-900">Pending Invitations</h3>
+            <h3 className="text-lg font-medium text-gray-900">{tString('invitations.title')}</h3>
           </CardHeader>
           <CardBody className="pt-0">
             {filteredInvitations.length === 0 ? (
@@ -544,13 +571,13 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                 <Mail className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 {invitations.length === 0 ? (
                   <>
-                    <p className="text-gray-600">No pending invitations</p>
-                    <p className="text-sm text-gray-500 mt-1">All invitations have been accepted or expired</p>
+                    <p className="text-gray-600">{tString('invitations.noPending')}</p>
+                    <p className="text-sm text-gray-500 mt-1">{tString('invitations.allAcceptedOrExpired')}</p>
                   </>
                 ) : (
                   <>
-                    <p className="text-gray-600">No invitations found</p>
-                    <p className="text-sm text-gray-500 mt-1">Try adjusting your search or filter criteria</p>
+                    <p className="text-gray-600">{tString('invitations.noFound')}</p>
+                    <p className="text-sm text-gray-500 mt-1">{tString('invitations.adjustSearch')}</p>
                     <Button
                       variant="flat"
                       size="sm"
@@ -558,7 +585,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                       onPress={clearSearch}
                       className="mt-3"
                     >
-                      Clear Search
+                      {tString('buttons.clearSearch')}
                     </Button>
                   </>
                 )}
@@ -566,13 +593,13 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
             ) : (
               <Table aria-label="Pending invitations table">
               <TableHeader>
-                <TableColumn>NAME</TableColumn>
-                <TableColumn>EMAIL</TableColumn>
-                <TableColumn>ROLE</TableColumn>
-                <TableColumn>STATUS</TableColumn>
-                <TableColumn>EXPIRES</TableColumn>
-                <TableColumn>SENT</TableColumn>
-                <TableColumn>ACTIONS</TableColumn>
+                <TableColumn>{tString('invitations.columns.name')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.email')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.role')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.status')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.expires')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.sent')}</TableColumn>
+                <TableColumn>{tString('invitations.columns.actions')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {filteredInvitations.map((invitation) => (
@@ -598,7 +625,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                         variant="flat"
                         size="sm"
                       >
-                        {isInvitationExpired(invitation.expires_at) ? 'Expired' : (invitation.status || 'pending')}
+                        {isInvitationExpired(invitation.expires_at) ? tString('invitations.status.expired') : (invitation.status || tString('invitations.status.pending'))}
                       </Chip>
                     </TableCell>
                     <TableCell>
@@ -620,7 +647,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                           color="primary"
                           onPress={() => handleResendInvitation(invitation.id, invitation.name)}
                           isDisabled={isInvitationExpired(invitation.expires_at)}
-                          title={isInvitationExpired(invitation.expires_at) ? "Cannot resend expired invitation" : "Resend invitation"}
+                          title={isInvitationExpired(invitation.expires_at) ? tString('invitations.cannotResendExpired') : tString('invitations.resendTooltip')}
                         >
                           <RefreshCw className="w-4 h-4" />
                         </Button>
@@ -641,21 +668,21 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
           <ModalHeader>
             <div className="flex items-center space-x-2">
               <Mail className="w-5 h-5 text-blue-600" />
-              <span>Invite Staff Member</span>
+              <span>{tString('modals.invite.title')}</span>
             </div>
           </ModalHeader>
           <ModalBody className="space-y-4">
             <Input
-              label="Full Name"
-              placeholder="Enter staff member's full name"
+              label={tString('modals.invite.fullName')}
+              placeholder={tString('modals.invite.fullNamePlaceholder')}
               value={inviteForm.name}
               onChange={(e) => setInviteForm({ ...inviteForm, name: e.target.value })}
               isRequired
             />
             
             <Input
-              label="Email Address"
-              placeholder="Enter staff member's email"
+              label={tString('modals.invite.email')}
+              placeholder={tString('modals.invite.emailPlaceholder')}
               type="email"
               value={inviteForm.email}
               onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
@@ -664,8 +691,8 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
             
             <Select
               key={`invite-role-${inviteForm.role}`}
-              label="Role"
-              placeholder="Select a role"
+              label={tString('modals.invite.role')}
+              placeholder={tString('modals.invite.rolePlaceholder')}
               defaultSelectedKeys={[inviteForm.role]}
               disallowEmptySelection
               onSelectionChange={(keys) => {
@@ -690,14 +717,13 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
 
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-sm text-blue-800">
-                <strong>Note:</strong> The staff member will receive an email invitation with instructions 
-                to create their account. They&apos;ll be able to log in using email codes without needing a crypto wallet.
+                <strong>{tString('modals.invite.noteTitle')}</strong> {tString('modals.invite.noteDescription')}
               </p>
             </div>
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>
-              Cancel
+              {tString('modals.invite.cancel')}
             </Button>
             <Button
               color="primary"
@@ -705,7 +731,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
               isLoading={inviteLoading}
               className="bg-gray-900 text-white"
             >
-              Send Invitation
+              {tString('modals.invite.sendInvitation')}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -717,20 +743,20 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
           <ModalHeader>
             <div className="flex items-center space-x-2">
               <Edit className="w-5 h-5 text-blue-600" />
-              <span>Update Staff Role</span>
+              <span>{tString('modals.updateRole.title')}</span>
             </div>
           </ModalHeader>
           <ModalBody className="space-y-4">
             {selectedStaff && (
               <>
                 <div className="text-sm text-gray-600">
-                  Updating role for <strong>{selectedStaff.name}</strong> ({selectedStaff.email})
+                  {tString('modals.updateRole.updatingFor')} <strong>{selectedStaff.name}</strong> ({selectedStaff.email})
                 </div>
                 
                 <Select
                   key={`role-select-${selectedStaff.id}-${newRole}`}
-                  label="New Role"
-                  placeholder="Select a role"
+                  label={tString('modals.updateRole.newRole')}
+                  placeholder={tString('modals.updateRole.selectRole')}
                   defaultSelectedKeys={[newRole]}
                   disallowEmptySelection
                   onSelectionChange={(keys) => {
@@ -755,8 +781,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
 
                 <div className="bg-amber-50 p-4 rounded-lg">
                   <p className="text-sm text-amber-800">
-                    <strong>Note:</strong> Changing the role will immediately update the staff member&apos;s 
-                    permissions and access level in the system.
+                    <strong>{tString('modals.updateRole.noteTitle')}</strong> {tString('modals.updateRole.noteDescription')}
                   </p>
                 </div>
               </>
@@ -764,7 +789,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onRoleModalClose}>
-              Cancel
+              {tString('buttons.cancel')}
             </Button>
             <Button
               color="primary"
@@ -772,7 +797,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
               isLoading={roleUpdateLoading}
               className="bg-gray-900 text-white"
             >
-              Update Role
+              {tString('buttons.updateRole')}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
   Card,
   CardHeader,
@@ -27,6 +28,22 @@ interface TableManagerProps {
 }
 
 export default function TableManager({ businessId }: TableManagerProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.tableManager.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [tables, setTables] = useState<Table[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +68,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
       const response = await businessApi.getBusinessTables(businessId);
       setTables(response.tables || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load tables');
+      setError(err instanceof Error ? err.message : tString('error.loadTables'));
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +113,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
       setTableName('');
       onCreateOpenChange();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create table');
+      setError(err instanceof Error ? err.message : tString('error.createTable'));
     }
   };
 
@@ -119,18 +136,18 @@ export default function TableManager({ businessId }: TableManagerProps) {
       onEditOpenChange();
       setEditingTable(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update table');
+      setError(err instanceof Error ? err.message : tString('error.updateTable'));
     }
   };
 
   const handleDeleteTable = async (tableId: number) => {
-    if (!confirm('Are you sure you want to delete this table?')) return;
+    if (!confirm(tString('confirmDelete'))) return;
     
     try {
       await businessApi.deleteTable(tableId);
       setTables(tables.filter(table => table.id !== tableId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete table');
+      setError(err instanceof Error ? err.message : tString('error.deleteTable'));
     }
   };
 
@@ -185,7 +202,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
           <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
             <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-600 font-light tracking-wide">Loading tables...</p>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
         </div>
       </div>
     );
@@ -197,8 +214,8 @@ export default function TableManager({ businessId }: TableManagerProps) {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-3xl font-light text-gray-900 tracking-wide">Table Management</h2>
-            <p className="text-gray-600 font-light mt-2">Create and manage your restaurant tables</p>
+            <h2 className="text-3xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+            <p className="text-gray-600 font-light mt-2">{tString('subtitle')}</p>
           </div>
           <Button
             onPress={onCreateOpen}
@@ -207,7 +224,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
             startContent={<Plus className="w-5 h-5" />}
             className="font-semibold shadow-lg"
           >
-            Create Table
+            {tString('createTable')}
           </Button>
         </div>
 
@@ -217,7 +234,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
               <div className="flex-1 relative">
                 <Input
-                  placeholder="Search tables by name..."
+                  placeholder={tString('search.placeholder')}
                   value={searchQuery}
                   onValueChange={setSearchQuery}
                   startContent={<Search className="w-4 h-4 text-gray-400" />}
@@ -240,15 +257,15 @@ export default function TableManager({ businessId }: TableManagerProps) {
               
               <div className="flex items-center gap-3">
                 <Select
-                  label="Filter by status"
+                  label={tString('search.filterByStatus')}
                   selectedKeys={[statusFilter]}
                   onSelectionChange={(keys: any) => setStatusFilter(Array.from(keys)[0] as 'all' | 'active' | 'inactive')}
                   className="w-48"
                   size="sm"
                 >
-                  <SelectItem key="all" value="all">All Tables</SelectItem>
-                  <SelectItem key="active" value="active">Active Only</SelectItem>
-                  <SelectItem key="inactive" value="inactive">Inactive Only</SelectItem>
+                  <SelectItem key="all" value="all">{tString('search.filters.all')}</SelectItem>
+                  <SelectItem key="active" value="active">{tString('search.filters.active')}</SelectItem>
+                  <SelectItem key="inactive" value="inactive">{tString('search.filters.inactive')}</SelectItem>
                 </Select>
                 
                 {(searchQuery || statusFilter !== 'all') && (
@@ -258,7 +275,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                     onPress={clearSearch}
                     startContent={<X className="w-3 h-3" />}
                   >
-                    Clear
+                    {tString('buttons.clear')}
                   </Button>
                 )}
               </div>
@@ -280,7 +297,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                   
                   {searchQuery && (
                     <Chip size="sm" variant="flat" color="primary">
-                      Search active
+                      {tString('search.active')}
                     </Chip>
                   )}
                 </div>
@@ -300,7 +317,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-medium text-red-900 tracking-wide">Error</h3>
+                <h3 className="text-lg font-medium text-red-900 tracking-wide">{tString('error.title')}</h3>
                 <p className="text-red-700 font-light">{error}</p>
               </div>
             </div>
@@ -308,7 +325,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
               onClick={() => setError(null)}
               className="text-red-600 hover:text-red-800 transition-colors duration-200"
             >
-              Dismiss
+              {tString('buttons.close')}
             </button>
           </div>
         </div>
@@ -321,15 +338,15 @@ export default function TableManager({ businessId }: TableManagerProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No tables created yet</h3>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">{tString('emptyState.title')}</h3>
           <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
-            Create your first table to start managing customer seating and orders.
+            {tString('emptyState.description')}
           </p>
           <button
             onClick={onCreateOpen}
             className="bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
           >
-            Create Your First Table
+            {tString('emptyState.createButton')}
           </button>
         </div>
       ) : filteredTables.length === 0 ? (
@@ -337,9 +354,9 @@ export default function TableManager({ businessId }: TableManagerProps) {
           <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
             <Search className="h-10 w-10 text-gray-400" />
           </div>
-          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No results found</h3>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">{tString('search.noResults')}</h3>
           <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
-            No tables match your search criteria. Try adjusting your search terms or filters.
+            {tString('search.noResultsDescription')}
           </p>
           <Button
             onPress={clearSearch}
@@ -347,7 +364,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
             variant="flat"
             startContent={<X className="w-4 h-4" />}
           >
-            Clear Search
+            {tString('buttons.clear')}
           </Button>
         </div>
       ) : (
@@ -357,14 +374,14 @@ export default function TableManager({ businessId }: TableManagerProps) {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h3 className="text-xl font-light text-gray-900 tracking-wide mb-1">{table.name}</h3>
-                  <p className="text-sm text-gray-500 font-light">Table ID: {table.id}</p>
+                  <p className="text-sm text-gray-500 font-light">{tString('table.tableId')}: {table.id}</p>
                 </div>
                 <div className={`px-3 py-1 rounded-xl text-xs font-medium tracking-wide ${
                   table.is_active 
                     ? 'bg-green-100 text-green-700 border border-green-200' 
                     : 'bg-gray-100 text-gray-700 border border-gray-200'
                 }`}>
-                  {table.is_active ? 'Active' : 'Inactive'}
+                  {table.is_active ? tString('status.active') : tString('status.inactive')}
                 </div>
               </div>
 
@@ -376,14 +393,14 @@ export default function TableManager({ businessId }: TableManagerProps) {
                       <QrCode className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900">QR Code Access</h4>
-                      <p className="text-sm text-gray-600">Guest table access point</p>
+                      <h4 className="text-lg font-semibold text-gray-900">{tString('qrCode.title')}</h4>
+                      <p className="text-sm text-gray-600">{tString('qrCode.subtitle')}</p>
                     </div>
                   </div>
                   
                   <div className="bg-white rounded-xl p-4 border border-blue-100 mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">Table URL</span>
+                      <span className="text-sm font-medium text-gray-700">{tString('qrCode.tableUrl')}</span>
                       <button
                         onClick={() => copyQRUrl(table)}
                         className="p-1 hover:bg-gray-100 rounded-md transition-colors duration-200 group"
@@ -411,7 +428,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                       startContent={<Download className="w-4 h-4" />}
                       className="font-semibold"
                     >
-                      Download QR
+                      {tString('qrCode.download')}
                     </Button>
                     <Button
                       onClick={() => window.open(`${window.location.origin}${table.qr_url}`, '_blank')}
@@ -421,7 +438,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                       startContent={<ExternalLink className="w-4 h-4" />}
                       className="font-semibold"
                     >
-                      Preview
+                      {tString('qrCode.preview')}
                     </Button>
                   </div>
                 </div>
@@ -437,7 +454,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                   startContent={<Edit className="w-4 h-4" />}
                   className="flex-1 font-semibold bg-gray-900 text-white hover:bg-gray-800"
                 >
-                  Edit Table
+                  {tString('buttons.edit')}
                 </Button>
                 <Button
                   onClick={() => handleDeleteTable(table.id)}
@@ -447,7 +464,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                   startContent={<Trash2 className="w-4 h-4" />}
                   className="font-semibold"
                 >
-                  Delete
+                  {tString('buttons.delete')}
                 </Button>
               </div>
             </div>
@@ -460,11 +477,11 @@ export default function TableManager({ businessId }: TableManagerProps) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Create New Table</ModalHeader>
+              <ModalHeader>{tString('modals.create.title')}</ModalHeader>
               <ModalBody>
                 <Input
-                  label="Table Name"
-                  placeholder="e.g., Table 1, Patio A, etc."
+                  label={tString('modals.create.tableName')}
+                  placeholder={tString('modals.create.placeholder')}
                   value={tableName}
                   onValueChange={setTableName}
                   isRequired
@@ -472,10 +489,10 @@ export default function TableManager({ businessId }: TableManagerProps) {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
+                  {tString('modals.create.cancel')}
                 </Button>
                 <Button color="primary" onPress={handleCreateTable}>
-                  Create Table
+                  {tString('modals.create.create')}
                 </Button>
               </ModalFooter>
             </>
@@ -488,16 +505,16 @@ export default function TableManager({ businessId }: TableManagerProps) {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Edit Table</ModalHeader>
+              <ModalHeader>{tString('modals.edit.title')}</ModalHeader>
               <ModalBody>
                 <Input
-                  label="Table Name"
+                  label={tString('modals.edit.tableName')}
                   value={editName}
                   onValueChange={setEditName}
                   isRequired
                 />
                 <div className="flex items-center justify-between">
-                  <span>Active Status</span>
+                  <span>{tString('modals.edit.activeStatus')}</span>
                   <Switch
                     isSelected={editActive}
                     onValueChange={setEditActive}
@@ -506,10 +523,10 @@ export default function TableManager({ businessId }: TableManagerProps) {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
+                  {tString('modals.edit.cancel')}
                 </Button>
                 <Button color="primary" onPress={handleUpdateTable}>
-                  Save Changes
+                  {tString('modals.edit.save')}
                 </Button>
               </ModalFooter>
             </>

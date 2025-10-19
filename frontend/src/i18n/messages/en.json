@@ -190,7 +190,7 @@
                 "about": "About",
                 "contact": "Contact",
                 "privacy": "Privacy",
-                "terms": "Terms"
+                "clear": "Clear"
             }
         }
     },
@@ -713,6 +713,237 @@
           },
           "currency": {
             "defaultCurrency": "Default Currency"
+          }
+        },
+        "counterManager": {
+          "title": "Counter Management",
+          "subtitle": "Configure counters for takeaway and quick service orders",
+          "error": {
+            "loadSettings": "Failed to load counter settings",
+            "updateSettings": "Failed to update counter settings"
+          },
+          "success": {
+            "settingsUpdated": "Counter settings updated successfully!"
+          },
+          "settings": {
+            "title": "Counter Settings",
+            "enableService": "Enable Counter Service",
+            "enableServiceDescription": "Allow customers to place takeaway orders at service counters",
+            "counterCount": "Number of Counters",
+            "counterCountDescription": "How many service counters do you have? (1-20)",
+            "counterPrefix": "Counter Name Prefix",
+            "counterPrefixDescription": "Prefix for counter names (e.g., 'C' creates C1, C2, C3)",
+            "preview": "Counter Preview"
+          },
+          "buttons": {
+            "saving": "Saving...",
+            "saveSettings": "Save Counter Settings"
+          },
+          "activeCounters": {
+            "title": "Active Counters"
+          },
+          "status": {
+            "active": "Active",
+            "inactive": "Inactive"
+          },
+          "info": {
+            "title": "About Counter Service",
+            "point1": "Counters are perfect for takeaway orders, coffee shops, and quick service",
+            "point2": "Staff can create bills for counter service alongside table service",
+            "point3": "Each counter can handle one order at a time",
+            "point4": "Customers can pay and collect their orders at the designated counter"
+          }
+        },
+        "staffManagement": {
+          "title": "Staff Management",
+          "subtitle": "Invite and manage your restaurant staff",
+          "error": {
+            "loadStaffData": "Failed to load staff data",
+            "fillAllFields": "Please fill in all fields",
+            "sendInvitation": "Failed to send invitation",
+            "removeStaff": "Failed to remove staff member",
+            "resendInvitation": "Failed to resend invitation",
+            "updateRole": "Failed to update staff role"
+          },
+          "success": {
+            "invitationSent": "Staff invitation sent successfully!",
+            "staffRemoved": "Staff member removed successfully",
+            "invitationResent": "Invitation resent successfully!",
+            "roleUpdated": "Staff role updated successfully!"
+          },
+          "confirmRemove": "Are you sure you want to remove {name} from your staff?",
+          "confirmResend": "Resend invitation to {name}? This will generate a new invitation link and extend the expiry date.",
+          "buttons": {
+            "inviteStaff": "Invite Staff",
+            "clear": "Clear",
+            "cancel": "Cancel",
+            "updateRole": "Update Role",
+            "clearSearch": "Clear Search"
+          },
+          "search": {
+            "title": "Search & Filter",
+            "placeholder": "Search by name, email, or role...",
+            "filterByRole": "Filter by role",
+            "allRoles": "All Roles",
+            "showing": "Showing",
+            "staffMembers": "staff members",
+            "and": "and",
+            "pendingInvitations": "pending invitations",
+            "matching": "matching",
+            "only": "only",
+            "active": "Search active"
+          },
+          "overview": {
+            "activeStaff": "Active Staff",
+            "pendingInvitations": "Pending Invitations",
+            "activeThisWeek": "Active This Week"
+          },
+          "table": {
+            "activeStaffTitle": "Active Staff Members",
+            "noStaffYet": "No staff members yet",
+            "inviteFirstStaff": "Invite your first staff member to get started",
+            "noStaffFound": "No staff members found",
+            "adjustSearch": "Try adjusting your search or filter criteria",
+            "never": "Never",
+            "updateRoleTooltip": "Update role",
+            "columns": {
+              "name": "NAME",
+              "email": "EMAIL",
+              "role": "ROLE",
+              "lastLogin": "LAST LOGIN",
+              "joined": "JOINED",
+              "actions": "ACTIONS"
+            }
+          },
+          "invitations": {
+            "title": "Pending Invitations",
+            "noPending": "No pending invitations",
+            "allAcceptedOrExpired": "All invitations have been accepted or expired",
+            "noFound": "No invitations found",
+            "adjustSearch": "Try adjusting your search or filter criteria",
+            "cannotResendExpired": "Cannot resend expired invitation",
+            "resendTooltip": "Resend invitation",
+            "status": {
+              "pending": "pending",
+              "expired": "Expired"
+            },
+            "columns": {
+              "name": "NAME",
+              "email": "EMAIL",
+              "role": "ROLE",
+              "status": "STATUS",
+              "expires": "EXPIRES",
+              "sent": "SENT",
+              "actions": "ACTIONS"
+            }
+          },
+          "modals": {
+            "invite": {
+              "title": "Invite Staff Member",
+              "fullName": "Full Name",
+              "fullNamePlaceholder": "Enter staff member's full name",
+              "email": "Email Address",
+              "emailPlaceholder": "Enter staff member's email",
+              "role": "Role",
+              "rolePlaceholder": "Select a role",
+              "noteTitle": "Note:",
+              "noteDescription": "The staff member will receive an email invitation with instructions to create their account. They'll be able to log in using email codes without needing a crypto wallet.",
+              "cancel": "Cancel",
+              "sendInvitation": "Send Invitation"
+            },
+            "updateRole": {
+              "title": "Update Staff Role",
+              "updatingFor": "Updating role for",
+              "newRole": "New Role",
+              "selectRole": "Select a role",
+              "noteTitle": "Note:",
+              "noteDescription": "Changing the role will immediately update the staff member's permissions and access level in the system."
+            }
+          },
+          "roles": {
+            "manager": {
+              "label": "Manager",
+              "description": "Can manage menu, tables, bills (no financial settings)"
+            },
+            "server": {
+              "label": "Server", 
+              "description": "Can view tables, create/close bills"
+            },
+            "host": {
+              "label": "Host",
+              "description": "Can view tables, seat guests"
+            },
+            "kitchen": {
+              "label": "Kitchen",
+              "description": "Can view orders, mark items ready"
+            }
+          }
+        },
+        "tableManager": {
+          "title": "Table Management",
+          "subtitle": "Create and manage your restaurant tables",
+          "loading": "Loading tables...",
+          "createTable": "Create Table",
+          "error": {
+            "title": "Error",
+            "loadTables": "Failed to load tables",
+            "createTable": "Failed to create table",
+            "updateTable": "Failed to update table",
+            "deleteTable": "Failed to delete table"
+          },
+          "buttons": {
+            "close": "Dismiss",
+            "clear": "Clear Search",
+            "edit": "Edit",
+            "delete": "Delete"
+          },
+          "search": {
+            "placeholder": "Search tables by name...",
+            "filterByStatus": "Filter by status",
+            "filters": {
+              "all": "All Tables",
+              "active": "Active Only",
+              "inactive": "Inactive Only"
+            },
+            "noResults": "No results found",
+            "noResultsDescription": "No tables match your search criteria. Try adjusting your search terms or filters.",
+            "active": "Search active"
+          },
+          "emptyState": {
+            "title": "No tables created yet",
+            "description": "Create your first table to start managing customer seating and orders.",
+            "createButton": "Create Your First Table"
+          },
+          "status": {
+            "active": "Active",
+            "inactive": "Inactive"
+          },
+          "table": {
+            "tableId": "Table ID"
+          },
+          "qrCode": {
+            "title": "QR Code Access",
+            "subtitle": "Guest table access point",
+            "tableUrl": "Table URL",
+            "download": "Download QR",
+            "preview": "Preview"
+          },
+          "confirmDelete": "Are you sure you want to delete this table?",
+          "modals": {
+            "create": {
+              "title": "Create New Table",
+              "tableName": "Table Name",
+              "placeholder": "e.g., Table 1, Patio A, etc.",
+              "cancel": "Cancel",
+              "create": "Create Table"
+            },
+            "edit": {
+              "title": "Edit Table",
+              "tableName": "Table Name",
+              "activeStatus": "Active Status",
+              "cancel": "Cancel",
+              "save": "Save Changes"
+            }
           }
         }
       }

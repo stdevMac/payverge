@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
   Card,
   CardBody,
@@ -26,6 +27,22 @@ interface CounterSettings {
 }
 
 export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) => {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.counterManager.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [counters, setCounters] = useState<Counter[]>([]);
@@ -58,7 +75,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
       }
     } catch (error) {
       console.error('Error loading counter data:', error);
-      setError('Failed to load counter settings');
+      setError(tString('error.loadSettings'));
     } finally {
       setLoading(false);
     }
@@ -72,7 +89,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
 
       await updateCounterSettings(businessId, settings);
       
-      setSuccess('Counter settings updated successfully!');
+      setSuccess(tString('success.settingsUpdated'));
       
       // Reload counter data to show updated counters
       await loadCounterData();
@@ -81,7 +98,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
       setTimeout(() => setSuccess(null), 3000);
     } catch (error) {
       console.error('Error updating counter settings:', error);
-      setError('Failed to update counter settings');
+      setError(tString('error.updateSettings'));
     } finally {
       setSaving(false);
     }
@@ -108,8 +125,8 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
       <div className="flex items-center gap-3">
         <Coffee className="w-8 h-8 text-orange-600" />
         <div>
-          <h1 className="text-2xl font-light text-gray-900 tracking-wide">Counter Management</h1>
-          <p className="text-gray-600 mt-1">Configure counters for takeaway and quick service orders</p>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('title')}</h1>
+          <p className="text-gray-600 mt-1">{tString('subtitle')}</p>
         </div>
       </div>
 
@@ -137,16 +154,16 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
         <CardHeader>
           <div className="flex items-center gap-3">
             <Settings className="w-6 h-6 text-gray-700" />
-            <h2 className="text-xl font-light text-gray-900 tracking-wide">Counter Settings</h2>
+            <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('settings.title')}</h2>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           {/* Enable Counters */}
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium text-gray-900">Enable Counter Service</h3>
+              <h3 className="font-medium text-gray-900">{tString('settings.enableService')}</h3>
               <p className="text-sm text-gray-600 mt-1">
-                Allow customers to place takeaway orders at service counters
+                {tString('settings.enableServiceDescription')}
               </p>
             </div>
             <Switch
@@ -165,31 +182,31 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
                 <div>
                   <Input
                     type="number"
-                    label="Number of Counters"
+                    label={tString('settings.counterCount')}
                     placeholder="3"
                     value={settings.counter_count.toString()}
                     onChange={(e) => handleSettingChange('counter_count', parseInt(e.target.value) || 1)}
                     min={1}
                     max={20}
-                    description="How many service counters do you have? (1-20)"
+                    description={tString('settings.counterCountDescription')}
                   />
                 </div>
 
                 <div>
                   <Input
-                    label="Counter Name Prefix"
+                    label={tString('settings.counterPrefix')}
                     placeholder="C"
                     value={settings.counter_prefix}
                     onChange={(e) => handleSettingChange('counter_prefix', e.target.value)}
                     maxLength={3}
-                    description="Prefix for counter names (e.g., 'C' creates C1, C2, C3)"
+                    description={tString('settings.counterPrefixDescription')}
                   />
                 </div>
               </div>
 
               {/* Preview */}
               <div>
-                <h4 className="font-medium text-gray-900 mb-3">Counter Preview</h4>
+                <h4 className="font-medium text-gray-900 mb-3">{tString('settings.preview')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: Math.min(settings.counter_count, 10) }, (_, i) => (
                     <Chip
@@ -221,7 +238,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
               isLoading={saving}
               startContent={!saving && <Plus className="w-4 h-4" />}
             >
-              {saving ? 'Saving...' : 'Save Counter Settings'}
+              {saving ? tString('buttons.saving') : tString('buttons.saveSettings')}
             </Button>
           </div>
         </CardBody>
@@ -231,7 +248,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
       {counters.length > 0 && (
         <Card>
           <CardHeader>
-            <h2 className="text-xl font-light text-gray-900 tracking-wide">Active Counters</h2>
+            <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('activeCounters.title')}</h2>
           </CardHeader>
           <CardBody>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -246,7 +263,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
                       color={counter.is_active ? "success" : "default"}
                       className="mt-2"
                     >
-                      {counter.is_active ? "Active" : "Inactive"}
+                      {counter.is_active ? tString('status.active') : tString('status.inactive')}
                     </Chip>
                   </CardBody>
                 </Card>
@@ -262,12 +279,12 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
           <div className="flex items-start gap-3">
             <Coffee className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-medium text-blue-900 mb-2">About Counter Service</h3>
+              <h3 className="font-medium text-blue-900 mb-2">{tString('info.title')}</h3>
               <div className="text-sm text-blue-800 space-y-1">
-                <p>• Counters are perfect for takeaway orders, coffee shops, and quick service</p>
-                <p>• Staff can create bills for counter service alongside table service</p>
-                <p>• Each counter can handle one order at a time</p>
-                <p>• Customers can pay and collect their orders at the designated counter</p>
+                <p>• {tString('info.point1')}</p>
+                <p>• {tString('info.point2')}</p>
+                <p>• {tString('info.point3')}</p>
+                <p>• {tString('info.point4')}</p>
               </div>
             </div>
           </div>
