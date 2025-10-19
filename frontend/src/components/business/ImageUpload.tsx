@@ -9,6 +9,7 @@ import {
   Progress,
   Image,
 } from '@nextui-org/react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface ImageUploadProps {
   onImageUploaded: (imageUrl: string) => void;
@@ -33,6 +34,15 @@ export default function ImageUpload({
   aspectRatio = 'auto',
   maxSize = 5
 }: ImageUploadProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `imageUpload.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -55,19 +65,19 @@ export default function ImageUpload({
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      setError('Please select an image file');
+      setError(tString('errors.selectImageFile'));
       return;
     }
 
     // Validate file size
     if (file.size > maxSize * 1024 * 1024) {
-      setError(`Image size must be less than ${maxSize}MB`);
+      setError(tString('errors.imageSizeLimit').replace('{maxSize}', maxSize.toString()));
       return;
     }
 
     // Validate business ID for protected uploads
     if (!businessId) {
-      setError('Business ID is required for file upload');
+      setError(tString('errors.businessIdRequired'));
       return;
     }
 
@@ -82,7 +92,7 @@ export default function ImageUpload({
       onImageUploaded(imageUrl);
       setUploadProgress(100);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload image');
+      setError(err instanceof Error ? err.message : tString('errors.uploadFailed'));
     } finally {
       setUploading(false);
       // Reset file input
@@ -148,9 +158,9 @@ export default function ImageUpload({
                 className="object-cover rounded-lg border-2 border-default-200"
               />
               <div className="flex-1">
-                <p className="text-sm text-default-600 font-medium">Current image</p>
+                <p className="text-sm text-default-600 font-medium">{tString('labels.currentImage')}</p>
                 <p className="text-xs text-default-400 mt-1">
-                  Max size: {maxSize}MB • Formats: JPG, PNG, WebP
+                  {tString('labels.maxSize')}: {maxSize}MB • {tString('labels.formats')}: JPG, PNG, WebP
                 </p>
                 <div className="flex gap-2 mt-3">
                   <Button
@@ -160,7 +170,7 @@ export default function ImageUpload({
                     onPress={handleFileSelect}
                     isDisabled={uploading || isLoading}
                   >
-                    Change Image
+                    {tString('buttons.changeImage')}
                   </Button>
                   <Button
                     size="sm"
@@ -169,7 +179,7 @@ export default function ImageUpload({
                     onPress={handleRemoveImage}
                     isDisabled={uploading || isLoading}
                   >
-                    Remove
+                    {tString('buttons.remove')}
                   </Button>
                 </div>
               </div>
@@ -201,10 +211,10 @@ export default function ImageUpload({
               </div>
               <div>
                 <p className="text-sm font-medium text-default-600">
-                  {title ? `Upload ${title.toLowerCase()}` : 'Upload an image'}
+                  {title ? tString('labels.uploadTitle').replace('{title}', title.toLowerCase()) : tString('labels.uploadImage')}
                 </p>
                 <p className="text-xs text-default-400">
-                  PNG, JPG, WebP up to {maxSize}MB
+                  PNG, JPG, WebP {tString('labels.upTo')} {maxSize}MB
                 </p>
               </div>
               <Button
@@ -215,7 +225,7 @@ export default function ImageUpload({
                 isDisabled={uploading || isLoading}
                 size="sm"
               >
-                Choose File
+                {tString('buttons.chooseFile')}
               </Button>
             </div>
           </CardBody>
@@ -228,7 +238,7 @@ export default function ImageUpload({
             color="primary"
             className="max-w-md"
           />
-          <p className="text-sm text-default-600">Uploading image...</p>
+          <p className="text-sm text-default-600">{tString('status.uploading')}</p>
         </div>
       )}
 
@@ -242,7 +252,7 @@ export default function ImageUpload({
               variant="light"
               onPress={() => setError(null)}
             >
-              Dismiss
+              {tString('buttons.dismiss')}
             </Button>
           </CardBody>
         </Card>

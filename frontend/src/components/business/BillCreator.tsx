@@ -24,6 +24,7 @@ import { MenuCategory, MenuItem, MenuItemOption } from '../../api/business';
 import { ItemCustomizer } from './ItemCustomizer';
 import { createOrder, CreateOrderRequest } from '../../api/orders';
 import { getAvailableCounters, Counter } from '../../api/counters';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BillCreatorProps {
   isOpen: boolean;
@@ -44,6 +45,15 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
   businessId,
   onBillCreated,
 }) => {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `billCreator.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [selectedCounter, setSelectedCounter] = useState<Counter | null>(null);
   const [tables, setTables] = useState<Table[]>([]);
@@ -312,7 +322,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
-            Create New Bill
+            {tString('title')}
           </div>
         </ModalHeader>
         <ModalBody>
@@ -327,9 +337,9 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                 <Card>
                   <CardHeader className="pb-2">
                     <div className="w-full space-y-3">
-                      <h3 className="text-lg font-semibold">Menu Items</h3>
+                      <h3 className="text-lg font-semibold">{tString('menu.title')}</h3>
                       <Input
-                        placeholder="Search menu items..."
+                        placeholder={tString('menu.searchPlaceholder')}
                         value={searchQuery}
                         onValueChange={setSearchQuery}
                         startContent={<Search className="w-4 h-4 text-default-400" />}
@@ -345,12 +355,12 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                       <div className="text-center py-8">
                         <Search className="w-12 h-12 mx-auto text-default-300 mb-4" />
                         <h4 className="text-lg font-medium text-default-500 mb-2">
-                          {searchQuery ? 'No items found' : 'No menu items'}
+                          {searchQuery ? tString('menu.noItemsFound') : tString('menu.noMenuItems')}
                         </h4>
                         <p className="text-default-400">
                           {searchQuery 
-                            ? `No items match "${searchQuery}". Try a different search term.`
-                            : 'No menu items available for this business.'
+                            ? tString('menu.noItemsMatch').replace('{query}', searchQuery)
+                            : tString('menu.noItemsAvailable')
                           }
                         </p>
                         {searchQuery && (
@@ -361,7 +371,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                             onPress={() => setSearchQuery('')}
                             className="mt-3"
                           >
-                            Clear search
+                            {tString('menu.clearSearch')}
                           </Button>
                         )}
                       </div>
@@ -372,7 +382,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                             {category.name}
                             {searchQuery && (
                               <Chip size="sm" variant="flat" color="primary" className="ml-2">
-                                {category.items.length} item{category.items.length !== 1 ? 's' : ''}
+                                {category.items.length} {category.items.length !== 1 ? tString('menu.items') : tString('menu.item')}
                               </Chip>
                             )}
                           </h4>
@@ -391,7 +401,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                                         <p className="font-medium">{item.name}</p>
                                         {item.options && item.options.length > 0 && (
                                           <Chip size="sm" color="secondary" variant="dot">
-                                            Add-ons
+                                            {tString('menu.addOns')}
                                           </Chip>
                                         )}
                                       </div>
@@ -428,7 +438,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
               <div className="w-80">
                 <Card>
                   <CardHeader>
-                    <h3 className="text-lg font-semibold">Bill Summary</h3>
+                    <h3 className="text-lg font-semibold">{tString('billSummary.title')}</h3>
                   </CardHeader>
                   <CardBody>
                     {/* Table/Counter Selection */}
@@ -436,8 +446,8 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                       {/* Table Selection */}
                       <div>
                         <Select
-                          label="Select Table"
-                          placeholder={availableTables.length > 0 ? "Choose a table" : "No tables available"}
+                          label={tString('form.selectTable')}
+                          placeholder={availableTables.length > 0 ? tString('form.chooseTable') : tString('form.noTablesAvailable')}
                           selectedKeys={selectedTable ? [selectedTable.id.toString()] : []}
                           onSelectionChange={(keys) => {
                             const key = Array.from(keys)[0] as string;
@@ -455,12 +465,12 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                         </Select>
                         {availableTables.length === 0 && counters.length === 0 && (
                           <p className="text-small text-warning mt-2">
-                            All active tables currently have open bills. Please close existing bills or add more tables.
+                            {tString('form.allTablesHaveBills')}
                           </p>
                         )}
                         {availableTables.length === 0 && counters.length > 0 && !selectedCounter && (
                           <p className="text-small text-default-400 mt-2">
-                            All tables are occupied. Use a counter below for takeaway orders.
+                            {tString('form.allTablesOccupied')}
                           </p>
                         )}
                       </div>
@@ -469,15 +479,15 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                       <div>
                         <div className="flex items-center justify-center mb-2">
                           <div className="flex-1 border-t border-gray-300"></div>
-                          <span className="px-3 text-small text-gray-500">OR</span>
+                          <span className="px-3 text-small text-gray-500">{tString('form.or')}</span>
                           <div className="flex-1 border-t border-gray-300"></div>
                         </div>
                         
                         {counters.length > 0 ? (
                           <div>
                             <Select
-                              label="Select Counter"
-                              placeholder="Choose a counter for takeaway/quick service"
+                              label={tString('form.selectCounter')}
+                              placeholder={tString('form.chooseCounter')}
                               selectedKeys={selectedCounter ? [selectedCounter.id.toString()] : []}
                               onSelectionChange={(keys) => {
                                 const key = Array.from(keys)[0] as string;
@@ -494,16 +504,16 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                               ))}
                             </Select>
                             <p className="text-small text-default-400 mt-1">
-                              Perfect for takeaway orders and quick service
+                              {tString('form.perfectForTakeaway')}
                             </p>
                           </div>
                         ) : (
                           <div className="text-center py-4">
                             <p className="text-small text-default-500 mb-2">
-                              No counters available
+                              {tString('form.noCountersAvailable')}
                             </p>
                             <p className="text-tiny text-default-400">
-                              Enable counters in business settings for takeaway service
+                              {tString('form.enableCountersMessage')}
                             </p>
                           </div>
                         )}
@@ -512,14 +522,14 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                       {/* Order Notes */}
                       <div>
                         <Textarea
-                          label="Order Notes"
-                          placeholder="Add special instructions, customer name, or notes for kitchen/staff..."
+                          label={tString('form.orderNotes')}
+                          placeholder={tString('form.orderNotesPlaceholder')}
                           value={notes}
                           onValueChange={setNotes}
                           variant="bordered"
                           minRows={2}
                           maxRows={4}
-                          description="Optional notes that will be visible to kitchen staff and on receipts"
+                          description={tString('form.orderNotesDescription')}
                         />
                       </div>
                     </div>
@@ -528,7 +538,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
 
                     {/* Selected Items */}
                     <div className="mb-4">
-                      <h4 className="font-medium mb-2">Items ({items.length})</h4>
+                      <h4 className="font-medium mb-2">{tString('billSummary.items')} ({items.length})</h4>
                       <div className="max-h-48 overflow-y-auto space-y-2">
                         {items.map((item: SelectedItem) => (
                           <Card key={item.id} className="p-2">
@@ -536,16 +546,16 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                               <div className="flex-1">
                                 <p className="font-medium text-sm">{item.name}</p>
                                 <p className="text-xs text-default-500">
-                                  ${(item.price || 0).toFixed(2)} each
+                                  ${(item.price || 0).toFixed(2)} {tString('billSummary.each')}
                                 </p>
                                 {item.selectedOptions && item.selectedOptions.length > 0 && (
                                   <div className="text-xs text-default-400 mt-1">
-                                    Add-ons: {item.selectedOptions.map(opt => opt.name).join(', ')}
+                                    {tString('billSummary.addOns')}: {item.selectedOptions.map(opt => opt.name).join(', ')}
                                   </div>
                                 )}
                                 {item.specialRequests && (
                                   <div className="text-xs text-default-400 mt-1">
-                                    Note: {item.specialRequests}
+                                    {tString('billSummary.note')}: {item.specialRequests}
                                   </div>
                                 )}
                               </div>
@@ -604,7 +614,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
                     {/* Totals */}
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>Subtotal:</span>
+                        <span>{tString('billSummary.subtotal')}</span>
                         <span>${(subtotal || 0).toFixed(2)}</span>
                       </div>
                     </div>
@@ -616,7 +626,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={resetForm}>
-            Cancel
+            {tString('buttons.cancel')}
           </Button>
           <Button
             color="primary"
@@ -624,7 +634,7 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
             isLoading={isCreating}
             isDisabled={(!selectedTable && !selectedCounter) || items.length === 0 || isCreating}
           >
-            Create Bill
+            {tString('buttons.createBill')}
           </Button>
         </ModalFooter>
       </ModalContent>

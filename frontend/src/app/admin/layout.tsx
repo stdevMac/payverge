@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar, TopMenuMain } from "@/components";
+import { TopMenuMain } from "@/components";
 import { UserProvider } from "@/providers/UserProvider";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,6 @@ export default function RootLayout({
     <UserProvider>
       <main className="min-h-screen">
         <TopMenuMain />
-        <Sidebar />
         <div className="px-5 sm:px-10">{children}</div>
       </main>
     </UserProvider>

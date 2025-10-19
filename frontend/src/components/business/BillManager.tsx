@@ -31,12 +31,21 @@ import { getOrdersByBillId, updateOrderStatus, Order, getOrderStatusColor, getOr
 import AlternativePaymentManager from './AlternativePaymentManager';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BillManagerProps {
   businessId: number;
 }
 
 export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.billManager.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBill, setSelectedBill] = useState<BillWithItemsResponse | null>(null);
@@ -315,21 +324,21 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
         <div className="text-center py-8">
           <DollarSign className="w-12 h-12 mx-auto text-default-300 mb-4" />
           <h3 className="text-lg font-medium text-default-500 mb-2">
-            {isActive ? 'No Active Bills' : 'No bills match your filters'}
+            {isActive ? tString('emptyState.noActiveBills') : tString('emptyState.noMatchingBills')}
           </h3>
           <p className="text-default-400 mb-4">
             {isActive 
-              ? 'Create your first bill to get started' 
-              : 'Try adjusting the status, dates, or search query'
+              ? tString('emptyState.createFirstBill') 
+              : tString('emptyState.adjustFilters')
             }
           </p>
           {isActive ? (
             <Button color="primary" onPress={() => setShowBillCreator(true)}>
-              Create Bill
+              {tString('buttons.createBill')}
             </Button>
           ) : (
             <Button variant="light" onPress={isActive ? resetActiveFilters : resetHistoryFilters}>
-              Reset Filters
+              {tString('buttons.resetFilters')}
             </Button>
           )}
         </div>
@@ -339,14 +348,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     return (
       <Table aria-label="Bills table">
         <TableHeader>
-          <TableColumn>BILL #</TableColumn>
-          <TableColumn>TABLE</TableColumn>
-          <TableColumn>ITEMS</TableColumn>
-          <TableColumn>TOTAL</TableColumn>
-          <TableColumn>STATUS</TableColumn>
-          <TableColumn>KITCHEN</TableColumn>
-          <TableColumn>CREATED</TableColumn>
-          <TableColumn>ACTIONS</TableColumn>
+          <TableColumn>{tString('table.columns.billNumber')}</TableColumn>
+          <TableColumn>{tString('table.columns.table')}</TableColumn>
+          <TableColumn>{tString('table.columns.items')}</TableColumn>
+          <TableColumn>{tString('table.columns.total')}</TableColumn>
+          <TableColumn>{tString('table.columns.status')}</TableColumn>
+          <TableColumn>{tString('table.columns.kitchen')}</TableColumn>
+          <TableColumn>{tString('table.columns.created')}</TableColumn>
+          <TableColumn>{tString('table.columns.actions')}</TableColumn>
         </TableHeader>
         <TableBody>
           {billsList.map((bill) => (
@@ -519,14 +528,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
         <CardHeader className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
-            <h2 className="text-xl font-semibold">Bill Management</h2>
+            <h2 className="text-xl font-semibold">{tString('billManager.title')}</h2>
           </div>
           <Button
             color="primary"
             startContent={<Plus className="w-4 h-4" />}
             onPress={() => setShowBillCreator(true)}
           >
-            Create Bill
+            {tString('buttons.createBill')}
           </Button>
         </CardHeader>
         <CardBody>
@@ -535,14 +544,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
             onSelectionChange={(key) => setActiveTab(key as 'active' | 'history')}
             className="w-full"
           >
-            <Tab key="active" title={`Active Bills (${activeBills.length})`}>
+            <Tab key="active" title={`${tString('tabs.activeBills')} (${activeBills.length})`}>
               <div className="space-y-4">
                 {/* Active Bills Filters */}
                 <div className="flex flex-col md:flex-row gap-3 md:items-center">
                   <Input
                     value={activeSearchQuery}
                     onValueChange={setActiveSearchQuery}
-                    placeholder="Search active bills..."
+                    placeholder={tString('search.activeBillsPlaceholder')}
                     className="md:w-[280px]"
                     size="sm"
                   />
@@ -554,7 +563,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                       className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
                       aria-label="From date"
                     />
-                    <span className="text-default-400 text-sm">to</span>
+                    <span className="text-default-400 text-sm">{tString('filters.to')}</span>
                     <input
                       type="date"
                       value={activeDateTo}
@@ -564,20 +573,20 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     />
                   </div>
                   <Button variant="light" size="sm" onPress={resetActiveFilters}>
-                    Reset
+                    {tString('buttons.reset')}
                   </Button>
                 </div>
                 {renderBillsTable(activeBills, true)}
               </div>
             </Tab>
-            <Tab key="history" title={`Bill History (${historyBills.length})`}>
+            <Tab key="history" title={`${tString('tabs.billHistory')} (${historyBills.length})`}>
               <div className="space-y-4">
                 {/* History Filters */}
                 <div className="flex flex-col md:flex-row gap-3 md:items-center">
                   <Input
                     value={historySearchQuery}
                     onValueChange={setHistorySearchQuery}
-                    placeholder="Search bill history..."
+                    placeholder={tString('search.billHistoryPlaceholder')}
                     className="md:w-[280px]"
                     size="sm"
                   />
@@ -600,7 +609,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                       className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
                       aria-label="From date"
                     />
-                    <span className="text-default-400 text-sm">to</span>
+                    <span className="text-default-400 text-sm">{tString('filters.to')}</span>
                     <input
                       type="date"
                       value={historyDateTo}

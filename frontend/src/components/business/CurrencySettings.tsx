@@ -29,6 +29,7 @@ import {
   convertAmount
 } from '../../api/currency';
 import { businessApi } from '../../api/business';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface CurrencySettingsProps {
   businessId: number;
@@ -41,6 +42,15 @@ interface BusinessCurrencySettings {
 }
 
 export default function CurrencySettings({ businessId, onSave }: CurrencySettingsProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `currencySettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   // Currency State
   const [supportedCurrencies, setSupportedCurrencies] = useState<SupportedCurrency[]>([]);
   const [settings, setSettings] = useState<BusinessCurrencySettings>({
@@ -112,7 +122,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
 
     } catch (err: any) {
       console.error('Error loading settings:', err);
-      setError('Failed to load settings');
+      setError(tString('errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -180,7 +190,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
       
     } catch (err: any) {
       console.error('Error saving currency settings:', err);
-      setError('Failed to save currency settings');
+      setError(tString('errors.saveCurrencyFailed'));
     } finally {
       setSaving(false);
     }
@@ -193,13 +203,13 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
 
       // Validate language settings
       if (selectedLanguages.length === 0) {
-        setError('Please select at least one language');
+        setError(tString('errors.selectLanguage'));
         setSaving(false);
         return;
       }
 
       if (!defaultLanguage || !selectedLanguages.includes(defaultLanguage)) {
-        setError('Please select a default language from your selected languages');
+        setError(tString('errors.selectDefaultLanguage'));
         setSaving(false);
         return;
       }
@@ -216,7 +226,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
       
     } catch (err: any) {
       console.error('Error saving language settings:', err);
-      setError('Failed to save language settings');
+      setError(tString('errors.saveLanguageFailed'));
     } finally {
       setSaving(false);
     }
@@ -258,7 +268,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
       <Card className="w-full">
         <CardBody className="flex items-center justify-center py-8">
           <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading settings...</p>
+          <p className="mt-4 text-gray-600">{tString('loading')}</p>
         </CardBody>
       </Card>
     );
@@ -285,9 +295,9 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
               <DollarSign className="w-5 h-5 text-gray-700" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Currency Settings</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{tString('currency.title')}</h3>
               <p className="text-sm text-gray-600">
-                Configure how currencies work in your business. All payments are processed in USDC.
+                {tString('currency.description')}
               </p>
             </div>
           </div>
@@ -296,14 +306,14 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
           {/* Default Currency */}
           <div className="space-y-3">
             <div>
-              <h4 className="text-md font-medium text-gray-900">Default Currency (Pricing)</h4>
+              <h4 className="text-md font-medium text-gray-900">{tString('currency.defaultTitle')}</h4>
               <p className="text-sm text-gray-600">
-                The currency you use to set prices for your menu items.
+                {tString('currency.defaultDescription')}
               </p>
             </div>
             <Select
-              label="Default Currency"
-              placeholder="Select default currency"
+              label={tString('currency.defaultLabel')}
+              placeholder={tString('currency.defaultPlaceholder')}
               selectedKeys={settings.default_currency ? [settings.default_currency] : undefined}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0] as string;
@@ -330,14 +340,14 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
           {/* Display Currency */}
           <div className="space-y-3">
             <div>
-              <h4 className="text-md font-medium text-gray-900">Display Currency (Customer View)</h4>
+              <h4 className="text-md font-medium text-gray-900">{tString('currency.displayTitle')}</h4>
               <p className="text-sm text-gray-600">
-                The currency your customers see on menus and bills.
+                {tString('currency.displayDescription')}
               </p>
             </div>
             <Select
-              label="Display Currency"
-              placeholder="Select display currency"
+              label={tString('currency.displayLabel')}
+              placeholder={tString('currency.displayPlaceholder')}
               selectedKeys={settings.display_currency ? [settings.display_currency] : undefined}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0] as string;
@@ -364,12 +374,12 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
           {/* Conversion Preview */}
           {(settings.default_currency !== 'USDC' || settings.display_currency !== 'USDC') && (
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h4 className="text-md font-medium text-gray-900">Conversion Preview</h4>
+              <h4 className="text-md font-medium text-gray-900">{tString('currency.conversionPreview')}</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
                 {/* Default to USDC */}
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-600 mb-1">Pricing → Payment</div>
+                  <div className="text-sm text-gray-600 mb-1">{tString('currency.pricingToPayment')}</div>
                   <div className="font-medium">
                     {formatCurrency(sampleAmount, settings.default_currency)} → {formatCurrency(conversionPreview.defaultToUSDC, 'USDC')}
                   </div>
@@ -378,7 +388,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
                 {/* Default to Display */}
                 {settings.default_currency !== settings.display_currency && (
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="text-sm text-gray-600 mb-1">Pricing → Display</div>
+                    <div className="text-sm text-gray-600 mb-1">{tString('currency.pricingToDisplay')}</div>
                     <div className="font-medium">
                       {formatCurrency(sampleAmount, settings.default_currency)} → {formatCurrency(conversionPreview.defaultToDisplay, settings.display_currency)}
                     </div>
@@ -388,7 +398,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
                 {/* Display to USDC */}
                 {settings.display_currency !== 'USDC' && (
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="text-sm text-gray-600 mb-1">Display → Payment</div>
+                    <div className="text-sm text-gray-600 mb-1">{tString('currency.displayToPayment')}</div>
                     <div className="font-medium">
                       {formatCurrency(sampleAmount, settings.display_currency)} → {formatCurrency(conversionPreview.displayToUSDC, 'USDC')}
                     </div>
@@ -403,8 +413,8 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
             <div className="flex items-start gap-2">
               <Info className="w-4 h-4 text-gray-600 mt-0.5" />
               <div className="text-sm text-gray-700">
-                <p className="font-medium">Payment Flow:</p>
-                <p>Customers see prices in {getCurrencyInfo(settings.display_currency)?.name || settings.display_currency} → Real-time conversion shown → Payment made in USDC</p>
+                <p className="font-medium">{tString('currency.paymentFlow')}</p>
+                <p>{tString('currency.paymentFlowDescription').replace('{currency}', getCurrencyInfo(settings.display_currency)?.name || settings.display_currency)}</p>
               </div>
             </div>
           </div>
@@ -417,7 +427,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
               isLoading={saving}
               isDisabled={!hasCurrencyChanges()}
             >
-              Save Currency Settings
+              {tString('currency.saveButton')}
             </Button>
           </div>
         </CardBody>
@@ -431,9 +441,9 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
               <Languages className="w-5 h-5 text-gray-700" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Language Settings</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{tString('language.title')}</h3>
               <p className="text-sm text-gray-600">
-                Configure languages for your menu and customer interface.
+                {tString('language.description')}
               </p>
             </div>
           </div>
@@ -442,9 +452,9 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
           {/* Language Selection */}
           <div className="space-y-4">
             <div>
-              <h4 className="text-md font-medium text-gray-900">Supported Languages</h4>
+              <h4 className="text-md font-medium text-gray-900">{tString('language.supportedTitle')}</h4>
               <p className="text-sm text-gray-600">
-                Select languages for your menu and customer interface.
+                {tString('language.supportedDescription')}
               </p>
             </div>
             
@@ -477,14 +487,14 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
           {selectedLanguages.length > 1 && (
             <div className="space-y-3">
               <div>
-                <h4 className="text-md font-medium text-gray-900">Default Language</h4>
+                <h4 className="text-md font-medium text-gray-900">{tString('language.defaultTitle')}</h4>
                 <p className="text-sm text-gray-600">
-                  Choose the primary language for your business.
+                  {tString('language.defaultDescription')}
                 </p>
               </div>
               <Select
-                label="Default Language"
-                placeholder="Select default language"
+                label={tString('language.defaultLabel')}
+                placeholder={tString('language.defaultPlaceholder')}
                 selectedKeys={defaultLanguage ? [defaultLanguage] : undefined}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0] as string;
@@ -517,8 +527,8 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
             <div className="flex items-start gap-2">
               <Info className="w-4 h-4 text-gray-600 mt-0.5" />
               <div className="text-sm text-gray-700">
-                <p className="font-medium">Language Support:</p>
-                <p>Selected languages will be available for menu translation and customer interface. Your default language will be used when no translation is available.</p>
+                <p className="font-medium">{tString('language.supportInfo')}</p>
+                <p>{tString('language.supportInfoDescription')}</p>
               </div>
             </div>
           </div>
@@ -531,7 +541,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
               isLoading={saving}
               isDisabled={!hasLanguageChanges()}
             >
-              Save Language Settings
+              {tString('language.saveButton')}
             </Button>
           </div>
         </CardBody>

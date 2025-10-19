@@ -18,8 +18,6 @@ import {
 import { Wallet, CreditCard, AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
 import { useAccount, useConnect, useDisconnect, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
-import WalletConnector from './WalletConnector';
-import TransactionStatus from './TransactionStatus';
 
 interface PaymentModalProps {
   isOpen: boolean;

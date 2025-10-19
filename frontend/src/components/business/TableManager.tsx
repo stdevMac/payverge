@@ -404,7 +404,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
                       <button
                         onClick={() => copyQRUrl(table)}
                         className="p-1 hover:bg-gray-100 rounded-md transition-colors duration-200 group"
-                        title="Copy table URL"
+                        title={tString('qrCode.copyUrl')}
                       >
                         {copiedUrls[table.id] ? (
                           <Check className="w-4 h-4 text-green-600" />

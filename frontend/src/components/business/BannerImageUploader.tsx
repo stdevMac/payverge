@@ -11,6 +11,7 @@ import {
 } from '@nextui-org/react';
 import { Upload, X, Plus, ImageIcon } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BannerImageUploaderProps {
   bannerImages: string[];
@@ -27,6 +28,15 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
   maxImages = 3,
   maxSize = 10 // Higher quality for banners
 }: BannerImageUploaderProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `bannerImageUploader.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [uploading, setUploading] = useState<number | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -35,13 +45,13 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
   const handleFileUpload = async (file: File, index: number) => {
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      setError('Please select an image file');
+      setError(tString('errors.selectImageFile'));
       return;
     }
 
     // Validate file size (higher limit for banners)
     if (file.size > maxSize * 1024 * 1024) {
-      setError(`Banner image size must be less than ${maxSize}MB`);
+      setError(tString('errors.imageSizeLimit').replace('{maxSize}', maxSize.toString()));
       return;
     }
 
@@ -66,17 +76,17 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
       
       // Show success toast
       showSuccess(
-        'Banner Uploaded!',
-        `Banner ${index + 1} has been uploaded successfully.`,
+        tString('success.uploaded'),
+        tString('success.uploadedDescription').replace('{index}', (index + 1).toString()),
         3000
       );
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to upload banner image';
+      const errorMessage = err instanceof Error ? err.message : tString('errors.uploadFailed');
       setError(errorMessage);
       
       // Show error toast
       showError(
-        'Banner Upload Failed',
+        tString('errors.uploadFailedTitle'),
         errorMessage,
         5000
       );
@@ -154,7 +164,7 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
             {/* Banner info */}
             <div className="p-3 bg-default-50">
               <p className="text-xs text-default-600 text-center font-medium">
-                Banner {index + 1} • {maxSize}MB max • 3:1 ratio recommended
+                {tString('bannerInfo').replace('{index}', (index + 1).toString()).replace('{maxSize}', maxSize.toString())}
               </p>
             </div>
           </CardBody>
@@ -183,7 +193,7 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
                     size="sm"
                   />
                 </div>
-                <p className="text-sm text-default-600 font-medium">Uploading banner...</p>
+                <p className="text-sm text-default-600 font-medium">{tString('status.uploading')}</p>
               </>
             ) : (
               <>
@@ -192,13 +202,13 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-semibold text-default-700 mb-1">
-                    Add Banner {index + 1}
+                    {tString('addBanner').replace('{index}', (index + 1).toString())}
                   </p>
                   <p className="text-sm text-default-500">
-                    High-quality banner image
+                    {tString('highQualityBanner')}
                   </p>
                   <p className="text-xs text-default-400 mt-1">
-                    PNG, JPG, WebP up to {maxSize}MB
+                    PNG, JPG, WebP {tString('upTo')} {maxSize}MB
                   </p>
                 </div>
               </>
@@ -235,7 +245,7 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
                 variant="light"
                 onPress={() => setError(null)}
               >
-                Dismiss
+                {tString('buttons.dismiss')}
               </Button>
             </div>
           </CardBody>
@@ -250,23 +260,23 @@ const BannerImageUploader = React.memo(function BannerImageUploader({
               <ImageIcon className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h4 className="font-semibold text-blue-900 mb-3">Banner Image Guidelines</h4>
+              <h4 className="font-semibold text-blue-900 mb-3">{tString('guidelines.title')}</h4>
               <ul className="text-blue-800 text-sm space-y-2">
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                  <span><strong>Recommended size:</strong> 1200x400 pixels (3:1 aspect ratio)</span>
+                  <span><strong>{tString('guidelines.recommendedSize')}:</strong> 1200x400 pixels (3:1 aspect ratio)</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                  <span><strong>File size:</strong> Up to {maxSize}MB for high quality</span>
+                  <span><strong>{tString('guidelines.fileSize')}:</strong> {tString('guidelines.fileSizeDescription').replace('{maxSize}', maxSize.toString())}</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                  <span><strong>Content:</strong> Showcase your restaurant&apos;s atmosphere and dishes</span>
+                  <span><strong>{tString('guidelines.content')}:</strong> {tString('guidelines.contentDescription')}</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                  <span><strong>Quality:</strong> Use high-resolution images for best results</span>
+                  <span><strong>{tString('guidelines.quality')}:</strong> {tString('guidelines.qualityDescription')}</span>
                 </li>
               </ul>
             </div>

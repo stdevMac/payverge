@@ -5,6 +5,7 @@ import { Input } from '@nextui-org/react';
 import { Check, X, Loader2, AlertCircle } from 'lucide-react';
 import { checkCustomURLAvailability } from '@/api/business';
 import { debounce } from 'lodash';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface CustomURLInputProps {
   value: string;
@@ -23,6 +24,15 @@ const CustomURLInput = React.memo(function CustomURLInput({
   label = "Custom URL",
   description = "Create a custom URL for your business page"
 }: CustomURLInputProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `customUrlInput.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +58,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
       setError(result.error || null);
       setHasChecked(true);
     } catch (err) {
-      setError('Failed to check URL availability');
+      setError(tString('errors.checkFailed'));
       setIsAvailable(false);
       setHasChecked(true);
     } finally {
@@ -130,11 +140,11 @@ const CustomURLInput = React.memo(function CustomURLInput({
   // Get helper text
   const getHelperText = () => {
     if (isChecking) {
-      return 'Checking availability...';
+      return tString('status.checking');
     }
 
     if (value && value.length < 2) {
-      return 'URL must be at least 2 characters long';
+      return tString('validation.minLength');
     }
 
     if (error) {
@@ -142,11 +152,11 @@ const CustomURLInput = React.memo(function CustomURLInput({
     }
 
     if (hasChecked && isAvailable) {
-      return `✓ payverge.com/b/${value} is available`;
+      return tString('status.available').replace('{url}', `payverge.com/b/${value}`);
     }
 
     if (hasChecked && !isAvailable) {
-      return 'This URL is already taken';
+      return tString('status.taken');
     }
 
     return description;
@@ -207,7 +217,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
             <Check className="w-4 h-4 text-success-600" />
             <div>
               <p className="text-sm font-medium text-success-800">
-                Your business page will be available at:
+                {tString('preview.message')}
               </p>
               <p className="text-sm text-success-600 font-mono">
                 https://payverge.com/b/{value}

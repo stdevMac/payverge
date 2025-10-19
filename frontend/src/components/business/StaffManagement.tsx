@@ -545,7 +545,7 @@ export default function StaffManagement({ businessId }: StaffManagementProps) {
                           variant="light"
                           color="danger"
                           onPress={() => handleRemoveStaff(member.id, member.name)}
-                          title="Remove staff"
+                          title={tString('table.removeStaffTooltip')}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

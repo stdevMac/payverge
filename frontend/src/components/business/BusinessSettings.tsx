@@ -36,6 +36,7 @@ import BannerImageUploader from './BannerImageUploader';
 import CustomURLInput from './CustomURLInput';
 import { useToast } from '@/contexts/ToastContext';
 import CurrencySettings from './CurrencySettings';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BusinessSettingsProps {
   businessId: number;
@@ -84,6 +85,15 @@ interface BusinessPageSettings {
 }
 
 export default function BusinessSettings({ businessId }: BusinessSettingsProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessSettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [activeTab, setActiveTab] = useState('profile');
   const { showSuccess, showError } = useToast();
 
@@ -231,17 +241,17 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
 
       // Show success toast
       showSuccess(
-        'Settings Updated!',
-        'Your business settings have been saved successfully.',
+        tString('messages.updateSuccess'),
+        tString('messages.updateSuccessDescription'),
         4000
       );
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update business settings';
+      const errorMessage = err instanceof Error ? err.message : tString('messages.updateFailed');
       setError(errorMessage);
 
       // Show error toast
       showError(
-        'Update Failed',
+        tString('messages.updateFailedTitle'),
         errorMessage,
         6000
       );
@@ -270,27 +280,27 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
   const tabs = [
     {
       key: 'profile',
-      title: 'Business Profile',
+      title: tString('tabs.profile'),
       icon: Building2,
     },
     {
       key: 'design',
-      title: 'Design & Branding',
+      title: tString('tabs.design'),
       icon: Palette,
     },
     {
       key: 'business-page',
-      title: 'Business Page',
+      title: tString('tabs.businessPage'),
       icon: Globe,
     },
     {
       key: 'payments',
-      title: 'Payment Settings',
+      title: tString('tabs.payments'),
       icon: CreditCard,
     },
     {
       key: 'localization',
-      title: 'Currency & Languages',
+      title: tString('tabs.localization'),
       icon: Languages,
     }
   ];
@@ -306,9 +316,9 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-default-900 mb-2">Business Settings</h1>
+        <h1 className="text-3xl font-bold text-default-900 mb-2">{tString('title')}</h1>
         <p className="text-default-600">
-          Manage your business profile, customize your brand, and configure payment settings.
+          {tString('description')}
         </p>
       </div>
 
@@ -320,7 +330,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                 <Settings className="h-6 w-6 text-danger-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-danger-900">Error</h3>
+                <h3 className="text-lg font-semibold text-danger-900">{tString('messages.error')}</h3>
                 <p className="text-danger-700">{error}</p>
               </div>
             </div>
@@ -336,7 +346,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                 <Settings className="h-6 w-6 text-success-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-success-900">Success</h3>
+                <h3 className="text-lg font-semibold text-success-900">{tString('messages.success')}</h3>
                 <p className="text-success-700">{successMessage}</p>
               </div>
             </div>
@@ -347,7 +357,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
       <Card className="w-full shadow-lg">
         <CardBody className="p-0">
           <Tabs
-            aria-label="Business settings tabs"
+            aria-label={tString('tabs.ariaLabel')}
             selectedKey={activeTab}
             onSelectionChange={(key) => setActiveTab(key as string)}
             variant="underlined"
@@ -425,7 +435,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
           isDisabled={isSaving}
           startContent={<Settings className="w-5 h-5" />}
         >
-          {isSaving ? 'Saving Changes...' : 'Save All Changes'}
+          {isSaving ? tString('buttons.saving') : tString('buttons.saveAll')}
         </Button>
       </div>
     </div>
@@ -440,6 +450,14 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
   handleAddressChange: (field: keyof BusinessAddress, value: string) => void,
   businessId: number
 }) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessSettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   return (
     <div className="space-y-8">
       {/* Basic Information */}
@@ -449,14 +467,14 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             <div className="p-2 rounded-lg bg-primary/10">
               <Building2 className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Basic Information</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('profile.basicInfo')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Input
-              label="Business Name"
-              placeholder="Enter your business name"
+              label={tString('profile.businessName')}
+              placeholder={tString('profile.businessNamePlaceholder')}
               value={profile.name}
               onValueChange={(value) => handleInputChange('name', value)}
               isRequired
@@ -465,8 +483,8 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             />
 
             <Input
-              label="Phone Number"
-              placeholder="+1 (555) 123-4567"
+              label={tString('profile.phoneNumber')}
+              placeholder={tString('profile.phonePlaceholder')}
               value={profile.phone || ''}
               onValueChange={(value) => handleInputChange('phone', value)}
               size="lg"
@@ -476,8 +494,8 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Input
-              label="Website URL"
-              placeholder="https://yourrestaurant.com"
+              label={tString('profile.websiteUrl')}
+              placeholder={tString('profile.websitePlaceholder')}
               value={profile.website || ''}
               onValueChange={(value) => handleInputChange('website', value)}
               size="lg"
@@ -488,15 +506,15 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
               value={profile.custom_url || ''}
               onChange={(value) => handleInputChange('custom_url', value)}
               businessId={businessId}
-              label="Custom URL Slug"
-              placeholder="my-restaurant"
-              description="Create a custom URL for your business page"
+              label={tString('profile.customUrl')}
+              placeholder={tString('profile.customUrlPlaceholder')}
+              description={tString('profile.customUrlDescription')}
             />
           </div>
 
           <Textarea
-            label="Business Description"
-            placeholder="Tell customers about your restaurant, cuisine, and what makes you special..."
+            label={tString('profile.description')}
+            placeholder={tString('profile.descriptionPlaceholder')}
             value={profile.description || ''}
             onValueChange={(value) => handleInputChange('description', value)}
             size="lg"
@@ -513,7 +531,7 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             <div className="p-2 rounded-lg bg-secondary/10">
               <Upload className="w-5 h-5 text-secondary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Logo & Branding</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('profile.logoBranding')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
@@ -522,8 +540,8 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             onImageUploaded={(url: string) => handleInputChange('logo', url)}
             businessId={businessId}
             type="business-logo"
-            title="Business Logo"
-            description="Upload your business logo. This will appear on menus and receipts."
+            title={tString('profile.businessLogo')}
+            description={tString('profile.logoDescription')}
             maxSize={2}
           />
         </CardBody>
@@ -536,13 +554,13 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
             <div className="p-2 rounded-lg bg-warning/10">
               <MapPin className="w-5 h-5 text-warning" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Location</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('profile.location')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <Input
-            label="Street Address"
-            placeholder="123 Main Street"
+            label={tString('profile.streetAddress')}
+            placeholder={tString('profile.streetPlaceholder')}
             value={profile.address.street}
             onValueChange={(value) => handleAddressChange('street', value)}
             size="lg"
@@ -551,16 +569,16 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="City"
-              placeholder="City name"
+              label={tString('profile.city')}
+              placeholder={tString('profile.cityPlaceholder')}
               value={profile.address.city}
               onValueChange={(value) => handleAddressChange('city', value)}
               size="lg"
               variant="bordered"
             />
             <Input
-              label="State/Province"
-              placeholder="State or province"
+              label={tString('profile.state')}
+              placeholder={tString('profile.statePlaceholder')}
               value={profile.address.state}
               onValueChange={(value) => handleAddressChange('state', value)}
               size="lg"
@@ -570,16 +588,16 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Postal Code"
-              placeholder="Postal code"
+              label={tString('profile.postalCode')}
+              placeholder={tString('profile.postalPlaceholder')}
               value={profile.address.postal_code}
               onValueChange={(value) => handleAddressChange('postal_code', value)}
               size="lg"
               variant="bordered"
             />
             <Input
-              label="Country"
-              placeholder="Country name"
+              label={tString('profile.country')}
+              placeholder={tString('profile.countryPlaceholder')}
               value={profile.address.country}
               onValueChange={(value) => handleAddressChange('country', value)}
               size="lg"
@@ -593,6 +611,14 @@ function BusinessProfileTab({ profile, onProfileChange, handleInputChange, handl
 }
 
 function DesignBrandingTab({ settings, onSettingsChange }: { settings: DesignSettings, onSettingsChange: (settings: DesignSettings) => void }) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessSettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   return (
     <div className="space-y-8">
       <Card className="shadow-md">
@@ -601,14 +627,14 @@ function DesignBrandingTab({ settings, onSettingsChange }: { settings: DesignSet
             <div className="p-2 rounded-lg bg-primary/10">
               <Palette className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Design & Branding</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('design.title')}</h3>
           </div>
         </CardHeader>
         <CardBody>
           <div className="text-center py-12">
             <Paintbrush className="w-16 h-16 text-default-300 mx-auto mb-4" />
-            <h4 className="text-xl font-semibold text-default-700 mb-2">Coming Soon</h4>
-            <p className="text-default-500">Customize your menu colors, fonts, and layout</p>
+            <h4 className="text-xl font-semibold text-default-700 mb-2">{tString('design.comingSoonTitle')}</h4>
+            <p className="text-default-500">{tString('design.comingSoonDescription')}</p>
           </div>
         </CardBody>
       </Card>
@@ -623,6 +649,14 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
   onProfileChange: (field: keyof BusinessProfile, value: any) => void,
   businessId: number
 }) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessSettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   const handleBannerUpload = useCallback((banners: string[]) => {
     onSettingsChange({
       ...settings,
@@ -650,14 +684,14 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
             <div className="p-2 rounded-lg bg-success/10">
               <Globe className="w-5 h-5 text-success" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Business Page Settings</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('businessPage.title')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
             <div>
-              <span className="font-medium">Enable Business Page</span>
-              <p className="text-sm text-default-500">Create a public page for your business at /b/your-slug</p>
+              <span className="font-medium">{tString('businessPage.enableTitle')}</span>
+              <p className="text-sm text-default-500">{tString('businessPage.enableDescription')}</p>
             </div>
             <Switch
               isSelected={settings.enabled}
@@ -669,14 +703,14 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
             value={profile.custom_url || ''}
             onChange={(value) => onProfileChange('custom_url', value)}
             businessId={businessId}
-            label="Custom URL Slug"
-            placeholder="my-restaurant"
-            description="Create a custom URL for your business page"
+            label={tString('businessPage.customUrlLabel')}
+            placeholder={tString('businessPage.customUrlPlaceholder')}
+            description={tString('businessPage.customUrlDescription')}
           />
 
           <Textarea
-            label="About Your Business"
-            placeholder="Tell customers about your restaurant, cuisine, history, and what makes you special..."
+            label={tString('businessPage.aboutLabel')}
+            placeholder={tString('businessPage.aboutPlaceholder')}
             value={profile.description || ''}
             onValueChange={(value) => onProfileChange('description', value)}
             size="lg"
@@ -686,11 +720,11 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
 
           {/* Social Media Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-default-900">Social Media Links</h4>
+            <h4 className="text-lg font-semibold text-default-900">{tString('businessPage.socialMediaTitle')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label="Instagram"
-                placeholder="@yourrestaurant"
+                label={tString('businessPage.instagram')}
+                placeholder={tString('businessPage.instagramPlaceholder')}
                 value={profile.social_media?.instagram || ''}
                 onValueChange={(value) => handleSocialMediaChange('instagram', value)}
                 size="lg"
@@ -702,8 +736,8 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
                 }
               />
               <Input
-                label="Facebook"
-                placeholder="yourrestaurant"
+                label={tString('businessPage.facebook')}
+                placeholder={tString('businessPage.facebookPlaceholder')}
                 value={profile.social_media?.facebook || ''}
                 onValueChange={(value) => handleSocialMediaChange('facebook', value)}
                 size="lg"
@@ -715,8 +749,8 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
                 }
               />
               <Input
-                label="Twitter"
-                placeholder="@yourrestaurant"
+                label={tString('businessPage.twitter')}
+                placeholder={tString('businessPage.twitterPlaceholder')}
                 value={profile.social_media?.twitter || ''}
                 onValueChange={(value) => handleSocialMediaChange('twitter', value)}
                 size="lg"
@@ -739,12 +773,12 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
             <div className="p-2 rounded-lg bg-warning/10">
               <Paintbrush className="w-5 h-5 text-warning" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Banner Images</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('businessPage.bannerTitle')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <p className="text-sm text-default-600">
-            Upload up to 3 banner images to showcase your restaurant. These will appear at the top of your business page.
+            {tString('businessPage.bannerDescription')}
           </p>
 
           <BannerImageUploader
@@ -764,14 +798,14 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
             <div className="p-2 rounded-lg bg-primary/10">
               <Star className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Reviews & Social Proof</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('businessPage.reviewsTitle')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
             <div>
-              <span className="font-medium">Show Customer Reviews</span>
-              <p className="text-sm text-default-500">Display customer reviews on your business page</p>
+              <span className="font-medium">{tString('businessPage.showReviewsTitle')}</span>
+              <p className="text-sm text-default-500">{tString('businessPage.showReviewsDescription')}</p>
             </div>
             <Switch
               isSelected={settings.show_reviews}
@@ -781,8 +815,8 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
 
           <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
             <div>
-              <span className="font-medium">Google Reviews Integration</span>
-              <p className="text-sm text-default-500">Automatically sync and display Google Reviews (Coming Soon)</p>
+              <span className="font-medium">{tString('businessPage.googleReviewsTitle')}</span>
+              <p className="text-sm text-default-500">{tString('businessPage.googleReviewsDescription')}</p>
             </div>
             <Switch
               isSelected={settings.google_reviews_enabled}
@@ -792,9 +826,9 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
           </div>
 
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <h4 className="font-semibold text-blue-900 mb-2">Coming Soon</h4>
+            <h4 className="font-semibold text-blue-900 mb-2">{tString('businessPage.comingSoonTitle')}</h4>
             <p className="text-blue-700 text-sm">
-              Google Reviews integration, customer testimonials, and social media feed integration will be available in a future update.
+              {tString('businessPage.comingSoonDescription')}
             </p>
           </div>
         </CardBody>
@@ -808,6 +842,14 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
   onProfileChange: (profile: BusinessProfile) => void,
   handleInputChange: (field: keyof BusinessProfile, value: string | number | boolean) => void
 }) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessSettings.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   return (
     <div className="space-y-8">
       {/* Crypto Addresses */}
@@ -817,27 +859,27 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
             <div className="p-2 rounded-lg bg-warning/10">
               <CreditCard className="w-5 h-5 text-warning" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Crypto Addresses</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('payment.cryptoAddressesTitle')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <Input
-            label="Settlement Address"
-            placeholder="0x1234...abcd"
+            label={tString('payment.settlementAddressLabel')}
+            placeholder={tString('payment.settlementAddressPlaceholder')}
             value={profile.settlement_address}
             onValueChange={(value) => handleInputChange('settlement_address', value)}
-            description="Ethereum address where payments will be settled"
+            description={tString('payment.settlementAddressDescription')}
             size="lg"
             variant="bordered"
             isRequired
           />
 
           <Input
-            label="Tipping Address"
-            placeholder="0x5678...efgh"
+            label={tString('payment.tippingAddressLabel')}
+            placeholder={tString('payment.tippingAddressPlaceholder')}
             value={profile.tipping_address}
             onValueChange={(value) => handleInputChange('tipping_address', value)}
-            description="Ethereum address where tips will be sent"
+            description={tString('payment.tippingAddressDescription')}
             size="lg"
             variant="bordered"
             isRequired
@@ -852,15 +894,15 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
             <div className="p-2 rounded-lg bg-success/10">
               <DollarSign className="w-5 h-5 text-success" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Fees & Pricing</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('payment.feesTitle')}</h3>
           </div>
         </CardHeader>
         <CardBody className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="Service Fee Rate (%)"
+              label={tString('payment.serviceFeeLabel')}
               type="number"
-              placeholder="0.00"
+              placeholder={tString('payment.percentagePlaceholder')}
               value={profile.service_fee_rate.toString()}
               onValueChange={(value) => handleInputChange('service_fee_rate', parseFloat(value) || 0)}
               endContent={
@@ -873,9 +915,9 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
             />
 
             <Input
-              label="Tax Rate (%)"
+              label={tString('payment.taxRateLabel')}
               type="number"
-              placeholder="0.00"
+              placeholder={tString('payment.percentagePlaceholder')}
               value={profile.tax_rate.toString()}
               onValueChange={(value) => handleInputChange('tax_rate', parseFloat(value) || 0)}
               endContent={
@@ -891,8 +933,8 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
               <div>
-                <span className="font-medium">Tax Inclusive Pricing</span>
-                <p className="text-sm text-default-500">Include tax in displayed prices</p>
+                <span className="font-medium">{tString('payment.taxInclusiveTitle')}</span>
+                <p className="text-sm text-default-500">{tString('payment.taxInclusiveDescription')}</p>
               </div>
               <Switch
                 isSelected={profile.tax_inclusive}
@@ -902,8 +944,8 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
 
             <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
               <div>
-                <span className="font-medium">Service Fee Inclusive</span>
-                <p className="text-sm text-default-500">Include service fee in displayed prices</p>
+                <span className="font-medium">{tString('payment.serviceFeeInclusiveTitle')}</span>
+                <p className="text-sm text-default-500">{tString('payment.serviceFeeInclusiveDescription')}</p>
               </div>
               <Switch
                 isSelected={profile.service_inclusive}
@@ -913,26 +955,26 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
           </div>
 
           <div className="bg-default-50 p-6 rounded-lg border">
-            <h4 className="font-semibold mb-4 text-default-900">Fee Summary</h4>
+            <h4 className="font-semibold mb-4 text-default-900">{tString('payment.feeSummaryTitle')}</h4>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-default-600">Service Fee Rate:</span>
+                <span className="text-default-600">{tString('payment.serviceFeeRate')}:</span>
                 <Chip size="sm" color="secondary" variant="flat">{profile.service_fee_rate.toFixed(2)}%</Chip>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-default-600">Tax Rate:</span>
+                <span className="text-default-600">{tString('payment.taxRate')}:</span>
                 <Chip size="sm" color="warning" variant="flat">{profile.tax_rate.toFixed(2)}%</Chip>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-default-600">Tax Inclusive:</span>
+                <span className="text-default-600">{tString('payment.taxInclusive')}:</span>
                 <Chip size="sm" color={profile.tax_inclusive ? "success" : "default"} variant="flat">
-                  {profile.tax_inclusive ? "Yes" : "No"}
+                  {profile.tax_inclusive ? tString('common.yes') : tString('common.no')}
                 </Chip>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-default-600">Service Inclusive:</span>
+                <span className="text-default-600">{tString('payment.serviceInclusive')}:</span>
                 <Chip size="sm" color={profile.service_inclusive ? "success" : "default"} variant="flat">
-                  {profile.service_inclusive ? "Yes" : "No"}
+                  {profile.service_inclusive ? tString('common.yes') : tString('common.no')}
                 </Chip>
               </div>
             </div>

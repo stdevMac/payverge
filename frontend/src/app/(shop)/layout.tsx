@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 
-import { Footer, Sidebar, TopMenu } from "@/components";
+import { TopMenu } from "@/components";
 import { UserProvider } from "@/providers/UserProvider";
-import { ShareBar } from "@/components/shared/ShareBar";
-import { OnboardingWrapper } from "@/components/onboarding/OnboardingWrapper";
 import SimpleLanguageSwitcher from "@/components/SimpleLanguageSwitcher";
 
 export const metadata: Metadata = {

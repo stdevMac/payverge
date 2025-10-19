@@ -18,6 +18,7 @@ import {
 } from '@nextui-org/react';
 import { Plus, Minus } from 'lucide-react';
 import { MenuItem, MenuItemOption } from '../../api/business';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface ItemCustomizerProps {
   isOpen: boolean;
@@ -36,6 +37,15 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
   item,
   onAddToCart,
 }) => {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `itemCustomizer.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>(
     (item.options || []).map(option => ({ ...option, selected: false }))
@@ -94,7 +104,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          <h3 className="text-xl font-semibold">Customize Item</h3>
+          <h3 className="text-xl font-semibold">{tString('title')}</h3>
         </ModalHeader>
         
         <ModalBody>
@@ -113,7 +123,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
                   <h4 className="text-lg font-semibold">{item.name}</h4>
                   <p className="text-default-600 text-sm mb-2">{item.description}</p>
                   <Chip color="primary" variant="flat">
-                    Base Price: ${(item.price || 0).toFixed(2)}
+                    {tString('basePrice')}: ${(item.price || 0).toFixed(2)}
                   </Chip>
                 </div>
               </div>
@@ -123,7 +133,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
           {/* Quantity Selector */}
           <Card>
             <CardBody className="p-4">
-              <h5 className="font-medium mb-3">Quantity</h5>
+              <h5 className="font-medium mb-3">{tString('quantity')}</h5>
               <div className="flex items-center gap-3">
                 <Button
                   isIconOnly
@@ -159,7 +169,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
           {hasOptions && (
             <Card>
               <CardBody className="p-4">
-                <h5 className="font-medium mb-3">Add-ons & Options</h5>
+                <h5 className="font-medium mb-3">{tString('addOnsOptions')}</h5>
                 <div className="space-y-3">
                   {selectedOptions.map((option, index) => (
                     <div key={index} className="flex items-center justify-between">
@@ -170,7 +180,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">{option.name}</span>
                           {option.is_required && (
-                            <span className="text-xs text-danger">Required</span>
+                            <span className="text-xs text-danger">{tString('required')}</span>
                           )}
                         </div>
                       </Checkbox>
@@ -180,7 +190,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
                         variant="flat"
                       >
                         {option.price_change === 0 
-                          ? "Free" 
+                          ? tString('free')
                           : option.price_change > 0 
                             ? `+$${option.price_change.toFixed(2)}`
                             : `-$${Math.abs(option.price_change).toFixed(2)}`
@@ -196,16 +206,16 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
           {/* Special Requests */}
           <Card>
             <CardBody className="p-4">
-              <h5 className="font-medium mb-3">Special Requests</h5>
+              <h5 className="font-medium mb-3">{tString('specialRequests')}</h5>
               <Input
-                placeholder="Any special instructions or modifications..."
+                placeholder={tString('specialRequestsPlaceholder')}
                 value={specialRequests}
                 onValueChange={setSpecialRequests}
                 variant="bordered"
                 maxLength={200}
               />
               <p className="text-xs text-default-500 mt-1">
-                {specialRequests.length}/200 characters
+                {specialRequests.length}/200 {tString('characters')}
               </p>
             </CardBody>
           </Card>
@@ -217,12 +227,12 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
             <CardBody className="p-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Base Price ({quantity}x):</span>
+                  <span>{tString('basePriceQuantity')} ({quantity}x):</span>
                   <span>${((item.price || 0) * quantity).toFixed(2)}</span>
                 </div>
                 {selectedOptions.some(option => option.selected) && (
                   <div className="flex justify-between text-sm">
-                    <span>Add-ons ({quantity}x):</span>
+                    <span>{tString('addOnsQuantity')} ({quantity}x):</span>
                     <span>
                       ${(selectedOptions
                         .filter(option => option.selected)
@@ -233,7 +243,7 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
                 )}
                 <Divider />
                 <div className="flex justify-between font-semibold text-lg">
-                  <span>Total:</span>
+                  <span>{tString('total')}:</span>
                   <span className="text-primary">${totalPrice.toFixed(2)}</span>
                 </div>
               </div>
@@ -243,19 +253,13 @@ export const ItemCustomizer: React.FC<ItemCustomizerProps> = ({
 
         <ModalFooter>
           <Button variant="light" onPress={handleClose}>
-            Cancel
+            {tString('cancel')}
           </Button>
-          <Button
-            color="primary"
-            onPress={handleAddToCart}
-            startContent={<Plus className="w-4 h-4" />}
-          >
-            Add to Bill - ${totalPrice.toFixed(2)}
+          <Button color="primary" onPress={handleAddToCart}>
+            {tString('addToCart')} - ${totalPrice.toFixed(2)}
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
   );
 };
-
-export default ItemCustomizer;

@@ -1,4 +1,8 @@
 {
+    "common": {
+        "yes": "Yes",
+        "no": "No"
+    },
     "landing": {
         "hero": {
             "badge": "Coming soon",
@@ -806,6 +810,7 @@
             "adjustSearch": "Try adjusting your search or filter criteria",
             "never": "Never",
             "updateRoleTooltip": "Update role",
+            "removeStaffTooltip": "Remove staff",
             "columns": {
               "name": "NAME",
               "email": "EMAIL",
@@ -926,7 +931,8 @@
             "subtitle": "Guest table access point",
             "tableUrl": "Table URL",
             "download": "Download QR",
-            "preview": "Preview"
+            "preview": "Preview",
+            "copyUrl": "Copy table URL"
           },
           "confirmDelete": "Are you sure you want to delete this table?",
           "modals": {
@@ -945,6 +951,381 @@
               "save": "Save Changes"
             }
           }
+        },
+        "billManager": {
+          "title": "Bill Management",
+          "buttons": {
+            "createBill": "Create Bill",
+            "reset": "Reset",
+            "resetFilters": "Reset Filters",
+            "viewDetails": "View Details",
+            "closeBill": "Close Bill",
+            "splitBill": "Split Bill"
+          },
+          "tabs": {
+            "activeBills": "Active Bills",
+            "billHistory": "Bill History"
+          },
+          "search": {
+            "activeBillsPlaceholder": "Search active bills...",
+            "billHistoryPlaceholder": "Search bill history..."
+          },
+          "filters": {
+            "to": "to"
+          },
+          "table": {
+            "columns": {
+              "billNumber": "BILL #",
+              "table": "TABLE",
+              "items": "ITEMS",
+              "total": "TOTAL",
+              "status": "STATUS",
+              "kitchen": "KITCHEN",
+              "created": "CREATED",
+              "actions": "ACTIONS"
+            }
+          },
+          "emptyState": {
+            "noActiveBills": "No Active Bills",
+            "noMatchingBills": "No bills match your filters",
+            "createFirstBill": "Create your first bill to get started",
+            "adjustFilters": "Try adjusting the status, dates, or search query"
+          }
+        },
+        "kitchen": {
+          "title": "Kitchen Orders",
+          "buttons": {
+            "refresh": "Refresh",
+            "startCooking": "Start Cooking",
+            "markReady": "Mark Ready",
+            "markDelivered": "Mark Delivered"
+          },
+          "tabs": {
+            "approved": "Approved",
+            "inKitchen": "In Kitchen",
+            "ready": "Ready",
+            "allOrders": "All Orders"
+          },
+          "emptyState": {
+            "title": "No Orders",
+            "description": "No orders found for the selected status"
+          },
+          "time": {
+            "minutesAgo": "{minutes}m ago",
+            "hoursMinutesAgo": "{hours}h {minutes}m ago"
+          },
+          "order": {
+            "itemsToPrepare": "{count} items to prepare:",
+            "moreItems": "+{count} more items",
+            "notes": "Notes:"
+          }
+        }
+      }
+    },
+    "billCreator": {
+      "title": "Create New Bill",
+      "billSummary": {
+        "title": "Bill Summary",
+        "subtotal": "Subtotal:",
+        "items": "Items",
+        "each": "each",
+        "addOns": "Add-ons",
+        "note": "Note"
+      },
+      "menu": {
+        "title": "Menu Items",
+        "searchPlaceholder": "Search menu items...",
+        "noItemsFound": "No items found",
+        "noMenuItems": "No menu items",
+        "noItemsMatch": "No items match \"{query}\". Try a different search term.",
+        "noItemsAvailable": "No menu items available for this business.",
+        "clearSearch": "Clear search",
+        "item": "item",
+        "items": "items",
+        "addOns": "Add-ons"
+      },
+      "form": {
+        "selectTable": "Select Table",
+        "chooseTable": "Choose a table",
+        "noTablesAvailable": "No tables available",
+        "allTablesHaveBills": "All active tables currently have open bills. Please close existing bills or add more tables.",
+        "allTablesOccupied": "All tables are occupied. Use a counter below for takeaway orders.",
+        "or": "OR",
+        "selectCounter": "Select Counter",
+        "chooseCounter": "Choose a counter for takeaway/quick service",
+        "noCountersAvailable": "No counters available",
+        "enableCountersMessage": "Enable counters in business settings for takeaway service",
+        "perfectForTakeaway": "Perfect for takeaway orders and quick service",
+        "orderNotes": "Order Notes",
+        "orderNotesPlaceholder": "Add special instructions, customer name, or notes for kitchen/staff...",
+        "orderNotesDescription": "Optional notes that will be visible to kitchen staff and on receipts"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "createBill": "Create Bill"
+      }
+    },
+    "businessSettings": {
+      "title": "Business Settings",
+      "description": "Manage your business profile, customize your brand, and configure payment settings.",
+      "tabs": {
+        "ariaLabel": "Business settings tabs",
+        "profile": "Business Profile",
+        "design": "Design & Branding",
+        "businessPage": "Business Page",
+        "payments": "Payment Settings",
+        "localization": "Currency & Languages"
+      },
+      "messages": {
+        "updateSuccess": "Settings Updated!",
+        "updateSuccessDescription": "Your business settings have been saved successfully.",
+        "updateFailed": "Failed to update business settings",
+        "updateFailedTitle": "Update Failed",
+        "error": "Error",
+        "success": "Success"
+      },
+      "buttons": {
+        "saving": "Saving Changes...",
+        "saveAll": "Save All Changes"
+      },
+      "profile": {
+        "basicInfo": "Basic Information",
+        "businessName": "Business Name",
+        "businessNamePlaceholder": "Enter your business name",
+        "phoneNumber": "Phone Number",
+        "phonePlaceholder": "+1 (555) 123-4567",
+        "websiteUrl": "Website URL",
+        "websitePlaceholder": "https://yourrestaurant.com",
+        "customUrl": "Custom URL Slug",
+        "customUrlPlaceholder": "my-restaurant",
+        "customUrlDescription": "Create a custom URL for your business page",
+        "description": "Business Description",
+        "descriptionPlaceholder": "Tell customers about your restaurant, cuisine, and what makes you special...",
+        "logoBranding": "Logo & Branding",
+        "businessLogo": "Business Logo",
+        "logoDescription": "Upload your business logo. This will appear on menus and receipts.",
+        "location": "Location",
+        "streetAddress": "Street Address",
+        "streetPlaceholder": "123 Main Street",
+        "city": "City",
+        "cityPlaceholder": "City name",
+        "state": "State/Province",
+        "statePlaceholder": "State or province",
+        "postalCode": "Postal Code",
+        "postalPlaceholder": "Postal code",
+        "country": "Country",
+        "countryPlaceholder": "Country name"
+      },
+      "businessPage": {
+        "title": "Business Page Settings",
+        "enableTitle": "Enable Business Page",
+        "enableDescription": "Create a public page for your business at /b/your-slug",
+        "customUrlLabel": "Custom URL Slug",
+        "customUrlPlaceholder": "my-restaurant",
+        "customUrlDescription": "Create a custom URL for your business page",
+        "aboutLabel": "About Your Business",
+        "aboutPlaceholder": "Tell customers about your restaurant, cuisine, history, and what makes you special...",
+        "socialMediaTitle": "Social Media Links",
+        "instagram": "Instagram",
+        "instagramPlaceholder": "@yourrestaurant",
+        "facebook": "Facebook",
+        "facebookPlaceholder": "yourrestaurant",
+        "twitter": "Twitter",
+        "twitterPlaceholder": "@yourrestaurant",
+        "bannerTitle": "Banner Images",
+        "bannerDescription": "Upload up to 3 banner images to showcase your restaurant. These will appear at the top of your business page.",
+        "reviewsTitle": "Reviews & Social Proof",
+        "showReviewsTitle": "Show Customer Reviews",
+        "showReviewsDescription": "Display customer reviews on your business page",
+        "googleReviewsTitle": "Google Reviews Integration",
+        "googleReviewsDescription": "Automatically sync and display Google Reviews (Coming Soon)",
+        "comingSoonTitle": "Coming Soon",
+        "comingSoonDescription": "Google Reviews integration, customer testimonials, and social media feed integration will be available in a future update."
+      },
+      "payment": {
+        "cryptoAddressesTitle": "Crypto Addresses",
+        "settlementAddressLabel": "Settlement Address",
+        "settlementAddressPlaceholder": "0x1234...abcd",
+        "settlementAddressDescription": "Ethereum address where payments will be settled",
+        "tippingAddressLabel": "Tipping Address",
+        "tippingAddressPlaceholder": "0x5678...efgh",
+        "tippingAddressDescription": "Ethereum address where tips will be sent",
+        "feesTitle": "Fees & Pricing",
+        "serviceFeeLabel": "Service Fee Rate (%)",
+        "taxRateLabel": "Tax Rate (%)",
+        "percentagePlaceholder": "0.00",
+        "taxInclusiveTitle": "Tax Inclusive Pricing",
+        "taxInclusiveDescription": "Include tax in displayed prices",
+        "serviceFeeInclusiveTitle": "Service Fee Inclusive",
+        "serviceFeeInclusiveDescription": "Include service fee in displayed prices",
+        "feeSummaryTitle": "Fee Summary",
+        "serviceFeeRate": "Service Fee Rate",
+        "taxRate": "Tax Rate",
+        "taxInclusive": "Tax Inclusive",
+        "serviceInclusive": "Service Inclusive"
+      },
+      "design": {
+        "title": "Design & Branding",
+        "comingSoonTitle": "Coming Soon",
+        "comingSoonDescription": "Customize your menu colors, fonts, and layout"
+      }
+    },
+    "imageUpload": {
+      "errors": {
+        "selectImageFile": "Please select an image file",
+        "imageSizeLimit": "Image size must be less than {maxSize}MB",
+        "businessIdRequired": "Business ID is required for file upload",
+        "uploadFailed": "Failed to upload image"
+      },
+      "labels": {
+        "currentImage": "Current image",
+        "maxSize": "Max size",
+        "formats": "Formats",
+        "uploadTitle": "Upload {title}",
+        "uploadImage": "Upload an image",
+        "upTo": "up to"
+      },
+      "buttons": {
+        "changeImage": "Change Image",
+        "remove": "Remove",
+        "chooseFile": "Choose File",
+        "dismiss": "Dismiss"
+      },
+      "status": {
+        "uploading": "Uploading image..."
+      }
+    },
+    "itemCustomizer": {
+      "title": "Customize Item",
+      "basePrice": "Base Price",
+      "quantity": "Quantity",
+      "addOnsOptions": "Add-ons & Options",
+      "required": "Required",
+      "free": "Free",
+      "specialRequests": "Special Requests",
+      "specialRequestsPlaceholder": "Any special instructions or modifications...",
+      "characters": "characters",
+      "basePriceQuantity": "Base Price",
+      "addOnsQuantity": "Add-ons",
+      "total": "Total",
+      "cancel": "Cancel",
+      "addToCart": "Add to Cart"
+    },
+    "customUrlInput": {
+      "errors": {
+        "checkFailed": "Failed to check URL availability"
+      },
+      "status": {
+        "checking": "Checking availability...",
+        "available": "✓ {url} is available",
+        "taken": "This URL is already taken"
+      },
+      "validation": {
+        "minLength": "URL must be at least 2 characters long"
+      },
+      "preview": {
+        "message": "Your business page will be available at:"
+      }
+    },
+    "currencySettings": {
+      "loading": "Loading settings...",
+      "errors": {
+        "loadFailed": "Failed to load settings",
+        "selectLanguage": "Please select at least one language",
+        "selectDefaultLanguage": "Please select a default language from your selected languages",
+        "saveCurrencyFailed": "Failed to save currency settings",
+        "saveLanguageFailed": "Failed to save language settings"
+      },
+      "currency": {
+        "title": "Currency Settings",
+        "description": "Configure how currencies work in your business. All payments are processed in USDC.",
+        "defaultTitle": "Default Currency (Pricing)",
+        "defaultDescription": "The currency you use to set prices for your menu items.",
+        "defaultLabel": "Default Currency",
+        "defaultPlaceholder": "Select default currency",
+        "displayTitle": "Display Currency (Customer View)",
+        "displayDescription": "The currency your customers see on menus and bills.",
+        "displayLabel": "Display Currency",
+        "displayPlaceholder": "Select display currency",
+        "conversionPreview": "Conversion Preview",
+        "pricingToPayment": "Pricing → Payment",
+        "pricingToDisplay": "Pricing → Display",
+        "displayToPayment": "Display → Payment",
+        "paymentFlow": "Payment Flow:",
+        "paymentFlowDescription": "Customers see prices in {currency} → Real-time conversion shown → Payment made in USDC",
+        "saveButton": "Save Currency Settings"
+      },
+      "language": {
+        "title": "Language Settings",
+        "description": "Configure languages for your menu and customer interface.",
+        "supportedTitle": "Supported Languages",
+        "supportedDescription": "Select languages for your menu and customer interface.",
+        "defaultTitle": "Default Language",
+        "defaultDescription": "Choose the primary language for your business.",
+        "defaultLabel": "Default Language",
+        "defaultPlaceholder": "Select default language",
+        "supportInfo": "Language Support:",
+        "supportInfoDescription": "Selected languages will be available for menu translation and customer interface. Your default language will be used when no translation is available.",
+        "saveButton": "Save Language Settings"
+      }
+    },
+    "bannerImageUploader": {
+      "errors": {
+        "selectImageFile": "Please select an image file",
+        "imageSizeLimit": "Banner image size must be less than {maxSize}MB",
+        "uploadFailed": "Failed to upload banner image",
+        "uploadFailedTitle": "Banner Upload Failed"
+      },
+      "success": {
+        "uploaded": "Banner Uploaded!",
+        "uploadedDescription": "Banner {index} has been uploaded successfully."
+      },
+      "status": {
+        "uploading": "Uploading banner..."
+      },
+      "bannerInfo": "Banner {index} • {maxSize}MB max • 3:1 ratio recommended",
+      "addBanner": "Add Banner {index}",
+      "highQualityBanner": "High-quality banner image",
+      "upTo": "up to",
+      "buttons": {
+        "dismiss": "Dismiss"
+      },
+      "guidelines": {
+        "title": "Banner Image Guidelines",
+        "recommendedSize": "Recommended size",
+        "fileSize": "File size",
+        "fileSizeDescription": "Up to {maxSize}MB for high quality",
+        "content": "Content",
+        "contentDescription": "Showcase your restaurant's atmosphere and dishes",
+        "quality": "Quality",
+        "qualityDescription": "Use high-resolution images for best results"
+      }
+    },
+    "paymentProcessor": {
+      "steps": {
+        "approval": {
+          "title": "Approving USDC",
+          "description": "Please approve USDC spending in your wallet..."
+        },
+        "waitingApproval": {
+          "title": "Confirming Approval",
+          "description": "Waiting for approval transaction to be confirmed on blockchain..."
+        },
+        "creatingBill": {
+          "title": "Creating Bill",
+          "description": "Creating bill on blockchain..."
+        },
+        "payment": {
+          "title": "Processing Payment",
+          "description": "Please confirm the payment transaction in your wallet..."
+        },
+        "waitingPayment": {
+          "title": "Confirming Payment",
+          "description": "Waiting for payment transaction to be confirmed..."
+        },
+        "finalizing": {
+          "title": "Finalizing",
+          "description": "Updating payment records..."
         }
       }
     },

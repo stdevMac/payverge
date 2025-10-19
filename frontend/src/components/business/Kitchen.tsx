@@ -18,12 +18,22 @@ import {
 } from '@nextui-org/react';
 import { ChefHat, Clock, Users, CheckCircle, Play } from 'lucide-react';
 import { getOrders, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface KitchenProps {
   businessId: number;
 }
 
 const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.kitchen.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -116,11 +126,11 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
     const diffMins = Math.floor(diffMs / 60000);
     
     if (diffMins < 60) {
-      return `${diffMins}m ago`;
+      return tString('time.minutesAgo').replace('{minutes}', diffMins.toString());
     } else {
       const hours = Math.floor(diffMins / 60);
       const mins = diffMins % 60;
-      return `${hours}h ${mins}m ago`;
+      return tString('time.hoursMinutesAgo').replace('{hours}', hours.toString()).replace('{minutes}', mins.toString());
     }
   };
 
@@ -140,14 +150,14 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
         <CardHeader className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <ChefHat className="w-5 h-5" />
-            <h2 className="text-xl font-semibold">Kitchen Orders</h2>
+            <h2 className="text-xl font-semibold">{tString('title')}</h2>
           </div>
           <Button
             color="primary"
             size="sm"
             onPress={() => loadOrders(activeTab === 'all' ? undefined : activeTab)}
           >
-            Refresh
+            {tString('buttons.refresh')}
           </Button>
         </CardHeader>
         <CardBody>
@@ -156,17 +166,17 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
             onSelectionChange={(key) => setActiveTab(key as string)}
             className="mb-4"
           >
-            <Tab key="approved" title="Approved" />
-            <Tab key="in_kitchen" title="In Kitchen" />
-            <Tab key="ready" title="Ready" />
-            <Tab key="all" title="All Orders" />
+            <Tab key="approved" title={tString('tabs.approved')} />
+            <Tab key="in_kitchen" title={tString('tabs.inKitchen')} />
+            <Tab key="ready" title={tString('tabs.ready')} />
+            <Tab key="all" title={tString('tabs.allOrders')} />
           </Tabs>
 
           {orders.length === 0 ? (
             <div className="text-center py-8">
               <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
-              <h3 className="text-lg font-medium text-default-500 mb-2">No Orders</h3>
-              <p className="text-default-400">No orders found for the selected status</p>
+              <h3 className="text-lg font-medium text-default-500 mb-2">{tString('emptyState.title')}</h3>
+              <p className="text-default-400">{tString('emptyState.description')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -203,7 +213,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-default-500 mb-2">
                           <Users className="w-4 h-4" />
-                          <span>{parseOrderItems(order.items).length} items to prepare:</span>
+                          <span>{tString('order.itemsToPrepare').replace('{count}', parseOrderItems(order.items).length.toString())}</span>
                         </div>
                         {parseOrderItems(order.items).slice(0, 3).map((item, index) => (
                           <div key={index} className="flex justify-between items-center bg-default-50 rounded-lg p-2">
@@ -215,12 +225,12 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                         ))}
                         {parseOrderItems(order.items).length > 3 && (
                           <div className="text-xs text-default-400 text-center">
-                            +{parseOrderItems(order.items).length - 3} more items
+                            {tString('order.moreItems').replace('{count}', (parseOrderItems(order.items).length - 3).toString())}
                           </div>
                         )}
                         {order.notes && (
                           <div className="bg-orange-50 border border-orange-200 rounded-lg p-2 mt-2">
-                            <p className="text-xs font-medium text-orange-700 mb-1">📝 Notes:</p>
+                            <p className="text-xs font-medium text-orange-700 mb-1">📝 {tString('order.notes')}</p>
                             <p className="text-xs text-orange-600 line-clamp-2">
                               {order.notes.length > 60 ? `${order.notes.substring(0, 60)}...` : order.notes}
                             </p>
@@ -239,7 +249,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                             isLoading={actionLoading === order.id}
                             className="flex-1"
                           >
-                            Start Cooking
+                            {tString('buttons.startCooking')}
                           </Button>
                         )}
                         {order.status === 'in_kitchen' && (
@@ -251,7 +261,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                             isLoading={actionLoading === order.id}
                             className="flex-1"
                           >
-                            Mark Ready
+                            {tString('buttons.markReady')}
                           </Button>
                         )}
                         {order.status === 'ready' && (
@@ -263,7 +273,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                             isLoading={actionLoading === order.id}
                             className="flex-1"
                           >
-                            Mark Delivered
+                            {tString('buttons.markDelivered')}
                           </Button>
                         )}
                       </div>

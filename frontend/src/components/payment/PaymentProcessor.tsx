@@ -28,6 +28,7 @@ import {
 } from '../../contracts/hooks';
 import { updateBillPayment, createOnChainBill } from '../../api/bills';
 import CurrencyConverter from '../common/CurrencyConverter';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface PaymentProcessorProps {
   isOpen: boolean;
@@ -72,6 +73,15 @@ export default function PaymentProcessor({
   displayCurrency = 'USD',
   onPaymentComplete
 }: PaymentProcessorProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `paymentProcessor.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('amount');
   const [tipAmount, setTipAmount] = useState<string>('0');
   const [error, setError] = useState<string>('');
@@ -618,12 +628,12 @@ export default function PaymentProcessor({
       <ModalContent>
         {paymentStep === 'amount' && renderAmountStep()}
         {paymentStep === 'wallet' && renderWalletStep()}
-        {paymentStep === 'approval' && renderProcessingStep('Approving USDC', 'Please approve USDC spending in your wallet...')}
-        {paymentStep === 'waiting-approval' && renderProcessingStep('Confirming Approval', 'Waiting for approval transaction to be confirmed on blockchain...')}
-        {paymentStep === 'creating-bill' && renderProcessingStep('Creating Bill', 'Creating bill on blockchain...')}
-        {paymentStep === 'payment' && renderProcessingStep('Processing Payment', 'Please confirm the payment transaction in your wallet...')}
-        {paymentStep === 'waiting-payment' && renderProcessingStep('Confirming Payment', 'Waiting for payment transaction to be confirmed...')}
-        {paymentStep === 'confirming' && renderProcessingStep('Finalizing', 'Updating payment records...')}
+        {paymentStep === 'approval' && renderProcessingStep(tString('steps.approval.title'), tString('steps.approval.description'))}
+        {paymentStep === 'waiting-approval' && renderProcessingStep(tString('steps.waitingApproval.title'), tString('steps.waitingApproval.description'))}
+        {paymentStep === 'creating-bill' && renderProcessingStep(tString('steps.creatingBill.title'), tString('steps.creatingBill.description'))}
+        {paymentStep === 'payment' && renderProcessingStep(tString('steps.payment.title'), tString('steps.payment.description'))}
+        {paymentStep === 'waiting-payment' && renderProcessingStep(tString('steps.waitingPayment.title'), tString('steps.waitingPayment.description'))}
+        {paymentStep === 'confirming' && renderProcessingStep(tString('steps.finalizing.title'), tString('steps.finalizing.description'))}
         {paymentStep === 'success' && renderSuccessStep()}
         {paymentStep === 'error' && renderErrorStep()}
       </ModalContent>

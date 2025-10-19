@@ -22,6 +22,7 @@ import {
 } from '@nextui-org/react';
 import { AlertCircle, Users, Calculator, CheckCircle, ArrowLeft, Plus, Minus } from 'lucide-react';
 import SplittingAPI from '../../api/splitting';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 export interface BillData {
   id: number;
@@ -84,6 +85,15 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
   onClose,
   onPaymentInitiate,
 }) => {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `billSplittingFlow.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   const [loading, setLoading] = useState(false);
   const [splitOptions, setSplitOptions] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);

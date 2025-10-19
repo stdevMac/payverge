@@ -1,4 +1,8 @@
 {
+    "common": {
+        "yes": "Sí",
+        "no": "No"
+    },
     "landing": {
         "hero": {
             "badge": "Próximamente",
@@ -806,6 +810,7 @@
             "adjustSearch": "Intenta ajustar tus criterios de búsqueda o filtros",
             "never": "Nunca",
             "updateRoleTooltip": "Actualizar rol",
+            "removeStaffTooltip": "Remover personal",
             "columns": {
               "name": "NOMBRE",
               "email": "EMAIL",
@@ -926,7 +931,8 @@
             "subtitle": "Punto de acceso para huéspedes",
             "tableUrl": "URL de Mesa",
             "download": "Descargar QR",
-            "preview": "Vista Previa"
+            "preview": "Vista Previa",
+            "copyUrl": "Copiar URL de mesa"
           },
           "confirmDelete": "¿Estás seguro de que quieres eliminar esta mesa?",
           "modals": {
@@ -945,6 +951,381 @@
               "save": "Guardar Cambios"
             }
           }
+        },
+        "billManager": {
+          "title": "Gestión de Cuentas",
+          "buttons": {
+            "createBill": "Crear Cuenta",
+            "reset": "Restablecer",
+            "resetFilters": "Restablecer Filtros",
+            "viewDetails": "Ver Detalles",
+            "closeBill": "Cerrar Cuenta",
+            "splitBill": "Dividir Cuenta"
+          },
+          "tabs": {
+            "activeBills": "Cuentas Activas",
+            "billHistory": "Historial de Cuentas"
+          },
+          "search": {
+            "activeBillsPlaceholder": "Buscar cuentas activas...",
+            "billHistoryPlaceholder": "Buscar historial de cuentas..."
+          },
+          "filters": {
+            "to": "a"
+          },
+          "table": {
+            "columns": {
+              "billNumber": "CUENTA #",
+              "table": "MESA",
+              "items": "ELEMENTOS",
+              "total": "TOTAL",
+              "status": "ESTADO",
+              "kitchen": "COCINA",
+              "created": "CREADA",
+              "actions": "ACCIONES"
+            }
+          },
+          "emptyState": {
+            "noActiveBills": "Sin Cuentas Activas",
+            "noMatchingBills": "Ninguna cuenta coincide con tus filtros",
+            "createFirstBill": "Crea tu primera cuenta para comenzar",
+            "adjustFilters": "Intenta ajustar el estado, fechas o consulta de búsqueda"
+          }
+        },
+        "kitchen": {
+          "title": "Órdenes de Cocina",
+          "buttons": {
+            "refresh": "Actualizar",
+            "startCooking": "Comenzar a Cocinar",
+            "markReady": "Marcar Listo",
+            "markDelivered": "Marcar Entregado"
+          },
+          "tabs": {
+            "approved": "Aprobadas",
+            "inKitchen": "En Cocina",
+            "ready": "Listas",
+            "allOrders": "Todas las Órdenes"
+          },
+          "emptyState": {
+            "title": "Sin Órdenes",
+            "description": "No se encontraron órdenes para el estado seleccionado"
+          },
+          "time": {
+            "minutesAgo": "hace {minutes}m",
+            "hoursMinutesAgo": "hace {hours}h {minutes}m"
+          },
+          "order": {
+            "itemsToPrepare": "{count} elementos para preparar:",
+            "moreItems": "+{count} elementos más",
+            "notes": "Notas:"
+          }
+        }
+      }
+    },
+    "billCreator": {
+      "title": "Crear Nueva Cuenta",
+      "billSummary": {
+        "title": "Resumen de Cuenta",
+        "subtotal": "Subtotal:",
+        "items": "Elementos",
+        "each": "cada uno",
+        "addOns": "Complementos",
+        "note": "Nota"
+      },
+      "menu": {
+        "title": "Elementos del Menú",
+        "searchPlaceholder": "Buscar elementos del menú...",
+        "noItemsFound": "No se encontraron elementos",
+        "noMenuItems": "Sin elementos del menú",
+        "noItemsMatch": "Ningún elemento coincide con \"{query}\". Intenta un término de búsqueda diferente.",
+        "noItemsAvailable": "No hay elementos del menú disponibles para este negocio.",
+        "clearSearch": "Limpiar búsqueda",
+        "item": "elemento",
+        "items": "elementos",
+        "addOns": "Complementos"
+      },
+      "form": {
+        "selectTable": "Seleccionar Mesa",
+        "chooseTable": "Elige una mesa",
+        "noTablesAvailable": "No hay mesas disponibles",
+        "allTablesHaveBills": "Todas las mesas activas actualmente tienen cuentas abiertas. Por favor cierra las cuentas existentes o agrega más mesas.",
+        "allTablesOccupied": "Todas las mesas están ocupadas. Usa un mostrador abajo para pedidos para llevar.",
+        "or": "O",
+        "selectCounter": "Seleccionar Mostrador",
+        "chooseCounter": "Elige un mostrador para servicio para llevar/rápido",
+        "noCountersAvailable": "No hay mostradores disponibles",
+        "enableCountersMessage": "Habilita mostradores en la configuración del negocio para servicio para llevar",
+        "perfectForTakeaway": "Perfecto para pedidos para llevar y servicio rápido",
+        "orderNotes": "Notas del Pedido",
+        "orderNotesPlaceholder": "Agrega instrucciones especiales, nombre del cliente o notas para cocina/personal...",
+        "orderNotesDescription": "Notas opcionales que serán visibles para el personal de cocina y en los recibos"
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "createBill": "Crear Cuenta"
+      }
+    },
+    "businessSettings": {
+      "title": "Configuración del Negocio",
+      "description": "Gestiona el perfil de tu negocio, personaliza tu marca y configura los ajustes de pago.",
+      "tabs": {
+        "ariaLabel": "Pestañas de configuración del negocio",
+        "profile": "Perfil del Negocio",
+        "design": "Diseño y Marca",
+        "businessPage": "Página del Negocio",
+        "payments": "Configuración de Pagos",
+        "localization": "Monedas e Idiomas"
+      },
+      "messages": {
+        "updateSuccess": "¡Configuración Actualizada!",
+        "updateSuccessDescription": "La configuración de tu negocio se ha guardado exitosamente.",
+        "updateFailed": "Error al actualizar la configuración del negocio",
+        "updateFailedTitle": "Actualización Fallida",
+        "error": "Error",
+        "success": "Éxito"
+      },
+      "buttons": {
+        "saving": "Guardando Cambios...",
+        "saveAll": "Guardar Todos los Cambios"
+      },
+      "profile": {
+        "basicInfo": "Información Básica",
+        "businessName": "Nombre del Negocio",
+        "businessNamePlaceholder": "Ingresa el nombre de tu negocio",
+        "phoneNumber": "Número de Teléfono",
+        "phonePlaceholder": "+1 (555) 123-4567",
+        "websiteUrl": "URL del Sitio Web",
+        "websitePlaceholder": "https://turestaurante.com",
+        "customUrl": "URL Personalizada",
+        "customUrlPlaceholder": "mi-restaurante",
+        "customUrlDescription": "Crea una URL personalizada para la página de tu negocio",
+        "description": "Descripción del Negocio",
+        "descriptionPlaceholder": "Cuéntales a los clientes sobre tu restaurante, cocina y lo que te hace especial...",
+        "logoBranding": "Logo y Marca",
+        "businessLogo": "Logo del Negocio",
+        "logoDescription": "Sube el logo de tu negocio. Aparecerá en menús y recibos.",
+        "location": "Ubicación",
+        "streetAddress": "Dirección",
+        "streetPlaceholder": "Calle Principal 123",
+        "city": "Ciudad",
+        "cityPlaceholder": "Nombre de la ciudad",
+        "state": "Estado/Provincia",
+        "statePlaceholder": "Estado o provincia",
+        "postalCode": "Código Postal",
+        "postalPlaceholder": "Código postal",
+        "country": "País",
+        "countryPlaceholder": "Nombre del país"
+      },
+      "businessPage": {
+        "title": "Configuración de Página de Negocio",
+        "enableTitle": "Habilitar Página de Negocio",
+        "enableDescription": "Crea una página pública para tu negocio en /b/tu-slug",
+        "customUrlLabel": "Slug de URL Personalizada",
+        "customUrlPlaceholder": "mi-restaurante",
+        "customUrlDescription": "Crea una URL personalizada para la página de tu negocio",
+        "aboutLabel": "Acerca de Tu Negocio",
+        "aboutPlaceholder": "Cuéntales a los clientes sobre tu restaurante, cocina, historia y lo que te hace especial...",
+        "socialMediaTitle": "Enlaces de Redes Sociales",
+        "instagram": "Instagram",
+        "instagramPlaceholder": "@turestaurante",
+        "facebook": "Facebook",
+        "facebookPlaceholder": "turestaurante",
+        "twitter": "Twitter",
+        "twitterPlaceholder": "@turestaurante",
+        "bannerTitle": "Imágenes de Banner",
+        "bannerDescription": "Sube hasta 3 imágenes de banner para mostrar tu restaurante. Aparecerán en la parte superior de la página de tu negocio.",
+        "reviewsTitle": "Reseñas y Prueba Social",
+        "showReviewsTitle": "Mostrar Reseñas de Clientes",
+        "showReviewsDescription": "Mostrar reseñas de clientes en la página de tu negocio",
+        "googleReviewsTitle": "Integración de Google Reviews",
+        "googleReviewsDescription": "Sincronizar y mostrar automáticamente Google Reviews (Próximamente)",
+        "comingSoonTitle": "Próximamente",
+        "comingSoonDescription": "La integración de Google Reviews, testimonios de clientes e integración de feeds de redes sociales estará disponible en una actualización futura."
+      },
+      "payment": {
+        "cryptoAddressesTitle": "Direcciones Cripto",
+        "settlementAddressLabel": "Dirección de Liquidación",
+        "settlementAddressPlaceholder": "0x1234...abcd",
+        "settlementAddressDescription": "Dirección Ethereum donde se liquidarán los pagos",
+        "tippingAddressLabel": "Dirección de Propinas",
+        "tippingAddressPlaceholder": "0x5678...efgh",
+        "tippingAddressDescription": "Dirección Ethereum donde se enviarán las propinas",
+        "feesTitle": "Tarifas y Precios",
+        "serviceFeeLabel": "Tasa de Tarifa de Servicio (%)",
+        "taxRateLabel": "Tasa de Impuesto (%)",
+        "percentagePlaceholder": "0.00",
+        "taxInclusiveTitle": "Precios Inclusivos de Impuesto",
+        "taxInclusiveDescription": "Incluir impuesto en los precios mostrados",
+        "serviceFeeInclusiveTitle": "Tarifa de Servicio Inclusiva",
+        "serviceFeeInclusiveDescription": "Incluir tarifa de servicio en los precios mostrados",
+        "feeSummaryTitle": "Resumen de Tarifas",
+        "serviceFeeRate": "Tasa de Tarifa de Servicio",
+        "taxRate": "Tasa de Impuesto",
+        "taxInclusive": "Impuesto Inclusivo",
+        "serviceInclusive": "Servicio Inclusivo"
+      },
+      "design": {
+        "title": "Diseño y Marca",
+        "comingSoonTitle": "Próximamente",
+        "comingSoonDescription": "Personaliza los colores, fuentes y diseño de tu menú"
+      }
+    },
+    "imageUpload": {
+      "errors": {
+        "selectImageFile": "Por favor selecciona un archivo de imagen",
+        "imageSizeLimit": "El tamaño de la imagen debe ser menor a {maxSize}MB",
+        "businessIdRequired": "Se requiere el ID del negocio para subir archivos",
+        "uploadFailed": "Error al subir la imagen"
+      },
+      "labels": {
+        "currentImage": "Imagen actual",
+        "maxSize": "Tamaño máximo",
+        "formats": "Formatos",
+        "uploadTitle": "Subir {title}",
+        "uploadImage": "Subir una imagen",
+        "upTo": "hasta"
+      },
+      "buttons": {
+        "changeImage": "Cambiar Imagen",
+        "remove": "Eliminar",
+        "chooseFile": "Elegir Archivo",
+        "dismiss": "Descartar"
+      },
+      "status": {
+        "uploading": "Subiendo imagen..."
+      }
+    },
+    "itemCustomizer": {
+      "title": "Personalizar Elemento",
+      "basePrice": "Precio Base",
+      "quantity": "Cantidad",
+      "addOnsOptions": "Complementos y Opciones",
+      "required": "Requerido",
+      "free": "Gratis",
+      "specialRequests": "Solicitudes Especiales",
+      "specialRequestsPlaceholder": "Cualquier instrucción especial o modificación...",
+      "characters": "caracteres",
+      "basePriceQuantity": "Precio Base",
+      "addOnsQuantity": "Complementos",
+      "total": "Total",
+      "cancel": "Cancelar",
+      "addToCart": "Agregar al Carrito"
+    },
+    "customUrlInput": {
+      "errors": {
+        "checkFailed": "Error al verificar la disponibilidad de la URL"
+      },
+      "status": {
+        "checking": "Verificando disponibilidad...",
+        "available": "✓ {url} está disponible",
+        "taken": "Esta URL ya está en uso"
+      },
+      "validation": {
+        "minLength": "La URL debe tener al menos 2 caracteres"
+      },
+      "preview": {
+        "message": "La página de tu negocio estará disponible en:"
+      }
+    },
+    "currencySettings": {
+      "loading": "Cargando configuración...",
+      "errors": {
+        "loadFailed": "Error al cargar la configuración",
+        "selectLanguage": "Por favor selecciona al menos un idioma",
+        "selectDefaultLanguage": "Por favor selecciona un idioma predeterminado de tus idiomas seleccionados",
+        "saveCurrencyFailed": "Error al guardar la configuración de monedas",
+        "saveLanguageFailed": "Error al guardar la configuración de idiomas"
+      },
+      "currency": {
+        "title": "Configuración de Monedas",
+        "description": "Configura cómo funcionan las monedas en tu negocio. Todos los pagos se procesan en USDC.",
+        "defaultTitle": "Moneda Predeterminada (Precios)",
+        "defaultDescription": "La moneda que usas para establecer precios en los elementos de tu menú.",
+        "defaultLabel": "Moneda Predeterminada",
+        "defaultPlaceholder": "Seleccionar moneda predeterminada",
+        "displayTitle": "Moneda de Visualización (Vista del Cliente)",
+        "displayDescription": "La moneda que tus clientes ven en menús y cuentas.",
+        "displayLabel": "Moneda de Visualización",
+        "displayPlaceholder": "Seleccionar moneda de visualización",
+        "conversionPreview": "Vista Previa de Conversión",
+        "pricingToPayment": "Precios → Pago",
+        "pricingToDisplay": "Precios → Visualización",
+        "displayToPayment": "Visualización → Pago",
+        "paymentFlow": "Flujo de Pago:",
+        "paymentFlowDescription": "Los clientes ven precios en {currency} → Se muestra conversión en tiempo real → Pago realizado en USDC",
+        "saveButton": "Guardar Configuración de Monedas"
+      },
+      "language": {
+        "title": "Configuración de Idiomas",
+        "description": "Configura idiomas para tu menú e interfaz de cliente.",
+        "supportedTitle": "Idiomas Soportados",
+        "supportedDescription": "Selecciona idiomas para tu menú e interfaz de cliente.",
+        "defaultTitle": "Idioma Predeterminado",
+        "defaultDescription": "Elige el idioma principal para tu negocio.",
+        "defaultLabel": "Idioma Predeterminado",
+        "defaultPlaceholder": "Seleccionar idioma predeterminado",
+        "supportInfo": "Soporte de Idiomas:",
+        "supportInfoDescription": "Los idiomas seleccionados estarán disponibles para traducción del menú e interfaz de cliente. Tu idioma predeterminado se usará cuando no haya traducción disponible.",
+        "saveButton": "Guardar Configuración de Idiomas"
+      }
+    },
+    "bannerImageUploader": {
+      "errors": {
+        "selectImageFile": "Por favor selecciona un archivo de imagen",
+        "imageSizeLimit": "El tamaño de la imagen del banner debe ser menor a {maxSize}MB",
+        "uploadFailed": "Error al subir la imagen del banner",
+        "uploadFailedTitle": "Error al Subir Banner"
+      },
+      "success": {
+        "uploaded": "¡Banner Subido!",
+        "uploadedDescription": "El banner {index} se ha subido exitosamente."
+      },
+      "status": {
+        "uploading": "Subiendo banner..."
+      },
+      "bannerInfo": "Banner {index} • {maxSize}MB máx • Proporción 3:1 recomendada",
+      "addBanner": "Agregar Banner {index}",
+      "highQualityBanner": "Imagen de banner de alta calidad",
+      "upTo": "hasta",
+      "buttons": {
+        "dismiss": "Descartar"
+      },
+      "guidelines": {
+        "title": "Guías para Imágenes de Banner",
+        "recommendedSize": "Tamaño recomendado",
+        "fileSize": "Tamaño de archivo",
+        "fileSizeDescription": "Hasta {maxSize}MB para alta calidad",
+        "content": "Contenido",
+        "contentDescription": "Muestra la atmósfera y platos de tu restaurante",
+        "quality": "Calidad",
+        "qualityDescription": "Usa imágenes de alta resolución para mejores resultados"
+      }
+    },
+    "paymentProcessor": {
+      "steps": {
+        "approval": {
+          "title": "Aprobando USDC",
+          "description": "Por favor aprueba el gasto de USDC en tu billetera..."
+        },
+        "waitingApproval": {
+          "title": "Confirmando Aprobación",
+          "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain..."
+        },
+        "creatingBill": {
+          "title": "Creando Cuenta",
+          "description": "Creando cuenta en la blockchain..."
+        },
+        "payment": {
+          "title": "Procesando Pago",
+          "description": "Por favor confirma la transacción de pago en tu billetera..."
+        },
+        "waitingPayment": {
+          "title": "Confirmando Pago",
+          "description": "Esperando que la transacción de pago sea confirmada..."
+        },
+        "finalizing": {
+          "title": "Finalizando",
+          "description": "Actualizando registros de pago..."
         }
       }
     },

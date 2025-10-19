@@ -30,6 +30,7 @@ import {
 } from '@/types/alternativePayments';
 import { useBusinessAlternativePayments } from '@/hooks/useAlternativePayments';
 import { toast } from 'react-hot-toast';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface AlternativePaymentManagerProps {
   billId: string;
@@ -42,6 +43,15 @@ export default function AlternativePaymentManager({
   billTotal,
   onPaymentMarked
 }: AlternativePaymentManagerProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `alternativePaymentManager.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+  
   // Use the custom hook for real-time data
   const {
     paymentBreakdown,
