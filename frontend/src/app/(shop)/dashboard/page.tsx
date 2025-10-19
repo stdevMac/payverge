@@ -11,11 +11,38 @@ import { UserInterface as User } from "@/interface/users/users-interface";
 import { Copy, Check } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
+import SimpleLanguageSwitcher from "@/components/SimpleLanguageSwitcher";
 
 export default function Dashboard() {
   const { isConnected } = useAccount();
   const { user } = useUserStore();
   const { isAuthenticated } = useAuth();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `dashboard.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    
+    // Test direct import
+    try {
+      const enMessages = require('@/i18n/messages/en.json');
+    } catch (e) {
+      console.error('[Dashboard] Direct import failed:', e);
+    }
+    
+    // Test direct translation
+    const testResult = getTranslation('dashboard.title', 'en');
+    
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +51,6 @@ export default function Dashboard() {
   const [copiedAddresses, setCopiedAddresses] = useState<Record<string, boolean>>({});
 
   const retryLoadUser = async () => {
-    console.log('[Dashboard] Manual retry triggered');
     (window as any).__dashboardLoadStart = Date.now();
     setError(null);
     setLoading(true);
@@ -51,7 +77,7 @@ export default function Dashboard() {
       const token = getCookie("session_token");
       
       if (!token || !isTokenValid(token)) {
-        setError("Please sign in to continue.");
+        setError(tString('errors.signIn'));
         setLoading(false);
         setAuthChecked(true);
         return;
@@ -61,7 +87,7 @@ export default function Dashboard() {
       const tokenData = decodeJwt(token);
       
       if (!tokenData.address) {
-        setError("Invalid session token.");
+        setError(tString('errors.invalidToken'));
         setLoading(false);
         setAuthChecked(true);
         return;
@@ -78,12 +104,10 @@ export default function Dashboard() {
         userData.role = tokenData.role || 'user';
         useUserStore.getState().setUser(userData);
         
-        console.log('[Dashboard] User data loaded successfully:', userData.address);
         setError(null);
         setAuthChecked(true);
         loadBusinesses();
       } else {
-        console.log('[Dashboard] No user data returned from API - user may not exist in database');
         // Fallback: If API returns null, create a temporary user profile from token
         const tempUser: User = {
           username: "",
@@ -98,13 +122,11 @@ export default function Dashboard() {
           notifications: [],
         };
         useUserStore.getState().setUser(tempUser);
-        console.warn('[Dashboard] API returned null for user, created temporary user from token:', tempUser.address);
         setError(null);
         setAuthChecked(true);
         loadBusinesses();
       }
     } catch (error: any) {
-      console.error('[Dashboard] Error fetching user data directly:', error);
       setError(`Failed to load user data: ${error}`);
       setLoading(false);
       setAuthChecked(true);
@@ -139,22 +161,14 @@ export default function Dashboard() {
     // If we have a valid token but no user, try direct fetch immediately
     const token = getCookie("session_token");
     if (isConnected && token && isTokenValid(token) && !user) {
-      console.log('[Dashboard] Valid token found but no user, trying direct fetch immediately');
       fetchUserDataDirectly();
       return;
     }
     
     const timer = setTimeout(async () => {
-      console.log('[Dashboard] Auth check after delay:', { 
-        isConnected, 
-        hasUser: !!user, 
-        userAddress: user?.address,
-        hasToken: !!getCookie("session_token"),
-        tokenValid: getCookie("session_token") ? isTokenValid(getCookie("session_token")!) : false
-      });
 
       if (!isConnected) {
-        setError("Please connect your wallet to continue.");
+        setError(tString('errors.connectWallet'));
         setLoading(false);
         setAuthChecked(true);
         return;
@@ -163,7 +177,7 @@ export default function Dashboard() {
       // Check if we have a valid session token
       const token = getCookie("session_token");
       if (!token || !isTokenValid(token)) {
-        setError("Please sign in to continue.");
+        setError(tString('errors.signIn'));
         setLoading(false);
         setAuthChecked(true);
         return;
@@ -174,19 +188,17 @@ export default function Dashboard() {
         // Check if this is the first time or if we've been waiting too long
         const waitTime = Date.now() - (window as any).__dashboardLoadStart || 0;
         if (waitTime > 5000) { // 5 seconds timeout, then try direct fetch
-          console.log('[Dashboard] Timeout waiting for UserProvider, trying direct fetch');
           await fetchUserDataDirectly();
           return;
         }
         
-        setError("Loading user data...");
+        setError(tString('errors.loadingUserData'));
         setLoading(true);
         setAuthChecked(false);
         return;
       }
 
       // All good, load businesses
-      console.log('[Dashboard] All checks passed, loading businesses');
       setError(null);
       setAuthChecked(true);
       loadBusinesses();
@@ -218,16 +230,16 @@ export default function Dashboard() {
             <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
               <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
             </div>
-            <p className="text-gray-600 font-light tracking-wide">Loading your businesses...</p>
+            <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
             
             {/* Action buttons */}
             <div className="mt-6 space-y-3">
-              {error === "Loading user data..." && (
+              {error === tString('errors.loadingUserData') && (
                 <button
                   onClick={retryLoadUser}
                   className="px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
                 >
-                  Retry Loading User
+                  {tString('authentication.retryLoadingUser')}
                 </button>
               )}
               
@@ -255,22 +267,22 @@ export default function Dashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">Authentication Required</h2>
+            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">{tString('authentication.title')}</h2>
             <p className="text-gray-600 font-light tracking-wide mb-8">{error}</p>
             
             {!isConnected ? (
               <div className="space-y-4">
-                <p className="text-sm text-gray-500">Connect your wallet to access the business dashboard.</p>
+                <p className="text-sm text-gray-500">{tString('authentication.connectMessage')}</p>
                 <w3m-button />
               </div>
             ) : (
               <div className="space-y-4">
-                <p className="text-sm text-gray-500">Sign the message in your wallet to authenticate.</p>
+                <p className="text-sm text-gray-500">{tString('authentication.signMessage')}</p>
                 <button
                   onClick={() => window.location.reload()}
                   className="px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
                 >
-                  Try Again
+                  {tString('authentication.tryAgain')}
                 </button>
               </div>
             )}
@@ -280,7 +292,7 @@ export default function Dashboard() {
                 href="/"
                 className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
               >
-                ← Back to Home
+                ← {tString('authentication.backToHome')}
               </a>
             </div>
           </div>
@@ -300,17 +312,20 @@ export default function Dashboard() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-16">
         {/* Header */}
         <section className="mb-16">
+          <div className="flex justify-end mb-8">
+            <SimpleLanguageSwitcher />
+          </div>
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full text-sm text-gray-600 mb-6 hover:bg-gray-100 transition-colors duration-200">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              Business Dashboard
+              {tString('badge')}
             </div>
             
             <h1 className="text-4xl lg:text-6xl font-light text-gray-900 mb-6 tracking-wide leading-tight">
-              Your Businesses
+              {tString('title')}
             </h1>
             <p className="text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto mb-8">
-              Manage your Payverge businesses and start accepting crypto payments
+              {tString('subtitle')}
             </p>
             
             {businesses.length === 0 && (
@@ -318,7 +333,7 @@ export default function Dashboard() {
                 href="/business/register"
                 className="inline-block bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
               >
-                Create Business
+                {tString('businesses.create')}
               </Link>
             )}
           </div>
@@ -335,7 +350,7 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-red-900 tracking-wide">Error</h3>
+                  <h3 className="text-lg font-medium text-red-900 tracking-wide">{tString('errors.error')}</h3>
                   <p className="text-red-700 font-light">{error}</p>
                 </div>
               </div>
@@ -352,15 +367,15 @@ export default function Dashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No businesses yet</h3>
+              <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">{tString('businesses.noneTitle')}</h3>
               <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
-                Get started by creating your first business and begin accepting crypto payments.
+                {tString('businesses.noneDescription')}
               </p>
               <Link
                 href="/business/register"
                 className="inline-block bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
               >
-                Create Your First Business
+                {tString('businesses.createFirst')}
               </Link>
             </div>
           ) : (
@@ -374,18 +389,18 @@ export default function Dashboard() {
                         ? 'bg-green-100 text-green-700 border border-green-200' 
                         : 'bg-gray-100 text-gray-700 border border-gray-200'
                     }`}>
-                      {business.is_active ? 'Active' : 'Inactive'}
+                      {business.is_active ? tString('businesses.active') : tString('businesses.inactive')}
                     </div>
                   </div>
                   
                   <div className="space-y-4 mb-8">
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-900 tracking-wide">Settlement Address</span>
+                        <span className="text-sm font-medium text-gray-900 tracking-wide">{tString('businesses.settlementAddress')}</span>
                         <button
                           onClick={() => copyToClipboard(business.settlement_address, 'settlement', business.id)}
                           className="p-1 hover:bg-gray-200 rounded-md transition-colors duration-200 group"
-                          title="Copy settlement address"
+                          title={tString('businesses.copySettlement')}
                         >
                           {copiedAddresses[`${business.id}-settlement`] ? (
                             <Check className="w-4 h-4 text-green-600" />
@@ -398,11 +413,11 @@ export default function Dashboard() {
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-900 tracking-wide">Tipping Address</span>
+                        <span className="text-sm font-medium text-gray-900 tracking-wide">{tString('businesses.tippingAddress')}</span>
                         <button
                           onClick={() => copyToClipboard(business.tipping_address, 'tipping', business.id)}
                           className="p-1 hover:bg-gray-200 rounded-md transition-colors duration-200 group"
-                          title="Copy tipping address"
+                          title={tString('businesses.copyTipping')}
                         >
                           {copiedAddresses[`${business.id}-tipping`] ? (
                             <Check className="w-4 h-4 text-green-600" />
@@ -415,11 +430,11 @@ export default function Dashboard() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm font-medium text-gray-900 tracking-wide block mb-1">Tax Rate</span>
+                        <span className="text-sm font-medium text-gray-900 tracking-wide block mb-1">{tString('businesses.taxRate')}</span>
                         <span className="text-gray-600 font-light">{business.tax_rate}%</span>
                       </div>
                       <div>
-                        <span className="text-sm font-medium text-gray-900 tracking-wide block mb-1">Service Fee</span>
+                        <span className="text-sm font-medium text-gray-900 tracking-wide block mb-1">{tString('businesses.serviceFee')}</span>
                         <span className="text-gray-600 font-light">{business.service_fee_rate}%</span>
                       </div>
                     </div>
@@ -430,7 +445,7 @@ export default function Dashboard() {
                       href={`/business/${business.id}/dashboard`}
                       className="flex-1 bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all duration-200 text-center tracking-wide group-hover:shadow-lg"
                     >
-                      Manage
+                      {tString('businesses.manage')}
                     </a>
                 </div>
               </div>

@@ -1,452 +1,495 @@
 {
-  "landing": {
-    "hero": {
-      "badge": "Coming soon",
-      "title": "From the table to your wallet,",
-      "subtitle": "Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC, and you're paid instantly. No banks. No friction.",
-      "dreamWords": ["instantly", "effortlessly", "globally", "fairly", "seamlessly", "borderlessly"],
-      "cta": {
-        "register": "Register Business",
-        "dashboard": "Access Dashboard",
-        "waitlist": "Become an Early Partner"
-      }
-    },
-    "vision": {
-      "badge": "Why Payverge",
-      "title": "Hospitality deserves",
-      "titleEmphasis": "better",
-      "description1": "For too long, restaurants, cafés, and bars have been chained to slow, expensive, and outdated payment systems. Fees eat into margins. Settlements take days. Tips get lost in the process. Guests are forced into clunky card machines and awkward bill splits.",
-      "description2": "At Payverge, we believe payments should be as effortless as the meal itself. We're not building just another payment processor,",
-      "description2Bold": "we're building a new standard.",
-      "benefitsTitle": "Fast. Fair. Global."
-    },
-    "benefits": {
-      "instant": {
-        "title": "Instant Settlement",
-        "description": "Get paid in USDC the moment your guests finish their meal."
-      },
-      "fair": {
-        "title": "Fair Fees", 
-        "description": "No hidden costs. No surprise charges. Just transparent, low fees."
-      },
-      "global": {
-        "title": "Global Reach",
-        "description": "Accept payments from anywhere in the world, in any currency."
-      }
-    },
-    "features": {
-      "badge": "How it works",
-      "title": "Three steps to transform your business",
-      "scan": {
-        "title": "Guests Scan",
-        "description": "Your guests simply scan a QR code at their table to view your menu and place orders."
-      },
-      "pay": {
-        "title": "Pay in USDC", 
-        "description": "Secure, instant payments in USDC. No card readers, no cash handling, no delays."
-      },
-      "settle": {
-        "title": "You Get Paid",
-        "description": "Funds arrive in your wallet instantly. No waiting, no holds, no surprises."
-      }
-    },
-    "stats": {
-      "badge": "Built for scale",
-      "title": "The numbers speak for themselves",
-      "settlement": {
-        "value": "< 30s",
-        "label": "Average Settlement Time"
-      },
-      "fees": {
-        "value": "2.5%",
-        "label": "Transaction Fee"
-      },
-      "uptime": {
-        "value": "99.9%",
-        "label": "Network Uptime"
-      },
-      "countries": {
-        "value": "180+",
-        "label": "Countries Supported"
-      }
-    },
-    "waitlist": {
-      "badge": "Join the revolution",
-      "title": "Be among the first to experience the future of hospitality payments",
-      "subtitle": "Join our waitlist and get early access to Payverge when we launch.",
-      "form": {
-        "email": "Your email address",
-        "businessName": "Business name (optional)",
-        "message": "Tell us about your business (optional)",
-        "submit": "Join Waitlist",
-        "submitting": "Joining..."
-      },
-      "success": {
-        "title": "Welcome to the Early Partner Program! 🚀",
-        "message": "Thanks for joining! We'll contact you with special pricing details and early access to Payverge.",
-        "sharePrompt": "Help us spread the word!",
-        "shareButton": "Share on X",
-        "closeButton": "Close"
-      }
-    },
-    "roadmap": {
-      "badge": "Coming Soon",
-      "title": "We're just getting",
-      "titleEmphasis": "started",
-      "description": "Payverge will roll out with restaurants, cafés, and bars worldwide. We're working closely with early partners to shape the future of hospitality payments.",
-      "cta": "Become an Early Partner"
-    },
-    "platform": {
-      "badge": "Complete platform",
-      "title": "Beyond payments, a complete",
-      "titleEmphasis": "restaurant tech",
-      "subtitle": "Everything you need to run a modern restaurant, plus crypto payments",
-      "features": {
-        "menus": {
-          "title": "Beautiful Digital Menus",
-          "description": "Automatically generated menus with photos, real-time pricing, and instant updates across all tables"
+    "landing": {
+        "hero": {
+            "badge": "Coming soon",
+            "title": "From the table to your wallet,",
+            "subtitle": "Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC, and you're paid instantly. No banks. No friction.",
+            "dreamWords": [
+                "instantly",
+                "effortlessly",
+                "globally",
+                "fairly",
+                "seamlessly",
+                "borderlessly"
+            ],
+            "cta": {
+                "register": "Register Business",
+                "dashboard": "Access Dashboard",
+                "waitlist": "Become an Early Partner"
+            }
         },
-        "reviews": {
-          "title": "Google Reviews Integration",
-          "description": "Automatically request reviews after successful payments to boost your online reputation"
+        "vision": {
+            "badge": "Why Payverge",
+            "title": "Hospitality deserves",
+            "titleEmphasis": "better",
+            "description1": "For too long, restaurants, cafés, and bars have been chained to slow, expensive, and outdated payment systems. Fees eat into margins. Settlements take days. Tips get lost in the process. Guests are forced into clunky card machines and awkward bill splits.",
+            "description2": "At Payverge, we believe payments should be as effortless as the meal itself. We're not building just another payment processor,",
+            "description2Bold": "we're building a new standard.",
+            "benefitsTitle": "Fast. Fair. Global."
         },
-        "analytics": {
-          "title": "Real-time Analytics",
-          "description": "Track sales, crypto payment trends, and make data-driven decisions for your business"
+        "benefits": {
+            "instant": {
+                "title": "Instant Settlement",
+                "description": "Get paid in USDC the moment your guests finish their meal."
+            },
+            "fair": {
+                "title": "Fair Fees",
+                "description": "No hidden costs. No surprise charges. Just transparent, low fees."
+            },
+            "global": {
+                "title": "Global Reach",
+                "description": "Accept payments from anywhere in the world, in any currency."
+            }
         },
-        "staff": {
-          "title": "Staff Management",
-          "description": "Transparent crypto tip distribution and performance analytics for your team"
+        "features": {
+            "badge": "How it works",
+            "title": "Three steps to transform your business",
+            "scan": {
+                "title": "Guests Scan",
+                "description": "Your guests simply scan a QR code at their table to view your menu and place orders."
+            },
+            "pay": {
+                "title": "Pay in USDC",
+                "description": "Secure, instant payments in USDC. No card readers, no cash handling, no delays."
+            },
+            "settle": {
+                "title": "You Get Paid",
+                "description": "Funds arrive in your wallet instantly. No waiting, no holds, no surprises."
+            }
         },
-        "orders": {
-          "title": "Order Management",
-          "description": "Kitchen display system and order tracking from menu to payment"
+        "stats": {
+            "badge": "Built for scale",
+            "title": "The numbers speak for themselves",
+            "settlement": {
+                "value": "< 30s",
+                "label": "Average Settlement Time"
+            },
+            "fees": {
+                "value": "2.5%",
+                "label": "Transaction Fee"
+            },
+            "uptime": {
+                "value": "99.9%",
+                "label": "Network Uptime"
+            },
+            "countries": {
+                "value": "180+",
+                "label": "Countries Supported"
+            }
         },
-        "qr": {
-          "title": "Instant QR Codes",
-          "description": "Generate table QR codes instantly and update them in real-time"
+        "waitlist": {
+            "badge": "Join the revolution",
+            "title": "Be among the first to experience the future of hospitality payments",
+            "subtitle": "Join our waitlist and get early access to Payverge when we launch.",
+            "form": {
+                "email": "Your email address",
+                "businessName": "Business name (optional)",
+                "message": "Tell us about your business (optional)",
+                "submit": "Join Waitlist",
+                "submitting": "Joining..."
+            },
+            "success": {
+                "title": "Welcome to the Early Partner Program! 🚀",
+                "message": "Thanks for joining! We'll contact you with special pricing details and early access to Payverge.",
+                "sharePrompt": "Help us spread the word!",
+                "shareButton": "Share on X",
+                "closeButton": "Close"
+            }
+        },
+        "roadmap": {
+            "badge": "Coming Soon",
+            "title": "We're just getting",
+            "titleEmphasis": "started",
+            "description": "Payverge will roll out with restaurants, cafés, and bars worldwide. We're working closely with early partners to shape the future of hospitality payments.",
+            "cta": "Become an Early Partner"
+        },
+        "platform": {
+            "badge": "Complete platform",
+            "title": "Beyond payments, a complete",
+            "titleEmphasis": "restaurant tech",
+            "subtitle": "Everything you need to run a modern restaurant, plus crypto payments",
+            "features": {
+                "menus": {
+                    "title": "Beautiful Digital Menus",
+                    "description": "Automatically generated menus with photos, real-time pricing, and instant updates across all tables"
+                },
+                "reviews": {
+                    "title": "Google Reviews Integration",
+                    "description": "Automatically request reviews after successful payments to boost your online reputation"
+                },
+                "analytics": {
+                    "title": "Real-time Analytics",
+                    "description": "Track sales, crypto payment trends, and make data-driven decisions for your business"
+                },
+                "staff": {
+                    "title": "Staff Management",
+                    "description": "Transparent crypto tip distribution and performance analytics for your team"
+                },
+                "orders": {
+                    "title": "Order Management",
+                    "description": "Kitchen display system and order tracking from menu to payment"
+                },
+                "qr": {
+                    "title": "Instant QR Codes",
+                    "description": "Generate table QR codes instantly and update them in real-time"
+                }
+            }
+        },
+        "social": {
+            "badge": "Trusted by hospitality",
+            "title": "Built for",
+            "titleEmphasis": "modern restaurants",
+            "subtitle": "From coffee shops to fine dining, crypto payments for every hospitality business",
+            "businessTypes": {
+                "restaurants": "Restaurants",
+                "coffee": "Coffee Shops",
+                "bars": "Bars & Lounges",
+                "hotels": "Hotels",
+                "events": "Event Venues"
+            },
+            "stats": {
+                "instant": {
+                    "value": "Instant",
+                    "label": "Settlement",
+                    "description": "USDC in your wallet immediately"
+                },
+                "fee": {
+                    "value": "2%",
+                    "label": "Flat Fee",
+                    "description": "No hidden charges"
+                },
+                "chargebacks": {
+                    "value": "0%",
+                    "label": "Chargebacks",
+                    "description": "Crypto payments are final"
+                },
+                "support": {
+                    "value": "24/7",
+                    "label": "Support",
+                    "description": "Always here to help"
+                }
+            }
+        },
+        "trust": {
+            "usdc": {
+                "title": "Built on USDC",
+                "description": "Trusted, stable cryptocurrency infrastructure"
+            },
+            "hospitality": {
+                "title": "Hospitality-First",
+                "description": "Designed specifically for restaurants, cafés, and bars"
+            },
+            "global": {
+                "title": "Global Network",
+                "description": "Accept payments from customers worldwide"
+            }
+        },
+        "footer": {
+            "tagline": "Payverge operates exclusively on USDC. No banks. No borders. Just better payments.",
+            "links": {
+                "about": "About",
+                "contact": "Contact",
+                "privacy": "Privacy",
+                "terms": "Terms"
+            }
         }
-      }
     },
-    "social": {
-      "badge": "Trusted by hospitality",
-      "title": "Built for",
-      "titleEmphasis": "modern restaurants",
-      "subtitle": "From coffee shops to fine dining, crypto payments for every hospitality business",
-      "businessTypes": {
-        "restaurants": "Restaurants",
-        "coffee": "Coffee Shops",
-        "bars": "Bars & Lounges",
-        "hotels": "Hotels",
-        "events": "Event Venues"
-      },
-      "stats": {
-        "instant": {
-          "value": "Instant",
-          "label": "Settlement",
-          "description": "USDC in your wallet immediately"
+    "businessRegister": {
+        "header": {
+            "badge": "Business Registration",
+            "title": "Register Your",
+            "titleEmphasis": "Business",
+            "subtitle": "Join the future of hospitality payments with crypto-native solutions"
         },
-        "fee": {
-          "value": "2%",
-          "label": "Flat Fee",
-          "description": "No hidden charges"
+        "steps": {
+            "business": {
+                "title": "Business Info",
+                "description": "Name, logo & contact details"
+            },
+            "location": {
+                "title": "Location & Wallets",
+                "description": "Address & payment setup"
+            },
+            "settings": {
+                "title": "Settings & Features",
+                "description": "Fees, features & preferences"
+            },
+            "subscription": {
+                "title": "Payment",
+                "description": "Choose payment amount"
+            },
+            "review": {
+                "title": "Review & Submit",
+                "description": "Confirm and create"
+            }
         },
-        "chargebacks": {
-          "value": "0%",
-          "label": "Chargebacks",
-          "description": "Crypto payments are final"
+        "businessInfo": {
+            "title": "Business Information",
+            "description": "Tell us about your business",
+            "fields": {
+                "name": {
+                    "label": "Business Name",
+                    "placeholder": "Enter your business name",
+                    "required": "Business name is required"
+                },
+                "description": {
+                    "label": "Business Description",
+                    "placeholder": "Describe your business (optional)"
+                },
+                "phone": {
+                    "label": "Phone Number",
+                    "placeholder": "Enter phone number (optional)"
+                },
+                "email": {
+                    "label": "Email Address",
+                    "placeholder": "Enter email address (optional)"
+                },
+                "website": {
+                    "label": "Website",
+                    "placeholder": "Enter website URL (optional)"
+                },
+                "customUrl": {
+                    "label": "Custom URL",
+                    "placeholder": "Enter custom URL slug (optional)"
+                }
+            },
+            "logo": {
+                "title": "Business Logo",
+                "description": "Upload your business logo for better brand recognition",
+                "upload": "Upload Logo",
+                "uploading": "Uploading...",
+                "change": "Change Logo",
+                "guidelines": "Recommended: Square image, PNG or JPG, max 5MB"
+            }
         },
-        "support": {
-          "value": "24/7",
-          "label": "Support",
-          "description": "Always here to help"
+        "location": {
+            "title": "Location & Payment Setup",
+            "description": "Configure your business address and crypto wallets",
+            "address": {
+                "title": "Business Address",
+                "street": {
+                    "label": "Street Address",
+                    "placeholder": "123 Main Street"
+                },
+                "city": {
+                    "label": "City",
+                    "placeholder": "New York"
+                },
+                "state": {
+                    "label": "State/Province",
+                    "placeholder": "NY"
+                },
+                "postalCode": {
+                    "label": "Postal Code",
+                    "placeholder": "10001"
+                },
+                "country": {
+                    "label": "Country",
+                    "placeholder": "United States"
+                }
+            },
+            "wallets": {
+                "title": "Crypto Wallet Addresses",
+                "settlement": {
+                    "label": "Settlement Address",
+                    "placeholder": "Enter USDC settlement address",
+                    "description": "Where payments will be sent",
+                    "useConnected": "Use This Address"
+                },
+                "tipping": {
+                    "label": "Tipping Address",
+                    "placeholder": "Enter tipping address (optional)",
+                    "description": "Where tips will be sent"
+                }
+            }
+        },
+        "settings": {
+            "title": "Settings & Features",
+            "description": "Configure fees and enable features",
+            "fees": {
+                "title": "Fee Configuration",
+                "taxRate": {
+                    "label": "Tax Rate (%)",
+                    "placeholder": "8.25"
+                },
+                "serviceFee": {
+                    "label": "Service Fee (%)",
+                    "placeholder": "18.0"
+                },
+                "taxInclusive": "Tax inclusive pricing",
+                "serviceInclusive": "Service fee inclusive pricing"
+            },
+            "features": {
+                "title": "Business Features",
+                "businessPage": "Business Page",
+                "businessPageDescription": "Create a public page for your business",
+                "showReviews": "Customer Reviews",
+                "showReviewsDescription": "Display customer reviews on your page",
+                "googleReviews": "Google Reviews",
+                "googleReviewsDescription": "Integrate with Google Reviews",
+                "counter": "Order Counter",
+                "counterDescription": "Display order numbers for pickup"
+            },
+            "referral": {
+                "title": "Referral Code (Optional)",
+                "placeholder": "Enter referral code",
+                "checking": "Checking...",
+                "valid": "Valid referral code",
+                "invalid": "Invalid referral code"
+            }
+        },
+        "subscription": {
+            "title": "Choose Your Payment",
+            "description": "Pay what you want - get subscription time proportionally",
+            "suggestedOptions": "Suggested Payment Options",
+            "popular": "Popular",
+            "options": {
+                "1month": "Try for 1 month",
+                "3months": "Get started - 3 months",
+                "6months": "Save more - 6 months",
+                "12months": "Best value - Full year"
+            },
+            "custom": {
+                "enable": "Pay custom amount",
+                "placeholder": "Enter amount",
+                "description": "You'll get subscription time proportional to the yearly fee",
+                "warning": "Amount above ${amount} will still only give 1 year maximum",
+                "estimatedTime": "Estimated time: {time}"
+            },
+            "discount": {
+                "title": "Discount Options (Choose One)",
+                "none": "No Discount",
+                "noneDescription": "Pay full amount",
+                "coupon": "Coupon Code",
+                "couponDescription": "Enter coupon for discount",
+                "couponLabel": "Coupon Code",
+                "couponPlaceholder": "Enter coupon code",
+                "referral": "Referral Code",
+                "referralDescription": "Enter referral for discount"
+            },
+            "summary": {
+                "title": "Payment Summary",
+                "subscriptionPayment": "Subscription Payment",
+                "couponDiscount": "Coupon Discount",
+                "referralDiscount": "Referral Discount",
+                "total": "Total",
+                "estimatedTime": "Estimated subscription time: {time}",
+                "baseAmount": "Base Amount",
+                "discount": "Discount",
+                "finalAmount": "Final Amount",
+                "subscriptionTime": "Subscription Time"
+            }
+        },
+        "review": {
+            "title": "Review Your Information",
+            "description": "Please review all details before submitting",
+            "sections": {
+                "business": "Business Information",
+                "location": "Payment Addresses",
+                "settings": "Business Settings",
+                "payment": "Payment Summary"
+            },
+            "labels": {
+                "businessName": "Business Name",
+                "email": "Email",
+                "phone": "Phone",
+                "website": "Website",
+                "description": "Description",
+                "settlementAddress": "Settlement Address",
+                "tippingAddress": "Tipping Address",
+                "taxRate": "Tax Rate",
+                "serviceFeeRate": "Service Fee Rate",
+                "features": "Features",
+                "businessPage": "Business Page",
+                "reviews": "Reviews",
+                "counterService": "Counter Service",
+                "subscriptionPayment": "Subscription Payment",
+                "couponDiscount": "Coupon Discount",
+                "referralDiscount": "Referral Discount",
+                "totalPayment": "Total Payment",
+                "estimatedTime": "Estimated subscription time: {time}",
+                "connectedWallet": "Connected Wallet",
+                "publicPageUrl": "This will be your public business page URL",
+                "referralCodeUsing": "Using referral code:",
+                "validDiscountApplied": " Valid - Discount Applied"
+            }
+        },
+        "navigation": {
+            "back": "Back",
+            "next": "Next Step",
+            "submit": "Create Business",
+            "cancel": "Cancel"
+        },
+        "loading": {
+            "approval": "Approving USDC...",
+            "registration": "Registering business...",
+            "backend": "Saving to database...",
+            "upload": "Uploading files...",
+            "complete": "Registration complete!"
+        },
+        "errors": {
+            "walletNotConnected": "Please connect your wallet",
+            "insufficientBalance": "Insufficient USDC balance",
+            "approvalFailed": "USDC approval failed",
+            "registrationFailed": "Business registration failed",
+            "uploadFailed": "File upload failed",
+            "invalidEmail": "Please enter a valid email"
+        },
+        "validation": {
+            "couponValid": "✅ Valid coupon! Discount: ${amount}",
+            "couponInvalid": "❌ Invalid or expired coupon code",
+            "couponPrompt": "Enter a coupon code to get a discount",
+            "referralValid": "✅ Valid referral code! You'll get a discount on registration.",
+            "referralInvalid": "❌ Invalid referral code. Please check and try again.",
+            "referralPrompt": "Enter a referral code to get a discount"
+        },
+        "messages": {
+            "customAmountDescription": "You'll get subscription time proportional to the yearly fee (${amount} = 1 year)",
+            "customAmountWarning": "⚠️ Amount above ${amount} will still only give 1 year maximum",
+            "customAmountEstimate": "Estimated time: {time}",
+            "authenticationRequired": "Authentication Required",
+            "authenticationMessage": "Please connect your wallet to register your business on Payverge.",
+            "loading": "Loading...",
+            "backToDashboard": "Back to Dashboard",
+            "stepProgress": "Step {current} of {total}",
+            "complete": "Complete",
+            "tryAgain": "Try Again"
         }
-      }
     },
-    "trust": {
-      "usdc": {
-        "title": "Built on USDC",
-        "description": "Trusted, stable cryptocurrency infrastructure"
-      },
-      "hospitality": {
-        "title": "Hospitality-First",
-        "description": "Designed specifically for restaurants, cafés, and bars"
-      },
-      "global": {
-        "title": "Global Network",
-        "description": "Accept payments from customers worldwide"
-      }
-    },
-    "footer": {
-      "tagline": "Payverge operates exclusively on USDC. No banks. No borders. Just better payments.",
-      "links": {
-        "about": "About",
-        "contact": "Contact",
-        "privacy": "Privacy", 
-        "terms": "Terms"
-      }
+    "dashboard": {
+        "title": "Your Businesses",
+        "subtitle": "Manage your Payverge businesses and start accepting crypto payments",
+        "badge": "Business Dashboard",
+        "loading": "Loading your businesses...",
+        "errors": {
+            "signIn": "Please sign in to continue.",
+            "connectWallet": "Please connect your wallet to continue.",
+            "invalidToken": "Invalid session token.",
+            "loadingUserData": "Loading user data...",
+            "error": "Error"
+        },
+        "authentication": {
+            "title": "Authentication Required",
+            "connectMessage": "Connect your wallet to access the business dashboard.",
+            "signMessage": "Sign the message in your wallet to authenticate.",
+            "tryAgain": "Try Again",
+            "backToHome": "Back to Home",
+            "retryLoadingUser": "Retry Loading User"
+        },
+        "businesses": {
+            "noneTitle": "No businesses yet",
+            "noneDescription": "Get started by creating your first business and begin accepting crypto payments.",
+            "createFirst": "Create Your First Business",
+            "create": "Create Business",
+            "manage": "Manage",
+            "active": "Active",
+            "inactive": "Inactive",
+            "settlementAddress": "Settlement Address",
+            "tippingAddress": "Tipping Address",
+            "taxRate": "Tax Rate",
+            "serviceFee": "Service Fee",
+            "copySettlement": "Copy settlement address",
+            "copyTipping": "Copy tipping address"
+        }
     }
-  },
-  "businessRegister": {
-    "header": {
-      "badge": "Business Registration",
-      "title": "Register Your",
-      "titleEmphasis": "Business",
-      "subtitle": "Join the future of hospitality payments with crypto-native solutions"
-    },
-    "steps": {
-      "business": {
-        "title": "Business Info",
-        "description": "Name, logo & contact details"
-      },
-      "location": {
-        "title": "Location & Wallets", 
-        "description": "Address & payment setup"
-      },
-      "settings": {
-        "title": "Settings & Features",
-        "description": "Fees, features & preferences"
-      },
-      "subscription": {
-        "title": "Payment",
-        "description": "Choose payment amount"
-      },
-      "review": {
-        "title": "Review & Submit",
-        "description": "Confirm and create"
-      }
-    },
-    "businessInfo": {
-      "title": "Business Information",
-      "description": "Tell us about your business",
-      "fields": {
-        "name": {
-          "label": "Business Name",
-          "placeholder": "Enter your business name",
-          "required": "Business name is required"
-        },
-        "description": {
-          "label": "Business Description",
-          "placeholder": "Describe your business (optional)"
-        },
-        "phone": {
-          "label": "Phone Number",
-          "placeholder": "Enter phone number (optional)"
-        },
-        "email": {
-          "label": "Email Address", 
-          "placeholder": "Enter email address (optional)"
-        },
-        "website": {
-          "label": "Website",
-          "placeholder": "Enter website URL (optional)"
-        },
-        "customUrl": {
-          "label": "Custom URL",
-          "placeholder": "Enter custom URL slug (optional)"
-        }
-      },
-      "logo": {
-        "title": "Business Logo",
-        "description": "Upload your business logo for better brand recognition",
-        "upload": "Upload Logo",
-        "uploading": "Uploading...",
-        "change": "Change Logo",
-        "guidelines": "Recommended: Square image, PNG or JPG, max 5MB"
-      }
-    },
-    "location": {
-      "title": "Location & Payment Setup",
-      "description": "Configure your business address and crypto wallets",
-      "address": {
-        "title": "Business Address",
-        "street": {
-          "label": "Street Address",
-          "placeholder": "123 Main Street"
-        },
-        "city": {
-          "label": "City", 
-          "placeholder": "New York"
-        },
-        "state": {
-          "label": "State/Province",
-          "placeholder": "NY"
-        },
-        "postalCode": {
-          "label": "Postal Code",
-          "placeholder": "10001"
-        },
-        "country": {
-          "label": "Country",
-          "placeholder": "United States"
-        }
-      },
-      "wallets": {
-        "title": "Crypto Wallet Addresses",
-        "settlement": {
-          "label": "Settlement Address",
-          "placeholder": "Enter USDC settlement address",
-          "description": "Where payments will be sent",
-          "useConnected": "Use This Address"
-        },
-        "tipping": {
-          "label": "Tipping Address", 
-          "placeholder": "Enter tipping address (optional)",
-          "description": "Where tips will be sent"
-        }
-      }
-    },
-    "settings": {
-      "title": "Settings & Features",
-      "description": "Configure fees and enable features",
-      "fees": {
-        "title": "Fee Configuration",
-        "taxRate": {
-          "label": "Tax Rate (%)",
-          "placeholder": "8.25"
-        },
-        "serviceFee": {
-          "label": "Service Fee (%)",
-          "placeholder": "18.0"
-        },
-        "taxInclusive": "Tax inclusive pricing",
-        "serviceInclusive": "Service fee inclusive pricing"
-      },
-      "features": {
-        "title": "Business Features",
-        "businessPage": "Business Page",
-        "businessPageDescription": "Create a public page for your business",
-        "showReviews": "Customer Reviews",
-        "showReviewsDescription": "Display customer reviews on your page",
-        "googleReviews": "Google Reviews",
-        "googleReviewsDescription": "Integrate with Google Reviews",
-        "counter": "Order Counter",
-        "counterDescription": "Display order numbers for pickup"
-      },
-      "referral": {
-        "title": "Referral Code (Optional)",
-        "placeholder": "Enter referral code",
-        "checking": "Checking...",
-        "valid": "Valid referral code",
-        "invalid": "Invalid referral code"
-      }
-    },
-    "subscription": {
-      "title": "Choose Your Payment",
-      "description": "Pay what you want - get subscription time proportionally",
-      "suggestedOptions": "Suggested Payment Options",
-      "popular": "Popular",
-      "options": {
-        "1month": "Try for 1 month",
-        "3months": "Get started - 3 months", 
-        "6months": "Save more - 6 months",
-        "12months": "Best value - Full year"
-      },
-      "custom": {
-        "enable": "Pay custom amount",
-        "placeholder": "Enter amount",
-        "description": "You'll get subscription time proportional to the yearly fee",
-        "warning": "Amount above ${amount} will still only give 1 year maximum",
-        "estimatedTime": "Estimated time: {time}"
-      },
-      "discount": {
-        "title": "Discount Options (Choose One)",
-        "none": "No Discount",
-        "noneDescription": "Pay full amount",
-        "coupon": "Coupon Code", 
-        "couponDescription": "Enter coupon for discount",
-        "couponLabel": "Coupon Code",
-        "couponPlaceholder": "Enter coupon code",
-        "referral": "Referral Code",
-        "referralDescription": "Enter referral for discount"
-      },
-      "summary": {
-        "title": "Payment Summary",
-        "subscriptionPayment": "Subscription Payment",
-        "couponDiscount": "Coupon Discount",
-        "referralDiscount": "Referral Discount",
-        "total": "Total",
-        "estimatedTime": "Estimated subscription time: {time}",
-        "baseAmount": "Base Amount",
-        "discount": "Discount",
-        "finalAmount": "Final Amount",
-        "subscriptionTime": "Subscription Time"
-      }
-    },
-    "review": {
-      "title": "Review Your Information",
-      "description": "Please review all details before submitting",
-      "sections": {
-        "business": "Business Information",
-        "location": "Payment Addresses", 
-        "settings": "Business Settings",
-        "payment": "Payment Summary"
-      },
-      "labels": {
-        "businessName": "Business Name",
-        "email": "Email",
-        "phone": "Phone",
-        "website": "Website",
-        "description": "Description",
-        "settlementAddress": "Settlement Address",
-        "tippingAddress": "Tipping Address",
-        "taxRate": "Tax Rate",
-        "serviceFeeRate": "Service Fee Rate",
-        "features": "Features",
-        "businessPage": "Business Page",
-        "reviews": "Reviews",
-        "counterService": "Counter Service",
-        "subscriptionPayment": "Subscription Payment",
-        "couponDiscount": "Coupon Discount",
-        "referralDiscount": "Referral Discount",
-        "totalPayment": "Total Payment",
-        "estimatedTime": "Estimated subscription time: {time}",
-        "connectedWallet": "Connected Wallet",
-        "publicPageUrl": "This will be your public business page URL",
-        "referralCodeUsing": "Using referral code:",
-        "validDiscountApplied": " Valid - Discount Applied"
-      }
-    },
-    "navigation": {
-      "back": "Back",
-      "next": "Next Step",
-      "submit": "Create Business",
-      "cancel": "Cancel"
-    },
-    "loading": {
-      "approval": "Approving USDC...",
-      "registration": "Registering business...",
-      "backend": "Saving to database...",
-      "upload": "Uploading files...",
-      "complete": "Registration complete!"
-    },
-    "errors": {
-      "walletNotConnected": "Please connect your wallet",
-      "insufficientBalance": "Insufficient USDC balance",
-      "approvalFailed": "USDC approval failed",
-      "registrationFailed": "Business registration failed",
-      "uploadFailed": "File upload failed",
-      "invalidEmail": "Please enter a valid email"
-    },
-    "validation": {
-      "couponValid": "✅ Valid coupon! Discount: ${amount}",
-      "couponInvalid": "❌ Invalid or expired coupon code",
-      "couponPrompt": "Enter a coupon code to get a discount",
-      "referralValid": "✅ Valid referral code! You'll get a discount on registration.",
-      "referralInvalid": "❌ Invalid referral code. Please check and try again.",
-      "referralPrompt": "Enter a referral code to get a discount"
-    },
-    "messages": {
-      "customAmountDescription": "You'll get subscription time proportional to the yearly fee (${amount} = 1 year)",
-      "customAmountWarning": "⚠️ Amount above ${amount} will still only give 1 year maximum",
-      "customAmountEstimate": "Estimated time: {time}",
-      "authenticationRequired": "Authentication Required",
-      "authenticationMessage": "Please connect your wallet to register your business on Payverge.",
-      "loading": "Loading...",
-      "backToDashboard": "Back to Dashboard",
-      "stepProgress": "Step {current} of {total}",
-      "complete": "Complete",
-      "tryAgain": "Try Again"
-    }
-  }
 }
