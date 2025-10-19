@@ -13,6 +13,7 @@ import {
   Chip,
 } from '@nextui-org/react';
 import { DollarSign, Percent, Calculator } from 'lucide-react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 export interface TipCalculatorProps {
   subtotal: number;
@@ -33,6 +34,14 @@ export default function TipCalculator({
   disabled = false,
   className = ''
 }: TipCalculatorProps) {
+  const { locale: currentLocale } = useSimpleLocale();
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `tipCalculator.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   const [tipMethod, setTipMethod] = useState<'percentage' | 'amount'>('percentage');
   const [tipPercentage, setTipPercentage] = useState(18);
   const [tipAmount, setTipAmount] = useState(0);
@@ -107,11 +116,11 @@ export default function TipCalculator({
   const tipPerPerson = tipAmount / numPeople;
 
   const getTipQuality = (percentage: number) => {
-    if (percentage >= 20) return { label: 'Excellent', color: 'success' as const };
-    if (percentage >= 18) return { label: 'Great', color: 'primary' as const };
-    if (percentage >= 15) return { label: 'Good', color: 'warning' as const };
-    if (percentage >= 10) return { label: 'Fair', color: 'default' as const };
-    return { label: 'Low', color: 'danger' as const };
+    if (percentage >= 20) return { label: tString('excellent'), color: 'success' as const };
+    if (percentage >= 18) return { label: tString('great'), color: 'primary' as const };
+    if (percentage >= 15) return { label: tString('good'), color: 'warning' as const };
+    if (percentage >= 10) return { label: tString('fair'), color: 'default' as const };
+    return { label: tString('low'), color: 'danger' as const };
   };
 
   const tipQuality = getTipQuality(tipPercentage);
@@ -121,7 +130,7 @@ export default function TipCalculator({
       <CardHeader>
         <div className="flex items-center gap-2">
           <DollarSign className="w-5 h-5" />
-          <h3 className="text-lg font-semibold">Tip Calculator</h3>
+          <h3 className="text-lg font-semibold">{tString('title')}</h3>
           <Chip 
             size="sm" 
             color={tipQuality.color}
@@ -135,31 +144,31 @@ export default function TipCalculator({
         {/* Bill Breakdown */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>Subtotal:</span>
+            <span>{tString('subtotal')}:</span>
             <span>{formatCurrency(subtotal)}</span>
           </div>
           {taxAmount > 0 && (
             <div className="flex justify-between text-sm">
-              <span>Tax:</span>
+              <span>{tString('tax')}:</span>
               <span>{formatCurrency(taxAmount)}</span>
             </div>
           )}
           {serviceFeeAmount > 0 && (
             <div className="flex justify-between text-sm">
-              <span>Service Fee:</span>
+              <span>{tString('serviceFee')}:</span>
               <span>{formatCurrency(serviceFeeAmount)}</span>
             </div>
           )}
           <Divider />
           <div className="flex justify-between font-semibold">
-            <span>Bill Total:</span>
+            <span>{tString('billTotal')}:</span>
             <span>{formatCurrency(baseAmount)}</span>
           </div>
         </div>
 
         {/* Preset Tip Percentages */}
         <div className="space-y-3">
-          <p className="text-sm font-medium">Quick Tip Options</p>
+          <p className="text-sm font-medium">{tString('quickTipOptions')}</p>
           <div className="grid grid-cols-4 gap-2">
             {[15, 18, 20, 25].map((percentage) => (
               <Button
@@ -179,7 +188,7 @@ export default function TipCalculator({
         {/* Tip Slider */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium">Tip Percentage</p>
+            <p className="text-sm font-medium">{tString('tipPercentage')}</p>
             <span className="text-sm text-default-500">{tipPercentage.toFixed(1)}%</span>
           </div>
           <Slider
@@ -198,7 +207,7 @@ export default function TipCalculator({
         {/* Custom Input Options */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <p className="text-sm font-medium">Custom %</p>
+            <p className="text-sm font-medium">{tString('customPercent')}</p>
             <Input
               type="number"
               size="sm"
@@ -213,7 +222,7 @@ export default function TipCalculator({
             />
           </div>
           <div className="space-y-2">
-            <p className="text-sm font-medium">Custom Amount</p>
+            <p className="text-sm font-medium">{tString('customAmount')}</p>
             <Input
               type="number"
               size="sm"
@@ -233,14 +242,14 @@ export default function TipCalculator({
         {/* Tip Summary */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="font-medium">Tip Amount:</span>
+            <span className="font-medium">{tString('tipAmount')}:</span>
             <span className="text-lg font-bold text-primary">
               {formatCurrency(tipAmount)}
             </span>
           </div>
           
           <div className="flex justify-between items-center">
-            <span className="font-medium">Total with Tip:</span>
+            <span className="font-medium">{tString('totalWithTip')}:</span>
             <span className="text-xl font-bold">
               {formatCurrency(totalWithTip)}
             </span>
@@ -250,13 +259,13 @@ export default function TipCalculator({
             <>
               <Divider />
               <div className="space-y-2 bg-default-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-center">Per Person ({numPeople} people)</p>
+                <p className="text-sm font-medium text-center">{tString('perPerson')} ({numPeople} {tString('people')})</p>
                 <div className="flex justify-between text-sm">
-                  <span>Tip per person:</span>
+                  <span>{tString('tipPerPerson')}:</span>
                   <span className="font-semibold">{formatCurrency(tipPerPerson)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-medium">Total per person:</span>
+                  <span className="font-medium">{tString('totalPerPerson')}:</span>
                   <span className="text-lg font-bold text-primary">
                     {formatCurrency(perPersonAmount)}
                   </span>
@@ -280,7 +289,7 @@ export default function TipCalculator({
             }}
             disabled={disabled}
           >
-            No Tip
+            {tString('noTip')}
           </Button>
         </div>
       </CardBody>

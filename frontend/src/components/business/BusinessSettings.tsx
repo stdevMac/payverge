@@ -968,13 +968,13 @@ function PaymentSettingsTab({ profile, onProfileChange, handleInputChange }: {
               <div className="flex justify-between items-center">
                 <span className="text-default-600">{tString('payment.taxInclusive')}:</span>
                 <Chip size="sm" color={profile.tax_inclusive ? "success" : "default"} variant="flat">
-                  {profile.tax_inclusive ? tString('common.yes') : tString('common.no')}
+                  {profile.tax_inclusive ? getTranslation('common.yes', currentLocale) : getTranslation('common.no', currentLocale)}
                 </Chip>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-default-600">{tString('payment.serviceInclusive')}:</span>
                 <Chip size="sm" color={profile.service_inclusive ? "success" : "default"} variant="flat">
-                  {profile.service_inclusive ? tString('common.yes') : tString('common.no')}
+                  {profile.service_inclusive ? getTranslation('common.yes', currentLocale) : getTranslation('common.no', currentLocale)}
                 </Chip>
               </div>
             </div>

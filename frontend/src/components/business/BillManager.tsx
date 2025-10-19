@@ -30,7 +30,7 @@ import { BillCreator } from './BillCreator';
 import { getOrdersByBillId, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
 import AlternativePaymentManager from './AlternativePaymentManager';
 import PaymentProcessor from '../payment/PaymentProcessor';
-import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
+import BillSplittingFlow from '../splitting/BillSplittingFlow';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BillManagerProps {
@@ -42,7 +42,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   
   // Translation helper
   const tString = (key: string): string => {
-    const fullKey = `businessDashboard.dashboard.billManager.${key}`;
+    const fullKey = `billManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
   };
@@ -348,14 +348,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     return (
       <Table aria-label="Bills table">
         <TableHeader>
-          <TableColumn>{tString('table.columns.billNumber')}</TableColumn>
-          <TableColumn>{tString('table.columns.table')}</TableColumn>
-          <TableColumn>{tString('table.columns.items')}</TableColumn>
-          <TableColumn>{tString('table.columns.total')}</TableColumn>
-          <TableColumn>{tString('table.columns.status')}</TableColumn>
-          <TableColumn>{tString('table.columns.kitchen')}</TableColumn>
-          <TableColumn>{tString('table.columns.created')}</TableColumn>
-          <TableColumn>{tString('table.columns.actions')}</TableColumn>
+          <TableColumn>{tString('tableColumns.billNumber')}</TableColumn>
+          <TableColumn>{tString('tableColumns.table')}</TableColumn>
+          <TableColumn>{tString('tableColumns.items')}</TableColumn>
+          <TableColumn>{tString('tableColumns.total')}</TableColumn>
+          <TableColumn>{tString('tableColumns.status')}</TableColumn>
+          <TableColumn>{tString('tableColumns.kitchen')}</TableColumn>
+          <TableColumn>{tString('tableColumns.created')}</TableColumn>
+          <TableColumn>{tString('tableColumns.actions')}</TableColumn>
         </TableHeader>
         <TableBody>
           {billsList.map((bill) => (
@@ -366,12 +366,12 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
               <TableCell>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-default-400" />
-                  <span>Table {bill.table_id}</span>
+                  <span>{tString('table')} {bill.table_id}</span>
                 </div>
               </TableCell>
               <TableCell>
                 <span className="text-sm">
-                  {parseBillItems(bill.items).length} items
+                  {parseBillItems(bill.items).length} {tString('items')}
                 </span>
               </TableCell>
               <TableCell>
@@ -417,7 +417,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     startContent={<Eye className="w-3 h-3" />}
                     onPress={() => handleViewBill(bill.id)}
                   >
-                    View
+                    {tString('view')}
                   </Button>
                   {bill.status === 'open' && (
                     <>
@@ -428,7 +428,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                         isLoading={actionLoading === bill.id}
                         onPress={() => handleCloseBill(bill.id)}
                       >
-                        Close
+                        {tString('close')}
                       </Button>
                     </>
                   )}
@@ -453,7 +453,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-warning" />
-              <h3 className="text-lg font-semibold text-warning">Pending Orders - Require Approval</h3>
+              <h3 className="text-lg font-semibold text-warning">{tString('pendingOrdersTitle')}</h3>
             </div>
           </CardHeader>
           <CardBody>
@@ -473,9 +473,9 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h4 className="font-semibold">Order #{order.order_number}</h4>
-                          <p className="text-sm text-default-500">Bill #{order.billId}</p>
+                          <p className="text-sm text-default-500">{tString('billNumber')} #{order.billId}</p>
                         </div>
-                        <Chip color="warning" size="sm">Pending</Chip>
+                        <Chip color="warning" size="sm">{tString('pending')}</Chip>
                       </div>
                       <div className="space-y-1 mb-3">
                         {parseOrderItems(order.items).slice(0, 3).map((item, index) => (
@@ -485,7 +485,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                         ))}
                         {parseOrderItems(order.items).length > 3 && (
                           <div className="text-xs text-default-400">
-                            +{parseOrderItems(order.items).length - 3} more items
+                            +{parseOrderItems(order.items).length - 3} {tString('moreItems')}
                           </div>
                         )}
                       </div>
@@ -502,7 +502,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                           onPress={() => handleApproveOrder(order.id)}
                           isLoading={actionLoading === order.id}
                         >
-                          Approve
+                          {tString('approve')}
                         </Button>
                         <Button
                           size="sm"
@@ -512,7 +512,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                           onPress={() => handleRejectOrder(order.id)}
                           isLoading={actionLoading === order.id}
                         >
-                          Reject
+                          {tString('reject')}
                         </Button>
                       </div>
                     </CardBody>
@@ -528,7 +528,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
         <CardHeader className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
-            <h2 className="text-xl font-semibold">{tString('billManager.title')}</h2>
+            <h2 className="text-xl font-semibold">{tString('title')}</h2>
           </div>
           <Button
             color="primary"
@@ -573,7 +573,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     />
                   </div>
                   <Button variant="light" size="sm" onPress={resetActiveFilters}>
-                    {tString('buttons.reset')}
+                    {tString('reset')}
                   </Button>
                 </div>
                 {renderBillsTable(activeBills, true)}
@@ -597,9 +597,9 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     className="w-full md:w-[160px]"
                     aria-label="Filter by status"
                   >
-                    <SelectItem key="all">All statuses</SelectItem>
-                    <SelectItem key="paid">Paid</SelectItem>
-                    <SelectItem key="closed">Closed</SelectItem>
+                    <SelectItem key="all">{tString('allStatuses')}</SelectItem>
+                    <SelectItem key="paid">{tString('paid')}</SelectItem>
+                    <SelectItem key="closed">{tString('closed')}</SelectItem>
                   </Select>
                   <div className="flex items-center gap-2">
                     <input
@@ -619,7 +619,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                     />
                   </div>
                   <Button variant="light" size="sm" onPress={resetHistoryFilters}>
-                    Reset
+                    {tString('reset')}
                   </Button>
                 </div>
                 {renderBillsTable(historyBills, false)}
@@ -640,7 +640,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
           <ModalHeader>
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5" />
-              Bill Details - {selectedBill?.bill.bill_number}
+              {tString('billDetails')} - {selectedBill?.bill.bill_number}
             </div>
           </ModalHeader>
           <ModalBody>
@@ -649,20 +649,20 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 {/* Bill Info */}
                 <Card>
                   <CardHeader>
-                    <h3 className="text-lg font-semibold">Bill Information</h3>
+                    <h3 className="text-lg font-semibold">{tString('billInformation')}</h3>
                   </CardHeader>
                   <CardBody>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-default-500">Bill Number</p>
+                        <p className="text-sm text-default-500">{tString('tableColumns.billNumber')}</p>
                         <p className="font-mono">{selectedBill.bill.bill_number}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-default-500">Table</p>
-                        <p>Table {selectedBill.bill.table_id}</p>
+                        <p className="text-sm text-default-500">{tString('table')}</p>
+                        <p>{tString('table')} {selectedBill.bill.table_id}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-default-500">Status</p>
+                        <p className="text-sm text-default-500">{tString('tableColumns.status')}</p>
                         <Chip
                           color={getStatusColor(selectedBill.bill.status)}
                           variant="flat"
@@ -672,14 +672,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                         </Chip>
                       </div>
                       <div>
-                        <p className="text-sm text-default-500">Created</p>
+                        <p className="text-sm text-default-500">{tString('tableColumns.created')}</p>
                         <p>{formatDate(selectedBill.bill.created_at)}</p>
                       </div>
                     </div>
                     
                     {selectedBill.bill.notes && (
                       <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <p className="text-sm font-medium text-blue-700 mb-2">📝 Order Notes:</p>
+                        <p className="text-sm font-medium text-blue-700 mb-2">📝 {tString('orderNotes')}:</p>
                         <p className="text-blue-600 whitespace-pre-wrap">{selectedBill.bill.notes}</p>
                       </div>
                     )}
@@ -689,21 +689,21 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 {/* Items */}
                 <Card>
                   <CardHeader>
-                    <h3 className="text-lg font-semibold">Items ({selectedBill.items?.length || 0})</h3>
+                    <h3 className="text-lg font-semibold">{tString('tableColumns.items')} ({selectedBill.items?.length || 0})</h3>
                   </CardHeader>
                   <CardBody>
                     {!selectedBill.items || selectedBill.items.length === 0 ? (
                       <div className="text-center py-8">
                         <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
-                        <h3 className="text-lg font-medium text-default-500 mb-2">No Items</h3>
-                        <p className="text-default-400">This bill doesn&apos;t have any items yet.</p>
+                        <h3 className="text-lg font-medium text-default-500 mb-2">{tString('noItems')}</h3>
+                        <p className="text-default-400">{tString('noItemsDescription')}</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         {selectedBill.items.map((item, index) => (
                           <div key={index} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
                             <div>
-                              <p className="font-medium">{item.name || 'Unknown Item'}</p>
+                              <p className="font-medium">{item.name || tString('unknownItem')}</p>
                               <p className="text-sm text-default-500">
                                 {item.quantity || 1} × {formatCurrency(item.price || 0)}
                               </p>
@@ -719,36 +719,36 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 {/* Totals */}
                 <Card>
                   <CardHeader>
-                    <h3 className="text-lg font-semibold">Bill Summary</h3>
+                    <h3 className="text-lg font-semibold">{tString('billSummary')}</h3>
                   </CardHeader>
                   <CardBody>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>Subtotal:</span>
+                        <span>{tString('subtotal')}:</span>
                         <span>{formatCurrency(selectedBill.bill.subtotal)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Tax:</span>
+                        <span>{tString('tax')}:</span>
                         <span>{formatCurrency(selectedBill.bill.tax_amount)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Service Fee:</span>
+                        <span>{tString('serviceFee')}:</span>
                         <span>{formatCurrency(selectedBill.bill.service_fee_amount)}</span>
                       </div>
                       <Divider />
                       <div className="flex justify-between font-semibold text-lg">
-                        <span>Total:</span>
+                        <span>{tString('total')}:</span>
                         <span>{formatCurrency(selectedBill.bill.total_amount)}</span>
                       </div>
                       {selectedBill.bill.paid_amount > 0 && (
                         <>
                           <div className="flex justify-between text-success">
-                            <span>Paid:</span>
+                            <span>{tString('paid')}:</span>
                             <span>{formatCurrency(selectedBill.bill.paid_amount)}</span>
                           </div>
                           {selectedBill.bill.tip_amount > 0 && (
                             <div className="flex justify-between text-success">
-                              <span>Tips:</span>
+                              <span>{tString('tips')}:</span>
                               <span>{formatCurrency(selectedBill.bill.tip_amount)}</span>
                             </div>
                           )}
@@ -757,14 +757,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                             if (remaining > 0) {
                               return (
                                 <div className="flex justify-between text-warning">
-                                  <span>Remaining:</span>
+                                  <span>{tString('remaining')}:</span>
                                   <span>{formatCurrency(remaining)}</span>
                                 </div>
                               );
                             } else if (remaining < 0) {
                               return (
                                 <div className="flex justify-between text-success">
-                                  <span>Overpaid:</span>
+                                  <span>{tString('overpaid')}:</span>
                                   <span>{formatCurrency(Math.abs(remaining))}</span>
                                 </div>
                               );
@@ -781,9 +781,9 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                 {selectedBill.bill.status === 'open' && (
                   <Card>
                     <CardHeader>
-                      <h3 className="text-lg font-semibold">Payment Options</h3>
+                      <h3 className="text-lg font-semibold">{tString('paymentOptions')}</h3>
                       <p className="text-sm text-default-500">
-                        Process payments for customers at counter or table
+{tString('paymentOptionsDescription')}
                       </p>
                     </CardHeader>
                     <CardBody>
@@ -796,12 +796,12 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                           className="w-full"
                           startContent={<Wallet className="w-5 h-5" />}
                         >
-                          Pay with Crypto (USDC)
+                          {tString('payWithCrypto')}
                         </Button>
 
                         {/* Pay with Cash/Card */}
                         <div className="bg-gray-50 rounded-lg p-4">
-                          <h4 className="font-medium mb-3">Cash/Card Payments</h4>
+                          <h4 className="font-medium mb-3">{tString('cashCardPayments')}</h4>
                           <AlternativePaymentManager
                             billId={selectedBill.bill.id.toString()}
                             billTotal={selectedBill.bill.total_amount}
@@ -824,14 +824,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
                           className="w-full"
                           startContent={<Users className="w-5 h-5" />}
                         >
-                          Split Bill
+                          {tString('splitBill')}
                         </Button>
                       </div>
 
                       {/* Payment Summary */}
                       <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-blue-700 font-medium">Remaining Amount:</span>
+                          <span className="text-blue-700 font-medium">{tString('remainingAmount')}:</span>
                           <span className="font-semibold text-blue-900">
                             ${(selectedBill.bill.total_amount - selectedBill.bill.paid_amount).toFixed(2)}
                           </span>

@@ -131,7 +131,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
       setSplitOptions(options);
     } catch (err) {
       console.error('Error loading split options:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load split options');
+      setError(err instanceof Error ? err.message : tString('failedToLoadSplitOptions'));
     } finally {
       setLoading(false);
     }
@@ -140,7 +140,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
   const addPerson = () => {
     const newPerson: Person = {
       id: `person_${Date.now()}`,
-      name: `Person ${people.length + 1}`,
+      name: `${tString('person')} ${people.length + 1}`,
       amount: 0,
       items: []
     };
@@ -205,7 +205,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
     // Validate people have names
     const emptyNames = people.filter(p => !p.name.trim());
     if (emptyNames.length > 0) {
-      errors.push(`${emptyNames.length} person(s) need names`);
+      errors.push(`${emptyNames.length} ${tString('personNeedNames')}`);
     }
 
     // Validate based on split method
@@ -215,16 +215,16 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
       
       if (totalMismatch > 0.01) { // Allow for small rounding differences
         if (totalAssigned > bill.totalAmount) {
-          errors.push(`Total assigned ($${totalAssigned.toFixed(2)}) exceeds bill total ($${bill.totalAmount.toFixed(2)})`);
+          errors.push(`${tString('totalAssignedExceeds')} ($${totalAssigned.toFixed(2)}) ${tString('billTotal')} ($${bill.totalAmount.toFixed(2)})`);
         } else {
-          warnings.push(`Total assigned ($${totalAssigned.toFixed(2)}) is less than bill total ($${bill.totalAmount.toFixed(2)})`);
+          warnings.push(`${tString('totalAssignedLess')} ($${totalAssigned.toFixed(2)}) ${tString('billTotal')} ($${bill.totalAmount.toFixed(2)})`);
         }
       }
 
       // Check for people with no amount
       const zeroAmounts = people.filter(p => !p.amount || p.amount <= 0);
       if (zeroAmounts.length > 0) {
-        warnings.push(`${zeroAmounts.length} person(s) have no amount assigned`);
+        warnings.push(`${zeroAmounts.length} ${tString('personNoAmountAssigned')}`);
       }
     }
 
@@ -238,13 +238,13 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
       
       const unassignedItems = allItemIds.filter((id: string) => !assignedItemIds.has(id));
       if (unassignedItems.length > 0) {
-        warnings.push(`${unassignedItems.length} item(s) not assigned to anyone`);
+        warnings.push(`${unassignedItems.length} ${tString('itemsNotAssigned')}`);
       }
 
       // Check for people with no items
       const noItems = people.filter(p => !p.items || p.items.length === 0);
       if (noItems.length > 0) {
-        warnings.push(`${noItems.length} person(s) have no items assigned`);
+        warnings.push(`${noItems.length} ${tString('personNoItemsAssigned')}`);
       }
 
       // Check for duplicate item assignments
@@ -460,7 +460,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
         <ModalHeader className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             {currentStage !== 'method' && (
-              <Tooltip content="Go back">
+              <Tooltip content={tString('goBack')}>
                 <Button
                   isIconOnly
                   size="sm"
@@ -474,13 +474,13 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-semibold">
-                  {currentStage === 'method' && 'Split Bill'}
-                  {currentStage === 'configure' && `Configure ${selectedMethod === 'equal' ? 'Equal' : selectedMethod === 'custom' ? 'Custom' : 'Item'} Split`}
-                  {currentStage === 'results' && 'Split Results'}
+                  {currentStage === 'method' && tString('splitBill')}
+                  {currentStage === 'configure' && `${tString('configure')} ${selectedMethod === 'equal' ? tString('equal') : selectedMethod === 'custom' ? tString('custom') : tString('item')} ${tString('split')}`}
+                  {currentStage === 'results' && tString('splitResults')}
                 </h2>
                 {currentStage === 'configure' && (
                   <Chip size="sm" variant="flat" color={validation.isValid ? 'success' : validation.errors.length > 0 ? 'danger' : 'warning'}>
-                    {validation.isValid ? 'Valid' : validation.errors.length > 0 ? 'Errors' : 'Warnings'}
+                    {validation.isValid ? tString('valid') : validation.errors.length > 0 ? tString('errors') : tString('warnings')}
                   </Chip>
                 )}
               </div>
@@ -501,13 +501,13 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
           {/* Stage Indicators */}
           <div className="flex justify-between text-xs text-gray-500">
             <span className={currentStage === 'method' ? 'text-primary font-medium' : ''}>
-              1. Method
+              1. {tString('method')}
             </span>
             <span className={currentStage === 'configure' ? 'text-primary font-medium' : ''}>
-              2. Configure
+              2. {tString('configure')}
             </span>
             <span className={currentStage === 'results' ? 'text-primary font-medium' : ''}>
-              3. Results
+              3. {tString('results')}
             </span>
           </div>
         </ModalHeader>
@@ -516,13 +516,13 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
           {loading && (
             <div className="flex justify-center items-center py-8">
               <Spinner size="lg" />
-              <span className="ml-2">Loading split options...</span>
+              <span className="ml-2">{tString('loadingSplitOptions')}</span>
             </div>
           )}
           
           {error && (
             <div className="text-center text-red-600 py-8">
-              <p>Error: {error}</p>
+              <p>{tString('error')}: {error}</p>
             </div>
           )}
           
@@ -533,22 +533,22 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                 <div className="space-y-6">
                   {/* Bill Summary */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Bill Summary</h4>
+                    <h4 className="font-medium text-gray-900 mb-2">{tString('billSummary')}</h4>
                     <div className="space-y-1 text-sm">
                       <div className="flex justify-between">
-                        <span>Subtotal:</span>
+                        <span>{tString('subtotal')}:</span>
                         <span>${splitOptions.bill?.subtotal?.toFixed(2) || '0.00'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Tax:</span>
+                        <span>{tString('tax')}:</span>
                         <span>${splitOptions.bill?.tax_amount?.toFixed(2) || '0.00'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Service Fee:</span>
+                        <span>{tString('serviceFee')}:</span>
                         <span>${splitOptions.bill?.service_fee_amount?.toFixed(2) || '0.00'}</span>
                       </div>
                       <div className="flex justify-between font-medium text-lg border-t pt-1">
-                        <span>Total:</span>
+                        <span>{tString('total')}:</span>
                         <span>${splitOptions.bill?.total_amount?.toFixed(2) || '0.00'}</span>
                       </div>
                     </div>
@@ -556,7 +556,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
 
                   {/* Split Methods */}
                   <div className="space-y-4">
-                    <h4 className="font-medium text-gray-900">Choose Split Method</h4>
+                    <h4 className="font-medium text-gray-900">{tString('chooseSplitMethod')}</h4>
                     
                     {splitOptions.split_options?.equal?.available && (
                       <button 
@@ -565,8 +565,8 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h5 className="font-medium text-gray-900">Split Equally</h5>
-                            <p className="text-sm text-gray-600">Divide the bill equally among all people</p>
+                            <h5 className="font-medium text-gray-900">{tString('splitEqually')}</h5>
+                            <p className="text-sm text-gray-600">{tString('splitEquallyDescription')}</p>
                           </div>
                           <div className="text-blue-600">→</div>
                         </div>
@@ -580,8 +580,8 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h5 className="font-medium text-gray-900">Custom Amounts</h5>
-                            <p className="text-sm text-gray-600">Specify exact amounts or percentages for each person</p>
+                            <h5 className="font-medium text-gray-900">{tString('customAmounts')}</h5>
+                            <p className="text-sm text-gray-600">{tString('customAmountsDescription')}</p>
                           </div>
                           <div className="text-blue-600">→</div>
                         </div>
@@ -595,8 +595,8 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h5 className="font-medium text-gray-900">Split by Items</h5>
-                            <p className="text-sm text-gray-600">Assign specific items to each person ({splitOptions.items?.length || 0} items)</p>
+                            <h5 className="font-medium text-gray-900">{tString('splitByItems')}</h5>
+                            <p className="text-sm text-gray-600">{tString('splitByItemsDescription')} ({splitOptions.items?.length || 0} {tString('items')})</p>
                           </div>
                           <div className="text-blue-600">→</div>
                         </div>
@@ -684,10 +684,10 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-gray-900 flex items-center gap-2">
                         <Users className="w-4 h-4" />
-                        People ({people.length})
+                        {tString('people')} ({people.length})
                       </h4>
                       <Button size="sm" color="primary" variant="light" onPress={addPerson} startContent={<Plus className="w-4 h-4" />}>
-                        Add Person
+                        {tString('addPerson')}
                       </Button>
                     </div>
 
@@ -697,7 +697,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                           <div className="flex items-center gap-3">
                             <Input
                               size="sm"
-                              placeholder="Person name"
+                              placeholder={tString('personNamePlaceholder')}
                               value={person.name}
                               onChange={(e) => updatePersonName(person.id, e.target.value)}
                               className="flex-1"
@@ -710,7 +710,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                                 variant="light"
                                 onPress={() => removePerson(person.id)}
                               >
-                                Remove
+                                {tString('remove')}
                               </Button>
                             )}
                           </div>
@@ -719,7 +719,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                             <div className="space-y-3">
                               {/* Percentage Presets */}
                               <div className="flex gap-2 flex-wrap">
-                                <span className="text-sm text-gray-600 self-center">Quick:</span>
+                                <span className="text-sm text-gray-600 self-center">{tString('quick')}:</span>
                                 {[10, 25, 33, 50, 75].map(percentage => (
                                   <Button
                                     key={percentage}
@@ -738,7 +738,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                                 <Input
                                   size="sm"
                                   type="number"
-                                  placeholder="Percentage"
+                                  placeholder={tString('percentage')}
                                   value={person.percentage?.toString() || ''}
                                   onChange={(e) => updatePersonPercentage(person.id, parseFloat(e.target.value) || 0)}
                                   endContent="%"
@@ -747,7 +747,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                                 <Input
                                   size="sm"
                                   type="number"
-                                  placeholder="Amount"
+                                  placeholder={tString('amount')}
                                   value={person.amount?.toFixed(2) || ''}
                                   onChange={(e) => updatePersonAmount(person.id, parseFloat(e.target.value) || 0)}
                                   startContent="$"
@@ -761,7 +761,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
                                 <h6 className="text-sm font-medium text-gray-700">
-                                  Select Items ({person.items?.length || 0} selected)
+                                  {tString('selectItems')} ({person.items?.length || 0} {tString('selected')})
                                   {person.items && person.items.length > 0 && (
                                     <span className="ml-2 text-green-600 font-medium">
                                       ${getPersonItemsTotal(person).toFixed(2)}
@@ -770,26 +770,26 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
                                 </h6>
                                 <div className="flex gap-1">
                                   {getUnassignedItems().length > 0 && (
-                                    <Tooltip content="Assign all remaining items">
+                                    <Tooltip content={tString('assignAllRemainingItems')}>
                                       <Button
                                         size="sm"
                                         variant="light"
                                         color="primary"
                                         onPress={() => assignAllRemainingItems(person.id)}
                                       >
-                                        All
+                                        {tString('all')}
                                       </Button>
                                     </Tooltip>
                                   )}
                                   {person.items && person.items.length > 0 && (
-                                    <Tooltip content="Clear all items">
+                                    <Tooltip content={tString('clearAllItems')}>
                                       <Button
                                         size="sm"
                                         variant="light"
                                         color="danger"
                                         onPress={() => clearPersonItems(person.id)}
                                       >
-                                        Clear
+                                        {tString('clear')}
                                       </Button>
                                     </Tooltip>
                                   )}
@@ -947,7 +947,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
             variant="light"
             onPress={onClose}
           >
-            Close
+            {tString('close')}
           </Button>
           {currentStage === 'results' && (
             <Button
@@ -955,7 +955,7 @@ const BillSplittingFlow: React.FC<BillSplittingFlowProps> = ({
               variant="light"
               onPress={goBackToConfigure}
             >
-              Modify Split
+              {tString('modifySplit')}
             </Button>
           )}
         </ModalFooter>
