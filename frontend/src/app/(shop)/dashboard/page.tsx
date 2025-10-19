@@ -12,7 +12,6 @@ import { Copy, Check } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
-import SimpleLanguageSwitcher from "@/components/SimpleLanguageSwitcher";
 
 export default function Dashboard() {
   const { isConnected } = useAccount();
@@ -30,17 +29,6 @@ export default function Dashboard() {
   const tString = (key: string): string => {
     const fullKey = `dashboard.${key}`;
     const result = getTranslation(fullKey, currentLocale);
-    
-    // Test direct import
-    try {
-      const enMessages = require('@/i18n/messages/en.json');
-    } catch (e) {
-      console.error('[Dashboard] Direct import failed:', e);
-    }
-    
-    // Test direct translation
-    const testResult = getTranslation('dashboard.title', 'en');
-    
     return Array.isArray(result) ? result[0] || key : result as string;
   };
   
@@ -312,9 +300,6 @@ export default function Dashboard() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-16">
         {/* Header */}
         <section className="mb-16">
-          <div className="flex justify-end mb-8">
-            <SimpleLanguageSwitcher />
-          </div>
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full text-sm text-gray-600 mb-6 hover:bg-gray-100 transition-colors duration-200">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
