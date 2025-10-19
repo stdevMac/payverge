@@ -194,6 +194,121 @@
             }
         }
     },
+    "businessDashboard": {
+      "title": "Business Dashboard",
+      "loading": "Loading business dashboard...",
+      "errors": {
+        "signIn": "Please sign in to continue.",
+        "invalidToken": "Invalid session token.",
+        "authFailed": "Authentication failed.",
+        "accessDenied": "Access Denied"
+      },
+      "buttons": {
+        "signIn": "Sign In",
+        "goToDashboard": "Go to Dashboard",
+        "learnMore": "Learn More",
+        "claimEarnings": "Claim Earnings",
+        "cancel": "Cancel",
+        "close": "Close"
+      },
+      "welcome": {
+        "badge": "Business Setup Complete",
+        "title": "Welcome to",
+        "subtitle": "is now ready to accept payments!",
+        "features": {
+          "menuBuilder": {
+            "title": "Menu Builder",
+            "description": "Create digital menus with categories and items"
+          },
+          "billManagement": {
+            "title": "Bill Management", 
+            "description": "Generate bills and track payments"
+          },
+          "analytics": {
+            "title": "Analytics",
+            "description": "Track sales and customer insights"
+          },
+          "staffManagement": {
+            "title": "Staff Management",
+            "description": "Invite team members and manage permissions"
+          }
+        },
+        "help": {
+          "text": "Need help getting started? Check out our",
+          "documentation": "documentation",
+          "or": "or",
+          "contactSupport": "contact support"
+        }
+      },
+      "overview": {
+        "activeBills": "Active Bills",
+        "tables": "Tables",
+        "todaysRevenue": "Today's Revenue",
+        "businessInformation": "Business Information",
+        "settlementAddress": "Settlement Address",
+        "tippingAddress": "Tipping Address",
+        "taxRate": "Tax Rate",
+        "serviceFee": "Service Fee",
+        "notSet": "Not set",
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      },
+      "blockchain": {
+        "title": "Blockchain",
+        "subtitle": "Manage your on-chain business settings and claim earnings",
+        "claimableEarnings": {
+          "title": "Claimable Earnings",
+          "subtitle": "Available to claim from payments and tips",
+          "paymentEarnings": "Payment Earnings",
+          "tipEarnings": "Tip Earnings",
+          "totalAvailable": "Total Available:",
+          "transactionHash": "Transaction Hash:"
+        },
+        "claiming": {
+          "preparing": "Preparing transaction...",
+          "confirmWallet": "Please confirm the transaction in your wallet",
+          "submitted": "Transaction submitted! Waiting for blockchain confirmation...",
+          "recording": "Withdrawal recorded! Waiting for confirmation...",
+          "confirmed": "Transaction confirmed! Updating balances...",
+          "success": "Earnings claimed successfully!",
+          "viewTransaction": "View Transaction",
+          "processingTitle": "Processing Transaction",
+          "dontClose": "Please don't close this page",
+          "blockchainProcessing": "Your transaction is being processed on the blockchain"
+        },
+        "addressManagement": {
+          "title": "Business Addresses",
+          "paymentAddress": "Payment Address",
+          "tippingAddress": "Tipping Address",
+          "currentAddress": "Current Address:",
+          "newAddress": "New Address:",
+          "updateAddress": "Update Address",
+          "update": "Update",
+          "save": "Save",
+          "edit": "Edit"
+        },
+        "warnings": {
+          "testnet": "You are on testnet. Transactions are for testing only.",
+          "noEarnings": "No earnings available to claim.",
+          "connectWallet": "Connect your wallet to manage blockchain settings."
+        }
+      },
+      "tabs": {
+        "overview": "Overview",
+        "analytics": "Analytics",
+        "menu": "Menu",
+        "tables": "Tables", 
+        "bills": "Bills",
+        "staff": "Staff",
+        "kitchen": "Kitchen",
+        "counter": "Counter",
+        "settings": "Settings",
+        "subscription": "Subscription"
+      },
+      "navigation": "Navigation"
+    },
     "businessRegister": {
         "header": {
             "badge": "Business Registration",

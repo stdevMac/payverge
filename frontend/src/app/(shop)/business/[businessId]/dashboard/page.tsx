@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import { Card, CardBody, CardHeader, Button, Tabs, Tab, Spinner } from '@nextui-org/react';
 import { Building2, Menu, Users, Receipt, Settings, BarChart3, AlertCircle, X, UserCheck, ChefHat, Coffee, Check, Wallet, DollarSign, Edit3, ExternalLink, CreditCard } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -43,6 +44,22 @@ interface BusinessDashboardProps {
 }
 
 export default function BusinessDashboardPage({ params }: BusinessDashboardProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
@@ -143,17 +160,17 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
     }
 
     setClaimingEarnings(true);
-    setClaimingStep('Preparing transaction...');
+    setClaimingStep(tString('blockchain.claiming.preparing'));
     
     try {
       
       // Step 1: Initiate transaction
-      setClaimingStep('Please confirm the transaction in your wallet');
+      setClaimingStep(tString('blockchain.claiming.confirmWallet'));
       const hash = await claimEarnings();
       setTransactionHash(hash);
       
       // Step 2: Transaction submitted
-      setClaimingStep('Transaction submitted! Waiting for blockchain confirmation...');
+      setClaimingStep(tString('blockchain.claiming.submitted'));
       
       // Step 3: Create withdrawal record in backend
       try {
@@ -170,7 +187,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
           blockchain_network: 'base-sepolia' // or get from chain config
         });
         
-        setClaimingStep('Withdrawal recorded! Waiting for confirmation...');
+        setClaimingStep(tString('blockchain.claiming.recording'));
       } catch (backendError) {
         console.error('Failed to record withdrawal in backend:', backendError);
         // Continue anyway - blockchain transaction is what matters
@@ -181,13 +198,13 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       await new Promise(resolve => setTimeout(resolve, 5000));
       
       // Step 4: Transaction confirmed (in a real app, you'd wait for actual confirmation)
-      setClaimingStep('Transaction confirmed! Updating balances...');
+      setClaimingStep(tString('blockchain.claiming.confirmed'));
       
       // Refetch the claimable balance
       await refetchClaimableBalance();
       await refetchBusinessInfo();
       
-      setClaimingStep('Earnings claimed successfully!');
+      setClaimingStep(tString('blockchain.claiming.success'));
       
       // Show success for 2 seconds then close
       setTimeout(() => {
@@ -217,7 +234,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         
         if (!token || !isTokenValid(token)) {
           setTimeout(() => {
-            setError("Please sign in to continue.");
+            setError(tString('errors.signIn'));
             setAuthLoading(false);
           }, 1000);
           return;
@@ -227,7 +244,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         
         if (!tokenData.address) {
           setTimeout(() => {
-            setError("Invalid session token.");
+            setError(tString('errors.invalidToken'));
             setAuthLoading(false);
           }, 1000);
           return;
@@ -276,7 +293,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
         setAuthLoading(false);
       } catch (error) {
         setTimeout(() => {
-          setError("Authentication failed.");
+          setError(tString('errors.authFailed'));
           setAuthLoading(false);
         }, 1000);
       }
@@ -329,10 +346,10 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">{tString('errors.accessDenied')}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <Button color="primary" onClick={() => router.push('/auth/signin')}>
-            Sign In
+            {tString('buttons.signIn')}
           </Button>
         </div>
       </div>
@@ -345,7 +362,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Spinner size="lg" />
-          <p className="text-gray-600 mt-4">Loading business dashboard...</p>
+          <p className="text-gray-600 mt-4">{tString('loading')}</p>
         </div>
       </div>
     );
@@ -362,13 +379,13 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               <Check className="w-10 h-10 text-green-600" />
             </div>
             <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full mb-4">
-              <span className="text-green-600 font-medium text-sm">Business Setup Complete</span>
+              <span className="text-green-600 font-medium text-sm">{tString('welcome.badge')}</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
-              Welcome to <span className="font-medium">Payverge</span>
+              {tString('welcome.title')} <span className="font-medium">Payverge</span>
             </h1>
             <p className="text-xl text-gray-600 font-light tracking-wide">
-              <span className="font-medium text-gray-900">{business.name}</span> is now ready to accept payments!
+              <span className="font-medium text-gray-900">{business.name}</span> {tString('welcome.subtitle')}
             </p>
           </div>
 
@@ -377,23 +394,23 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
             {[
               {
                 icon: Menu,
-                title: "Menu Builder",
-                description: "Create digital menus with categories and items"
+                title: tString('welcome.features.menuBuilder.title'),
+                description: tString('welcome.features.menuBuilder.description')
               },
               {
                 icon: Receipt,
-                title: "Bill Management",
-                description: "Generate bills and track payments"
+                title: tString('welcome.features.billManagement.title'),
+                description: tString('welcome.features.billManagement.description')
               },
               {
                 icon: BarChart3,
-                title: "Analytics",
-                description: "Track sales and customer insights"
+                title: tString('welcome.features.analytics.title'),
+                description: tString('welcome.features.analytics.description')
               },
               {
                 icon: Users,
-                title: "Staff Management",
-                description: "Invite team members and manage permissions"
+                title: tString('welcome.features.staffManagement.title'),
+                description: tString('welcome.features.staffManagement.description')
               }
             ].map((feature, index) => {
               const Icon = feature.icon;
@@ -419,7 +436,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               onClick={() => setShowWelcome(false)}
               startContent={<Building2 className="w-5 h-5" />}
             >
-              Go to Dashboard
+              {tString('buttons.goToDashboard')}
             </Button>
             <Button
               size="lg"
@@ -429,20 +446,20 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               href="/how-it-works"
               target="_blank"
             >
-              Learn More
+              {tString('buttons.learnMore')}
             </Button>
           </div>
 
           {/* Help Section */}
           <div className="mt-12 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-500 font-light">
-              Need help getting started? Check out our{' '}
+              {tString('welcome.help.text')}{' '}
               <Link href="/how-it-works" className="text-gray-700 hover:text-gray-900 font-medium" target="_blank">
-                documentation
+                {tString('welcome.help.documentation')}
               </Link>
-              {' '}or{' '}
+              {' '}{tString('welcome.help.or')}{' '}
               <Link href="mailto:support@payverge.com" className="text-gray-700 hover:text-gray-900 font-medium">
-                contact support
+                {tString('welcome.help.contactSupport')}
               </Link>
             </p>
           </div>
@@ -462,7 +479,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 border border-blue-100">
                   <Receipt className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600" />
                 </div>
-                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Active Bills</h3>
+                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">{tString('overview.activeBills')}</h3>
                 <p className="text-2xl lg:text-3xl font-light text-blue-600 tracking-wide">
                   {analyticsLoading ? '...' : (salesData?.bill_count || 0)}
                 </p>
@@ -472,7 +489,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 border border-green-100">
                   <Users className="w-6 h-6 lg:w-8 lg:h-8 text-green-600" />
                 </div>
-                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Tables</h3>
+                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">{tString('overview.tables')}</h3>
                 <p className="text-2xl lg:text-3xl font-light text-green-600 tracking-wide">
                   {analyticsLoading ? '...' : tables.length}
                 </p>
@@ -482,7 +499,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 border border-orange-100">
                   <BarChart3 className="w-6 h-6 lg:w-8 lg:h-8 text-orange-600" />
                 </div>
-                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">Today&apos;s Revenue</h3>
+                <h3 className="text-base lg:text-lg font-light text-gray-900 tracking-wide mb-2">{tString('overview.todaysRevenue')}</h3>
                 <p className="text-2xl lg:text-3xl font-light text-orange-600 tracking-wide">
                   {analyticsLoading ? '...' : `$${(salesData?.total_revenue || 0).toFixed(2)}`}
                 </p>
@@ -491,26 +508,26 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
             {/* Business Info */}
             <div className="bg-white border border-gray-200 rounded-2xl p-6 lg:p-8 shadow-sm">
-              <h3 className="text-lg lg:text-xl font-light text-gray-900 tracking-wide mb-6 lg:mb-8">Business Information</h3>
+              <h3 className="text-lg lg:text-xl font-light text-gray-900 tracking-wide mb-6 lg:mb-8">{tString('overview.businessInformation')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">Settlement Address</h4>
+                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">{tString('overview.settlementAddress')}</h4>
                   <p className="font-mono text-xs lg:text-sm text-gray-600 break-all bg-gray-50 p-3 lg:p-4 rounded-xl border border-gray-100">
-                    {business?.settlement_address || 'Not set'}
+                    {business?.settlement_address || tString('overview.notSet')}
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">Tipping Address</h4>
+                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">{tString('overview.tippingAddress')}</h4>
                   <p className="font-mono text-xs lg:text-sm text-gray-600 break-all bg-gray-50 p-3 lg:p-4 rounded-xl border border-gray-100">
-                    {business?.tipping_address || 'Not set'}
+                    {business?.tipping_address || tString('overview.notSet')}
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">Tax Rate</h4>
+                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">{tString('overview.taxRate')}</h4>
                   <p className="text-gray-600 text-base lg:text-lg font-light">{business?.tax_rate || 0}%</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">Service Fee</h4>
+                  <h4 className="font-medium text-gray-900 mb-3 tracking-wide text-sm lg:text-base">{tString('overview.serviceFee')}</h4>
                   <p className="text-gray-600 text-base lg:text-lg font-light">{business?.service_fee_rate || 0}%</p>
                 </div>
               </div>
@@ -531,8 +548,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   <Wallet className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-medium text-gray-900">Blockchain Management</h3>
-                  <p className="text-gray-600">Manage your on-chain business settings and claim earnings</p>
+                  <h3 className="text-2xl font-medium text-gray-900">{tString('blockchain.title')}</h3>
+                  <p className="text-gray-600">{tString('blockchain.subtitle')}</p>
                 </div>
               </div>
 
@@ -576,8 +593,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                     <Wallet className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900">Claimable Earnings</h4>
-                    <p className="text-sm text-gray-600">Available to claim from payments and tips</p>
+                    <h4 className="text-lg font-medium text-gray-900">{tString('blockchain.claimableEarnings.title')}</h4>
+                    <p className="text-sm text-gray-600">{tString('blockchain.claimableEarnings.subtitle')}</p>
                   </div>
                 </div>
               </CardHeader>
@@ -588,7 +605,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                     <div className="bg-green-50 border border-green-100 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <DollarSign className="w-5 h-5 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">Payment Earnings</span>
+                        <span className="text-sm font-medium text-green-800">{tString('blockchain.claimableEarnings.paymentEarnings')}</span>
                       </div>
                       <div className="text-2xl font-medium text-green-600">
                         {claimableBalance && Array.isArray(claimableBalance) ? 
@@ -601,7 +618,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                     <div className="bg-orange-50 border border-orange-100 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <DollarSign className="w-5 h-5 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-800">Tip Earnings</span>
+                        <span className="text-sm font-medium text-orange-800">{tString('blockchain.claimableEarnings.tipEarnings')}</span>
                       </div>
                       <div className="text-2xl font-medium text-orange-600">
                         {claimableBalance && Array.isArray(claimableBalance) ? 
@@ -615,7 +632,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   {/* Total and Claim Button */}
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-lg font-medium text-gray-900">Total Available:</span>
+                      <span className="text-lg font-medium text-gray-900">{tString('blockchain.claimableEarnings.totalAvailable')}</span>
                       <span className="text-2xl font-medium text-blue-600">
                         {claimableBalance && Array.isArray(claimableBalance) ? 
                           `$${formatUsdcAmount((claimableBalance[0] || BigInt(0)) + (claimableBalance[1] || BigInt(0)))}` : 
@@ -642,14 +659,14 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       startContent={claimingEarnings ? <Spinner size="sm" /> : <Wallet className="w-5 h-5" />}
                     >
                       {(() => {
-                        if (claimingEarnings) return 'Claiming All Earnings...';
+                        if (claimingEarnings) return tString('blockchain.claiming.preparing');
                         
                         if (!claimableBalance || !Array.isArray(claimableBalance) || 
                             (claimableBalance[0] === BigInt(0) && claimableBalance[1] === BigInt(0))) {
-                          return 'Nothing to Claim';
+                          return tString('blockchain.warnings.noEarnings');
                         }
                         
-                        return 'Claim All Earnings';
+                        return tString('buttons.claimEarnings');
                       })()}
                     </Button>
                   </div>
@@ -670,14 +687,14 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                         <Spinner size="lg" color="primary" />
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        Processing Transaction
+                        {tString('blockchain.claiming.processingTitle')}
                       </h3>
                       <p className="text-gray-600 mb-4">
                         {claimingStep}
                       </p>
                       {transactionHash && (
                         <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                          <p className="text-xs text-gray-500 mb-1">Transaction Hash:</p>
+                          <p className="text-xs text-gray-500 mb-1">{tString('blockchain.claimableEarnings.transactionHash')}</p>
                           <p className="text-xs font-mono text-gray-700 break-all">
                             {transactionHash}
                           </p>
@@ -689,8 +706,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       <div className="flex items-center gap-2 text-yellow-800">
                         <AlertCircle className="w-5 h-5 flex-shrink-0" />
                         <div className="text-sm">
-                          <p className="font-medium">Please don&apos;t close this page</p>
-                          <p>Your transaction is being processed on the blockchain</p>
+                          <p className="font-medium">{tString('blockchain.claiming.dontClose')}</p>
+                          <p>{tString('blockchain.claiming.blockchainProcessing')}</p>
                         </div>
                       </div>
                     </div>
@@ -701,13 +718,13 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
 
             {/* Business Addresses */}
             <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-              <h3 className="text-xl font-medium text-gray-900 mb-6">Business Addresses</h3>
+              <h3 className="text-xl font-medium text-gray-900 mb-6">{tString('blockchain.addressManagement.title')}</h3>
               
               <div className="space-y-6">
                 {/* Payment Address */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Payment Address</h4>
+                    <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.paymentAddress')}</h4>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -717,7 +734,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       }}
                       startContent={<Edit3 className="w-4 h-4" />}
                     >
-                      Edit
+                      {tString('blockchain.addressManagement.edit')}
                     </Button>
                   </div>
                   
@@ -736,7 +753,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                           className="bg-blue-600 text-white hover:bg-blue-700"
                           onClick={handleUpdatePaymentAddress}
                         >
-                          Update
+                          {tString('blockchain.addressManagement.update')}
                         </Button>
                         <Button
                           size="sm"
@@ -746,7 +763,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                             setNewPaymentAddress('');
                           }}
                         >
-                          Cancel
+                          {tString('buttons.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -760,7 +777,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 {/* Tipping Address */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Tipping Address</h4>
+                    <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.tippingAddress')}</h4>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -770,7 +787,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                       }}
                       startContent={<Edit3 className="w-4 h-4" />}
                     >
-                      Edit
+                      {tString('blockchain.addressManagement.edit')}
                     </Button>
                   </div>
                   
@@ -789,7 +806,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                           className="bg-blue-600 text-white hover:bg-blue-700"
                           onClick={handleUpdateTippingAddress}
                         >
-                          Update
+                          {tString('blockchain.addressManagement.update')}
                         </Button>
                         <Button
                           size="sm"
@@ -799,7 +816,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                             setNewTippingAddress('');
                           }}
                         >
-                          Cancel
+                          {tString('buttons.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -905,7 +922,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   business?.is_active ? 'bg-green-400' : 'bg-gray-400'
                 }`}></div>
                 <span className="text-xs text-gray-500">
-                  {business?.is_active ? 'Active' : 'Inactive'}
+                  {business?.is_active ? tString('overview.status.active') : tString('overview.status.inactive')}
                 </span>
               </div>
             </div>
@@ -913,17 +930,17 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
           {/* Sidebar Navigation */}
           <nav className="flex-1 px-6 py-6 space-y-2">
             {[
-              { key: 'overview', icon: BarChart3, label: 'Overview' },
-              { key: 'analytics', icon: BarChart3, label: 'Analytics' },
-              { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
-              { key: 'subscription', icon: CreditCard, label: 'Subscription' },
-              { key: 'menu', icon: Menu, label: 'Menu' },
-              { key: 'tables', icon: Users, label: 'Tables' },
-              { key: 'counters', icon: Coffee, label: 'Counters' },
-              { key: 'bills', icon: Receipt, label: 'Bills' },
-              { key: 'kitchen', icon: ChefHat, label: 'Kitchen' },
-              { key: 'staff', icon: UserCheck, label: 'Staff' },
-              { key: 'settings', icon: Settings, label: 'Settings' },
+              { key: 'overview', icon: BarChart3, label: tString('tabs.overview') },
+              { key: 'analytics', icon: BarChart3, label: tString('tabs.analytics') },
+              { key: 'blockchain', icon: Wallet, label: tString('blockchain.title') },
+              { key: 'subscription', icon: CreditCard, label: tString('tabs.subscription') },
+              { key: 'menu', icon: Menu, label: tString('tabs.menu') },
+              { key: 'tables', icon: Users, label: tString('tabs.tables') },
+              { key: 'counters', icon: Coffee, label: tString('tabs.counter') },
+              { key: 'bills', icon: Receipt, label: tString('tabs.bills') },
+              { key: 'kitchen', icon: ChefHat, label: tString('tabs.kitchen') },
+              { key: 'staff', icon: UserCheck, label: tString('tabs.staff') },
+              { key: 'settings', icon: Settings, label: tString('tabs.settings') },
             ].map(({ key, icon: Icon, label }) => (
               <button
                 key={key}
@@ -984,7 +1001,7 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                 <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
                 <div className="relative flex flex-col w-64 bg-white shadow-xl">
                   <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                    <h2 className="text-lg font-medium text-gray-900 tracking-wide">Navigation</h2>
+                    <h2 className="text-lg font-medium text-gray-900 tracking-wide">{tString('navigation')}</h2>
                     <button
                       onClick={() => setSidebarOpen(false)}
                       className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
@@ -994,16 +1011,16 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
                   </div>
                   <nav className="flex-1 p-6 space-y-2">
                     {[
-                      { key: 'overview', icon: BarChart3, label: 'Overview' },
-                      { key: 'analytics', icon: BarChart3, label: 'Analytics' },
-                      { key: 'blockchain', icon: Wallet, label: 'Blockchain' },
-                      { key: 'subscription', icon: CreditCard, label: 'Subscription' },
-                      { key: 'menu', icon: Menu, label: 'Menu' },
-                      { key: 'tables', icon: Users, label: 'Tables' },
-                      { key: 'counters', icon: Coffee, label: 'Counters' },
-                      { key: 'bills', icon: Receipt, label: 'Bills' },
-                      { key: 'staff', icon: UserCheck, label: 'Staff' },
-                      { key: 'settings', icon: Settings, label: 'Settings' },
+                      { key: 'overview', icon: BarChart3, label: tString('tabs.overview') },
+                      { key: 'analytics', icon: BarChart3, label: tString('tabs.analytics') },
+                      { key: 'blockchain', icon: Wallet, label: tString('blockchain.title') },
+                      { key: 'subscription', icon: CreditCard, label: tString('tabs.subscription') },
+                      { key: 'menu', icon: Menu, label: tString('tabs.menu') },
+                      { key: 'tables', icon: Users, label: tString('tabs.tables') },
+                      { key: 'counters', icon: Coffee, label: tString('tabs.counter') },
+                      { key: 'bills', icon: Receipt, label: tString('tabs.bills') },
+                      { key: 'staff', icon: UserCheck, label: tString('tabs.staff') },
+                      { key: 'settings', icon: Settings, label: tString('tabs.settings') },
                     ].map(({ key, icon: Icon, label }) => (
                       <button
                         key={key}
@@ -1030,10 +1047,10 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
             <section className="hidden lg:block mb-12">
               <div className="mb-8">
                 <h1 className="text-4xl lg:text-5xl font-light text-gray-900 mb-4 tracking-wide leading-tight">
-                  Dashboard
+                  {tString('title')}
                 </h1>
                 <p className="text-lg text-gray-600 font-light leading-relaxed max-w-2xl">
-                  Manage your business operations and settings
+                  {tString('blockchain.subtitle')}
                 </p>
               </div>
             </section>

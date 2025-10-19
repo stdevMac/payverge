@@ -194,6 +194,121 @@
             }
         }
     },
+    "businessDashboard": {
+      "title": "Panel de Negocios",
+      "loading": "Cargando panel de negocios...",
+      "errors": {
+        "signIn": "Por favor inicia sesión para continuar.",
+        "invalidToken": "Token de sesión inválido.",
+        "authFailed": "Falló la autenticación.",
+        "accessDenied": "Acceso Denegado"
+      },
+      "buttons": {
+        "signIn": "Iniciar Sesión",
+        "goToDashboard": "Ir al Panel",
+        "learnMore": "Aprender Más",
+        "claimEarnings": "Reclamar Ganancias",
+        "cancel": "Cancelar",
+        "close": "Cerrar"
+      },
+      "welcome": {
+        "badge": "Configuración de Negocio Completa",
+        "title": "Bienvenido a",
+        "subtitle": "está listo para aceptar pagos!",
+        "features": {
+          "menuBuilder": {
+            "title": "Constructor de Menú",
+            "description": "Crea menús digitales con categorías y elementos"
+          },
+          "billManagement": {
+            "title": "Gestión de Facturas", 
+            "description": "Genera facturas y rastrea pagos"
+          },
+          "analytics": {
+            "title": "Analíticas",
+            "description": "Rastrea ventas e insights de clientes"
+          },
+          "staffManagement": {
+            "title": "Gestión de Personal",
+            "description": "Invita miembros del equipo y gestiona permisos"
+          }
+        },
+        "help": {
+          "text": "¿Necesitas ayuda para empezar? Consulta nuestra",
+          "documentation": "documentación",
+          "or": "o",
+          "contactSupport": "contacta soporte"
+        }
+      },
+      "overview": {
+        "activeBills": "Facturas Activas",
+        "tables": "Mesas",
+        "todaysRevenue": "Ingresos de Hoy",
+        "businessInformation": "Información del Negocio",
+        "settlementAddress": "Dirección de Liquidación",
+        "tippingAddress": "Dirección de Propinas",
+        "taxRate": "Tasa de Impuesto",
+        "serviceFee": "Tarifa de Servicio",
+        "notSet": "No establecido",
+        "status": {
+          "active": "Activo",
+          "inactive": "Inactivo"
+        }
+      },
+      "blockchain": {
+        "title": "Blockchain",
+        "subtitle": "Gestiona la configuración de tu negocio en cadena y reclama ganancias",
+        "claimableEarnings": {
+          "title": "Ganancias Reclamables",
+          "subtitle": "Disponible para reclamar de pagos y propinas",
+          "paymentEarnings": "Ganancias de Pagos",
+          "tipEarnings": "Ganancias de Propinas",
+          "totalAvailable": "Total Disponible:",
+          "transactionHash": "Hash de Transacción:"
+        },
+        "claiming": {
+          "preparing": "Preparando transacción...",
+          "confirmWallet": "Por favor confirma la transacción en tu billetera",
+          "submitted": "¡Transacción enviada! Esperando confirmación de blockchain...",
+          "recording": "¡Retiro registrado! Esperando confirmación...",
+          "confirmed": "¡Transacción confirmada! Actualizando balances...",
+          "success": "¡Ganancias reclamadas exitosamente!",
+          "viewTransaction": "Ver Transacción",
+          "processingTitle": "Procesando Transacción",
+          "dontClose": "Por favor no cierres esta página",
+          "blockchainProcessing": "Tu transacción está siendo procesada en la blockchain"
+        },
+        "addressManagement": {
+          "title": "Direcciones del Negocio",
+          "paymentAddress": "Dirección de Pago",
+          "tippingAddress": "Dirección de Propinas",
+          "currentAddress": "Dirección Actual:",
+          "newAddress": "Nueva Dirección:",
+          "updateAddress": "Actualizar Dirección",
+          "update": "Actualizar",
+          "save": "Guardar",
+          "edit": "Editar"
+        },
+        "warnings": {
+          "testnet": "Estás en testnet. Las transacciones son solo para pruebas.",
+          "noEarnings": "No hay ganancias disponibles para reclamar.",
+          "connectWallet": "Conecta tu billetera para gestionar configuraciones de blockchain."
+        }
+      },
+      "tabs": {
+        "overview": "Resumen",
+        "analytics": "Analíticas",
+        "menu": "Menú",
+        "tables": "Mesas", 
+        "bills": "Facturas",
+        "staff": "Personal",
+        "kitchen": "Cocina",
+        "counter": "Mostrador",
+        "settings": "Configuración",
+        "subscription": "Suscripción"
+      },
+      "navigation": "Navegación"
+    },
     "businessRegister": {
         "header": {
             "badge": "Registro de Negocio",
