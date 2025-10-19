@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider'
 import { getLiveBills } from '@/api/dashboard'
 import { Card, CardBody, CardHeader, Divider, Spinner, Badge, Button, Chip } from '@nextui-org/react'
 import { Clock, DollarSign, Users, RefreshCw, Eye } from 'lucide-react'
@@ -25,6 +26,22 @@ interface LiveBillsProps {
 }
 
 export default function LiveBills({ businessId }: LiveBillsProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.liveBills.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [bills, setBills] = useState<LiveBill[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -94,14 +111,14 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
     const diffMs = now.getTime() - created.getTime()
     const diffMins = Math.floor(diffMs / 60000)
     
-    if (diffMins < 1) return 'Just now'
-    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffMins < 1) return tString('timeElapsed.justNow')
+    if (diffMins < 60) return `${diffMins}${tString('timeElapsed.minutesAgo')}`
     
     const diffHours = Math.floor(diffMins / 60)
-    if (diffHours < 24) return `${diffHours}h ago`
+    if (diffHours < 24) return `${diffHours}${tString('timeElapsed.hoursAgo')}`
     
     const diffDays = Math.floor(diffHours / 24)
-    return `${diffDays}d ago`
+    return `${diffDays}${tString('timeElapsed.daysAgo')}`
   }
 
   const getStatusColor = (bill: LiveBill) => {
@@ -111,9 +128,9 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
   }
 
   const getStatusText = (bill: LiveBill) => {
-    if (bill.paid_amount >= bill.total_amount) return 'Paid'
-    if (bill.paid_amount > 0) return 'Partial'
-    return 'Unpaid'
+    if (bill.paid_amount >= bill.total_amount) return tString('status.paid')
+    if (bill.paid_amount > 0) return tString('status.partial')
+    return tString('status.unpaid')
   }
 
   const getPaymentProgress = (bill: LiveBill) => {
@@ -136,7 +153,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-bold text-default-900">Live Bills</h2>
+            <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
             <Badge 
               content={bills.length} 
               color={bills.length > 0 ? 'primary' : 'default'}
@@ -147,16 +164,16 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
             </Badge>
             {isConnected && (
               <Chip size="md" color="success" variant="dot" className="animate-pulse">
-                Live
+                {tString('live')}
               </Chip>
             )}
           </div>
-          <p className="text-default-600 mt-1">Monitor active bills and payment progress in real-time</p>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         
         <div className="flex items-center gap-3">
           <span className="text-sm text-default-500">
-            Last updated: {lastUpdated.toLocaleTimeString()}
+            {tString('lastUpdated')}: {lastUpdated.toLocaleTimeString()}
           </span>
           <Button
             size="md"
@@ -165,7 +182,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
             isLoading={loading}
             startContent={<RefreshCw className="w-4 h-4" />}
           >
-            Refresh
+            {tString('refresh')}
           </Button>
         </div>
       </div>
@@ -174,7 +191,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
         <Card className="border-danger-200 bg-danger-50">
           <CardBody className="p-4">
             <div className="text-danger">
-              <p>Error loading live bills: {error}</p>
+              <p>{tString('error')}: {error}</p>
             </div>
           </CardBody>
         </Card>
@@ -187,8 +204,8 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
               <div className="w-20 h-20 mx-auto mb-6 bg-default-100 rounded-full flex items-center justify-center">
                 <Users className="w-10 h-10 text-default-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-default-700">No Active Bills</h3>
-              <p className="text-default-500">All bills have been paid or closed. New bills will appear here automatically.</p>
+              <h3 className="text-xl font-semibold mb-2 text-default-700">{tString('noActiveBills')}</h3>
+              <p className="text-default-500">{tString('noActiveBillsDesc')}</p>
             </div>
           </CardBody>
         </Card>
@@ -223,12 +240,12 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                   {/* Amount Details */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
-                      <span className="text-sm font-medium text-default-600">Total Amount</span>
+                      <span className="text-sm font-medium text-default-600">{tString('amounts.totalAmount')}</span>
                       <span className="font-bold text-lg text-default-900">{formatCurrency(bill.total_amount)}</span>
                     </div>
                     
                     <div className="flex justify-between items-center p-3 bg-success-50 rounded-lg">
-                      <span className="text-sm font-medium text-success-700">Paid Amount</span>
+                      <span className="text-sm font-medium text-success-700">{tString('amounts.paidAmount')}</span>
                       <span className="font-bold text-lg text-success-700">
                         {formatCurrency(bill.paid_amount)}
                       </span>
@@ -236,7 +253,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                     
                     {bill.remaining_amount > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-default-600">Remaining</span>
+                        <span className="text-sm text-default-600">{tString('amounts.remaining')}</span>
                         <span className="font-semibold text-warning">
                           {formatCurrency(bill.remaining_amount)}
                         </span>
@@ -245,7 +262,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                     
                     {bill.tip_amount > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-default-600">Tips</span>
+                        <span className="text-sm text-default-600">{tString('amounts.tips')}</span>
                         <span className="font-semibold text-secondary">
                           {formatCurrency(bill.tip_amount)}
                         </span>
@@ -256,7 +273,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                   {/* Payment Progress Bar */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs text-default-500">
-                      <span>Payment Progress</span>
+                      <span>{tString('paymentProgress')}</span>
                       <span>{Math.round(getPaymentProgress(bill))}%</span>
                     </div>
                     <div className="w-full bg-default-200 rounded-full h-2">
@@ -277,7 +294,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                   <div className="flex items-center justify-between text-xs text-default-500">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      <span>Created {formatTime(bill.created_at)}</span>
+                      <span>{tString('created')} {formatTime(bill.created_at)}</span>
                     </div>
                     <span>{getTimeElapsed(bill.created_at)}</span>
                   </div>
@@ -294,7 +311,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                         window.open(`/t/${bill.table_code}/bill`, '_blank')
                       }}
                     >
-                      View
+                      {tString('view')}
                     </Button>
                   </div>
                 </div>
@@ -308,35 +325,35 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
       {bills.length > 0 && (
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Quick Stats</h3>
+            <h3 className="text-lg font-semibold">{tString('quickStats.title')}</h3>
           </CardHeader>
           <Divider />
           <CardBody className="p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">{bills.length}</p>
-                <p className="text-sm text-default-600">Active Bills</p>
+                <p className="text-sm text-default-600">{tString('quickStats.activeBills')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-success">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.total_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">Total Value</p>
+                <p className="text-sm text-default-600">{tString('quickStats.totalValue')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-warning">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.remaining_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">Outstanding</p>
+                <p className="text-sm text-default-600">{tString('quickStats.outstanding')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-secondary">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.tip_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">Tips Collected</p>
+                <p className="text-sm text-default-600">{tString('quickStats.tipsCollected')}</p>
               </div>
             </div>
           </CardBody>

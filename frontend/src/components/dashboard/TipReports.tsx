@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider'
 import {
   Card,
   CardHeader,
@@ -26,6 +27,22 @@ interface TipReportsProps {
 }
 
 export default function TipReports({ businessId }: TipReportsProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.tipReports.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [tipData, setTipData] = useState<TipAnalytics | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -74,18 +91,18 @@ export default function TipReports({ businessId }: TipReportsProps) {
   }
 
   const getTipRateLabel = (rate: number) => {
-    if (rate >= 20) return 'Excellent'
-    if (rate >= 15) return 'Good'
-    if (rate >= 10) return 'Average'
-    return 'Below Average'
+    if (rate >= 20) return tString('tipRateLabels.excellent')
+    if (rate >= 15) return tString('tipRateLabels.good')
+    if (rate >= 10) return tString('tipRateLabels.average')
+    return tString('tipRateLabels.belowAverage')
   }
 
   const periods = [
-    { key: 'today', label: 'Today' },
-    { key: 'yesterday', label: 'Yesterday' },
-    { key: 'week', label: 'This Week' },
-    { key: 'month', label: 'This Month' },
-    { key: 'quarter', label: 'This Quarter' },
+    { key: 'today', label: tString('periods.today') },
+    { key: 'yesterday', label: tString('periods.yesterday') },
+    { key: 'week', label: tString('periods.week') },
+    { key: 'month', label: tString('periods.month') },
+    { key: 'quarter', label: tString('periods.quarter') },
   ]
 
   if (loading) {
@@ -103,7 +120,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
       <Card className="w-full">
         <CardBody className="p-8">
           <div className="text-center text-danger">
-            <p>Error loading tip analytics: {error}</p>
+            <p>{tString('error')}: {error}</p>
           </div>
         </CardBody>
       </Card>
@@ -115,7 +132,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
       <Card className="w-full">
         <CardBody className="p-8">
           <div className="text-center text-default-500">
-            <p>No tip data available</p>
+            <p>{tString('noData')}</p>
           </div>
         </CardBody>
       </Card>
@@ -139,8 +156,8 @@ export default function TipReports({ businessId }: TipReportsProps) {
       {/* Header with Period Selector */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">Tip Reports</h2>
-          <p className="text-default-600 mt-1">Analyze tip patterns and customer generosity trends</p>
+          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         <Select
           size="md"
@@ -166,7 +183,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
                 <DollarSign className="w-6 h-6 text-success" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Total Tips</p>
+                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('metrics.totalTips')}</p>
                 <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.total_tips || 0)}</p>
               </div>
             </div>
@@ -180,7 +197,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
                 <TrendingUp className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Average Tip</p>
+                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('metrics.averageTip')}</p>
                 <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.average_tip || 0)}</p>
               </div>
             </div>
@@ -194,7 +211,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
                 <TrendingUp className={`w-5 h-5 ${getTipRateColor(tipData.average_tip_rate) === 'success' ? 'text-success' : getTipRateColor(tipData.average_tip_rate) === 'warning' ? 'text-warning' : 'text-danger'}`} />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-default-600">Tip Rate</p>
+                <p className="text-sm text-default-600">{tString('metrics.tipRate')}</p>
                 <div className="flex items-center gap-2">
                   <p className="text-xl font-semibold">{formatPercentage(tipData.average_tip_rate)}</p>
                   <Chip
@@ -217,7 +234,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
                 <Users className="w-5 h-5 text-secondary" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-default-600">Tip Transactions</p>
+                <p className="text-sm text-default-600">{tString('metrics.tipTransactions')}</p>
                 <p className="text-xl font-semibold">{tipData.tip_count}</p>
               </div>
             </div>
@@ -229,27 +246,27 @@ export default function TipReports({ businessId }: TipReportsProps) {
       {tipData.daily_comparison && (
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Daily Comparison</h3>
+            <h3 className="text-lg font-semibold">{tString('dailyComparison.title')}</h3>
           </CardHeader>
           <Divider />
           <CardBody className="p-4">
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-sm text-default-600">Today</p>
+                <p className="text-sm text-default-600">{tString('dailyComparison.today')}</p>
                 <p className="text-2xl font-bold text-primary">
                   {formatCurrency(tipData.daily_comparison.today)}
                 </p>
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-default-600">Yesterday</p>
+                <p className="text-sm text-default-600">{tString('dailyComparison.yesterday')}</p>
                 <p className="text-2xl font-bold text-default-600">
                   {formatCurrency(tipData.daily_comparison.yesterday)}
                 </p>
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-default-600">Change</p>
+                <p className="text-sm text-default-600">{tString('dailyComparison.change')}</p>
                 <div className="flex items-center justify-center gap-2">
                   {tipData.daily_comparison.change_percentage >= 0 ? (
                     <TrendingUp className="w-5 h-5 text-success" />
@@ -270,7 +287,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
         {/* Tip Distribution */}
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Tip Distribution</h3>
+            <h3 className="text-lg font-semibold">{tString('tipDistribution.title')}</h3>
           </CardHeader>
           <Divider />
           <CardBody className="p-4">
@@ -282,7 +299,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{range}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-default-600">{count} tips</span>
+                        <span className="text-sm text-default-600">{count} {tString('tipDistribution.tips')}</span>
                         <span className="font-semibold">{formatPercentage(percentage)}</span>
                       </div>
                     </div>
@@ -302,7 +319,7 @@ export default function TipReports({ businessId }: TipReportsProps) {
         {Object.keys(tipData.hourly_tips || {}).length > 0 && (
           <Card>
             <CardHeader>
-              <h3 className="text-lg font-semibold">Hourly Tip Performance</h3>
+              <h3 className="text-lg font-semibold">{tString('hourlyTips.title')}</h3>
             </CardHeader>
             <Divider />
             <CardBody className="p-4">
@@ -338,18 +355,18 @@ export default function TipReports({ businessId }: TipReportsProps) {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Award className="w-5 h-5 text-warning" />
-              <h3 className="text-lg font-semibold">Top Tippers</h3>
+              <h3 className="text-lg font-semibold">{tString('topTippers.title')}</h3>
             </div>
           </CardHeader>
           <Divider />
           <CardBody className="p-0">
             <Table aria-label="Top tippers table">
               <TableHeader>
-                <TableColumn>Rank</TableColumn>
-                <TableColumn>Customer</TableColumn>
-                <TableColumn>Total Tips</TableColumn>
-                <TableColumn>Tip Count</TableColumn>
-                <TableColumn>Average Tip</TableColumn>
+                <TableColumn>{tString('topTippers.rank')}</TableColumn>
+                <TableColumn>{tString('topTippers.customer')}</TableColumn>
+                <TableColumn>{tString('topTippers.totalTips')}</TableColumn>
+                <TableColumn>{tString('topTippers.tipCount')}</TableColumn>
+                <TableColumn>{tString('topTippers.averageTip')}</TableColumn>
               </TableHeader>
               <TableBody>
                 {tipData.top_tippers.slice(0, 10).map((tipper, index) => (

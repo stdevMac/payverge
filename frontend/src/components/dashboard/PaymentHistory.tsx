@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider'
 import { getPaymentHistory, exportPayments } from '@/api/payments'
 import { 
   Card, 
@@ -44,6 +45,22 @@ interface PaymentHistoryProps {
 }
 
 export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.paymentHistory.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [payments, setPayments] = useState<Payment[]>([])
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
@@ -163,10 +180,10 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
   )
 
   const statusOptions = [
-    { key: 'all', label: 'All Status' },
-    { key: 'confirmed', label: 'Confirmed' },
-    { key: 'pending', label: 'Pending' },
-    { key: 'failed', label: 'Failed' },
+    { key: 'all', label: tString('statusOptions.all') },
+    { key: 'confirmed', label: tString('statusOptions.confirmed') },
+    { key: 'pending', label: tString('statusOptions.pending') },
+    { key: 'failed', label: tString('statusOptions.failed') },
   ]
 
   if (loading) {
@@ -184,8 +201,8 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">Payment History</h2>
-          <p className="text-default-600 mt-1">Track and manage all payment transactions</p>
+          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         <Button
           color="primary"
@@ -195,7 +212,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
           onPress={handleExportPayments}
           className="w-full sm:w-auto"
         >
-          Export Data
+          {tString('exportData')}
         </Button>
       </div>
 
@@ -206,7 +223,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
             <div className="p-2 rounded-lg bg-primary/10">
               <Filter className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">Search & Filter</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('searchAndFilter')}</h3>
           </div>
         </CardHeader>
         <Divider />
@@ -214,9 +231,9 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
           <div className="space-y-6">
             {/* Search Section */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-default-700">Search Payments</label>
+              <label className="text-sm font-medium text-default-700">{tString('searchPayments')}</label>
               <Input
-                placeholder="Search by bill number, table name, or payer address..."
+                placeholder={tString('searchPlaceholder')}
                 startContent={<Search className="w-4 h-4 text-default-400" />}
                 value={searchTerm}
                 onValueChange={setSearchTerm}
@@ -233,12 +250,12 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
             
             {/* Filters Section */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-default-700">Filter Options</label>
+              <label className="text-sm font-medium text-default-700">{tString('filterOptions')}</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs text-default-500 uppercase tracking-wide">Status</label>
+                  <label className="text-xs text-default-500 uppercase tracking-wide">{tString('status')}</label>
                   <Select
-                    placeholder="All Status"
+                    placeholder={tString('statusOptions.all')}
                     selectedKeys={[statusFilter]}
                     onSelectionChange={(keys) => setStatusFilter(Array.from(keys)[0] as string)}
                     size="lg"
@@ -257,7 +274,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-default-500 uppercase tracking-wide">Date Range</label>
+                  <label className="text-xs text-default-500 uppercase tracking-wide">{tString('dateRange')}</label>
                   <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
@@ -284,7 +301,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
                     className="w-full h-12"
                     color="default"
                   >
-                    Clear All
+                    {tString('clearAll')}
                   </Button>
                 </div>
               </div>
@@ -301,7 +318,7 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
                 <X className="h-6 w-6 text-danger-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-danger-900">Error</h3>
+                <h3 className="text-lg font-semibold text-danger-900">{tString('error')}</h3>
                 <p className="text-danger-700">{error}</p>
               </div>
             </div>
@@ -313,9 +330,9 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
       <Card className="shadow-md">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between w-full">
-            <h3 className="text-xl font-semibold text-default-900">Payment Records</h3>
+            <h3 className="text-xl font-semibold text-default-900">{tString('paymentRecords')}</h3>
             <div className="text-sm text-default-600">
-              {filteredPayments.length} of {payments.length} payments
+              {filteredPayments.length} {tString('paymentsCount').replace('{total}', payments.length.toString())}
             </div>
           </div>
         </CardHeader>
@@ -323,16 +340,16 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
         <CardBody className="p-0">
           <Table aria-label="Payment history table">
             <TableHeader>
-              <TableColumn>Bill</TableColumn>
-              <TableColumn>Table</TableColumn>
-              <TableColumn>Amount</TableColumn>
-              <TableColumn>Tips</TableColumn>
-              <TableColumn>Payer</TableColumn>
-              <TableColumn>Status</TableColumn>
-              <TableColumn>Date</TableColumn>
-              <TableColumn>Actions</TableColumn>
+              <TableColumn>{tString('tableHeaders.bill')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.table')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.amount')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.tips')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.payer')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.status')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.date')}</TableColumn>
+              <TableColumn>{tString('tableHeaders.actions')}</TableColumn>
             </TableHeader>
-            <TableBody emptyContent="No payments found">
+            <TableBody emptyContent={tString('noPayments')}>
               {paginatedPayments.map((payment) => (
                 <TableRow key={payment.id}>
                   <TableCell>
@@ -405,35 +422,35 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
       {filteredPayments.length > 0 && (
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Summary</h3>
+            <h3 className="text-lg font-semibold">{tString('summary.title')}</h3>
           </CardHeader>
           <Divider />
           <CardBody className="p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">{filteredPayments.length}</p>
-                <p className="text-sm text-default-600">Total Payments</p>
+                <p className="text-sm text-default-600">{tString('summary.totalPayments')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-success">
                   {formatCurrency(filteredPayments.reduce((sum, p) => sum + p.amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">Total Amount</p>
+                <p className="text-sm text-default-600">{tString('summary.totalAmount')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-secondary">
                   {formatCurrency(filteredPayments.reduce((sum, p) => sum + p.tip_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">Total Tips</p>
+                <p className="text-sm text-default-600">{tString('summary.totalTips')}</p>
               </div>
               
               <div className="text-center">
                 <p className="text-2xl font-bold text-warning">
                   {filteredPayments.filter(p => p.status === 'confirmed').length}
                 </p>
-                <p className="text-sm text-default-600">Confirmed</p>
+                <p className="text-sm text-default-600">{tString('summary.confirmed')}</p>
               </div>
             </div>
           </CardBody>

@@ -307,7 +307,415 @@
         "settings": "Settings",
         "subscription": "Subscription"
       },
-      "navigation": "Navigation"
+      "navigation": "Navigation",
+      "dashboard": {
+        "title": "Analytics Dashboard",
+        "subtitle": "Monitor your business performance, track payments, and analyze customer behavior in real-time.",
+        "tabs": {
+          "salesOverview": "Sales Overview",
+          "liveBills": "Live Bills", 
+          "paymentHistory": "Payment History",
+          "itemAnalytics": "Item Analytics",
+          "tipReports": "Tip Reports"
+        },
+        "salesOverview": {
+          "title": "Sales Overview",
+          "subtitle": "Track your business performance and revenue metrics",
+          "loading": "Loading sales data...",
+          "error": "Error loading sales data",
+          "noData": "No sales data available",
+          "periods": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "week": "This Week",
+            "month": "This Month",
+            "quarter": "This Quarter",
+            "year": "This Year"
+          },
+          "metrics": {
+            "totalRevenue": "Total Revenue",
+            "totalTips": "Total Tips",
+            "transactions": "Transactions",
+            "bills": "Bills",
+            "uniqueCustomers": "Unique Customers",
+            "averageTicket": "Average Ticket"
+          },
+          "tipPerformance": {
+            "title": "Tip Performance",
+            "tipRate": "Tip Rate",
+            "tipRateDesc": "Percentage of total revenue",
+            "averageTip": "Average Tip",
+            "averageTipDesc": "Per transaction"
+          },
+          "paymentMethods": {
+            "title": "Payment Methods",
+            "noData": "No payment data available"
+          },
+          "hourlyBreakdown": {
+            "title": "Hourly Breakdown",
+            "subtitle": "Revenue and transaction patterns throughout the day",
+            "bills": "bills"
+          }
+        },
+        "liveBills": {
+          "title": "Live Bills",
+          "subtitle": "Monitor active bills and payment progress in real-time",
+          "live": "Live",
+          "lastUpdated": "Last updated",
+          "refresh": "Refresh",
+          "error": "Error loading live bills",
+          "noActiveBills": "No Active Bills",
+          "noActiveBillsDesc": "All bills have been paid or closed. New bills will appear here automatically.",
+          "status": {
+            "paid": "Paid",
+            "partial": "Partial",
+            "unpaid": "Unpaid"
+          },
+          "amounts": {
+            "totalAmount": "Total Amount",
+            "paidAmount": "Paid Amount",
+            "remaining": "Remaining",
+            "tips": "Tips"
+          },
+          "paymentProgress": "Payment Progress",
+          "created": "Created",
+          "timeElapsed": {
+            "justNow": "Just now",
+            "minutesAgo": "m ago",
+            "hoursAgo": "h ago",
+            "daysAgo": "d ago"
+          },
+          "view": "View",
+          "quickStats": {
+            "title": "Quick Stats",
+            "activeBills": "Active Bills",
+            "totalValue": "Total Value",
+            "outstanding": "Outstanding",
+            "tipsCollected": "Tips Collected"
+          }
+        },
+        "paymentHistory": {
+          "title": "Payment History",
+          "subtitle": "Track and manage all payment transactions",
+          "exportData": "Export Data",
+          "searchAndFilter": "Search & Filter",
+          "searchPayments": "Search Payments",
+          "searchPlaceholder": "Search by bill number, table name, or payer address...",
+          "filterOptions": "Filter Options",
+          "status": "Status",
+          "dateRange": "Date Range",
+          "clearAll": "Clear All",
+          "error": "Error",
+          "paymentRecords": "Payment Records",
+          "paymentsCount": "of {total} payments",
+          "tableHeaders": {
+            "bill": "Bill",
+            "table": "Table",
+            "amount": "Amount",
+            "tips": "Tips",
+            "payer": "Payer",
+            "status": "Status",
+            "date": "Date",
+            "actions": "Actions"
+          },
+          "statusOptions": {
+            "all": "All Status",
+            "confirmed": "Confirmed",
+            "pending": "Pending",
+            "failed": "Failed"
+          },
+          "noPayments": "No payments found",
+          "summary": {
+            "title": "Summary",
+            "totalPayments": "Total Payments",
+            "totalAmount": "Total Amount",
+            "totalTips": "Total Tips",
+            "confirmed": "Confirmed"
+          }
+        },
+        "itemAnalytics": {
+          "title": "Item Analytics",
+          "subtitle": "Track menu item performance and popularity trends",
+          "period": "Period",
+          "sortBy": "Sort by",
+          "periods": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "week": "This Week",
+            "month": "This Month",
+            "quarter": "This Quarter"
+          },
+          "sortOptions": {
+            "quantitySold": "Quantity Sold",
+            "revenue": "Revenue",
+            "billsFeatured": "Bills Featured",
+            "averagePrice": "Average Price"
+          },
+          "noItemData": "No Item Data",
+          "noSalesData": "No sales data available for the selected period.",
+          "topCategories": "Top Categories",
+          "items": "items",
+          "sold": "sold",
+          "itemPerformance": "Item Performance",
+          "sortedBy": "Sorted by",
+          "rank": "Rank",
+          "summaryStats": "Summary Statistics",
+          "totalItems": "Total Items",
+          "totalRevenue": "Total Revenue",
+          "itemsSold": "Items Sold",
+          "avgRevenuePerItem": "Avg Revenue/Item",
+          "bills": "Bills",
+          "avgPrice": "Avg Price"
+        },
+        "tipReports": {
+          "title": "Tip Reports",
+          "subtitle": "Analyze tip patterns and customer generosity trends",
+          "error": "Error loading tip analytics",
+          "noData": "No tip data available",
+          "periods": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "week": "This Week",
+            "month": "This Month",
+            "quarter": "This Quarter"
+          },
+          "metrics": {
+            "totalTips": "Total Tips",
+            "averageTip": "Average Tip",
+            "tipRate": "Tip Rate",
+            "tipTransactions": "Tip Transactions"
+          },
+          "tipRateLabels": {
+            "excellent": "Excellent",
+            "good": "Good",
+            "average": "Average",
+            "belowAverage": "Below Average"
+          },
+          "dailyComparison": {
+            "title": "Daily Comparison",
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "change": "Change"
+          },
+          "tipDistribution": {
+            "title": "Tip Distribution",
+            "tips": "tips"
+          },
+          "hourlyTips": {
+            "title": "Hourly Tip Performance"
+          },
+          "topTippers": {
+            "title": "Top Tippers",
+            "rank": "Rank",
+            "customer": "Customer",
+            "totalTips": "Total Tips",
+            "tipCount": "Tip Count",
+            "averageTip": "Average Tip"
+          }
+        },
+        "subscriptionManagement": {
+          "title": "Subscription Status",
+          "subtitle": "Manage your business subscription",
+          "status": {
+            "active": "Active",
+            "expired": "Expired",
+            "suspended": "Suspended",
+            "cancelled": "Cancelled"
+          },
+          "subscriptionModel": "Subscription Model",
+          "payAsYouGo": "Pay-as-you-go",
+          "lastPayment": "Last payment",
+          "subscriptionEnds": "Subscription Ends",
+          "notSet": "Not set",
+          "daysRemaining": "days remaining",
+          "expired": "Expired",
+          "timeRemaining": "Time Remaining",
+          "days": "days",
+          "totalPaid": "Total paid",
+          "expiryWarning": {
+            "title": "Your subscription expires in {days} day{plural}",
+            "subtitle": "Renew now to avoid service interruption"
+          },
+          "renewSubscription": "Renew Subscription",
+          "paymentHistory": {
+            "title": "Payment History",
+            "subtitle": "Recent subscription payments",
+            "subscriptionPayment": "Subscription Payment",
+            "noPaymentDate": "No payment date",
+            "paid": "Paid",
+            "noAdditionalHistory": "No additional payment history"
+          },
+          "renewalModal": {
+            "title": "Renew Subscription",
+            "description": "Choose how much you want to pay to extend your subscription. You'll get time proportional to the yearly fee.",
+            "walletNotConnected": {
+              "title": "Wallet Not Connected",
+              "subtitle": "Please connect your wallet to renew your subscription"
+            },
+            "walletConnected": {
+              "title": "Wallet Connected",
+              "balance": "USDC Balance"
+            },
+            "suggestedOptions": "Suggested Payment Options",
+            "popular": "Popular",
+            "renewalOptions": {
+              "extend1Month": "Extend for 1 month",
+              "extend3Months": "Extend for 3 months",
+              "extend6Months": "Extend for 6 months",
+              "extendFullYear": "Extend for full year"
+            },
+            "customAmount": {
+              "title": "Pay custom amount",
+              "placeholder": "Enter amount",
+              "description": "You'll get subscription time proportional to the yearly fee (${fee} = 1 year)",
+              "warning": "Amount above ${fee} will still only give 1 year maximum",
+              "estimatedTime": "Estimated time"
+            },
+            "coupon": {
+              "title": "Apply coupon code",
+              "placeholder": "Enter coupon code",
+              "validCoupon": "Valid coupon! Discount",
+              "invalidCoupon": "Invalid or expired coupon code"
+            },
+            "paymentSummary": {
+              "title": "Payment Summary",
+              "paymentAmount": "Payment Amount",
+              "couponDiscount": "Coupon Discount",
+              "total": "Total",
+              "additionalTime": "Additional time"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "confirmPayment": "Confirm Payment",
+              "approvingUsdc": "Approving USDC...",
+              "processingRenewal": "Processing Renewal...",
+              "complete": "Complete!"
+            }
+          },
+          "alerts": {
+            "connectWallet": "Please connect your wallet",
+            "renewalFailed": "Renewal failed. Please try again."
+          },
+          "timeUnits": {
+            "year": "year",
+            "years": "years",
+            "month": "month",
+            "months": "months",
+            "day": "day",
+            "days": "days"
+          }
+        },
+        "menuBuilder": {
+          "title": "Menu Builder",
+          "subtitle": "Create and manage your digital menu",
+          "loading": "Loading menu...",
+          "error": "Failed to load menu data",
+          "noCategories": "No categories yet",
+          "noItems": "No items in this category yet",
+          "search": {
+            "placeholder": "Search menu items...",
+            "filters": {
+              "all": "All Items",
+              "available": "Available",
+              "unavailable": "Unavailable"
+            },
+            "active": "Search active",
+            "noResults": "No results found",
+            "noResultsDescription": "No menu items match your search criteria. Try adjusting your search terms or filters."
+          },
+          "languages": {
+            "title": "Menu Languages",
+            "subtitle": "Manage menu translations and language settings",
+            "currentView": "Current View",
+            "supportedLanguages": "Supported Languages",
+            "selectLanguages": "Select languages to support",
+            "defaultLanguage": "Default Language",
+            "setAsDefault": "Set as default",
+            "saveLanguages": "Save Language Settings",
+            "translateMenu": "Translate Menu",
+            "translating": "Translating menu...",
+            "hasChanges": "You have unsaved language changes",
+            "saveFirst": "Please save your language settings first"
+          },
+          "categories": {
+            "title": "Categories",
+            "addCategory": "Add Category",
+            "editCategory": "Edit Category",
+            "deleteCategory": "Delete Category",
+            "categoryName": "Category Name",
+            "categoryDescription": "Category Description",
+            "categoryNamePlaceholder": "Enter category name",
+            "categoryDescriptionPlaceholder": "Enter category description (optional)",
+            "confirmDelete": "Are you sure you want to delete this category and all its items?",
+            "deleteSuccess": "Category deleted successfully",
+            "createSuccess": "Category created successfully",
+            "updateSuccess": "Category updated successfully",
+            "createFirstDescription": "Create your first menu category to start building your restaurant menu."
+          },
+          "items": {
+            "title": "Menu Items",
+            "addItem": "Add Item",
+            "editItem": "Edit Item",
+            "deleteItem": "Delete Item",
+            "itemName": "Item Name",
+            "itemDescription": "Item Description",
+            "itemPrice": "Price",
+            "itemImage": "Item Image",
+            "itemImages": "Additional Images",
+            "available": "Available",
+            "unavailable": "Unavailable",
+            "allergens": "Allergens",
+            "dietaryTags": "Dietary Tags",
+            "options": "Item Options",
+            "sortOrder": "Sort Order",
+            "itemNamePlaceholder": "Enter item name",
+            "itemDescriptionPlaceholder": "Enter item description",
+            "itemPricePlaceholder": "Enter price",
+            "addAllergen": "Add Allergen",
+            "addDietaryTag": "Add Dietary Tag",
+            "addOption": "Add Option",
+            "optionName": "Option Name",
+            "optionPrice": "Option Price",
+            "optionNamePlaceholder": "Enter option name",
+            "optionPricePlaceholder": "Enter additional price",
+            "confirmDelete": "Are you sure you want to delete this item?",
+            "deleteSuccess": "Item deleted successfully",
+            "createSuccess": "Item created successfully",
+            "updateSuccess": "Item updated successfully",
+            "noImage": "No image"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "create": "Create",
+            "update": "Update",
+            "delete": "Delete",
+            "add": "Add",
+            "remove": "Remove",
+            "edit": "Edit",
+            "close": "Close",
+            "addCategory": "Add Category",
+            "addItem": "Add Item",
+            "createCategory": "Create Category",
+            "updateCategory": "Update Category",
+            "createItem": "Create Item",
+            "updateItem": "Update Item"
+          },
+          "validation": {
+            "categoryNameRequired": "Category name is required",
+            "itemNameRequired": "Item name is required",
+            "itemPriceRequired": "Item price is required",
+            "invalidPrice": "Please enter a valid price"
+          },
+          "status": {
+            "available": "Available",
+            "unavailable": "Unavailable"
+          },
+          "currency": {
+            "defaultCurrency": "Default Currency"
+          }
+        }
+      }
     },
     "businessRegister": {
         "header": {

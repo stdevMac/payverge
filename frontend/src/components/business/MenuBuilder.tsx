@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
   Card,
   CardHeader,
@@ -37,6 +38,22 @@ interface MenuBuilderProps {
 }
 
 export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate }: MenuBuilderProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.menuBuilder.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [menu, setMenu] = useState<MenuCategory[]>(initialMenu);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -145,7 +162,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       }
     } catch (error) {
       console.error('Failed to load menu:', error);
-      setError('Failed to load menu data');
+      setError(tString('error'));
       setMenu([]); // Ensure menu is always an array even on error
     } finally {
       setIsLoading(false);
@@ -167,7 +184,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       
     } catch (error) {
       console.error('Failed to translate menu:', error);
-      setError('Failed to translate menu');
+      setError(tString('languages.translating'));
     } finally {
       setIsTranslating(false);
     }
@@ -235,7 +252,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       await loadLanguages();
     } catch (error) {
       console.error('Failed to update languages:', error);
-      setError('Failed to update languages');
+      setError(tString('languages.saveFirst'));
     } finally {
       setIsLanguageLoading(false);
     }
@@ -534,7 +551,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
           <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
             <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-600 font-light tracking-wide">Loading menu...</p>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
         </div>
       </div>
     );
@@ -546,8 +563,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-3xl font-light text-gray-900 tracking-wide">Menu Builder</h2>
-            <p className="text-gray-600 font-light mt-2">Create and manage your restaurant menu</p>
+            <h2 className="text-3xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+            <p className="text-gray-600 font-light mt-2">{tString('subtitle')}</p>
           </div>
           <Button
             onPress={onAddCategoryOpen}
@@ -556,7 +573,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             startContent={<Plus className="w-5 h-5" />}
             className="font-semibold shadow-lg"
           >
-            Add Category
+            {tString('categories.addCategory')}
           </Button>
         </div>
 
@@ -570,8 +587,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   <Globe className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Menu Languages</h3>
-                  <p className="text-sm text-gray-600">Manage languages and translations for your menu</p>
+                  <h3 className="text-lg font-semibold text-gray-900">{tString('languages.title')}</h3>
+                  <p className="text-sm text-gray-600">{tString('languages.subtitle')}</p>
                 </div>
               </div>
 
@@ -579,9 +596,9 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
                 {/* Select Languages */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Supported Languages</label>
+                  <label className="text-sm font-medium text-gray-700">{tString('languages.supportedLanguages')}</label>
                   <Select
-                    placeholder="Select languages"
+                    placeholder={tString('languages.selectLanguages')}
                     selectionMode="multiple"
                     selectedKeys={new Set(selectedLanguages)}
                     onSelectionChange={(keys) => {
@@ -605,9 +622,9 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 {/* Default Language */}
                 {selectedLanguages.length > 1 && (
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Default Language</label>
+                    <label className="text-sm font-medium text-gray-700">{tString('languages.defaultLanguage')}</label>
                     <Select
-                      placeholder="Choose default"
+                      placeholder={tString('languages.setAsDefault')}
                       selectedKeys={new Set([defaultLanguage])}
                       onSelectionChange={(keys) => {
                         const newDefault = Array.from(keys)[0] as string;
@@ -638,7 +655,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       isLoading={isLanguageLoading}
                       isDisabled={selectedLanguages.length === 0}
                     >
-                      Save Languages
+                      {tString('languages.saveLanguages')}
                     </Button>
                   )}
                 </div>
@@ -650,7 +667,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     {/* View Language Switcher */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">View Menu As:</label>
+                      <label className="text-sm font-medium text-gray-700">{tString('languages.currentView')}:</label>
                       <div className="flex flex-wrap gap-2">
                         {businessLanguages.map((bl) => {
                           const lang = supportedLanguages.find(l => l.code === bl.language_code);
@@ -670,7 +687,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                               }}
                             >
                               {lang.native_name}
-                              {bl.is_default && " (Default)"}
+                              {bl.is_default && ` (${tString('languages.setAsDefault')})`}
                             </Button>
                           );
                         })}
@@ -688,7 +705,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         isLoading={isTranslating}
                         className="min-w-[140px]"
                       >
-                        {isTranslating ? 'Translating...' : `Translate to ${supportedLanguages.find(l => l.code === currentViewLanguage)?.native_name}`}
+                        {isTranslating ? tString('languages.translating') : `${tString('languages.translateMenu')} ${supportedLanguages.find(l => l.code === currentViewLanguage)?.native_name}`}
                       </Button>
                     )}
                   </div>
@@ -711,7 +728,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
               <div className="flex-1 relative">
                 <Input
-                  placeholder="Search menu items, categories, allergens, or dietary tags..."
+                  placeholder={tString('search.placeholder')}
                   value={searchQuery}
                   onValueChange={setSearchQuery}
                   startContent={<Search className="w-4 h-4 text-gray-400" />}
@@ -740,9 +757,9 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   className="w-48"
                   size="sm"
                 >
-                  <SelectItem key="all" value="all">All Items</SelectItem>
-                  <SelectItem key="available" value="available">Available Only</SelectItem>
-                  <SelectItem key="unavailable" value="unavailable">Unavailable Only</SelectItem>
+                  <SelectItem key="all" value="all">{tString('search.filters.all')}</SelectItem>
+                  <SelectItem key="available" value="available">{tString('search.filters.available')}</SelectItem>
+                  <SelectItem key="unavailable" value="unavailable">{tString('search.filters.unavailable')}</SelectItem>
                 </Select>
                 
                 {(searchQuery || searchFilter !== 'all') && (
@@ -752,7 +769,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     onPress={clearSearch}
                     startContent={<X className="w-3 h-3" />}
                   >
-                    Clear
+                    {tString('buttons.clear')}
                   </Button>
                 )}
               </div>
@@ -766,22 +783,21 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     {(() => {
                       const { totalItems, totalCategories } = getSearchResultsCount();
                       return (
-                        <span>
+                        <>
                           Found <strong>{totalItems}</strong> items in <strong>{totalCategories}</strong> categories
                           {searchQuery && (
-                            <span> matching &quot;<strong>{searchQuery}</strong>&quot;</span>
+                            <span> matching "<strong>{searchQuery}</strong>"</span>
                           )}
                           {searchFilter !== 'all' && (
-                            <span> ({searchFilter} items)</span>
+                            <span> (filtered by {searchFilter})</span>
                           )}
-                        </span>
+                        </>
                       );
                     })()}
                   </div>
-                  
                   {searchQuery && (
                     <Chip size="sm" variant="flat" color="primary">
-                      Search active
+                      {tString('search.active')}
                     </Chip>
                   )}
                 </div>
@@ -809,7 +825,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
               onClick={() => setError(null)}
               className="text-red-600 hover:text-red-800 transition-colors duration-200"
             >
-              Dismiss
+              {tString('buttons.close')}
             </button>
           </div>
         </div>
@@ -822,15 +838,15 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No menu categories yet</h3>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">{tString('noCategories')}</h3>
           <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
-            Create your first menu category to start building your restaurant menu.
+            {tString('categories.createFirstDescription')}
           </p>
           <button
             onClick={onAddCategoryOpen}
             className="bg-gray-900 text-white px-8 py-3 text-base font-medium hover:bg-gray-800 transition-all duration-200 tracking-wide rounded-lg shadow-lg hover:shadow-xl"
           >
-            Add Your First Category
+            {tString('categories.addCategory')}
           </button>
         </div>
       ) : filteredMenu.length === 0 ? (
@@ -838,9 +854,9 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
           <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
             <Search className="h-10 w-10 text-gray-400" />
           </div>
-          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">No results found</h3>
+          <h3 className="text-2xl font-light text-gray-900 tracking-wide mb-4">{tString('search.noResults')}</h3>
           <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-md mx-auto">
-            No menu items match your search criteria. Try adjusting your search terms or filters.
+            {tString('search.noResultsDescription')}
           </p>
           <Button
             onPress={clearSearch}
@@ -848,7 +864,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             variant="flat"
             startContent={<X className="w-4 h-4" />}
           >
-            Clear Search
+            {tString('buttons.clear')}
           </Button>
         </div>
       ) : (
@@ -888,7 +904,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         onAddItemOpen();
                       }}
                     >
-                      Add Item
+                      {tString('items.addItem')}
                     </Button>
                     <Button
                       size="sm"
@@ -897,7 +913,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       startContent={<Edit className="w-4 h-4" />}
                       onPress={() => handleEditCategory(originalCategoryIndex)}
                     >
-                      Edit
+                      {tString('buttons.edit')}
                     </Button>
                     <Button
                       size="sm"
@@ -906,7 +922,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       startContent={<Trash2 className="w-4 h-4" />}
                       onPress={() => handleDeleteCategory(originalCategoryIndex)}
                     >
-                      Delete
+                      {tString('buttons.delete')}
                     </Button>
                   </div>
                 </div>
@@ -917,7 +933,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <Plus className="w-6 h-6 text-gray-500" />
                     </div>
-                    <p className="text-gray-500 font-light mb-4">No items in this category yet</p>
+                    <p className="text-gray-500 font-light mb-4">{tString('noItems')}</p>
                     <Button
                       size="sm"
                       color="primary"
@@ -928,7 +944,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         onAddItemOpen();
                       }}
                     >
-                      Add First Item
+                      {tString('items.addItem')}
                     </Button>
                   </div>
                 ) : (
@@ -961,7 +977,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 {!item.is_available && (
                                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                     <Chip color="default" variant="solid" className="text-white">
-                                      Unavailable
+                                      {tString('status.unavailable')}
                                     </Chip>
                                   </div>
                                 )}
@@ -977,7 +993,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 {!item.is_available && (
                                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                     <Chip color="default" variant="solid" className="text-white">
-                                      Unavailable
+                                      {tString('status.unavailable')}
                                     </Chip>
                                   </div>
                                 )}
@@ -986,12 +1002,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                                 <div className="text-center">
                                   <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                                  <p className="text-sm text-gray-500">No image</p>
+                                  <p className="text-sm text-gray-500">{tString('items.noImage')}</p>
                                 </div>
                                 {!item.is_available && (
                                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                     <Chip color="default" variant="solid" className="text-white">
-                                      Unavailable
+                                      {tString('status.unavailable')}
                                     </Chip>
                                   </div>
                                 )}
@@ -1002,7 +1018,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                             {item.is_available && (
                               <div className="absolute top-2 left-2">
                                 <Chip size="sm" color="success" variant="solid" className="text-white">
-                                  Available
+                                  {tString('status.available')}
                                 </Chip>
                               </div>
                             )}
@@ -1096,7 +1112,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 onPress={() => handleEditItem(originalCategoryIndex, originalItemIndex)}
                                 className="flex-1"
                               >
-                                Edit
+                                {tString('buttons.edit')}
                               </Button>
                               <Button
                                 size="sm"
@@ -1106,7 +1122,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                                 onPress={() => handleDeleteItem(originalCategoryIndex, originalItemIndex)}
                                 className="flex-1"
                               >
-                                Delete
+                                {tString('buttons.delete')}
                               </Button>
                             </div>
 
@@ -1129,18 +1145,18 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Add New Category</ModalHeader>
+              <ModalHeader>{tString('categories.addCategory')}</ModalHeader>
               <ModalBody>
                 <Input
-                  label="Category Name"
-                  placeholder="e.g., Appetizers, Main Courses"
+                  label={tString('categories.categoryName')}
+                  placeholder={tString('categories.categoryNamePlaceholder')}
                   value={categoryName}
                   onValueChange={setCategoryName}
                   isRequired
                 />
                 <Textarea
-                  label="Description"
-                  placeholder="Brief description of this category"
+                  label={tString('categories.categoryDescription')}
+                  placeholder={tString('categories.categoryDescriptionPlaceholder')}
                   value={categoryDescription}
                   onValueChange={setCategoryDescription}
                 />
@@ -1150,10 +1166,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   resetCategoryForm();
                   onClose();
                 }}>
-                  Cancel
+                  {tString('buttons.cancel')}
                 </Button>
                 <Button color="primary" onPress={handleAddCategory} isDisabled={!categoryName.trim()}>
-                  Add Category
+                  {tString('buttons.createCategory')}
                 </Button>
               </ModalFooter>
             </>
@@ -1168,19 +1184,19 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             <>
               <ModalHeader className="flex items-center gap-2">
                 <Edit className="w-5 h-5" />
-                Edit Category
+                {tString('categories.editCategory')}
               </ModalHeader>
               <ModalBody>
                 <Input
-                  label="Category Name"
-                  placeholder="e.g., Appetizers, Main Courses"
+                  label={tString('categories.categoryName')}
+                  placeholder={tString('categories.categoryNamePlaceholder')}
                   value={categoryName}
                   onValueChange={setCategoryName}
                   isRequired
                 />
                 <Textarea
-                  label="Description"
-                  placeholder="Brief description of this category"
+                  label={tString('categories.categoryDescription')}
+                  placeholder={tString('categories.categoryDescriptionPlaceholder')}
                   value={categoryDescription}
                   onValueChange={setCategoryDescription}
                 />
@@ -1191,10 +1207,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   resetCategoryForm();
                   onClose();
                 }}>
-                  Cancel
+                  {tString('buttons.cancel')}
                 </Button>
                 <Button color="primary" onPress={handleUpdateCategory} isDisabled={!categoryName.trim()}>
-                  Update Category
+                  {tString('buttons.updateCategory')}
                 </Button>
               </ModalFooter>
             </>
@@ -1209,7 +1225,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             <>
               <ModalHeader className="flex items-center gap-2">
                 <Plus className="w-5 h-5" />
-                Add New Item
+                {tString('items.addItem')}
                 {selectedCategoryIndex !== null && (
                   <Chip size="sm" variant="flat" color="primary">
                     {menu[selectedCategoryIndex]?.name}
@@ -1221,20 +1237,20 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <ImageIcon className="w-5 h-5" />
-                    Basic Information
+                    {tString('items.title')}
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
-                      label="Item Name"
-                      placeholder="e.g., Caesar Salad"
+                      label={tString('items.itemName')}
+                      placeholder={tString('items.itemNamePlaceholder')}
                       value={itemName}
                       onValueChange={setItemName}
                       isRequired
                     />
                     <div className="flex gap-2">
                       <Input
-                        label="Price"
-                        placeholder="0.00"
+                        label={tString('items.itemPrice')}
+                        placeholder={tString('items.itemPricePlaceholder')}
                         value={itemPrice}
                         onValueChange={setItemPrice}
                         type="number"
@@ -1244,7 +1260,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         isRequired
                       />
                       <div className="w-32">
-                        <label className="text-sm text-gray-600 mb-1 block">Currency</label>
+                        <label className="text-sm text-gray-600 mb-1 block">{tString('currency.defaultCurrency')}</label>
                         <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
                           <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
                         </div>
@@ -1253,8 +1269,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     </div>
                   </div>
                   <Textarea
-                    label="Description"
-                    placeholder="Describe this menu item..."
+                    label={tString('items.itemDescription')}
+                    placeholder={tString('items.itemDescriptionPlaceholder')}
                     value={itemDescription}
                     onValueChange={setItemDescription}
                     minRows={2}
@@ -1265,10 +1281,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onValueChange={setItemAvailable}
                       color="success"
                     >
-                      Available for ordering
+                      {tString('items.available')}
                     </Switch>
                     <Input
-                      label="Sort Order"
+                      label={tString('items.sortOrder')}
                       placeholder="0"
                       value={itemSortOrder.toString()}
                       onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
@@ -1294,18 +1310,18 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <DollarSign className="w-5 h-5" />
-                    Options & Add-ons
+                    {tString('items.options')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Option Name"
-                      placeholder="e.g., Extra Cheese"
+                      label={tString('items.optionName')}
+                      placeholder={tString('items.optionNamePlaceholder')}
                       value={newOptionName}
                       onValueChange={setNewOptionName}
                     />
                     <Input
-                      label="Price Change"
-                      placeholder="0.00"
+                      label={tString('items.optionPrice')}
+                      placeholder={tString('items.optionPricePlaceholder')}
                       value={newOptionPrice}
                       onValueChange={setNewOptionPrice}
                       type="number"
@@ -1319,7 +1335,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addOption}
                       isDisabled={!newOptionName.trim() || !newOptionPrice}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemOptions.length > 0 && (
@@ -1344,12 +1360,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5" />
-                    Allergens
+                    {tString('items.allergens')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Allergen"
-                      placeholder="e.g., Nuts, Dairy, Gluten"
+                      label={tString('items.allergens')}
+                      placeholder={tString('items.addAllergen')}
                       value={newAllergen}
                       onValueChange={setNewAllergen}
                     onKeyPress={(e) => {
@@ -1365,7 +1381,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addAllergen}
                       isDisabled={!newAllergen.trim()}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemAllergens.length > 0 && (
@@ -1390,12 +1406,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <Tag className="w-5 h-5" />
-                    Dietary Tags
+                    {tString('items.dietaryTags')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Dietary Tag"
-                      placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
+                      label={tString('items.dietaryTags')}
+                      placeholder={tString('items.addDietaryTag')}
                       value={newDietaryTag}
                       onValueChange={setNewDietaryTag}
                     onKeyPress={(e) => {
@@ -1411,7 +1427,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addDietaryTag}
                       isDisabled={!newDietaryTag.trim()}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemDietaryTags.length > 0 && (
@@ -1435,14 +1451,14 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   resetItemForm();
                   onClose();
                 }}>
-                  Cancel
+                  {tString('buttons.cancel')}
                 </Button>
                 <Button 
                   color="primary" 
                   onPress={handleAddItem}
                   isDisabled={!itemName.trim() || !itemPrice}
                 >
-                  Add Item
+                  {tString('buttons.createItem')}
                 </Button>
               </ModalFooter>
             </>
@@ -1457,7 +1473,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
             <>
               <ModalHeader className="flex items-center gap-2">
                 <Edit className="w-5 h-5" />
-                Edit Item
+                {tString('items.editItem')}
                 {selectedCategoryIndex !== null && (
                   <Chip size="sm" variant="flat" color="primary">
                     {menu[selectedCategoryIndex]?.name}
@@ -1469,20 +1485,20 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <ImageIcon className="w-5 h-5" />
-                    Basic Information
+                    {tString('items.title')}
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
-                      label="Item Name"
-                      placeholder="e.g., Caesar Salad"
+                      label={tString('items.itemName')}
+                      placeholder={tString('items.itemNamePlaceholder')}
                       value={itemName}
                       onValueChange={setItemName}
                       isRequired
                     />
                     <div className="flex gap-2">
                       <Input
-                        label="Price"
-                        placeholder="0.00"
+                        label={tString('items.itemPrice')}
+                        placeholder={tString('items.itemPricePlaceholder')}
                         value={itemPrice}
                         onValueChange={setItemPrice}
                         type="number"
@@ -1492,7 +1508,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                         isRequired
                       />
                       <div className="w-32">
-                        <label className="text-sm text-gray-600 mb-1 block">Currency</label>
+                        <label className="text-sm text-gray-600 mb-1 block">{tString('currency.defaultCurrency')}</label>
                         <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
                           <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
                         </div>
@@ -1501,8 +1517,8 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                     </div>
                   </div>
                   <Textarea
-                    label="Description"
-                    placeholder="Describe this menu item..."
+                    label={tString('items.itemDescription')}
+                    placeholder={tString('items.itemDescriptionPlaceholder')}
                     value={itemDescription}
                     onValueChange={setItemDescription}
                     minRows={2}
@@ -1513,10 +1529,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onValueChange={setItemAvailable}
                       color="success"
                     >
-                      Available for ordering
+                      {tString('items.available')}
                     </Switch>
                     <Input
-                      label="Sort Order"
+                      label={tString('items.sortOrder')}
                       placeholder="0"
                       value={itemSortOrder.toString()}
                       onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
@@ -1542,18 +1558,18 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <DollarSign className="w-5 h-5" />
-                    Options & Add-ons
+                    {tString('items.options')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Option Name"
-                      placeholder="e.g., Extra Cheese"
+                      label={tString('items.optionName')}
+                      placeholder={tString('items.optionNamePlaceholder')}
                       value={newOptionName}
                       onValueChange={setNewOptionName}
                     />
                     <Input
-                      label="Price Change"
-                      placeholder="0.00"
+                      label={tString('items.optionPrice')}
+                      placeholder={tString('items.optionPricePlaceholder')}
                       value={newOptionPrice}
                       onValueChange={setNewOptionPrice}
                       type="number"
@@ -1567,7 +1583,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addOption}
                       isDisabled={!newOptionName.trim() || !newOptionPrice}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemOptions.length > 0 && (
@@ -1592,12 +1608,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5" />
-                    Allergens
+                    {tString('items.allergens')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Allergen"
-                      placeholder="e.g., Nuts, Dairy, Gluten"
+                      label={tString('items.allergens')}
+                      placeholder={tString('items.addAllergen')}
                       value={newAllergen}
                       onValueChange={setNewAllergen}
                     onKeyPress={(e) => {
@@ -1613,7 +1629,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addAllergen}
                       isDisabled={!newAllergen.trim()}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemAllergens.length > 0 && (
@@ -1638,12 +1654,12 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <Tag className="w-5 h-5" />
-                    Dietary Tags
+                    {tString('items.dietaryTags')}
                   </h4>
                   <div className="flex gap-2">
                     <Input
-                      label="Dietary Tag"
-                      placeholder="e.g., Vegetarian, Vegan, Gluten-Free"
+                      label={tString('items.dietaryTags')}
+                      placeholder={tString('items.addDietaryTag')}
                       value={newDietaryTag}
                       onValueChange={setNewDietaryTag}
                     onKeyPress={(e) => {
@@ -1659,7 +1675,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                       onPress={addDietaryTag}
                       isDisabled={!newDietaryTag.trim()}
                     >
-                      Add
+                      {tString('buttons.add')}
                     </Button>
                   </div>
                   {itemDietaryTags.length > 0 && (
@@ -1684,14 +1700,14 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                   resetItemForm();
                   onClose();
                 }}>
-                  Cancel
+                  {tString('buttons.cancel')}
                 </Button>
                 <Button 
                   color="primary" 
                   onPress={handleUpdateItem}
                   isDisabled={!itemName.trim() || !itemPrice}
                 >
-                  Update Item
+                  {tString('buttons.updateItem')}
                 </Button>
               </ModalFooter>
             </>

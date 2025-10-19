@@ -307,7 +307,415 @@
         "settings": "Configuración",
         "subscription": "Suscripción"
       },
-      "navigation": "Navegación"
+      "navigation": "Navegación",
+      "dashboard": {
+        "title": "Panel de Analíticas",
+        "subtitle": "Monitorea el rendimiento de tu negocio, rastrea pagos y analiza el comportamiento del cliente en tiempo real.",
+        "tabs": {
+          "salesOverview": "Resumen de Ventas",
+          "liveBills": "Facturas en Vivo", 
+          "paymentHistory": "Historial de Pagos",
+          "itemAnalytics": "Analíticas de Artículos",
+          "tipReports": "Reportes de Propinas"
+        },
+        "salesOverview": {
+          "title": "Resumen de Ventas",
+          "subtitle": "Rastrea el rendimiento de tu negocio y métricas de ingresos",
+          "loading": "Cargando datos de ventas...",
+          "error": "Error cargando datos de ventas",
+          "noData": "No hay datos de ventas disponibles",
+          "periods": {
+            "today": "Hoy",
+            "yesterday": "Ayer",
+            "week": "Esta Semana",
+            "month": "Este Mes",
+            "quarter": "Este Trimestre",
+            "year": "Este Año"
+          },
+          "metrics": {
+            "totalRevenue": "Ingresos Totales",
+            "totalTips": "Propinas Totales",
+            "transactions": "Transacciones",
+            "bills": "Facturas",
+            "uniqueCustomers": "Clientes Únicos",
+            "averageTicket": "Ticket Promedio"
+          },
+          "tipPerformance": {
+            "title": "Rendimiento de Propinas",
+            "tipRate": "Tasa de Propinas",
+            "tipRateDesc": "Porcentaje de ingresos totales",
+            "averageTip": "Propina Promedio",
+            "averageTipDesc": "Por transacción"
+          },
+          "paymentMethods": {
+            "title": "Métodos de Pago",
+            "noData": "No hay datos de pago disponibles"
+          },
+          "hourlyBreakdown": {
+            "title": "Desglose por Horas",
+            "subtitle": "Patrones de ingresos y transacciones durante el día",
+            "bills": "facturas"
+          }
+        },
+        "liveBills": {
+          "title": "Facturas en Vivo",
+          "subtitle": "Monitorea facturas activas y progreso de pagos en tiempo real",
+          "live": "En Vivo",
+          "lastUpdated": "Última actualización",
+          "refresh": "Actualizar",
+          "error": "Error cargando facturas en vivo",
+          "noActiveBills": "No Hay Facturas Activas",
+          "noActiveBillsDesc": "Todas las facturas han sido pagadas o cerradas. Las nuevas facturas aparecerán aquí automáticamente.",
+          "status": {
+            "paid": "Pagado",
+            "partial": "Parcial",
+            "unpaid": "Sin Pagar"
+          },
+          "amounts": {
+            "totalAmount": "Monto Total",
+            "paidAmount": "Monto Pagado",
+            "remaining": "Restante",
+            "tips": "Propinas"
+          },
+          "paymentProgress": "Progreso de Pago",
+          "created": "Creado",
+          "timeElapsed": {
+            "justNow": "Ahora mismo",
+            "minutesAgo": "m atrás",
+            "hoursAgo": "h atrás",
+            "daysAgo": "d atrás"
+          },
+          "view": "Ver",
+          "quickStats": {
+            "title": "Estadísticas Rápidas",
+            "activeBills": "Facturas Activas",
+            "totalValue": "Valor Total",
+            "outstanding": "Pendiente",
+            "tipsCollected": "Propinas Recolectadas"
+          }
+        },
+        "paymentHistory": {
+          "title": "Historial de Pagos",
+          "subtitle": "Rastrea y gestiona todas las transacciones de pago",
+          "exportData": "Exportar Datos",
+          "searchAndFilter": "Buscar y Filtrar",
+          "searchPayments": "Buscar Pagos",
+          "searchPlaceholder": "Buscar por número de factura, nombre de mesa o dirección del pagador...",
+          "filterOptions": "Opciones de Filtro",
+          "status": "Estado",
+          "dateRange": "Rango de Fechas",
+          "clearAll": "Limpiar Todo",
+          "error": "Error",
+          "paymentRecords": "Registros de Pago",
+          "paymentsCount": "de {total} pagos",
+          "tableHeaders": {
+            "bill": "Factura",
+            "table": "Mesa",
+            "amount": "Monto",
+            "tips": "Propinas",
+            "payer": "Pagador",
+            "status": "Estado",
+            "date": "Fecha",
+            "actions": "Acciones"
+          },
+          "statusOptions": {
+            "all": "Todos los Estados",
+            "confirmed": "Confirmado",
+            "pending": "Pendiente",
+            "failed": "Fallido"
+          },
+          "noPayments": "No se encontraron pagos",
+          "summary": {
+            "title": "Resumen",
+            "totalPayments": "Total de Pagos",
+            "totalAmount": "Monto Total",
+            "totalTips": "Propinas Totales",
+            "confirmed": "Confirmados"
+          }
+        },
+        "itemAnalytics": {
+          "title": "Analíticas de Artículos",
+          "subtitle": "Rastrea el rendimiento de artículos del menú y tendencias de popularidad",
+          "period": "Período",
+          "sortBy": "Ordenar por",
+          "periods": {
+            "today": "Hoy",
+            "yesterday": "Ayer",
+            "week": "Esta Semana",
+            "month": "Este Mes",
+            "quarter": "Este Trimestre"
+          },
+          "sortOptions": {
+            "quantitySold": "Cantidad Vendida",
+            "revenue": "Ingresos",
+            "billsFeatured": "Facturas Incluidas",
+            "averagePrice": "Precio Promedio"
+          },
+          "noItemData": "Sin Datos de Artículos",
+          "noSalesData": "No hay datos de ventas disponibles para el período seleccionado.",
+          "topCategories": "Categorías Principales",
+          "items": "artículos",
+          "sold": "vendidos",
+          "itemPerformance": "Rendimiento de Artículos",
+          "sortedBy": "Ordenado por",
+          "rank": "Rango",
+          "summaryStats": "Estadísticas de Resumen",
+          "totalItems": "Total de Artículos",
+          "totalRevenue": "Ingresos Totales",
+          "itemsSold": "Artículos Vendidos",
+          "avgRevenuePerItem": "Ingresos Prom/Artículo",
+          "bills": "Facturas",
+          "avgPrice": "Precio Prom"
+        },
+        "tipReports": {
+          "title": "Reportes de Propinas",
+          "subtitle": "Analiza patrones de propinas y tendencias de generosidad del cliente",
+          "error": "Error cargando analíticas de propinas",
+          "noData": "No hay datos de propinas disponibles",
+          "periods": {
+            "today": "Hoy",
+            "yesterday": "Ayer",
+            "week": "Esta Semana",
+            "month": "Este Mes",
+            "quarter": "Este Trimestre"
+          },
+          "metrics": {
+            "totalTips": "Propinas Totales",
+            "averageTip": "Propina Promedio",
+            "tipRate": "Tasa de Propinas",
+            "tipTransactions": "Transacciones de Propinas"
+          },
+          "tipRateLabels": {
+            "excellent": "Excelente",
+            "good": "Bueno",
+            "average": "Promedio",
+            "belowAverage": "Bajo Promedio"
+          },
+          "dailyComparison": {
+            "title": "Comparación Diaria",
+            "today": "Hoy",
+            "yesterday": "Ayer",
+            "change": "Cambio"
+          },
+          "tipDistribution": {
+            "title": "Distribución de Propinas",
+            "tips": "propinas"
+          },
+          "hourlyTips": {
+            "title": "Rendimiento de Propinas por Hora"
+          },
+          "topTippers": {
+            "title": "Mejores Propineros",
+            "rank": "Rango",
+            "customer": "Cliente",
+            "totalTips": "Propinas Totales",
+            "tipCount": "Cantidad de Propinas",
+            "averageTip": "Propina Promedio"
+          }
+        },
+        "subscriptionManagement": {
+          "title": "Estado de Suscripción",
+          "subtitle": "Gestiona tu suscripción de negocio",
+          "status": {
+            "active": "Activo",
+            "expired": "Expirado",
+            "suspended": "Suspendido",
+            "cancelled": "Cancelado"
+          },
+          "subscriptionModel": "Modelo de Suscripción",
+          "payAsYouGo": "Pago por uso",
+          "lastPayment": "Último pago",
+          "subscriptionEnds": "Suscripción Termina",
+          "notSet": "No establecido",
+          "daysRemaining": "días restantes",
+          "expired": "Expirado",
+          "timeRemaining": "Tiempo Restante",
+          "days": "días",
+          "totalPaid": "Total pagado",
+          "expiryWarning": {
+            "title": "Tu suscripción expira en {days} día{plural}",
+            "subtitle": "Renueva ahora para evitar interrupción del servicio"
+          },
+          "renewSubscription": "Renovar Suscripción",
+          "paymentHistory": {
+            "title": "Historial de Pagos",
+            "subtitle": "Pagos de suscripción recientes",
+            "subscriptionPayment": "Pago de Suscripción",
+            "noPaymentDate": "Sin fecha de pago",
+            "paid": "Pagado",
+            "noAdditionalHistory": "Sin historial de pagos adicional"
+          },
+          "renewalModal": {
+            "title": "Renovar Suscripción",
+            "description": "Elige cuánto quieres pagar para extender tu suscripción. Obtendrás tiempo proporcional a la tarifa anual.",
+            "walletNotConnected": {
+              "title": "Billetera No Conectada",
+              "subtitle": "Por favor conecta tu billetera para renovar tu suscripción"
+            },
+            "walletConnected": {
+              "title": "Billetera Conectada",
+              "balance": "Balance USDC"
+            },
+            "suggestedOptions": "Opciones de Pago Sugeridas",
+            "popular": "Popular",
+            "renewalOptions": {
+              "extend1Month": "Extender por 1 mes",
+              "extend3Months": "Extender por 3 meses",
+              "extend6Months": "Extender por 6 meses",
+              "extendFullYear": "Extender por año completo"
+            },
+            "customAmount": {
+              "title": "Pagar monto personalizado",
+              "placeholder": "Ingresa monto",
+              "description": "Obtendrás tiempo de suscripción proporcional a la tarifa anual (${fee} = 1 año)",
+              "warning": "Monto superior a ${fee} aún solo dará 1 año máximo",
+              "estimatedTime": "Tiempo estimado"
+            },
+            "coupon": {
+              "title": "Aplicar código de cupón",
+              "placeholder": "Ingresa código de cupón",
+              "validCoupon": "¡Cupón válido! Descuento",
+              "invalidCoupon": "Código de cupón inválido o expirado"
+            },
+            "paymentSummary": {
+              "title": "Resumen de Pago",
+              "paymentAmount": "Monto de Pago",
+              "couponDiscount": "Descuento de Cupón",
+              "total": "Total",
+              "additionalTime": "Tiempo adicional"
+            },
+            "buttons": {
+              "cancel": "Cancelar",
+              "confirmPayment": "Confirmar Pago",
+              "approvingUsdc": "Aprobando USDC...",
+              "processingRenewal": "Procesando Renovación...",
+              "complete": "¡Completo!"
+            }
+          },
+          "alerts": {
+            "connectWallet": "Por favor conecta tu billetera",
+            "renewalFailed": "Renovación falló. Por favor intenta de nuevo."
+          },
+          "timeUnits": {
+            "year": "año",
+            "years": "años",
+            "month": "mes",
+            "months": "meses",
+            "day": "día",
+            "days": "días"
+          }
+        },
+        "menuBuilder": {
+          "title": "Constructor de Menú",
+          "subtitle": "Crea y gestiona tu menú digital",
+          "loading": "Cargando menú...",
+          "error": "Error al cargar datos del menú",
+          "noCategories": "Aún no hay categorías",
+          "noItems": "Aún no hay elementos en esta categoría",
+          "search": {
+            "placeholder": "Buscar elementos del menú...",
+            "filters": {
+              "all": "Todos los Elementos",
+              "available": "Disponibles",
+              "unavailable": "No Disponibles"
+            },
+            "active": "Búsqueda activa",
+            "noResults": "No se encontraron resultados",
+            "noResultsDescription": "Ningún elemento del menú coincide con tus criterios de búsqueda. Intenta ajustar tus términos de búsqueda o filtros."
+          },
+          "languages": {
+            "title": "Idiomas del Menú",
+            "subtitle": "Gestiona traducciones del menú y configuración de idiomas",
+            "currentView": "Vista Actual",
+            "supportedLanguages": "Idiomas Soportados",
+            "selectLanguages": "Selecciona idiomas a soportar",
+            "defaultLanguage": "Idioma Predeterminado",
+            "setAsDefault": "Establecer como predeterminado",
+            "saveLanguages": "Guardar Configuración de Idiomas",
+            "translateMenu": "Traducir Menú",
+            "translating": "Traduciendo menú...",
+            "hasChanges": "Tienes cambios de idioma sin guardar",
+            "saveFirst": "Por favor guarda tu configuración de idiomas primero"
+          },
+          "categories": {
+            "title": "Categorías",
+            "addCategory": "Agregar Categoría",
+            "editCategory": "Editar Categoría",
+            "deleteCategory": "Eliminar Categoría",
+            "categoryName": "Nombre de Categoría",
+            "categoryDescription": "Descripción de Categoría",
+            "categoryNamePlaceholder": "Ingresa nombre de categoría",
+            "categoryDescriptionPlaceholder": "Ingresa descripción de categoría (opcional)",
+            "confirmDelete": "¿Estás seguro de que quieres eliminar esta categoría y todos sus elementos?",
+            "deleteSuccess": "Categoría eliminada exitosamente",
+            "createSuccess": "Categoría creada exitosamente",
+            "updateSuccess": "Categoría actualizada exitosamente",
+            "createFirstDescription": "Crea tu primera categoría de menú para comenzar a construir tu menú de restaurante."
+          },
+          "items": {
+            "title": "Elementos del Menú",
+            "addItem": "Agregar Elemento",
+            "editItem": "Editar Elemento",
+            "deleteItem": "Eliminar Elemento",
+            "itemName": "Nombre del Elemento",
+            "itemDescription": "Descripción del Elemento",
+            "itemPrice": "Precio",
+            "itemImage": "Imagen del Elemento",
+            "itemImages": "Imágenes Adicionales",
+            "available": "Disponible",
+            "unavailable": "No Disponible",
+            "allergens": "Alérgenos",
+            "dietaryTags": "Etiquetas Dietéticas",
+            "options": "Opciones del Elemento",
+            "sortOrder": "Orden de Clasificación",
+            "itemNamePlaceholder": "Ingresa nombre del elemento",
+            "itemDescriptionPlaceholder": "Ingresa descripción del elemento",
+            "itemPricePlaceholder": "Ingresa precio",
+            "addAllergen": "Agregar Alérgeno",
+            "addDietaryTag": "Agregar Etiqueta Dietética",
+            "addOption": "Agregar Opción",
+            "optionName": "Nombre de Opción",
+            "optionPrice": "Precio de Opción",
+            "optionNamePlaceholder": "Ingresa nombre de opción",
+            "optionPricePlaceholder": "Ingresa precio adicional",
+            "confirmDelete": "¿Estás seguro de que quieres eliminar este elemento?",
+            "deleteSuccess": "Elemento eliminado exitosamente",
+            "createSuccess": "Elemento creado exitosamente",
+            "updateSuccess": "Elemento actualizado exitosamente",
+            "noImage": "Sin imagen"
+          },
+          "buttons": {
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "create": "Crear",
+            "update": "Actualizar",
+            "delete": "Eliminar",
+            "add": "Agregar",
+            "remove": "Quitar",
+            "edit": "Editar",
+            "close": "Cerrar",
+            "addCategory": "Agregar Categoría",
+            "addItem": "Agregar Elemento",
+            "createCategory": "Crear Categoría",
+            "updateCategory": "Actualizar Categoría",
+            "createItem": "Crear Elemento",
+            "updateItem": "Actualizar Elemento"
+          },
+          "validation": {
+            "categoryNameRequired": "El nombre de categoría es requerido",
+            "itemNameRequired": "El nombre del elemento es requerido",
+            "itemPriceRequired": "El precio del elemento es requerido",
+            "invalidPrice": "Por favor ingresa un precio válido"
+          },
+          "status": {
+            "available": "Disponible",
+            "unavailable": "No Disponible"
+          },
+          "currency": {
+            "defaultCurrency": "Moneda Predeterminada"
+          }
+        }
+      }
     },
     "businessRegister": {
         "header": {

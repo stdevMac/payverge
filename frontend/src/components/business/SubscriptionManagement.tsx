@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import { Card, CardBody, CardHeader, Button, Chip, Progress, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Checkbox } from '@nextui-org/react';
 import { Calendar, CreditCard, AlertTriangle, CheckCircle, Clock, DollarSign, TrendingUp, Settings, Hash } from 'lucide-react';
 import { 
@@ -43,7 +44,7 @@ interface RenewalOption {
 }
 
 // Dynamic renewal options based on registration fee
-const getRenewalOptions = (registrationFee?: unknown): RenewalOption[] => {
+const getRenewalOptions = (registrationFee?: unknown, tString?: (key: string) => string): RenewalOption[] => {
   const yearlyFee = registrationFee && typeof registrationFee === 'bigint' 
     ? Number(formatUsdcAmount(registrationFee)) 
     : 100; // More reasonable default closer to actual registration fee
@@ -52,23 +53,23 @@ const getRenewalOptions = (registrationFee?: unknown): RenewalOption[] => {
     {
       months: 1,
       suggestedAmount: (yearlyFee / 12).toFixed(2),
-      description: 'Extend for 1 month',
+      description: tString ? tString('renewalModal.renewalOptions.extend1Month') : 'Extend for 1 month',
     },
     {
       months: 3,
       suggestedAmount: (yearlyFee / 4).toFixed(2),
-      description: 'Extend for 3 months',
+      description: tString ? tString('renewalModal.renewalOptions.extend3Months') : 'Extend for 3 months',
     },
     {
       months: 6,
       suggestedAmount: (yearlyFee / 2).toFixed(2),
-      description: 'Extend for 6 months',
+      description: tString ? tString('renewalModal.renewalOptions.extend6Months') : 'Extend for 6 months',
       popular: true,
     },
     {
       months: 12,
       suggestedAmount: yearlyFee.toFixed(2),
-      description: 'Extend for full year',
+      description: tString ? tString('renewalModal.renewalOptions.extendFullYear') : 'Extend for full year',
     },
   ];
 };
@@ -78,6 +79,22 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   onRenewSubscription,
   onToggleAutoRenewal,
 }) => {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.subscriptionManagement.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const { isOpen: isRenewOpen, onOpen: onRenewOpen, onClose: onRenewClose } = useDisclosure();
 
   // Wallet and Smart Contract Hooks
@@ -90,7 +107,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   const { renewSubscriptionWithCoupon } = useRenewSubscriptionWithCoupon();
   
   // Dynamic renewal options based on registration fee
-  const renewalOptions = getRenewalOptions(registrationFee);
+  const renewalOptions = getRenewalOptions(registrationFee, tString);
   
   // Renewal state
   const [selectedOption, setSelectedOption] = useState<RenewalOption>(renewalOptions[2]); // Default to 6 months
@@ -98,10 +115,10 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   // Update selected option when registration fee loads
   useEffect(() => {
     if (registrationFee) {
-      const updatedOptions = getRenewalOptions(registrationFee);
+      const updatedOptions = getRenewalOptions(registrationFee, tString);
       setSelectedOption(updatedOptions[2]); // Keep 6 months selected but with correct amount
     }
-  }, [registrationFee]);
+  }, [registrationFee, tString]);
   
   const [customAmount, setCustomAmount] = useState('');
   const [useCustomAmount, setUseCustomAmount] = useState(false);
@@ -132,18 +149,21 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
     const years = Math.floor(days / 365);
     
     if (years >= 1) {
-      return `${years} year${years > 1 ? 's' : ''}`;
+      const unit = years > 1 ? tString('timeUnits.years') : tString('timeUnits.year');
+      return `${years} ${unit}`;
     } else if (months >= 1) {
-      return `${months} month${months > 1 ? 's' : ''}`;
+      const unit = months > 1 ? tString('timeUnits.months') : tString('timeUnits.month');
+      return `${months} ${unit}`;
     } else {
-      return `${days} day${days > 1 ? 's' : ''}`;
+      const unit = days > 1 ? tString('timeUnits.days') : tString('timeUnits.day');
+      return `${days} ${unit}`;
     }
   };
 
   // Handle renewal processing
   const handleRenewalPayment = async () => {
     if (!address) {
-      alert('Please connect your wallet');
+      alert(tString('alerts.connectWallet'));
       return;
     }
 
@@ -185,7 +205,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
 
     } catch (error) {
       console.error('Renewal failed:', error);
-      alert('Renewal failed. Please try again.');
+      alert(tString('alerts.renewalFailed'));
       setIsProcessing(false);
     }
   };
@@ -232,8 +252,8 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                 <CreditCard className="text-white" size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Subscription Status</h3>
-                <p className="text-sm text-gray-600">Manage your business subscription</p>
+                <h3 className="text-lg font-semibold text-gray-900">{tString('title')}</h3>
+                <p className="text-sm text-gray-600">{tString('subtitle')}</p>
               </div>
             </div>
             <Chip
@@ -242,7 +262,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               startContent={getStatusIcon(subscriptionData.status)}
               className="capitalize"
             >
-              {subscriptionData.status}
+              {tString(`status.${subscriptionData.status}`)}
             </Chip>
           </div>
         </CardHeader>
@@ -252,13 +272,13 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <TrendingUp size={16} />
-                Subscription Model
+                {tString('subscriptionModel')}
               </div>
               <div className="text-xl font-semibold text-gray-900 capitalize">
-                Pay-as-you-go
+                {tString('payAsYouGo')}
               </div>
               <div className="text-sm text-gray-600">
-                Last payment: ${(parseFloat(subscriptionData.lastPaymentAmount) / 1000000).toFixed(2)} USDC
+                {tString('lastPayment')}: ${(parseFloat(subscriptionData.lastPaymentAmount) / 1000000).toFixed(2)} USDC
               </div>
             </div>
 
@@ -266,13 +286,13 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Calendar size={16} />
-                Subscription Ends
+                {tString('subscriptionEnds')}
               </div>
               <div className="text-xl font-semibold text-gray-900">
-                {subscriptionData.subscriptionEndDate ? new Date(subscriptionData.subscriptionEndDate).toLocaleDateString() : 'Not set'}
+                {subscriptionData.subscriptionEndDate ? new Date(subscriptionData.subscriptionEndDate).toLocaleDateString() : tString('notSet')}
               </div>
               <div className="text-sm text-gray-600">
-                {daysUntilExpiry > 0 ? `${daysUntilExpiry} days remaining` : 'Expired'}
+                {daysUntilExpiry > 0 ? `${daysUntilExpiry} ${tString('daysRemaining')}` : tString('expired')}
               </div>
             </div>
 
@@ -280,13 +300,13 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Clock size={16} />
-                Time Remaining
+                {tString('timeRemaining')}
               </div>
               <div className="text-xl font-semibold text-gray-900">
-                {Math.floor(subscriptionData.timeRemaining / (24 * 60 * 60))} days
+                {Math.floor(subscriptionData.timeRemaining / (24 * 60 * 60))} {tString('days')}
               </div>
               <div className="text-sm text-gray-600">
-                Total paid: ${(parseFloat(subscriptionData.totalPaid) / 1000000).toFixed(2)} USDC
+                {tString('totalPaid')}: ${(parseFloat(subscriptionData.totalPaid) / 1000000).toFixed(2)} USDC
               </div>
             </div>
           </div>
@@ -298,10 +318,10 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                 <AlertTriangle className="text-amber-600" size={20} />
                 <div>
                   <p className="text-sm font-medium text-amber-800">
-                    Your subscription expires in {daysUntilExpiry} day{daysUntilExpiry !== 1 ? 's' : ''}
+                    {tString('expiryWarning.title').replace('{days}', daysUntilExpiry.toString()).replace('{plural}', daysUntilExpiry !== 1 ? 's' : '')}
                   </p>
                   <p className="text-xs text-amber-700 mt-1">
-                    Renew now to avoid service interruption
+                    {tString('expiryWarning.subtitle')}
                   </p>
                 </div>
               </div>
@@ -317,7 +337,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               startContent={<DollarSign size={16} />}
               className="flex-1"
             >
-              Renew Subscription
+              {tString('renewSubscription')}
             </Button>
           </div>
         </CardBody>
@@ -331,8 +351,8 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               <Calendar className="text-gray-600" size={16} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Payment History</h3>
-              <p className="text-sm text-gray-600">Recent subscription payments</p>
+              <h3 className="text-lg font-semibold text-gray-900">{tString('paymentHistory.title')}</h3>
+              <p className="text-sm text-gray-600">{tString('paymentHistory.subtitle')}</p>
             </div>
           </div>
         </CardHeader>
@@ -345,21 +365,21 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">
-                    Subscription Payment
+                    {tString('paymentHistory.subscriptionPayment')}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {subscriptionData.lastPaymentDate ? new Date(subscriptionData.lastPaymentDate).toLocaleDateString() : 'No payment date'}
+                    {subscriptionData.lastPaymentDate ? new Date(subscriptionData.lastPaymentDate).toLocaleDateString() : tString('paymentHistory.noPaymentDate')}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="font-semibold text-gray-900">${(parseFloat(subscriptionData.lastPaymentAmount) / 1000000).toFixed(2)} USDC</p>
-                <p className="text-sm text-green-600">Paid</p>
+                <p className="text-sm text-green-600">{tString('paymentHistory.paid')}</p>
               </div>
             </div>
             
             <div className="text-center py-4">
-              <p className="text-sm text-gray-500">No additional payment history</p>
+              <p className="text-sm text-gray-500">{tString('paymentHistory.noAdditionalHistory')}</p>
             </div>
           </div>
         </CardBody>
@@ -368,11 +388,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
       {/* Renew Subscription Modal */}
       <Modal isOpen={isRenewOpen} onClose={onRenewClose} size="2xl">
         <ModalContent>
-          <ModalHeader>Renew Subscription</ModalHeader>
+          <ModalHeader>{tString('renewalModal.title')}</ModalHeader>
           <ModalBody>
             <div className="space-y-6">
               <p className="text-gray-600">
-                Choose how much you want to pay to extend your subscription. You&apos;ll get time proportional to the yearly fee.
+                {tString('renewalModal.description')}
               </p>
 
               {/* Wallet Status */}
@@ -383,10 +403,10 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                       <AlertTriangle className="text-amber-600" size={20} />
                       <div>
                         <p className="text-sm font-medium text-amber-800">
-                          Wallet Not Connected
+                          {tString('renewalModal.walletNotConnected.title')}
                         </p>
                         <p className="text-xs text-amber-700">
-                          Please connect your wallet to renew your subscription
+                          {tString('renewalModal.walletNotConnected.subtitle')}
                         </p>
                       </div>
                     </div>
@@ -402,10 +422,10 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                         <CheckCircle className="text-blue-600" size={20} />
                         <div>
                           <p className="text-sm font-medium text-blue-800">
-                            Wallet Connected
+                            {tString('renewalModal.walletConnected.title')}
                           </p>
                           <p className="text-xs text-blue-700">
-                            USDC Balance: ${formatUsdcAmount(usdcBalance)}
+                            {tString('renewalModal.walletConnected.balance')}: ${formatUsdcAmount(usdcBalance)}
                           </p>
                         </div>
                       </div>
@@ -416,7 +436,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
 
               {/* Payment Options */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Suggested Payment Options</h4>
+                <h4 className="font-semibold text-gray-900">{tString('renewalModal.suggestedOptions')}</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {renewalOptions.map((option) => (
                     <Card
@@ -437,7 +457,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                       {option.popular && (
                         <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                           <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-                            Popular
+                            {tString('renewalModal.popular')}
                           </span>
                         </div>
                       )}
@@ -477,11 +497,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                         }}
                         color="primary"
                       >
-                        <span className="font-medium">Pay custom amount</span>
+                        <span className="font-medium">{tString('renewalModal.customAmount.title')}</span>
                       </Checkbox>
                       {useCustomAmount && (
                         <Input
-                          placeholder="Enter amount"
+                          placeholder={tString('renewalModal.customAmount.placeholder')}
                           value={customAmount}
                           onChange={(e) => {
                             const value = e.target.value;
@@ -513,16 +533,16 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                           return (
                             <>
                               <p className="text-sm text-gray-600">
-                                You&apos;ll get subscription time proportional to the yearly fee (${yearlyFee} = 1 year)
+                                {tString('renewalModal.customAmount.description').replace('${fee}', yearlyFee.toString())}
                               </p>
                               {isOverYearlyFee && (
                                 <p className="text-sm font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded">
-                                  ⚠️ Amount above ${yearlyFee} will still only give 1 year maximum
+                                  ⚠️ {tString('renewalModal.customAmount.warning').replace('${fee}', yearlyFee.toString())}
                                 </p>
                               )}
                               {customAmount && calculatedSubscriptionTime ? (
                                 <p className="text-sm font-medium text-blue-600">
-                                  Estimated time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                                  {tString('renewalModal.customAmount.estimatedTime')}: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
                                 </p>
                               ) : null}
                             </>
@@ -551,11 +571,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                         }}
                         color="success"
                       >
-                        <span className="font-medium">Apply coupon code</span>
+                        <span className="font-medium">{tString('renewalModal.coupon.title')}</span>
                       </Checkbox>
                       {useCoupon && (
                         <Input
-                          placeholder="Enter coupon code"
+                          placeholder={tString('renewalModal.coupon.placeholder')}
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                           variant="bordered"
@@ -578,11 +598,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                       <div className="mt-2">
                         {isCouponValid ? (
                           <p className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
-                            ✅ Valid coupon! Discount: ${formatUsdcAmount(couponDiscount)}
+                            ✅ {tString('renewalModal.coupon.validCoupon')}: ${formatUsdcAmount(couponDiscount)}
                           </p>
                         ) : (
                           <p className="text-sm font-medium text-red-600 bg-red-50 px-2 py-1 rounded">
-                            ❌ Invalid or expired coupon code
+                            ❌ {tString('renewalModal.coupon.invalidCoupon')}
                           </p>
                         )}
                       </div>
@@ -594,17 +614,17 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               {/* Payment Summary */}
               <Card className="bg-gradient-to-br from-gray-50 to-blue-50/30">
                 <CardBody className="p-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Payment Summary</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">{tString('renewalModal.paymentSummary.title')}</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Payment Amount</span>
+                      <span className="text-gray-600">{tString('renewalModal.paymentSummary.paymentAmount')}</span>
                       <span className="font-medium">
                         ${useCustomAmount ? customAmount || '0.00' : selectedOption.suggestedAmount}
                       </span>
                     </div>
                     {useCoupon && isCouponValid && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Coupon Discount</span>
+                        <span className="text-gray-600">{tString('renewalModal.paymentSummary.couponDiscount')}</span>
                         <span className="font-medium text-green-600">
                           -${formatUsdcAmount(couponDiscount)}
                         </span>
@@ -612,7 +632,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                     )}
                     <Divider />
                     <div className="flex justify-between text-lg font-semibold">
-                      <span>Total</span>
+                      <span>{tString('renewalModal.paymentSummary.total')}</span>
                       <span>
                         ${(() => {
                           const originalAmount = parseFloat(useCustomAmount ? customAmount || '0' : selectedOption.suggestedAmount);
@@ -624,7 +644,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
                     </div>
                     {calculatedSubscriptionTime ? (
                       <div className="text-sm text-gray-600 mt-2">
-                        Additional time: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
+                        {tString('renewalModal.paymentSummary.additionalTime')}: {formatSubscriptionTime(Number(calculatedSubscriptionTime.toString()))}
                       </div>
                     ) : null}
                   </div>
@@ -638,7 +658,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               onPress={onRenewClose}
               isDisabled={isProcessing}
             >
-              Cancel
+              {tString('renewalModal.buttons.cancel')}
             </Button>
             <Button 
               color="primary" 
@@ -651,11 +671,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
               isLoading={isProcessing}
             >
               {isProcessing ? (
-                processingStep === 'approval' ? 'Approving USDC...' :
-                processingStep === 'renewal' ? 'Processing Renewal...' :
-                'Complete!'
+                processingStep === 'approval' ? tString('renewalModal.buttons.approvingUsdc') :
+                processingStep === 'renewal' ? tString('renewalModal.buttons.processingRenewal') :
+                tString('renewalModal.buttons.complete')
               ) : (
-                'Confirm Payment'
+                tString('renewalModal.buttons.confirmPayment')
               )}
             </Button>
           </ModalFooter>

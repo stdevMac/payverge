@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider'
 import { 
   Card, 
   CardBody, 
@@ -21,6 +22,22 @@ interface ItemAnalyticsProps {
 }
 
 export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.itemAnalytics.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [items, setItems] = useState<ItemStats[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -92,18 +109,18 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
   }
 
   const periods = [
-    { key: 'today', label: 'Today' },
-    { key: 'yesterday', label: 'Yesterday' },
-    { key: 'week', label: 'This Week' },
-    { key: 'month', label: 'This Month' },
-    { key: 'quarter', label: 'This Quarter' },
+    { key: 'today', label: tString('periods.today') },
+    { key: 'yesterday', label: tString('periods.yesterday') },
+    { key: 'week', label: tString('periods.week') },
+    { key: 'month', label: tString('periods.month') },
+    { key: 'quarter', label: tString('periods.quarter') },
   ]
 
   const sortOptions = [
-    { key: 'total_sold', label: 'Quantity Sold' },
-    { key: 'revenue', label: 'Revenue' },
-    { key: 'bills_featured', label: 'Bills Featured' },
-    { key: 'avg_price', label: 'Average Price' },
+    { key: 'total_sold', label: tString('sortOptions.quantitySold') },
+    { key: 'revenue', label: tString('sortOptions.revenue') },
+    { key: 'bills_featured', label: tString('sortOptions.billsFeatured') },
+    { key: 'avg_price', label: tString('sortOptions.averagePrice') },
   ]
 
   // Calculate category performance
@@ -152,8 +169,8 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
       {/* Header with Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">Item Analytics</h2>
-          <p className="text-default-600 mt-1">Track menu item performance and popularity trends</p>
+          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3">
@@ -163,7 +180,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
             onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
             className="w-full sm:w-40"
             variant="bordered"
-            label="Period"
+            label={tString('period')}
           >
             {periods.map((p) => (
               <SelectItem key={p.key} value={p.key}>
@@ -178,7 +195,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
             onSelectionChange={(keys) => setSortBy(Array.from(keys)[0] as string)}
             className="w-full sm:w-48"
             variant="bordered"
-            label="Sort by"
+            label={tString('sortBy')}
           >
             {sortOptions.map((option) => (
               <SelectItem key={option.key} value={option.key}>
@@ -194,8 +211,8 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
           <CardBody className="p-8">
             <div className="text-center text-default-500">
               <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">No Item Data</p>
-              <p>No sales data available for the selected period.</p>
+              <p className="text-lg font-medium mb-2">{tString('noItemData')}</p>
+              <p>{tString('noSalesData')}</p>
             </div>
           </CardBody>
         </Card>
@@ -205,7 +222,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
           {topCategories.length > 0 && (
             <Card>
               <CardHeader>
-                <h3 className="text-lg font-semibold">Top Categories</h3>
+                <h3 className="text-lg font-semibold">{tString('topCategories')}</h3>
               </CardHeader>
               <Divider />
               <CardBody className="p-4">
@@ -215,7 +232,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <span className="text-lg font-bold text-primary">#{index + 1}</span>
                         <Chip size="sm" color="primary" variant="flat">
-                          {stats.item_count} items
+                          {stats.item_count} {tString('items')}
                         </Chip>
                       </div>
                       <p className="font-semibold text-sm mb-1">{category}</p>
@@ -223,7 +240,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                         {formatCurrency(stats.revenue)}
                       </p>
                       <p className="text-xs text-default-600">
-                        {stats.total_sold} sold
+                        {stats.total_sold} {tString('sold')}
                       </p>
                     </div>
                   ))}
@@ -236,9 +253,9 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center w-full">
-                <h3 className="text-lg font-semibold">Item Performance</h3>
+                <h3 className="text-lg font-semibold">{tString('itemPerformance')}</h3>
                 <span className="text-sm text-default-500">
-                  Sorted by {sortOptions.find(opt => opt.key === sortBy)?.label}
+                  {tString('sortedBy')} {sortOptions.find(opt => opt.key === sortBy)?.label}
                 </span>
               </div>
             </CardHeader>
@@ -272,7 +289,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                               variant="flat"
                               startContent={getPerformanceIcon(item.popularity_rank)}
                             >
-                              Rank {item.popularity_rank}
+                              {tString('rank')} {item.popularity_rank}
                             </Chip>
                           </div>
                           
@@ -305,19 +322,19 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                       <div className="grid grid-cols-4 gap-4 text-sm">
                         <div className="text-center">
                           <p className="font-semibold text-primary">{item.total_sold}</p>
-                          <p className="text-xs text-default-600">Sold</p>
+                          <p className="text-xs text-default-600">{tString('sold')}</p>
                         </div>
                         <div className="text-center">
                           <p className="font-semibold text-success">{formatCurrency(item.revenue)}</p>
-                          <p className="text-xs text-default-600">Revenue</p>
+                          <p className="text-xs text-default-600">{tString('sortOptions.revenue')}</p>
                         </div>
                         <div className="text-center">
                           <p className="font-semibold text-warning">{item.bills_featured}</p>
-                          <p className="text-xs text-default-600">Bills</p>
+                          <p className="text-xs text-default-600">{tString('bills')}</p>
                         </div>
                         <div className="text-center">
                           <p className="font-semibold text-secondary">{formatCurrency(item.avg_price)}</p>
-                          <p className="text-xs text-default-600">Avg Price</p>
+                          <p className="text-xs text-default-600">{tString('avgPrice')}</p>
                         </div>
                       </div>
                     </div>
@@ -330,7 +347,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
           {/* Summary Stats */}
           <Card>
             <CardHeader>
-              <h3 className="text-lg font-semibold">Summary Statistics</h3>
+              <h3 className="text-lg font-semibold">{tString('summaryStats')}</h3>
             </CardHeader>
             <Divider />
             <CardBody className="p-4">
@@ -338,7 +355,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                 <div className="text-center p-4 bg-primary/10 rounded-lg">
                   <Package className="w-8 h-8 mx-auto mb-2 text-primary" />
                   <p className="text-2xl font-bold text-primary">{items.length}</p>
-                  <p className="text-sm text-default-600">Total Items</p>
+                  <p className="text-sm text-default-600">{tString('totalItems')}</p>
                 </div>
                 
                 <div className="text-center p-4 bg-success/10 rounded-lg">
@@ -346,7 +363,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                   <p className="text-2xl font-bold text-success">
                     {formatCurrency(items.reduce((sum, item) => sum + item.revenue, 0))}
                   </p>
-                  <p className="text-sm text-default-600">Total Revenue</p>
+                  <p className="text-sm text-default-600">{tString('totalRevenue')}</p>
                 </div>
                 
                 <div className="text-center p-4 bg-warning/10 rounded-lg">
@@ -354,7 +371,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                   <p className="text-2xl font-bold text-warning">
                     {items.reduce((sum, item) => sum + item.total_sold, 0)}
                   </p>
-                  <p className="text-sm text-default-600">Items Sold</p>
+                  <p className="text-sm text-default-600">{tString('itemsSold')}</p>
                 </div>
                 
                 <div className="text-center p-4 bg-secondary/10 rounded-lg">
@@ -366,7 +383,7 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                         : 0
                     )}
                   </p>
-                  <p className="text-sm text-default-600">Avg Revenue/Item</p>
+                  <p className="text-sm text-default-600">{tString('avgRevenuePerItem')}</p>
                 </div>
               </div>
             </CardBody>

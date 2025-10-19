@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider'
 import { Card, CardBody, CardHeader, Select, SelectItem, Spinner, Divider } from '@nextui-org/react'
 import { TrendingUp, DollarSign, CreditCard, Users, Clock, Receipt, TrendingDown } from 'lucide-react'
 import analyticsApi, { SalesData } from '@/api/analytics'
@@ -10,6 +11,22 @@ interface SalesOverviewProps {
 }
 
 export default function SalesOverview({ businessId }: SalesOverviewProps) {
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `businessDashboard.dashboard.salesOverview.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
+
   const [salesData, setSalesData] = useState<SalesData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -61,7 +78,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       <Card className="w-full">
         <CardBody className="p-8">
           <div className="text-center text-danger">
-            <p>Error loading sales data: {error}</p>
+            <p>{tString('error')}: {error}</p>
           </div>
         </CardBody>
       </Card>
@@ -73,7 +90,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       <Card className="w-full">
         <CardBody className="p-8">
           <div className="text-center text-default-500">
-            <p>No sales data available</p>
+            <p>{tString('noData')}</p>
           </div>
         </CardBody>
       </Card>
@@ -81,52 +98,52 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
   }
 
   const periods = [
-    { key: 'today', label: 'Today' },
-    { key: 'yesterday', label: 'Yesterday' },
-    { key: 'week', label: 'This Week' },
-    { key: 'month', label: 'This Month' },
-    { key: 'quarter', label: 'This Quarter' },
-    { key: 'year', label: 'This Year' },
+    { key: 'today', label: tString('periods.today') },
+    { key: 'yesterday', label: tString('periods.yesterday') },
+    { key: 'week', label: tString('periods.week') },
+    { key: 'month', label: tString('periods.month') },
+    { key: 'quarter', label: tString('periods.quarter') },
+    { key: 'year', label: tString('periods.year') },
   ]
 
   const metrics = [
     {
-      title: 'Total Revenue',
+      title: tString('metrics.totalRevenue'),
       value: formatCurrency(salesData.total_revenue || 0),
       icon: DollarSign,
       color: 'text-success',
       bgColor: 'bg-success/10',
     },
     {
-      title: 'Total Tips',
+      title: tString('metrics.totalTips'),
       value: formatCurrency(salesData.total_tips || 0),
       icon: TrendingUp,
       color: 'text-warning',
       bgColor: 'bg-warning/10',
     },
     {
-      title: 'Transactions',
+      title: tString('metrics.transactions'),
       value: (salesData.transaction_count || 0).toString(),
       icon: CreditCard,
       color: 'text-primary',
       bgColor: 'bg-primary/10',
     },
     {
-      title: 'Bills',
+      title: tString('metrics.bills'),
       value: (salesData.bill_count || 0).toString(),
       icon: Receipt,
       color: 'text-secondary',
       bgColor: 'bg-secondary/10',
     },
     {
-      title: 'Unique Customers',
+      title: tString('metrics.uniqueCustomers'),
       value: (salesData.unique_customers || 0).toString(),
       icon: Users,
       color: 'text-default-600',
       bgColor: 'bg-default/10',
     },
     {
-      title: 'Average Ticket',
+      title: tString('metrics.averageTicket'),
       value: formatCurrency(salesData.average_ticket || 0),
       icon: TrendingUp,
       color: 'text-success',
@@ -144,8 +161,8 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       {/* Header with Period Selector */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">Sales Overview</h2>
-          <p className="text-default-600 mt-1">Track your business performance and revenue metrics</p>
+          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
+          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
         </div>
         <Select
           size="md"
@@ -191,7 +208,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-success" />
-              <h3 className="text-xl font-semibold text-default-900">Tip Performance</h3>
+              <h3 className="text-xl font-semibold text-default-900">{tString('tipPerformance.title')}</h3>
             </div>
           </CardHeader>
           <Divider />
@@ -199,8 +216,8 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
             <div className="space-y-6">
               <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Tip Rate</p>
-                  <p className="text-xs text-default-500 mt-1">Percentage of total revenue</p>
+                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('tipPerformance.tipRate')}</p>
+                  <p className="text-xs text-default-500 mt-1">{tString('tipPerformance.tipRateDesc')}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {tipRate >= 15 ? (
@@ -215,8 +232,8 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
               </div>
               <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">Average Tip</p>
-                  <p className="text-xs text-default-500 mt-1">Per transaction</p>
+                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('tipPerformance.averageTip')}</p>
+                  <p className="text-xs text-default-500 mt-1">{tString('tipPerformance.averageTipDesc')}</p>
                 </div>
                 <span className="text-2xl font-bold text-default-900">
                   {formatCurrency((salesData.transaction_count || 0) > 0 ? (salesData.total_tips || 0) / (salesData.transaction_count || 1) : 0)}
@@ -231,7 +248,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-primary" />
-              <h3 className="text-xl font-semibold text-default-900">Payment Methods</h3>
+              <h3 className="text-xl font-semibold text-default-900">{tString('paymentMethods.title')}</h3>
             </div>
           </CardHeader>
           <Divider />
@@ -239,7 +256,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
             <div className="space-y-4">
               {Object.entries(salesData.payment_methods || {}).length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-default-500">No payment data available</p>
+                  <p className="text-default-500">{tString('paymentMethods.noData')}</p>
                 </div>
               ) : (
                 Object.entries(salesData.payment_methods || {}).map(([method, count]) => {
@@ -269,9 +286,9 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-warning" />
-              <h3 className="text-xl font-semibold text-default-900">Hourly Breakdown</h3>
+              <h3 className="text-xl font-semibold text-default-900">{tString('hourlyBreakdown.title')}</h3>
             </div>
-            <p className="text-sm text-default-600 mt-1">Revenue and transaction patterns throughout the day</p>
+            <p className="text-sm text-default-600 mt-1">{tString('hourlyBreakdown.subtitle')}</p>
           </CardHeader>
           <Divider />
           <CardBody className="p-6">
@@ -285,7 +302,7 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
                       {formatCurrency(data.revenue)}
                     </p>
                     <p className="text-xs text-default-500 mt-1">
-                      {data.bill_count} bills
+                      {data.bill_count} {tString('hourlyBreakdown.bills')}
                     </p>
                   </div>
                 ))}
