@@ -31,6 +31,7 @@ import PaymentNotification from '../notifications/PaymentNotification';
 import BillUpdateNotification from '../notifications/BillUpdateNotification';
 import { PersistentGuestNav } from '../navigation/PersistentGuestNav';
 import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
+import { FloatingLanguageSelector } from './FloatingLanguageSelector';
 import Link from 'next/link';
 
 interface Table {
@@ -355,6 +356,13 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
         tableCode={tableCode}
         currentBill={currentBill}
       />
+
+      {/* Floating Language Selector */}
+      {business?.id && (
+        <FloatingLanguageSelector
+          tableCode={tableCode}
+        />  
+      )}
 
       {/* Notifications */}
       <PaymentNotification

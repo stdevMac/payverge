@@ -172,6 +172,12 @@
     "settings": "Settings"
   },
   "bill": {
+    "billStatus": {
+      "open": "Open",
+      "paid": "Paid",
+      "closed": "Closed",
+      "pending": "Pending Payment"
+    },
     "details": "Bill Details",
     "number": "Bill Number",
     "created": "Created",

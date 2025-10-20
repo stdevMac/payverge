@@ -172,6 +172,12 @@
     "settings": "Instellingen"
   },
   "bill": {
+    "billStatus": {
+      "open": "Open",
+      "paid": "Betaald",
+      "closed": "Gesloten",
+      "pending": "In afwachting van betaling"
+    },
     "details": "Rekeningdetails",
     "number": "Rekeningnummer",
     "created": "Aangemaakt",

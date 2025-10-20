@@ -160,6 +160,12 @@ export const getTableByCode = async (code: string) => {
   return response.data;
 };
 
+// Get business info with languages by table code (for guest language selection)
+export const getBusinessByTableCode = async (code: string) => {
+  const response = await axiosInstance.get(`/guest/table/${code}/business`);
+  return response.data;
+};
+
 
 // Get open bill by table code (Public route for guests)
 export const getOpenBillByTableCode = async (tableCode: string): Promise<BillWithItemsResponse> => {
@@ -190,9 +196,6 @@ export const createGuestKitchenOrder = async (
   return response.data;
 };
 
-export const getBusinessByTableCode = async (code: string) => {
-  const response = await axiosInstance.get(`/guest/table/${code}/business`);
-};
 
 export const getMenuByTableCode = async (code: string, language?: string) => {
   const params = language ? { language } : {};

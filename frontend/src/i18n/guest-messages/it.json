@@ -172,6 +172,12 @@
     "settings": "Impostazioni"
   },
   "bill": {
+    "billStatus": {
+      "open": "Aperto",
+      "paid": "Pagato",
+      "closed": "Chiuso",
+      "pending": "In attesa di pagamento"
+    },
     "details": "Dettagli del conto",
     "number": "Numero conto",
     "created": "Creato",

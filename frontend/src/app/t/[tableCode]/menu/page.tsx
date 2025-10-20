@@ -17,7 +17,6 @@ const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu')
 import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBillByTableCode, getMenuByTableCode } from '../../../../api/bills';
 import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
-import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 import { useGuestTranslation } from '../../../../i18n/GuestTranslationProvider';
 
 interface Table {
@@ -503,13 +502,6 @@ function GuestMenuPageContent() {
               </div>
             </div>
 
-            {/* Language Selector */}
-            <GuestLanguageSelector
-              businessId={business.id}
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-              className="hidden sm:flex"
-            />
 
             {/* Shopping Cart Button */}
             <Button
@@ -534,17 +526,6 @@ function GuestMenuPageContent() {
         </div>
       </div>
 
-      {/* Mobile Language Selector */}
-      <div className="relative z-10 sm:hidden bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-3">
-          <GuestLanguageSelector
-            businessId={business.id}
-            selectedLanguage={selectedLanguage}
-            onLanguageChange={handleLanguageChange}
-            className="flex justify-center"
-          />
-        </div>
-      </div>
 
       {/* Menu Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">

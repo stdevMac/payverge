@@ -21,7 +21,6 @@ import {
 } from '../../../../api/bills';
 import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { getMenuByTableCode } from '../../../../api/bills';
-import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
 
 interface Table {
   id: number;
@@ -524,13 +523,6 @@ function GuestBillPageContent() {
               </div>
             </div>
 
-            {/* Language Selector */}
-            <GuestLanguageSelector
-              businessId={business.id}
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-              className="hidden sm:flex"
-            />
             
             <Link 
               href={`/t/${tableCode}/menu`}
@@ -547,17 +539,6 @@ function GuestBillPageContent() {
         </div>
       </div>
 
-      {/* Mobile Language Selector */}
-      <div className="relative z-10 sm:hidden bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-3">
-          <GuestLanguageSelector
-            businessId={business.id}
-            selectedLanguage={selectedLanguage}
-            onLanguageChange={handleLanguageChange}
-            className="flex justify-center"
-          />
-        </div>
-      </div>
 
       {/* Bill Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 pb-28">

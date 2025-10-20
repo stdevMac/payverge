@@ -172,6 +172,12 @@
     "settings": "설정"
   },
   "bill": {
+    "billStatus": {
+      "open": "열림",
+      "paid": "결제됨",
+      "closed": "마감됨",
+      "pending": "결제 대기 중"
+    },
     "details": "계산서 세부정보",
     "number": "계산서 번호",
     "created": "생성일",

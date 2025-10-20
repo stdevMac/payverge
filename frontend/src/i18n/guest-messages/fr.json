@@ -172,6 +172,12 @@
     "settings": "Paramètres"
   },
   "bill": {
+    "billStatus": {
+      "open": "Ouverte",
+      "paid": "Payée",
+      "closed": "Clôturée",
+      "pending": "Paiement en attente"
+    },
     "details": "Détails de la facture",
     "number": "Numéro de facture",
     "created": "Créée le",

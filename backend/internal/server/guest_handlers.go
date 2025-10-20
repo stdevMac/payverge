@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -96,8 +97,27 @@ func GetBusinessByTableCode(c *gin.Context) {
 		return
 	}
 
+	// Get business languages for guest language selection
+	db := database.GetDBWrapper()
+	businessLanguages, err := db.LanguageService.GetBusinessLanguages(table.BusinessID)
+	if err != nil {
+		// Don't fail the request if languages can't be loaded, just log the error
+		log.Printf("Warning: Could not load business languages for business %d: %v", table.BusinessID, err)
+		businessLanguages = []database.BusinessLanguage{}
+	}
+
+	// Get supported languages for display names
+	supportedLanguages, err := db.LanguageService.GetSupportedLanguages()
+	if err != nil {
+		// Don't fail the request if supported languages can't be loaded
+		log.Printf("Warning: Could not load supported languages: %v", err)
+		supportedLanguages = []database.SupportedLanguage{}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"business": business,
+		"business":            business,
+		"business_languages":  businessLanguages,
+		"supported_languages": supportedLanguages,
 	})
 }
 

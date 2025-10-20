@@ -172,6 +172,12 @@
     "settings": "設定"
   },
   "bill": {
+    "billStatus": {
+      "open": "開いている",
+      "paid": "支払い済み",
+      "closed": "閉じた",
+      "pending": "支払い待ち"
+    },
     "details": "請求書の詳細",
     "number": "請求書番号",
     "created": "作成日",

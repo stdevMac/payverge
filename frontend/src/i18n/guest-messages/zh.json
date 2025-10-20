@@ -172,6 +172,12 @@
     "settings": "设置"
   },
   "bill": {
+    "billStatus": {
+      "open": "开启",
+      "paid": "已支付",
+      "closed": "已关闭",
+      "pending": "待支付"
+    },
     "details": "账单详情",
     "number": "账单号",
     "created": "创建时间",

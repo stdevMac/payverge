@@ -172,6 +172,12 @@
     "settings": "Ayarlar"
   },
   "bill": {
+    "billStatus": {
+      "open": "Açık",
+      "paid": "Ödendi",
+      "closed": "Kapalı",
+      "pending": "Ödeme Bekleniyor"
+    },
     "details": "Hesap Detayları",
     "number": "Hesap Numarası",
     "created": "Oluşturuldu",

@@ -172,6 +172,12 @@
     "settings": "Einstellungen"
   },
   "bill": {
+    "billStatus": {
+      "open": "Offen",
+      "paid": "Bezahlt",
+      "closed": "Geschlossen",
+      "pending": "Zahlung ausstehend"
+    },
     "details": "Rechnungsdetails",
     "number": "Rechnungsnummer",
     "created": "Erstellt",
