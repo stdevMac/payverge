@@ -8,6 +8,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
 import { TranslationProvider } from '../../../../contexts/TranslationContext';
+import { GuestTranslationProvider } from '../../../../i18n/GuestTranslationProvider';
 
 // Lazy load heavy components
 const GuestMenu = dynamic(() => import('../../../../components/guest/GuestMenu'), {
@@ -17,6 +18,7 @@ import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBi
 import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
 import { GuestLanguageSelector } from '../../../../components/guest/GuestLanguageSelector';
+import { useGuestTranslation } from '../../../../i18n/GuestTranslationProvider';
 
 interface Table {
   id: number;
@@ -48,7 +50,9 @@ interface CartItem {
   }>;
 }
 
-export default function GuestMenuPage() {
+// Internal component that uses the hook
+function GuestMenuPageContent() {
+  const { t, setBusinessId } = useGuestTranslation();
   const params = useParams();
   const tableCode = params.tableCode as string;
   
@@ -78,6 +82,11 @@ export default function GuestMenuPage() {
 
       if (tableResponse.status === 'fulfilled') {
         setTableData(tableResponse.value);
+        
+        // Set business ID for translation provider
+        if (tableResponse.value?.business?.id) {
+          setBusinessId(tableResponse.value.business.id);
+        }
         
         // Load business currency settings
         try {
@@ -416,9 +425,9 @@ export default function GuestMenuPage() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-md">
           <CardBody className="text-center py-8">
-            <h2 className="text-xl font-semibold mb-2">Table Not Found</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('errors.tableNotFound')}</h2>
             <p className="text-default-500">
-              The table code &quot;{tableCode}&quot; could not be found.
+              {t('errors.tableNotFoundDescription')}
             </p>
           </CardBody>
         </Card>
@@ -454,7 +463,7 @@ export default function GuestMenuPage() {
 
   return (
     <TranslationProvider>
-      <div className="min-h-screen bg-white relative overflow-hidden">
+        <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
@@ -652,7 +661,7 @@ export default function GuestMenuPage() {
               variant="light" 
               onPress={() => setShowCart(false)}
             >
-              Continue Shopping
+              {t('menu.continueShopping')}
             </Button>
             {cart.length > 0 && (
               <>
@@ -662,7 +671,7 @@ export default function GuestMenuPage() {
                     variant="light"
                     onPress={clearCart}
                   >
-                    Clear Cart
+                    {t('menu.clearCart')}
                   </Button>
                 )}
                 {!currentBill ? (
@@ -672,7 +681,7 @@ export default function GuestMenuPage() {
                     onPress={handleCreateBill}
                     isLoading={orderLoading}
                   >
-                    {orderLoading ? 'Sending for Approval...' : 'Place Order'}
+                    {orderLoading ? t('menu.orderProcessing') : t('menu.placeOrder')}
                   </Button>
                 ) : (
                   <Button 
@@ -681,7 +690,7 @@ export default function GuestMenuPage() {
                     onPress={handleAddItemsToBill}
                     isLoading={orderLoading}
                   >
-                    {orderLoading ? 'Sending for Approval...' : 'Send Cart for Approval'}
+                    {orderLoading ? t('menu.orderProcessing') : t('menu.placeOrder')}
                   </Button>
                 )}
               </>
@@ -690,6 +699,15 @@ export default function GuestMenuPage() {
         </ModalContent>
       </Modal>
       </div>
-    </TranslationProvider>
+      </TranslationProvider>
+  );
+}
+
+// Main page component that provides the context
+export default function GuestMenuPage() {
+  return (
+    <GuestTranslationProvider businessId={undefined}>
+      <GuestMenuPageContent />
+    </GuestTranslationProvider>
   );
 }

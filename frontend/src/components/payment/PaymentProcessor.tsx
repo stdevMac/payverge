@@ -351,7 +351,7 @@ export default function PaymentProcessor({
             <Wallet className="w-5 h-5 text-primary-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Payment Details</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{tString('paymentDetails')}</h2>
             <p className="text-sm text-gray-500">{businessName}</p>
           </div>
         </div>
@@ -363,14 +363,14 @@ export default function PaymentProcessor({
             <CardBody className="p-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Bill Amount</span>
+                  <span className="text-gray-600 font-medium">{tString('billAmount')}</span>
                   <span className="text-xl font-bold text-gray-900">{formatCurrency(amount)}</span>
                 </div>
 
                 <>
                   <Divider className="bg-gray-200" />
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Tip</span>
+                    <span className="text-gray-600 font-medium">{tString('tip')}</span>
                     <span className="text-lg font-semibold text-green-600">{formatCurrency(tipValue)}</span>
                   </div>
                 </>
@@ -378,7 +378,7 @@ export default function PaymentProcessor({
                 <Divider className="bg-gray-300" />
 
                 <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
-                  <span className="text-lg font-bold text-gray-900">Total</span>
+                  <span className="text-lg font-bold text-gray-900">{tString('total')}</span>
                   <span className="text-2xl font-bold text-primary-600">{formatCurrency(totalAmount)}</span>
                 </div>
               </div>
@@ -388,9 +388,9 @@ export default function PaymentProcessor({
           {/* Tip Selection */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <h4 className="text-lg font-semibold text-gray-900">Add Tip</h4>
+              <h4 className="text-lg font-semibold text-gray-900">{tString('addTip')}</h4>
               <Chip size="sm" variant="flat" color="success" className="text-xs">
-                Optional
+                {tString('optional')}
               </Chip>
             </div>
 
@@ -423,10 +423,10 @@ export default function PaymentProcessor({
 
             {/* Custom Tip Section */}
             <div className="mt-6 pt-4 border-t border-gray-200">
-              <h5 className="text-sm font-medium text-gray-700 mb-3">Or enter a custom amount</h5>
+              <h5 className="text-sm font-medium text-gray-700 mb-3">{tString('customTipPrompt')}</h5>
               <Input
                 type="number"
-                label="Custom Tip Amount"
+                label={tString('customTipAmount')}
                 placeholder="0.00"
                 value={tipAmount}
                 onChange={(e) => setTipAmount(e.target.value)}
@@ -464,7 +464,7 @@ export default function PaymentProcessor({
           className="font-semibold px-8 shadow-lg"
           endContent={<ExternalLink className="w-4 h-4" />}
         >
-          Continue to Payment
+{tString('continueToPayment')}
         </Button>
       </ModalFooter>
     </>
@@ -478,8 +478,8 @@ export default function PaymentProcessor({
             <Wallet className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Connect Your Wallet</h2>
-            <p className="text-sm text-gray-500">Choose a wallet to pay with USDC</p>
+            <h2 className="text-xl font-semibold text-gray-900">{tString('connectWallet')}</h2>
+            <p className="text-sm text-gray-500">{tString('walletInstructions')}</p>
           </div>
         </div>
       </ModalHeader>
@@ -490,10 +490,9 @@ export default function PaymentProcessor({
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Wallet className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure Payment</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{tString('securePayment')}</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Your payment will be processed securely using USDC on the blockchain.
-                Connect your wallet to continue.
+                {tString('securePaymentDescription')}
               </p>
             </CardBody>
           </Card>
@@ -536,43 +535,43 @@ export default function PaymentProcessor({
       <ModalHeader>
         <div className="flex items-center gap-2 text-success">
           <CheckCircle2 size={20} />
-          <span>Payment Successful</span>
+          <span>{tString('paymentSuccessful')}</span>
         </div>
       </ModalHeader>
       <ModalBody>
         <div className="text-center space-y-4">
           <CheckCircle2 size={48} className="mx-auto text-success" />
           <div>
-            <h3 className="font-semibold mb-2">Payment Complete!</h3>
+            <h3 className="font-semibold mb-2">{tString('paymentComplete')}</h3>
             <p className="text-sm text-gray-600">
-              Your payment of {formatCurrency(totalAmount)} has been processed successfully.
+{tString('paymentSuccessMessage').replace('{{amount}}', formatCurrency(totalAmount))}
             </p>
           </div>
           <Card className="bg-success-50">
             <CardBody>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span>Bill ID:</span>
+                  <span>{tString('billId')}:</span>
                   <span>#{billId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Amount Paid:</span>
+                  <span>{tString('amountPaid')}:</span>
                   <span>{formatCurrency(totalAmount)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Status:</span>
-                  <Chip size="sm" color="success">Confirmed</Chip>
+                  <span>{tString('status')}:</span>
+                  <Chip size="sm" color="success">{tString('confirmed')}</Chip>
                 </div>
                 {paymentTx.hash && (
                   <div className="flex justify-between items-center">
-                    <span>Transaction:</span>
+                    <span>{tString('transaction')}:</span>
                     <Button
                       size="sm"
                       variant="light"
                       endContent={<ExternalLink size={12} />}
                       onPress={() => window.open(`https://basescan.org/tx/${paymentTx.hash}`, '_blank')}
                     >
-                      View
+{tString('view')}
                     </Button>
                   </div>
                 )}
@@ -594,24 +593,24 @@ export default function PaymentProcessor({
       <ModalHeader>
         <div className="flex items-center gap-2 text-danger">
           <AlertCircle size={20} />
-          <span>Payment Failed</span>
+          <span>{tString('paymentFailed')}</span>
         </div>
       </ModalHeader>
       <ModalBody>
         <div className="text-center space-y-4">
           <AlertCircle size={48} className="mx-auto text-danger" />
           <div>
-            <h3 className="font-semibold mb-2">Payment Error</h3>
+            <h3 className="font-semibold mb-2">{tString('paymentError')}</h3>
             <p className="text-sm text-gray-600">{error}</p>
           </div>
         </div>
       </ModalBody>
       <ModalFooter>
         <Button variant="light" onPress={handleClose}>
-          Cancel
+          {tString('cancel')}
         </Button>
         <Button color="primary" onPress={() => setPaymentStep('amount')}>
-          Try Again
+          {tString('tryAgain')}
         </Button>
       </ModalFooter>
     </>

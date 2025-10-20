@@ -23,6 +23,7 @@ import { MenuCategory, MenuItem, Business } from '../../api/business';
 import { BillWithItemsResponse } from '../../api/bills';
 import { ImageCarousel } from './ImageCarousel';
 import { CurrencyPrice } from '../common/CurrencyConverter';
+import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 
 interface GuestMenuProps {
   categories: MenuCategory[];
@@ -53,6 +54,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
   onAddToBill,
   onAddToCart,
 }) => {
+  const { t } = useGuestTranslation();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -224,9 +226,9 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
       <Card>
         <CardBody className="text-center py-8">
           <ShoppingCart className="w-12 h-12 mx-auto text-default-300 mb-4" />
-          <h3 className="text-lg font-medium text-default-500 mb-2">Menu Coming Soon</h3>
+          <h3 className="text-lg font-medium text-default-500 mb-2">{t('menu.menuComingSoon')}</h3>
           <p className="text-default-400">
-            The menu for this restaurant is being prepared.
+            {t('menu.menuComingSoonDescription')}
           </p>
         </CardBody>
       </Card>
@@ -268,9 +270,9 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                 </div>
               </div>
               <div>
-                <p className="font-medium text-green-900 tracking-wide">Current Bill</p>
+                <p className="font-medium text-green-900 tracking-wide">{t('table.currentBill')}</p>
                 <p className="text-sm text-green-700 font-light">
-                  {getTotalItems()} items • {formatCurrency(currentBill.bill.total_amount)}
+                  {getTotalItems()} {t('menu.items')} • {formatCurrency(currentBill.bill.total_amount)}
                 </p>
               </div>
             </div>
@@ -280,7 +282,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                <span>View Details</span>
+                <span>{t('navigation.viewDetails')}</span>
               </div>
             </button>
           </div>
@@ -288,9 +290,9 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
       ) : (
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 shadow-sm">
           <div className="text-center">
-            <h3 className="text-lg font-light text-gray-900 tracking-wide mb-3">Ready to Order?</h3>
+            <h3 className="text-lg font-light text-gray-900 tracking-wide mb-3">{t('menu.readyToOrder')}</h3>
             <p className="text-gray-600 font-light leading-relaxed mb-4 max-w-md mx-auto">
-              Add items to your cart, then <strong>click the cart icon</strong> to place your order. Your order will be sent to staff for approval.
+              {t('menu.orderInstructions')}
             </p>
             <div className="text-xs text-gray-400 font-light tracking-wide">
               Powered by Payverge • Click cart to place order • Orders require staff approval
@@ -417,7 +419,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                       <div className="flex items-center justify-between">
                         {/* Quantity Selector */}
                         <div className="flex items-center gap-3">
-                          <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                          <span className="text-sm text-gray-600 font-medium">{t('menu.quantity')}:</span>
                           <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
                             <button
                               onClick={(e) => {
@@ -494,13 +496,13 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                               {isItemAdded(item.name) ? (
                                 <>
                                   <Check className="w-4 h-4" />
-                                  <span>Added {getItemQuantity(item.name)}!</span>
+                                  <span>{t('menu.itemAdded', { quantity: getItemQuantity(item.name) })}</span>
                                 </>
                               ) : (
                                 <>
                                   <Plus className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                                   <span>
-                                    Add {getItemQuantity(item.name)} to Cart
+                                    {t('menu.addToCartWithQuantity', { quantity: getItemQuantity(item.name) })}
                                   </span>
                                 </>
                               )}

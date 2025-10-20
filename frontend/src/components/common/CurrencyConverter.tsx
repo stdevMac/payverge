@@ -86,7 +86,6 @@ export default function CurrencyConverter({
           <Chip size="sm" variant="flat" color="success">
             ≈ ${rates.usdcAmount.toFixed(2)} USDC
           </Chip>
-          <span className="text-xs text-gray-500">Payment amount</span>
         </div>
       )}
     </div>

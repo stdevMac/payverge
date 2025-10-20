@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardBody, Spinner, Button, Image } from '@nextui-org/react';
+import { GuestTranslationProvider, useGuestTranslation } from '../../../../i18n/GuestTranslationProvider';
 import { ArrowLeft, Menu } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -41,7 +42,9 @@ interface TableData {
   categories: MenuCategory[];
 }
 
-export default function GuestBillPage() {
+// Internal component that uses the hook
+function GuestBillPageContent() {
+  const { t, setBusinessId } = useGuestTranslation();
   const params = useParams();
   const tableCode = params.tableCode as string;
   
@@ -74,6 +77,11 @@ export default function GuestBillPage() {
 
       if (tableResponse.status === 'fulfilled') {
         setTableData(tableResponse.value);
+        
+        // Set business ID for translation provider
+        if (tableResponse.value?.business?.id) {
+          setBusinessId(tableResponse.value.business.id);
+        }
         
         // Load business currency settings
         try {
@@ -473,7 +481,7 @@ export default function GuestBillPage() {
 
   return (
     <TranslationProvider>
-      <div className="min-h-screen bg-white relative overflow-hidden">
+        <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
@@ -570,6 +578,15 @@ export default function GuestBillPage() {
         currentBill={currentBill}
       />
       </div>
-    </TranslationProvider>
+      </TranslationProvider>
+  );
+}
+
+// Main page component that provides the context
+export default function GuestBillPage() {
+  return (
+    <GuestTranslationProvider businessId={undefined}>
+      <GuestBillPageContent />
+    </GuestTranslationProvider>
   );
 }

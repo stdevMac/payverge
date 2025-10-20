@@ -1773,5 +1773,59 @@
             "copySettlement": "Copiar dirección de liquidación",
             "copyTipping": "Copiar dirección de propinas"
         }
+    },
+    "paymentProcessor": {
+        "paymentDetails": "Detalles del Pago",
+        "billAmount": "Monto de la Cuenta",
+        "tip": "Propina",
+        "total": "Total",
+        "addTip": "Agregar Propina",
+        "optional": "Opcional",
+        "customTipPrompt": "O ingresa un monto personalizado",
+        "customTipAmount": "Monto de Propina Personalizado",
+        "connectWallet": "Conecta tu Billetera",
+        "walletInstructions": "Elige una billetera para pagar con USDC",
+        "securePayment": "Pago Seguro",
+        "securePaymentDescription": "Tu pago será procesado de forma segura usando USDC en la blockchain. Conecta tu billetera para continuar.",
+        "continueToPayment": "Continuar al Pago",
+        "paymentSuccessful": "Pago Exitoso",
+        "paymentComplete": "¡Pago Completado!",
+        "paymentSuccessMessage": "Tu pago de {{amount}} ha sido procesado exitosamente.",
+        "billId": "ID de Cuenta",
+        "amountPaid": "Monto Pagado",
+        "status": "Estado",
+        "confirmed": "Confirmado",
+        "transaction": "Transacción",
+        "view": "Ver",
+        "paymentFailed": "Pago Fallido",
+        "paymentError": "Error de Pago",
+        "cancel": "Cancelar",
+        "tryAgain": "Intentar de Nuevo",
+        "steps": {
+            "approval": {
+                "title": "Aprobando USDC",
+                "description": "Por favor confirma la transacción de aprobación en tu billetera"
+            },
+            "waitingApproval": {
+                "title": "Esperando Aprobación",
+                "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain"
+            },
+            "creatingBill": {
+                "title": "Creando Cuenta",
+                "description": "Creando tu cuenta en la blockchain"
+            },
+            "payment": {
+                "title": "Procesando Pago",
+                "description": "Por favor confirma la transacción de pago en tu billetera"
+            },
+            "waitingPayment": {
+                "title": "Confirmando Pago",
+                "description": "Esperando que la transacción de pago sea confirmada en la blockchain"
+            },
+            "finalizing": {
+                "title": "Finalizando",
+                "description": "Finalizando tu pago y actualizando el estado de la cuenta"
+            }
+        }
     }
 }

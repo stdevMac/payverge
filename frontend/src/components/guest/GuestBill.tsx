@@ -21,6 +21,7 @@ import { Business, MenuCategory, MenuItem } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
 import { useTranslation } from '../../contexts/TranslationContext';
+import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 import CurrencyConverter, { CurrencyPrice } from '../common/CurrencyConverter';
 // import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
 
@@ -45,6 +46,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   onPaymentComplete,
   compact = false,
 }) => {
+  const { t } = useGuestTranslation();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSplittingModalOpen, setIsSplittingModalOpen] = useState(false);
   const { isOpen: isCashierModalOpen, onOpen: onCashierModalOpen, onClose: onCashierModalClose } = useDisclosure();
@@ -265,7 +267,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center">
                 <Receipt className="w-6 h-6 text-gray-600" />
               </div>
-              <h2 className="text-2xl font-light text-gray-900 tracking-wide">Bill Details</h2>
+              <h2 className="text-2xl font-light text-gray-900 tracking-wide">{t('bill.details')}</h2>
             </div>
             <div className={`px-4 py-2 rounded-xl text-sm font-medium tracking-wide ${
               bill.bill.status === 'open' ? 'bg-green-100 text-green-700' :
@@ -278,11 +280,11 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <p className="text-sm text-gray-500 font-light mb-1">Bill Number</p>
+              <p className="text-sm text-gray-500 font-light mb-1">{t('bill.number')}</p>
               <p className="font-mono text-lg text-gray-900">{bill.bill.bill_number}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-light mb-1">Created</p>
+              <p className="text-sm text-gray-500 font-light mb-1">{t('bill.created')}</p>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-gray-400" />
                 <p className="text-gray-900">{formatDate(bill.bill.created_at)}</p>
@@ -296,7 +298,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-light text-gray-900 tracking-wide">
-            Items
+{t('bill.orderItems')}
           </h3>
         </div>
         <div className="space-y-4">
@@ -305,7 +307,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               <div className="flex-1">
                 <p className="font-medium text-gray-900 tracking-wide">{getTranslatedItemName(item)}</p>
                 <p className="text-sm text-gray-500 font-light mt-1">
-                  Quantity: {item.quantity} × <CurrencyPrice 
+{t('bill.quantity')}: {item.quantity} × <CurrencyPrice 
                     amount={item.price}
                     fromCurrency={defaultCurrency}
                     displayCurrency={displayCurrency}
@@ -326,30 +328,30 @@ export const GuestBill: React.FC<GuestBillProps> = ({
 
       {/* Bill Summary */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-xl font-light text-gray-900 tracking-wide mb-6">Bill Summary</h3>
+        <h3 className="text-xl font-light text-gray-900 tracking-wide mb-6">{t('bill.summary')}</h3>
         <div className="space-y-4">
           <div className="flex justify-between text-gray-600">
-            <span className="font-light">Subtotal:</span>
+            <span className="font-light">{t('bill.subtotal')}:</span>
             <span className="font-medium">{formatCurrency(bill.bill.subtotal)}</span>
           </div>
           
           {bill.bill.tax_amount > 0 && (
             <div className="flex justify-between text-gray-600">
-              <span className="font-light">Tax ({business.tax_rate}%):</span>
+              <span className="font-light">{t('bill.tax', { rate: business.tax_rate })}:</span>
               <span className="font-medium">{formatCurrency(bill.bill.tax_amount)}</span>
             </div>
           )}
           
           {bill.bill.service_fee_amount > 0 && (
             <div className="flex justify-between text-gray-600">
-              <span className="font-light">Service Fee ({business.service_fee_rate}%):</span>
+              <span className="font-light">{t('bill.serviceFee', { rate: business.service_fee_rate })}:</span>
               <span className="font-medium">{formatCurrency(bill.bill.service_fee_amount)}</span>
             </div>
           )}
           
           <div className="border-t border-gray-200 pt-4">
             <div className="flex justify-between font-medium text-xl text-gray-900 tracking-wide">
-              <span>Total:</span>
+              <span>{t('bill.total')}:</span>
               <div>
                 <CurrencyConverter 
                   amount={bill.bill.total_amount}
@@ -364,11 +366,11 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           {bill.bill.paid_amount > 0 && (
             <>
               <div className="flex justify-between text-green-600">
-                <span className="font-light">Paid:</span>
+                <span className="font-light">{t('bill.paid')}:</span>
                 <span className="font-medium">{formatCurrency(bill.bill.paid_amount)}</span>
               </div>
               <div className="flex justify-between font-medium">
-                <span className="text-gray-600">Remaining:</span>
+                <span className="text-gray-600">{t('bill.remaining')}:</span>
                 <span className={remainingAmount > 0 ? 'text-orange-600' : 'text-green-600'}>
                   {formatCurrency(remainingAmount)}
                 </span>
@@ -378,7 +380,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
 
           {bill.bill.tip_amount > 0 && (
             <div className="flex justify-between text-blue-600">
-              <span className="font-light">Tip:</span>
+              <span className="font-light">{t('bill.tip')}:</span>
               <span className="font-medium">{formatCurrency(bill.bill.tip_amount)}</span>
             </div>
           )}
@@ -398,7 +400,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
       {/* Payment Options */}
       {bill.bill.status === 'open' && (
         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Options</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bill.paymentOptions')}</h3>
           
           <div className="space-y-3">
             {/* Pay with Crypto */}
@@ -409,7 +411,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               className="w-full"
               startContent={<Wallet className="w-5 h-5" />}
             >
-              Pay with Crypto (USDC)
+{t('bill.payWithCrypto')}
             </Button>
 
             {/* Pay with Cashier */}
@@ -421,7 +423,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               className="w-full"
               startContent={<CreditCard className="w-5 h-5" />}
             >
-              Pay with Cashier (Cash/Card)
+{t('bill.payWithCashier')}
             </Button>
 
             {/* Split Bill */}
@@ -433,14 +435,14 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               className="w-full"
               startContent={<Users className="w-5 h-5" />}
             >
-              Split Bill
+{t('bill.splitBill')}
             </Button>
           </div>
 
           {/* Payment Summary */}
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Remaining Amount:</span>
+              <span className="text-gray-600">{t('bill.remainingAmount')}:</span>
               <span className="font-semibold text-gray-900">
                 {formatCurrency(remainingAmount)}
               </span>
@@ -455,8 +457,8 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Receipt className="w-8 h-8 text-green-600" />
           </div>
-          <h3 className="text-xl font-light text-gray-900 tracking-wide mb-2">Bill Paid</h3>
-          <p className="text-gray-600 font-light">Thank you for your payment!</p>
+          <h3 className="text-xl font-light text-gray-900 tracking-wide mb-2">{t('bill.billPaid')}</h3>
+          <p className="text-gray-600 font-light">{t('bill.thankYou')}</p>
         </div>
       )}
 
@@ -465,8 +467,8 @@ export const GuestBill: React.FC<GuestBillProps> = ({
           <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Receipt className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-xl font-light text-gray-700 tracking-wide mb-2">Bill Closed</h3>
-          <p className="text-gray-500 font-light">This bill has been closed.</p>
+          <h3 className="text-xl font-light text-gray-700 tracking-wide mb-2">{t('bill.billClosed')}</h3>
+          <p className="text-gray-500 font-light">{t('bill.billClosedMessage')}</p>
         </div>
       )}
 
@@ -502,7 +504,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
       <Modal isOpen={isCashierModalOpen} onClose={onCashierModalClose} size="lg">
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            Pay with Cashier
+{t('bill.payWithCashier')}
           </ModalHeader>
           <ModalBody>
             <div className="text-center space-y-4">
@@ -512,23 +514,22 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Please pay at the cashier
+{t('bill.pleasePayAtCashier')}
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  Go to the cashier and pay with cash, card, or any other method they accept. 
-                  They will mark your payment in the system.
+{t('bill.cashierInstructions')}
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Amount to pay:</span>
+                  <span className="text-gray-600">{t('bill.amountToPay')}:</span>
                   <span className="text-xl font-bold text-gray-900">
                     {formatCurrency(remainingAmount)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-gray-500">Bill #:</span>
+                  <span className="text-sm text-gray-500">{t('bill.billNumber')}:</span>
                   <span className="text-sm font-mono text-gray-700">
                     {bill.bill.bill_number}
                   </span>
@@ -536,7 +537,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               </div>
 
               <div className="text-sm text-gray-500">
-                💡 The cashier will update your payment status automatically
+{t('bill.cashierUpdateNote')}
               </div>
             </div>
           </ModalBody>
@@ -546,7 +547,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
               onPress={onCashierModalClose}
               className="w-full"
             >
-              Got it!
+{t('bill.gotIt')}
             </Button>
           </ModalFooter>
         </ModalContent>

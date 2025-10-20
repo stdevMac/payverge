@@ -2,6 +2,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { Spinner } from '@nextui-org/react';
 import { getTableByCode } from '../../../api/bills';
+import { GuestTranslationProvider } from '../../../i18n/GuestTranslationProvider';
 
 // Lazy load the heavy GuestTableView component
 const GuestTableView = dynamic(() => import('../../../components/guest/GuestTableView').then(mod => ({ default: mod.GuestTableView })), {
@@ -20,9 +21,11 @@ interface TablePageProps {
 
 export default function TablePage({ params }: TablePageProps) {
   return (
-    <div className="min-h-screen bg-white">
-      <GuestTableView tableCode={params.tableCode} />
-    </div>
+    <GuestTranslationProvider businessId={undefined}>
+      <div className="min-h-screen bg-white">
+        <GuestTableView tableCode={params.tableCode} />
+      </div>
+    </GuestTranslationProvider>
   );
 }
 

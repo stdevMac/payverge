@@ -1773,5 +1773,59 @@
             "copySettlement": "Copy settlement address",
             "copyTipping": "Copy tipping address"
         }
+    },
+    "paymentProcessor": {
+        "paymentDetails": "Payment Details",
+        "billAmount": "Bill Amount",
+        "tip": "Tip",
+        "total": "Total",
+        "addTip": "Add Tip",
+        "optional": "Optional",
+        "customTipPrompt": "Or enter a custom amount",
+        "customTipAmount": "Custom Tip Amount",
+        "connectWallet": "Connect Your Wallet",
+        "walletInstructions": "Choose a wallet to pay with USDC",
+        "securePayment": "Secure Payment",
+        "securePaymentDescription": "Your payment will be processed securely using USDC on the blockchain. Connect your wallet to continue.",
+        "continueToPayment": "Continue to Payment",
+        "paymentSuccessful": "Payment Successful",
+        "paymentComplete": "Payment Complete!",
+        "paymentSuccessMessage": "Your payment of {{amount}} has been processed successfully.",
+        "billId": "Bill ID",
+        "amountPaid": "Amount Paid",
+        "status": "Status",
+        "confirmed": "Confirmed",
+        "transaction": "Transaction",
+        "view": "View",
+        "paymentFailed": "Payment Failed",
+        "paymentError": "Payment Error",
+        "cancel": "Cancel",
+        "tryAgain": "Try Again",
+        "steps": {
+            "approval": {
+                "title": "Approving USDC",
+                "description": "Please confirm the approval transaction in your wallet"
+            },
+            "waitingApproval": {
+                "title": "Waiting for Approval",
+                "description": "Waiting for approval transaction to be confirmed on the blockchain"
+            },
+            "creatingBill": {
+                "title": "Creating Bill",
+                "description": "Creating your bill on the blockchain"
+            },
+            "payment": {
+                "title": "Processing Payment",
+                "description": "Please confirm the payment transaction in your wallet"
+            },
+            "waitingPayment": {
+                "title": "Confirming Payment",
+                "description": "Waiting for payment transaction to be confirmed on the blockchain"
+            },
+            "finalizing": {
+                "title": "Finalizing",
+                "description": "Finalizing your payment and updating the bill status"
+            }
+        }
     }
 }

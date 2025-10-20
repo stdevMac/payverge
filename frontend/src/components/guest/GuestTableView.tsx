@@ -30,6 +30,7 @@ import { useBillWebSocket } from '../../hooks/useBillWebSocket';
 import PaymentNotification from '../notifications/PaymentNotification';
 import BillUpdateNotification from '../notifications/BillUpdateNotification';
 import { PersistentGuestNav } from '../navigation/PersistentGuestNav';
+import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 import Link from 'next/link';
 
 interface Table {
@@ -56,6 +57,7 @@ interface TableData {
 }
 
 export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => {
+  const { t, setBusinessId } = useGuestTranslation();
   const [tableData, setTableData] = useState<TableData | null>(null);
   const [currentBill, setCurrentBill] = useState<BillWithItemsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,6 +74,11 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
       // Load table, business, and menu data
       const tableResponse = await getTableByCode(tableCode);
       setTableData(tableResponse);
+      
+      // Set business ID for translation provider
+      if (tableResponse?.business?.id) {
+        setBusinessId(tableResponse.business.id);
+      }
 
       // Check if there's an open bill
       try {
@@ -165,9 +172,9 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
       <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-md">
           <CardBody className="text-center py-8">
-            <h2 className="text-xl font-semibold mb-2">Table Not Found</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('errors.tableNotFound')}</h2>
             <p className="text-default-500">
-              The table code &quot;{tableCode}&quot; could not be found.
+              {t('errors.tableNotFoundDescription')}
             </p>
           </CardBody>
         </Card>
@@ -193,7 +200,7 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
             {/* Floating status badge */}
             <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-full text-sm text-gray-600 mb-8 hover:bg-gray-100 transition-colors duration-200">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              Table {table.name} 
+              {t('table.title', { tableNumber: table.name })} 
             </div>
 
             {/* Business Logo */}
@@ -245,17 +252,17 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
                       
                       <div className="space-y-3">
                         <h3 className="text-2xl font-light text-gray-900 tracking-wide">
-                          Browse Menu
+                          {t('table.browseMenu')}
                         </h3>
                         <p className="text-gray-600 font-light leading-relaxed">
-                          Explore our carefully curated selection of dishes and beverages
+                          {t('table.browseMenuDescription')}
                         </p>
                       </div>
                     </div>
                     
                     {/* Arrow */}
                     <div className="flex items-center justify-center gap-2 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
-                      <span className="text-sm font-medium tracking-wide">Get Started</span>
+                      <span className="text-sm font-medium tracking-wide">{t('navigation.goToMenu')}</span>
                       <ChevronRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -279,28 +286,28 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
                         <div className="space-y-3">
                           <div className="flex items-center justify-center gap-3">
                             <h3 className="text-2xl font-light text-gray-900 tracking-wide">
-                              Current Bill
+                              {t('table.currentBill')}
                             </h3>
                             <Chip 
                               size="sm" 
                               className="bg-green-100 text-green-700 border-green-200"
                               variant="bordered"
                             >
-                              Active
+                              {t('bill.billStatus.open')}
                             </Chip>
                           </div>
                           <p className="text-green-600 font-medium text-lg">
                             {formatCurrency(
                               currentBill.bill.total_amount, 
                               business.display_currency || business.default_currency || 'USD'
-                            )} • {currentBill.items.length} items
+                            )} • {currentBill.items.length} {t('menu.items')}
                           </p>
                         </div>
                       </div>
                       
                       {/* Arrow */}
                       <div className="flex items-center justify-center gap-2 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
-                        <span className="text-sm font-medium tracking-wide">View & Pay</span>
+                        <span className="text-sm font-medium tracking-wide">{t('navigation.goToBill')}</span>
                         <ChevronRight className="w-4 h-4" />
                       </div>
                     </div>
@@ -314,10 +321,10 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
                     </div>
                     <div className="space-y-3">
                       <h3 className="text-2xl font-light text-gray-700 tracking-wide">
-                        No Active Bill Yet
+                        {t('table.noBill')}
                       </h3>
                       <p className="text-gray-500 font-light leading-relaxed">
-                        Your server will create a bill once you&apos;re ready to order
+                        {t('table.noBillDescription')}
                       </p>
                     </div>
                   </div>
@@ -331,7 +338,7 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
                 <button className="group border border-gray-300 text-gray-700 px-8 py-3 text-base font-medium hover:border-gray-400 hover:text-gray-900 transition-all duration-200 tracking-wide rounded-lg">
                   <div className="flex items-center gap-3">
                     <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    <span>Scan New QR Code</span>
+                    <span>{t('table.scanQR')}</span>
                   </div>
                 </button>
               </Link>

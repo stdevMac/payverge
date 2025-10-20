@@ -5,6 +5,7 @@ import { Select, SelectItem, Spinner } from '@nextui-org/react';
 import { Globe } from 'lucide-react';
 import { getBusinessLanguages, getSupportedLanguages } from '../../api/currency';
 import type { BusinessLanguage, SupportedLanguage } from '../../api/currency';
+import { useGuestTranslation, GUEST_SUPPORTED_LANGUAGES, type GuestLanguageCode } from '../../i18n/GuestTranslationProvider';
 
 interface GuestLanguageSelectorProps {
   businessId: number;
@@ -19,6 +20,22 @@ export function GuestLanguageSelector({
   onLanguageChange, 
   className = '' 
 }: GuestLanguageSelectorProps) {
+  // Try to use guest translation, but fallback if not available
+  let t: (key: string) => string;
+  let currentLanguage: string;
+  let setLanguage: ((lang: any) => void) | undefined;
+  
+  try {
+    const guestTranslation = useGuestTranslation();
+    t = guestTranslation.t;
+    currentLanguage = guestTranslation.currentLanguage;
+    setLanguage = guestTranslation.setLanguage;
+  } catch {
+    // Fallback if provider not available
+    t = (key: string) => key;
+    currentLanguage = 'en';
+    setLanguage = undefined;
+  }
   const [businessLanguages, setBusinessLanguages] = useState<BusinessLanguage[]>([]);
   const [supportedLanguages, setSupportedLanguages] = useState<SupportedLanguage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +120,14 @@ export function GuestLanguageSelector({
           if (selected) {
             // Save language preference to localStorage
             localStorage.setItem(`guest-language-${businessId}`, selected);
+            
+            // Update both menu language and UI language
             onLanguageChange(selected);
+            
+            // Update guest UI language if supported and setLanguage is available
+            if (selected in GUEST_SUPPORTED_LANGUAGES && setLanguage) {
+              setLanguage(selected as GuestLanguageCode);
+            }
           }
         }}
         className="min-w-[140px]"
@@ -112,7 +136,7 @@ export function GuestLanguageSelector({
           value: "text-sm font-medium",
           popoverContent: "bg-white/95 backdrop-blur-sm"
         }}
-        aria-label="Select language"
+        aria-label={t('accessibility.languageSelector')}
       >
         {businessLanguages.map((lang) => (
           <SelectItem 
