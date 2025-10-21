@@ -21,6 +21,7 @@ import {
 } from '../../../../api/bills';
 import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { getMenuByTableCode } from '../../../../api/bills';
+import { FloatingLanguageSelector } from '@/components/guest/FloatingLanguageSelector';
 
 interface Table {
   id: number;
@@ -558,6 +559,12 @@ function GuestBillPageContent() {
         tableCode={tableCode}
         currentBill={currentBill}
       />
+      {/* Floating Language Selector */}
+      {business?.id && (
+        <FloatingLanguageSelector
+          tableCode={tableCode}
+        />  
+      )}
       </div>
       </TranslationProvider>
   );

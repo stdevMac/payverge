@@ -18,6 +18,7 @@ import { BillWithItemsResponse, getTableByCode, getOpenBillByTableCode, createBi
 import { Business, MenuCategory, businessApi } from '../../../../api/business';
 import { createGuestOrder, getOrdersByBillId } from '../../../../api/orders';
 import { useGuestTranslation } from '../../../../i18n/GuestTranslationProvider';
+import { FloatingLanguageSelector } from '@/components/guest/FloatingLanguageSelector';
 
 interface Table {
   id: number;
@@ -679,6 +680,12 @@ function GuestMenuPageContent() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      {/* Floating Language Selector */}
+      {business?.id && (
+        <FloatingLanguageSelector
+          tableCode={tableCode}
+        />  
+      )}
       </div>
       </TranslationProvider>
   );
