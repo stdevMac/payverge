@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalContent,
@@ -30,6 +30,7 @@ import {
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 import { useAppKitAccount } from '@reown/appkit/react';
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 interface BusinessTutorialModalProps {
   isOpen: boolean;
@@ -44,6 +45,26 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
   const { isConnected: appKitConnected } = useAppKitAccount();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { locale } = useSimpleLocale();
+  const [translations, setTranslations] = useState<any>({});
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      const t = await getTranslation(locale);
+      setTranslations(t);
+    };
+    loadTranslations();
+  }, [locale]);
+
+  // Helper function to get nested translation
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value = translations;
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    return value || key;
+  };
 
   // Reset connecting state when wallet connection changes
   React.useEffect(() => {
@@ -55,18 +76,17 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
 
   const tutorialSteps = [
     {
-      title: "Welcome to Payverge",
-      description: "Transform your hospitality business with crypto payments",
+      title: t("businessTutorialModal.steps.welcome.title"),
+      description: t("businessTutorialModal.steps.welcome.description"),
       content: (
         <div className="text-center space-y-4">
           <IoRestaurantOutline className="w-16 h-16 text-primary mx-auto" />
           <p className="text-gray-600">
-            Payverge is the modern payment solution for restaurants, cafes, bars, and hospitality businesses. 
-            Accept USDC payments instantly with complete transparency.
+            {t("businessTutorialModal.steps.welcome.content.subtitle")}
           </p>
           <div className="bg-primary-50 p-4 rounded-lg">
             <p className="text-primary-700 font-medium">
-              Ready to modernize your payment system? Let&apos;s get started!
+              {t("businessTutorialModal.steps.welcome.content.callToAction")}
             </p>
           </div>
         </div>
@@ -74,8 +94,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       icon: <IoRestaurantOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: "Digital Menu & QR Codes",
-      description: "Create beautiful digital menus accessible via QR codes",
+      title: t("businessTutorialModal.steps.digitalMenu.title"),
+      description: t("businessTutorialModal.steps.digitalMenu.description"),
       content: (
         <div className="space-y-4">
           <IoQrCodeOutline className="w-16 h-16 text-primary mx-auto" />
@@ -83,22 +103,22 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">QR Code Tables</h4>
-                <p className="text-gray-600 text-sm">Each table gets a unique QR code for instant menu access</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Real-time Updates</h4>
-                <p className="text-gray-600 text-sm">Update menu items, prices, and availability instantly</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Mobile Optimized</h4>
-                <p className="text-gray-600 text-sm">Beautiful, responsive design that works on any device</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.description")}</p>
               </div>
             </div>
           </div>
@@ -107,8 +127,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       icon: <IoQrCodeOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: "USDC Payments",
-      description: "Accept secure cryptocurrency payments instantly",
+      title: t("businessTutorialModal.steps.usdcPayments.title"),
+      description: t("businessTutorialModal.steps.usdcPayments.description"),
       content: (
         <div className="space-y-4">
           <IoCardOutline className="w-16 h-16 text-primary mx-auto" />
@@ -116,22 +136,22 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Instant Settlement</h4>
-                <p className="text-gray-600 text-sm">Receive USDC payments immediately in your wallet</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Lower Fees</h4>
-                <p className="text-gray-600 text-sm">Just 2% platform fee - no hidden charges</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Global Access</h4>
-                <p className="text-gray-600 text-sm">Accept payments from anyone with a crypto wallet worldwide</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.description")}</p>
               </div>
             </div>
           </div>
@@ -140,8 +160,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       icon: <IoCardOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: "Smart Tipping",
-      description: "Crypto tipping directly to your designated wallet",
+      title: t("businessTutorialModal.steps.smartTipping.title"),
+      description: t("businessTutorialModal.steps.smartTipping.description"),
       content: (
         <div className="space-y-4">
           <IoWalletOutline className="w-16 h-16 text-primary mx-auto" />
@@ -149,22 +169,22 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Direct to Staff</h4>
-                <p className="text-gray-600 text-sm">Tips go directly to your designated tipping wallet</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Flexible Options</h4>
-                <p className="text-gray-600 text-sm">Customers can add custom tip amounts or choose presets</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Transparent Tracking</h4>
-                <p className="text-gray-600 text-sm">All tips are recorded on-chain for complete transparency</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.description")}</p>
               </div>
             </div>
           </div>
@@ -173,8 +193,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       icon: <IoWalletOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: "Analytics & Insights",
-      description: "Comprehensive business intelligence and reporting",
+      title: t("businessTutorialModal.steps.analytics.title"),
+      description: t("businessTutorialModal.steps.analytics.description"),
       content: (
         <div className="space-y-4">
           <IoBarChartOutline className="w-16 h-16 text-primary mx-auto" />
@@ -182,22 +202,22 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Real-time Dashboard</h4>
-                <p className="text-gray-600 text-sm">Monitor sales, tips, and performance in real-time</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Item Analytics</h4>
-                <p className="text-gray-600 text-sm">Track your best-selling items and optimize your menu</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.description")}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Export Data</h4>
-                <p className="text-gray-600 text-sm">Export reports in CSV or JSON format for accounting</p>
+                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.exportReports.title")}</h4>
+                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.exportReports.description")}</p>
               </div>
             </div>
           </div>
@@ -206,27 +226,27 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       icon: <IoBarChartOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: "Connect Your Wallet",
-      description: "Connect your wallet to receive payments and manage your business",
+      title: t("businessTutorialModal.steps.connectWallet.title"),
+      description: t("businessTutorialModal.steps.connectWallet.description"),
       content: (
         <div className="space-y-6">
           <IoShieldCheckmarkOutline className="w-16 h-16 text-primary mx-auto" />
           <div className="text-center space-y-4">
             <p className="text-gray-600">
-              To get started, you&apos;ll need to connect your crypto wallet. This wallet will be used to:
+              {t("businessTutorialModal.steps.connectWallet.content.subtitle")}
             </p>
             <div className="space-y-2 text-left max-w-md mx-auto">
               <div className="flex items-center gap-2">
                 <IoCheckmarkCircleOutline className="w-4 h-4 text-green-500" />
-                <span className="text-sm">Receive payment settlements</span>
+                <span className="text-sm">{t("businessTutorialModal.steps.connectWallet.content.securityList.receive")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <IoCheckmarkCircleOutline className="w-4 h-4 text-green-500" />
-                <span className="text-sm">Manage your business settings</span>
+                <span className="text-sm">{t("businessTutorialModal.steps.connectWallet.content.securityList.manage")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <IoCheckmarkCircleOutline className="w-4 h-4 text-green-500" />
-                <span className="text-sm">Access analytics and reports</span>
+                <span className="text-sm">{t("businessTutorialModal.steps.connectWallet.content.securityList.register")}</span>
               </div>
             </div>
             {isConnected && appKitConnected && address ? (
@@ -253,9 +273,9 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                   startContent={<IoWalletOutline className="w-5 h-5" />}
                   className="w-full max-w-xs mx-auto"
                 >
-                  {isConnecting ? 'Connecting...' : 
-                   isAuthenticating ? 'Authenticating...' : 
-                   'Connect & Sign'}
+                  {isConnecting ? t("businessTutorialModal.buttons.connecting") : 
+                   isAuthenticating ? t("businessTutorialModal.buttons.connecting") : 
+                   t("businessTutorialModal.buttons.connectWallet")}
                 </Button>
                 {isConnected && !appKitConnected && (
                   <div className="bg-yellow-50 p-3 rounded-lg">
@@ -322,7 +342,7 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
               </div>
             </div>
             <div className="text-sm text-gray-500">
-              {currentStep + 1} of {tutorialSteps.length}
+              {t("businessTutorialModal.progress.step").replace("{{current}}", (currentStep + 1).toString()).replace("{{total}}", tutorialSteps.length.toString())}
             </div>
           </div>
           <Progress 
@@ -348,7 +368,7 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
               onPress={handlePrevious}
               isDisabled={currentStep === 0}
             >
-              Previous
+              {t("businessTutorialModal.buttons.previous") || "Previous"}
             </Button>
             
             <div className="flex gap-2">
@@ -356,7 +376,7 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                 variant="light"
                 onPress={handleSkipTutorial}
               >
-                Skip Tutorial
+                {t("businessTutorialModal.buttons.skip") || "Skip Tutorial"}
               </Button>
               
               {isLastStep ? (
@@ -366,14 +386,14 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                   isDisabled={!isConnected || !appKitConnected || !address}
                   startContent={<IoRocketOutline className="w-4 h-4" />}
                 >
-                  Start Building
+                  {t("businessTutorialModal.buttons.startBuilding")}
                 </Button>
               ) : (
                 <Button
                   color="primary"
                   onPress={handleNext}
                 >
-                  Next
+                  {t("businessTutorialModal.buttons.next")}
                 </Button>
               )}
             </div>

@@ -209,8 +209,10 @@
       },
       "buttons": {
         "signIn": "Iniciar Sesión",
+        "openingDashboard": "Abriendo Panel...",
         "goToDashboard": "Ir al Panel",
-        "learnMore": "Aprender Más",
+        "startExploring": "Comenzar a Explorar",
+        "bookCall": "Reservar Llamada con el Fundador",
         "claimEarnings": "Reclamar Ganancias",
         "cancel": "Cancelar",
         "close": "Cerrar"
@@ -1449,30 +1451,56 @@
       "personNoItemsAssigned": "persona(s) no tienen artículos asignados"
     },
     "paymentProcessor": {
+      "paymentDetails": "Detalles del Pago",
+      "billAmount": "Monto de la Cuenta",
+      "tip": "Propina",
+      "total": "Total",
+      "addTip": "Agregar Propina",
+      "optional": "Opcional",
+      "customTipPrompt": "O ingresa un monto personalizado",
+      "customTipAmount": "Monto de Propina Personalizado",
+      "connectWallet": "Conecta tu Billetera",
+      "walletInstructions": "Elige una billetera para pagar con USDC",
+      "securePayment": "Pago Seguro",
+      "securePaymentDescription": "Tu pago será procesado de forma segura usando USDC en la blockchain. Conecta tu billetera para continuar.",
+      "continueToPayment": "Continuar al Pago",
+      "paymentSuccessful": "Pago Exitoso",
+      "paymentComplete": "¡Pago Completado!",
+      "paymentSuccessMessage": "Tu pago de {{amount}} ha sido procesado exitosamente.",
+      "billId": "ID de Cuenta",
+      "amountPaid": "Monto Pagado",
+      "status": "Estado",
+      "confirmed": "Confirmado",
+      "transaction": "Transacción",
+      "view": "Ver",
+      "paymentFailed": "Pago Fallido",
+      "paymentError": "Error de Pago",
+      "cancel": "Cancelar",
+      "tryAgain": "Intentar de Nuevo",
       "steps": {
         "approval": {
           "title": "Aprobando USDC",
-          "description": "Por favor aprueba el gasto de USDC en tu billetera..."
+          "description": "Por favor confirma la transacción de aprobación en tu billetera"
         },
         "waitingApproval": {
-          "title": "Confirmando Aprobación",
-          "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain..."
+          "title": "Esperando Aprobación",
+          "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain"
         },
         "creatingBill": {
           "title": "Creando Cuenta",
-          "description": "Creando cuenta en la blockchain..."
+          "description": "Creando tu cuenta en la blockchain"
         },
         "payment": {
           "title": "Procesando Pago",
-          "description": "Por favor confirma la transacción de pago en tu billetera..."
+          "description": "Por favor confirma la transacción de pago en tu billetera"
         },
         "waitingPayment": {
           "title": "Confirmando Pago",
-          "description": "Esperando que la transacción de pago sea confirmada..."
+          "description": "Esperando que la transacción de pago sea confirmada en la blockchain"
         },
         "finalizing": {
           "title": "Finalizando",
-          "description": "Actualizando registros de pago..."
+          "description": "Finalizando tu pago y actualizando el estado de la cuenta"
         }
       }
     },
@@ -1774,58 +1802,163 @@
             "copyTipping": "Copiar dirección de propinas"
         }
     },
-    "paymentProcessor": {
-        "paymentDetails": "Detalles del Pago",
-        "billAmount": "Monto de la Cuenta",
-        "tip": "Propina",
-        "total": "Total",
-        "addTip": "Agregar Propina",
-        "optional": "Opcional",
-        "customTipPrompt": "O ingresa un monto personalizado",
-        "customTipAmount": "Monto de Propina Personalizado",
-        "connectWallet": "Conecta tu Billetera",
-        "walletInstructions": "Elige una billetera para pagar con USDC",
-        "securePayment": "Pago Seguro",
-        "securePaymentDescription": "Tu pago será procesado de forma segura usando USDC en la blockchain. Conecta tu billetera para continuar.",
-        "continueToPayment": "Continuar al Pago",
-        "paymentSuccessful": "Pago Exitoso",
-        "paymentComplete": "¡Pago Completado!",
-        "paymentSuccessMessage": "Tu pago de {{amount}} ha sido procesado exitosamente.",
-        "billId": "ID de Cuenta",
-        "amountPaid": "Monto Pagado",
-        "status": "Estado",
-        "confirmed": "Confirmado",
-        "transaction": "Transacción",
-        "view": "Ver",
-        "paymentFailed": "Pago Fallido",
-        "paymentError": "Error de Pago",
-        "cancel": "Cancelar",
-        "tryAgain": "Intentar de Nuevo",
-        "steps": {
-            "approval": {
-                "title": "Aprobando USDC",
-                "description": "Por favor confirma la transacción de aprobación en tu billetera"
-            },
-            "waitingApproval": {
-                "title": "Esperando Aprobación",
-                "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain"
-            },
-            "creatingBill": {
-                "title": "Creando Cuenta",
-                "description": "Creando tu cuenta en la blockchain"
-            },
-            "payment": {
-                "title": "Procesando Pago",
-                "description": "Por favor confirma la transacción de pago en tu billetera"
-            },
-            "waitingPayment": {
-                "title": "Confirmando Pago",
-                "description": "Esperando que la transacción de pago sea confirmada en la blockchain"
-            },
-            "finalizing": {
-                "title": "Finalizando",
-                "description": "Finalizando tu pago y actualizando el estado de la cuenta"
-            }
+    "businessRegistrationSuccess": {
+      "header": {
+        "badge": "Registro Completo",
+        "title": "Bienvenido a",
+        "subtitle": "está ahora registrado en la blockchain y listo para aceptar pagos cripto!",
+        "transactionLabel": "Transacción:"
+      },
+      "whatYouCanDo": {
+        "title": "Lo Que Puedes Hacer Ahora",
+        "subtitle": "Tu negocio está listo para revolucionar cómo aceptas pagos",
+        "features": {
+          "qrMenus": {
+            "title": "Menús con Código QR",
+            "description": "Crea menús digitales con códigos QR para comidas sin contacto"
+          },
+          "cryptoPayments": {
+            "title": "Pagos Cripto",
+            "description": "Acepta pagos USDC al instante con cero contracargos"
+          },
+          "analytics": {
+            "title": "Analíticas en Tiempo Real",
+            "description": "Rastrea ventas, artículos populares e insights de clientes"
+          },
+          "staffManagement": {
+            "title": "Gestión de Personal",
+            "description": "Invita miembros del equipo y gestiona permisos"
+          }
         }
+      },
+      "nextSteps": {
+        "title": "¿Listo para Empezar?",
+        "buttons": {
+          "goToDashboard": "Ir al Panel",
+          "openingDashboard": "Abriendo Panel...",
+          "bookCall": "Reservar Llamada con el Fundador"
+        }
+      },
+      "footer": {
+        "helpText": "¿Necesitas ayuda para empezar? Consulta nuestra",
+        "documentation": "documentación",
+        "or": "o",
+        "contactSupport": "contacta soporte"
+      }
+    },
+    "businessTutorialModal": {
+      "steps": {
+        "welcome": {
+          "title": "Bienvenido a Payverge",
+          "description": "Transforma tu negocio de hospitalidad con pagos cripto",
+          "content": {
+            "subtitle": "Payverge es la solución de pagos moderna para restaurantes, cafeterías, bares y negocios de hospitalidad. Acepta pagos USDC al instante con total transparencia.",
+            "callToAction": "¿Listo para modernizar tu sistema de pagos? ¡Empecemos!"
+          }
+        },
+        "digitalMenu": {
+          "title": "Menú Digital y Códigos QR",
+          "description": "Crea hermosos menús digitales accesibles vía códigos QR",
+          "features": {
+            "qrTables": {
+              "title": "Mesas con Código QR",
+              "description": "Cada mesa obtiene un código QR único para acceso instantáneo al menú"
+            },
+            "realTimeUpdates": {
+              "title": "Actualizaciones en Tiempo Real",
+              "description": "Actualiza artículos del menú, precios y disponibilidad al instante"
+            },
+            "mobileOptimized": {
+              "title": "Optimizado para Móviles",
+              "description": "Diseño hermoso y responsivo que funciona en cualquier dispositivo"
+            }
+          }
+        },
+        "usdcPayments": {
+          "title": "Pagos USDC",
+          "description": "Acepta pagos seguros de criptomonedas al instante",
+          "features": {
+            "instantSettlement": {
+              "title": "Liquidación Instantánea",
+              "description": "Recibe pagos USDC inmediatamente en tu billetera"
+            },
+            "lowerFees": {
+              "title": "Tarifas Más Bajas",
+              "description": "Solo 2% de tarifa de plataforma - sin cargos ocultos"
+            },
+            "globalAccess": {
+              "title": "Acceso Global",
+              "description": "Acepta pagos de cualquier persona con billetera cripto en todo el mundo"
+            }
+          }
+        },
+        "smartTipping": {
+          "title": "Propinas Inteligentes",
+          "description": "Propinas cripto directamente a tu billetera designada",
+          "features": {
+            "directToStaff": {
+              "title": "Directo al Personal",
+              "description": "Las propinas van directamente a tu billetera de propinas designada"
+            },
+            "flexibleOptions": {
+              "title": "Opciones Flexibles",
+              "description": "Los clientes pueden agregar montos de propina personalizados o elegir preestablecidos"
+            },
+            "transparentTracking": {
+              "title": "Seguimiento Transparente",
+              "description": "Todas las propinas se registran en la blockchain para total transparencia"
+            }
+          }
+        },
+        "analytics": {
+          "title": "Analíticas e Insights",
+          "description": "Inteligencia de negocios e informes integrales",
+          "features": {
+            "realTimeDashboard": {
+              "title": "Panel en Tiempo Real",
+              "description": "Monitorea ventas, propinas y rendimiento en tiempo real"
+            },
+            "itemAnalytics": {
+              "title": "Analíticas de Artículos",
+              "description": "Rastrea tus artículos más vendidos y optimiza tu menú"
+            },
+            "exportReports": {
+              "title": "Exportar Reportes",
+              "description": "Descarga reportes detallados para contabilidad y análisis"
+            }
+          }
+        },
+        "connectWallet": {
+          "title": "Conecta tu Billetera",
+          "description": "Conecta tu billetera cripto para empezar",
+          "content": {
+            "subtitle": "Para registrar tu negocio en la blockchain y empezar a aceptar pagos, necesitarás conectar una billetera cripto.",
+            "requirements": "Requisitos:",
+            "requirementsList": {
+              "wallet": "Una billetera cripto (MetaMask, WalletConnect, etc.)",
+              "network": "Conectada a la red Ethereum, Polygon o Base",
+              "usdc": "Algo de USDC para registro (cantidad pequeña)"
+            },
+            "securityNote": "Tu billetera será usada para:",
+            "securityList": {
+              "register": "Registrar tu negocio en la blockchain",
+              "receive": "Recibir pagos de clientes",
+              "manage": "Gestionar la configuración de tu negocio"
+            }
+          }
+        }
+      },
+      "buttons": {
+        "next": "Siguiente",
+        "previous": "Anterior",
+        "skip": "Saltar Tutorial",
+        "connectWallet": "Conectar Billetera",
+        "connecting": "Conectando...",
+        "startBuilding": "Empezar a Construir",
+        "close": "Cerrar"
+      },
+      "progress": {
+        "step": "Paso {{current}} de {{total}}"
+      }
     }
 }

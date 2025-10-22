@@ -36,6 +36,7 @@ import { Address } from 'viem';
 import WithdrawalHistory from '../../../../../components/business/WithdrawalHistory';
 import { createWithdrawal } from '../../../../../api/withdrawals';
 import SubscriptionManagement from '../../../../../components/business/SubscriptionManagement';
+import BusinessRegistrationSuccess from '../../../../../components/business/BusinessRegistrationSuccess';
 
 interface BusinessDashboardProps {
   params: {
@@ -371,104 +372,16 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   // Welcome screen for first-time visitors
   if (showWelcome && business) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Success Header */}
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-              <Check className="w-10 h-10 text-green-600" />
-            </div>
-            <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full mb-4">
-              <span className="text-green-600 font-medium text-sm">{tString('welcome.badge')}</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
-              {tString('welcome.title')} <span className="font-medium">Payverge</span>
-            </h1>
-            <p className="text-xl text-gray-600 font-light tracking-wide">
-              <span className="font-medium text-gray-900">{business.name}</span> {tString('welcome.subtitle')}
-            </p>
-          </div>
-
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {[
-              {
-                icon: Menu,
-                title: tString('welcome.features.menuBuilder.title'),
-                description: tString('welcome.features.menuBuilder.description')
-              },
-              {
-                icon: Receipt,
-                title: tString('welcome.features.billManagement.title'),
-                description: tString('welcome.features.billManagement.description')
-              },
-              {
-                icon: BarChart3,
-                title: tString('welcome.features.analytics.title'),
-                description: tString('welcome.features.analytics.description')
-              },
-              {
-                icon: Users,
-                title: tString('welcome.features.staffManagement.title'),
-                description: tString('welcome.features.staffManagement.description')
-              }
-            ].map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="bg-white/80 backdrop-blur-sm border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-                  <CardBody className="p-6 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl mb-4">
-                      <Icon className="w-6 h-6 text-gray-700" />
-                    </div>
-                    <h3 className="font-medium text-gray-900 mb-2">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 font-light leading-relaxed">{feature.description}</p>
-                  </CardBody>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              size="lg"
-              className="bg-gray-900 text-white hover:bg-gray-800 font-medium px-8 py-3 h-auto"
-              onClick={() => setShowWelcome(false)}
-              startContent={<Building2 className="w-5 h-5" />}
-            >
-              {tString('buttons.goToDashboard')}
-            </Button>
-            <Button
-              size="lg"
-              variant="bordered"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-8 py-3 h-auto"
-              as={Link}
-              href="/how-it-works"
-              target="_blank"
-            >
-              {tString('buttons.learnMore')}
-            </Button>
-          </div>
-
-          {/* Help Section */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <p className="text-sm text-gray-500 font-light">
-              {tString('welcome.help.text')}{' '}
-              <Link href="/how-it-works" className="text-gray-700 hover:text-gray-900 font-medium" target="_blank">
-                {tString('welcome.help.documentation')}
-              </Link>
-              {' '}{tString('welcome.help.or')}{' '}
-              <Link href="mailto:support@payverge.com" className="text-gray-700 hover:text-gray-900 font-medium">
-                {tString('welcome.help.contactSupport')}
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
+      <BusinessRegistrationSuccess
+        businessName={business!.name}
+        businessId={businessId.toString()}
+        variant="dashboard"
+        onClose={() => setShowWelcome(false)}
+      />
     );
   }
 
-  function renderTabContent() {
+  const renderTabContent = () => {
     switch (activeTab) {
       case 'overview':
         return (
@@ -906,10 +819,10 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   return (
     <ToastProvider>
       <div className="min-h-screen bg-white">
-      {/* Desktop Layout */}
-      <div className="lg:flex">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:bg-gray-50 lg:border-r lg:border-gray-200 lg:top-16 lg:h-[calc(100vh-4rem)] z-30">
+        {/* Desktop Layout */}
+        <div className="lg:flex">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:bg-gray-50 lg:border-r lg:border-gray-200 lg:top-16 lg:h-[calc(100vh-4rem)] z-30">
           {/* Sidebar Header */}
           <div className="flex items-center gap-3 px-6 py-8 border-b border-gray-200">
             <Building2 className="w-8 h-8 text-gray-700" />
@@ -1061,8 +974,8 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
             </section>
           </div>
         </div>
+        </div>
       </div>
-    </div>
     </ToastProvider>
   );
 }
