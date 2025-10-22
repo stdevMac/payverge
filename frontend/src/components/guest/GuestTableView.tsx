@@ -29,7 +29,7 @@ import { formatCurrency } from '../../api/currency';
 import { useBillWebSocket } from '../../hooks/useBillWebSocket';
 import PaymentNotification from '../notifications/PaymentNotification';
 import BillUpdateNotification from '../notifications/BillUpdateNotification';
-import { PersistentGuestNav } from '../navigation/PersistentGuestNav';
+import PersistentGuestNav from '../navigation/PersistentGuestNav';
 import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 import { FloatingLanguageSelector } from './FloatingLanguageSelector';
 import Link from 'next/link';

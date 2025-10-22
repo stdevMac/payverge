@@ -6,8 +6,7 @@ import { ArrowLeft, MapPin, ShoppingCart, Plus, Minus, ChefHat } from 'lucide-re
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
-import { TranslationProvider } from '../../../../contexts/TranslationContext';
+import PersistentGuestNav from '../../../../components/navigation/PersistentGuestNav';
 import { GuestTranslationProvider } from '../../../../i18n/GuestTranslationProvider';
 
 // Lazy load heavy components
@@ -166,6 +165,25 @@ function GuestMenuPageContent() {
       }
     }
   }, [tableData?.business?.id, tableData?.categories, selectedLanguage, loadTranslatedMenu]);
+
+  // Listen for language changes from FloatingLanguageSelector
+  useEffect(() => {
+    const handleGuestLanguageChange = (event: CustomEvent) => {
+      const { language, businessId } = event.detail;
+      console.log('Menu page: Received guestLanguageChange event:', { language, businessId });
+      
+      // Only handle if it's for our business
+      if (businessId === tableData?.business?.id) {
+        handleLanguageChange(language);
+      }
+    };
+
+    window.addEventListener('guestLanguageChange', handleGuestLanguageChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('guestLanguageChange', handleGuestLanguageChange as EventListener);
+    };
+  }, [handleLanguageChange, tableData?.business?.id]);
 
   const addToCart = useCallback((
     itemName: string, 
@@ -462,7 +480,6 @@ function GuestMenuPageContent() {
   });
 
   return (
-    <TranslationProvider>
         <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -499,7 +516,7 @@ function GuestMenuPageContent() {
                 <h1 className="text-2xl font-light text-gray-900 tracking-wide">
                   {business.name}
                 </h1>
-                <p className="text-gray-500 font-light">Menu</p>
+                <p className="text-gray-500 font-light">{t('menu.title')}</p>
               </div>
             </div>
 
@@ -561,18 +578,18 @@ function GuestMenuPageContent() {
           <ModalHeader className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
-              <span>Your Order</span>
+<span>{t('menu.yourOrder')}</span>
             </div>
             <p className="text-sm text-default-500 font-normal">
-              {cart.length} {cart.length === 1 ? 'item' : 'items'} in cart
+{t('menu.itemsInCartCount', { count: cart.length })}
             </p>
           </ModalHeader>
           <ModalBody>
             {cart.length === 0 ? (
               <div className="text-center py-8">
                 <ShoppingCart className="w-12 h-12 mx-auto text-default-300 mb-4" />
-                <h3 className="text-lg font-medium text-default-500 mb-2">Your cart is empty</h3>
-                <p className="text-default-400">Add items from the menu to get started</p>
+                <h3 className="text-lg font-medium text-default-500 mb-2">{t('menu.cartEmptyM')}</h3>
+                <p className="text-default-400">{t('menu.cartEmptyDescriptionM')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -632,7 +649,7 @@ function GuestMenuPageContent() {
                 <Divider />
                 
                 <div className="flex justify-between items-center text-lg font-semibold">
-                  <span>Total:</span>
+                  <span>{t('menu.cartTotalM')}</span>
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
               </div>
@@ -687,7 +704,6 @@ function GuestMenuPageContent() {
         />  
       )}
       </div>
-      </TranslationProvider>
   );
 }
 

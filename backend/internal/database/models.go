@@ -1,20 +1,20 @@
 package database
 
 import (
-	"time"
 	"payverge/internal/structs"
+	"time"
 )
 
 // User represents the users table
 type User struct {
-	ID                      uint                             `gorm:"primaryKey" json:"id"`
-	Address                 string                           `gorm:"uniqueIndex;not null" json:"address"`
-	ReferralCode           string                           `gorm:"uniqueIndex" json:"referral_code"`
-	TokenID                *string                          `json:"token_id"`
-	Role                    string                           `gorm:"default:user" json:"role"`
+	ID      uint   `gorm:"primaryKey" json:"id"`
+	Address string `gorm:"uniqueIndex;not null" json:"address"`
+	// ReferralCode           string                           `gorm:"uniqueIndex" json:"referral_code"`
+	TokenID                 *string                         `json:"token_id"`
+	Role                    string                          `gorm:"default:user" json:"role"`
 	NotificationPreferences structs.NotificationPreferences `gorm:"embedded" json:"notification_preferences"`
-	CreatedAt              time.Time                        `json:"created_at"`
-	UpdatedAt              time.Time                        `json:"updated_at"`
+	CreatedAt               time.Time                       `json:"created_at"`
+	UpdatedAt               time.Time                       `json:"updated_at"`
 }
 
 // Code represents the codes table
@@ -73,55 +73,55 @@ type MultisigTx struct {
 
 // Business represents a restaurant/venue in the system
 type Business struct {
-	ID              uint            `gorm:"primaryKey" json:"id"`
-	OwnerAddress    string          `gorm:"index;not null" json:"owner_address"`
-	Name            string          `gorm:"not null" json:"name"`
-	Logo            string          `json:"logo"`
-	Address         BusinessAddress `gorm:"embedded" json:"address"`
-	SettlementAddr  string          `gorm:"not null" json:"settlement_address"`
-	TippingAddr     string          `gorm:"not null" json:"tipping_address"`
-	TaxRate         float64         `gorm:"default:0" json:"tax_rate"`
-	ServiceFeeRate  float64         `gorm:"default:0" json:"service_fee_rate"`
-	TaxInclusive    bool            `gorm:"default:false" json:"tax_inclusive"`
-	ServiceInclusive bool           `gorm:"default:false" json:"service_inclusive"`
-	IsActive        bool            `gorm:"default:true" json:"is_active"`
+	ID               uint            `gorm:"primaryKey" json:"id"`
+	OwnerAddress     string          `gorm:"index;not null" json:"owner_address"`
+	Name             string          `gorm:"not null" json:"name"`
+	Logo             string          `json:"logo"`
+	Address          BusinessAddress `gorm:"embedded" json:"address"`
+	SettlementAddr   string          `gorm:"not null" json:"settlement_address"`
+	TippingAddr      string          `gorm:"not null" json:"tipping_address"`
+	TaxRate          float64         `gorm:"default:0" json:"tax_rate"`
+	ServiceFeeRate   float64         `gorm:"default:0" json:"service_fee_rate"`
+	TaxInclusive     bool            `gorm:"default:false" json:"tax_inclusive"`
+	ServiceInclusive bool            `gorm:"default:false" json:"service_inclusive"`
+	IsActive         bool            `gorm:"default:true" json:"is_active"`
 	// New fields for enhanced business features
-	Description     string          `json:"description"`
-	CustomURL       string          `json:"custom_url"`
-	Phone           string          `json:"phone"`
-	Email           string          `json:"email"` // Business contact email
-	Website         string          `json:"website"`
-	SocialMedia     string          `json:"social_media"` // JSON string for social media links
-	BannerImages    string          `json:"banner_images"` // JSON array of banner image URLs
-	BusinessPageEnabled bool        `gorm:"default:false" json:"business_page_enabled"`
-	ShowReviews     bool            `gorm:"default:true" json:"show_reviews"`
-	GoogleReviewsEnabled bool       `gorm:"default:false" json:"google_reviews_enabled"`
-	ReferredByCode  string          `json:"referred_by_code"` // Referral code used during registration
+	Description          string `json:"description"`
+	CustomURL            string `json:"custom_url"`
+	Phone                string `json:"phone"`
+	Email                string `json:"email"` // Business contact email
+	Website              string `json:"website"`
+	SocialMedia          string `json:"social_media"`  // JSON string for social media links
+	BannerImages         string `json:"banner_images"` // JSON array of banner image URLs
+	BusinessPageEnabled  bool   `gorm:"default:false" json:"business_page_enabled"`
+	ShowReviews          bool   `gorm:"default:true" json:"show_reviews"`
+	GoogleReviewsEnabled bool   `gorm:"default:false" json:"google_reviews_enabled"`
+	ReferredByCode       string `json:"referred_by_code"` // Referral code used during registration
 	// Counter support for takeaway/quick service
-	CounterEnabled  bool            `gorm:"default:false" json:"counter_enabled"`
-	CounterCount    int             `gorm:"default:3" json:"counter_count"`
-	CounterPrefix   string          `gorm:"default:'C'" json:"counter_prefix"`
+	CounterEnabled bool   `gorm:"default:false" json:"counter_enabled"`
+	CounterCount   int    `gorm:"default:3" json:"counter_count"`
+	CounterPrefix  string `gorm:"default:'C'" json:"counter_prefix"`
 	// Multi-currency and multilingual support
-	DefaultCurrency string          `gorm:"default:'USD'" json:"default_currency"`    // Currency for setting prices (internal)
-	DisplayCurrency string          `gorm:"default:'USD'" json:"display_currency"`    // Currency shown to customers
-	DefaultLanguage string          `gorm:"default:'en'" json:"default_language"`     // Default menu language
+	DefaultCurrency string `gorm:"default:'USD'" json:"default_currency"` // Currency for setting prices (internal)
+	DisplayCurrency string `gorm:"default:'USD'" json:"display_currency"` // Currency shown to customers
+	DefaultLanguage string `gorm:"default:'en'" json:"default_language"`  // Default menu language
 	// Subscription Management Fields (Pay-as-you-go model)
-	SubscriptionStatus    string     `gorm:"default:'active'" json:"subscription_status"` // active, expired, suspended, cancelled
-	LastPaymentDate       *time.Time `json:"last_payment_date"`
-	SubscriptionEndDate   *time.Time `json:"subscription_end_date"` // When current subscription expires
-	LastPaymentAmount     string     `json:"last_payment_amount"` // USDC amount in wei from last payment
-	TotalPaid             string     `gorm:"default:'0'" json:"total_paid"` // Total USDC paid for subscriptions (wei)
-	YearlyFee             string     `gorm:"default:'120000000'" json:"yearly_fee"` // Full year price in USDC wei ($120 default)
-	TimeRemaining         int64      `gorm:"default:0" json:"time_remaining"` // Seconds remaining in subscription
-	ReferralCodeUsed      string     `json:"referral_code_used"`
-	CouponCodeUsed        string     `json:"coupon_code_used"`
-	DiscountApplied       string     `json:"discount_applied"` // USDC amount in wei
-	RegistrationTxHash    string     `json:"registration_tx_hash"` // Initial registration transaction
-	LastRenewalTxHash     string     `json:"last_renewal_tx_hash"` // Last renewal transaction
-	RemindersSent         int        `gorm:"default:0" json:"reminders_sent"`
-	
-	CreatedAt       time.Time       `json:"created_at"`
-	UpdatedAt       time.Time       `json:"updated_at"`
+	SubscriptionStatus  string     `gorm:"default:'active'" json:"subscription_status"` // active, expired, suspended, cancelled
+	LastPaymentDate     *time.Time `json:"last_payment_date"`
+	SubscriptionEndDate *time.Time `json:"subscription_end_date"`                 // When current subscription expires
+	LastPaymentAmount   string     `json:"last_payment_amount"`                   // USDC amount in wei from last payment
+	TotalPaid           string     `gorm:"default:'0'" json:"total_paid"`         // Total USDC paid for subscriptions (wei)
+	YearlyFee           string     `gorm:"default:'120000000'" json:"yearly_fee"` // Full year price in USDC wei ($120 default)
+	TimeRemaining       int64      `gorm:"default:0" json:"time_remaining"`       // Seconds remaining in subscription
+	ReferralCodeUsed    string     `json:"referral_code_used"`
+	CouponCodeUsed      string     `json:"coupon_code_used"`
+	DiscountApplied     string     `json:"discount_applied"`     // USDC amount in wei
+	RegistrationTxHash  string     `json:"registration_tx_hash"` // Initial registration transaction
+	LastRenewalTxHash   string     `json:"last_renewal_tx_hash"` // Last renewal transaction
+	RemindersSent       int        `gorm:"default:0" json:"reminders_sent"`
+
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // Counter represents a service counter for takeaway/quick service
@@ -134,7 +134,7 @@ type Counter struct {
 	CurrentBillID *uint     `json:"current_bill_id"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
-	
+
 	// Relationships
 	Business    Business `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 	CurrentBill *Bill    `gorm:"foreignKey:CurrentBillID" json:"current_bill,omitempty"`
@@ -151,13 +151,13 @@ type BusinessAddress struct {
 
 // Menu represents a business's menu
 type Menu struct {
-	ID          uint           `gorm:"primaryKey" json:"id"`
-	BusinessID  uint           `gorm:"index;not null" json:"business_id"`
-	Categories  string         `gorm:"type:text" json:"categories"` // JSON string for SQLite
-	IsActive    bool           `gorm:"default:true" json:"is_active"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	Business    Business       `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	ID         uint      `gorm:"primaryKey" json:"id"`
+	BusinessID uint      `gorm:"index;not null" json:"business_id"`
+	Categories string    `gorm:"type:text" json:"categories"` // JSON string for SQLite
+	IsActive   bool      `gorm:"default:true" json:"is_active"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Business   Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
 // MenuCategory represents a category within a menu
@@ -176,8 +176,8 @@ type MenuItem struct {
 	Description string           `json:"description"`
 	Price       float64          `json:"price"`
 	Currency    string           `json:"currency"`
-	Image       string           `json:"image"`       // Keep for backward compatibility
-	Images      []string         `json:"images"`      // New field for multiple images
+	Image       string           `json:"image"`  // Keep for backward compatibility
+	Images      []string         `json:"images"` // New field for multiple images
 	Options     []MenuItemOption `json:"options"`
 	Allergens   []string         `json:"allergens"`
 	DietaryTags []string         `json:"dietary_tags"`
@@ -195,42 +195,42 @@ type MenuItemOption struct {
 
 // Table represents a physical table in a business
 type Table struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`
-	BusinessID  uint      `gorm:"index;not null" json:"business_id"`
-	TableCode   string    `gorm:"uniqueIndex;not null" json:"table_code"`
-	Name        string    `gorm:"not null" json:"name"`
-	QRCode      string    `json:"qr_code"`
-	IsActive    bool      `gorm:"default:true" json:"is_active"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	Business    Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	ID         uint      `gorm:"primaryKey" json:"id"`
+	BusinessID uint      `gorm:"index;not null" json:"business_id"`
+	TableCode  string    `gorm:"uniqueIndex;not null" json:"table_code"`
+	Name       string    `gorm:"not null" json:"name"`
+	QRCode     string    `json:"qr_code"`
+	IsActive   bool      `gorm:"default:true" json:"is_active"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Business   Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
 // Bill represents a bill/check for a table
 type Bill struct {
-	ID               uint          `gorm:"primaryKey" json:"id"`
-	BusinessID       uint          `gorm:"index;not null" json:"business_id"`
-	TableID          uint          `gorm:"index" json:"table_id"`
-	CounterID        *uint         `gorm:"index" json:"counter_id"`
-	BillNumber       string        `gorm:"uniqueIndex;not null" json:"bill_number"`
-	Notes            string        `gorm:"type:text" json:"notes"` // Order notes for kitchen/staff
-	Items            string        `gorm:"type:text" json:"items"` // JSON string for SQLite
-	Subtotal         float64       `json:"subtotal"`
-	TaxAmount        float64       `json:"tax_amount"`
-	ServiceFeeAmount float64       `json:"service_fee_amount"`
-	TotalAmount      float64       `json:"total_amount"`
-	PaidAmount       float64       `gorm:"default:0" json:"paid_amount"`
-	TipAmount        float64       `gorm:"default:0" json:"tip_amount"`
-	Status           BillStatus    `gorm:"default:'open'" json:"status"`
-	SettlementAddr   string        `gorm:"not null" json:"settlement_address"`
-	TippingAddr      string        `gorm:"not null" json:"tipping_address"`
-	CreatedAt        time.Time     `json:"created_at"`
-	UpdatedAt        time.Time     `json:"updated_at"`
-	ClosedAt         *time.Time    `json:"closed_at"`
-	Business         Business      `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
-	Table            Table         `gorm:"foreignKey:TableID" json:"table,omitempty"`
-	Counter          *Counter      `gorm:"foreignKey:CounterID" json:"counter,omitempty"`
-	Payments         []Payment     `gorm:"foreignKey:BillID" json:"payments,omitempty"`
+	ID               uint       `gorm:"primaryKey" json:"id"`
+	BusinessID       uint       `gorm:"index;not null" json:"business_id"`
+	TableID          uint       `gorm:"index" json:"table_id"`
+	CounterID        *uint      `gorm:"index" json:"counter_id"`
+	BillNumber       string     `gorm:"uniqueIndex;not null" json:"bill_number"`
+	Notes            string     `gorm:"type:text" json:"notes"` // Order notes for kitchen/staff
+	Items            string     `gorm:"type:text" json:"items"` // JSON string for SQLite
+	Subtotal         float64    `json:"subtotal"`
+	TaxAmount        float64    `json:"tax_amount"`
+	ServiceFeeAmount float64    `json:"service_fee_amount"`
+	TotalAmount      float64    `json:"total_amount"`
+	PaidAmount       float64    `gorm:"default:0" json:"paid_amount"`
+	TipAmount        float64    `gorm:"default:0" json:"tip_amount"`
+	Status           BillStatus `gorm:"default:'open'" json:"status"`
+	SettlementAddr   string     `gorm:"not null" json:"settlement_address"`
+	TippingAddr      string     `gorm:"not null" json:"tipping_address"`
+	CreatedAt        time.Time  `json:"created_at"`
+	UpdatedAt        time.Time  `json:"updated_at"`
+	ClosedAt         *time.Time `json:"closed_at"`
+	Business         Business   `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	Table            Table      `gorm:"foreignKey:TableID" json:"table,omitempty"`
+	Counter          *Counter   `gorm:"foreignKey:CounterID" json:"counter,omitempty"`
+	Payments         []Payment  `gorm:"foreignKey:BillID" json:"payments,omitempty"`
 }
 
 // BillItem represents an item on a bill
@@ -278,19 +278,19 @@ const (
 
 // WithdrawalHistory represents a business withdrawal/claim transaction
 type WithdrawalHistory struct {
-	ID                uint      `gorm:"primaryKey" json:"id"`
-	BusinessID        uint      `gorm:"index;not null" json:"business_id"`
-	TransactionHash   string    `gorm:"uniqueIndex;not null" json:"transaction_hash"`
-	PaymentAmount     float64   `gorm:"default:0" json:"payment_amount"`     // Amount from payment earnings
-	TipAmount         float64   `gorm:"default:0" json:"tip_amount"`         // Amount from tip earnings
-	TotalAmount       float64   `gorm:"not null" json:"total_amount"`        // Total withdrawn
-	WithdrawalAddress string    `gorm:"not null" json:"withdrawal_address"`  // Address that received the funds
-	BlockchainNetwork string    `gorm:"not null" json:"blockchain_network"`  // e.g., "base-sepolia", "ethereum"
-	Status            string    `gorm:"default:'pending'" json:"status"`     // pending, confirmed, failed
-	CreatedAt         time.Time `json:"created_at"`
-	UpdatedAt         time.Time `json:"updated_at"`
+	ID                uint       `gorm:"primaryKey" json:"id"`
+	BusinessID        uint       `gorm:"index;not null" json:"business_id"`
+	TransactionHash   string     `gorm:"uniqueIndex;not null" json:"transaction_hash"`
+	PaymentAmount     float64    `gorm:"default:0" json:"payment_amount"`    // Amount from payment earnings
+	TipAmount         float64    `gorm:"default:0" json:"tip_amount"`        // Amount from tip earnings
+	TotalAmount       float64    `gorm:"not null" json:"total_amount"`       // Total withdrawn
+	WithdrawalAddress string     `gorm:"not null" json:"withdrawal_address"` // Address that received the funds
+	BlockchainNetwork string     `gorm:"not null" json:"blockchain_network"` // e.g., "base-sepolia", "ethereum"
+	Status            string     `gorm:"default:'pending'" json:"status"`    // pending, confirmed, failed
+	CreatedAt         time.Time  `json:"created_at"`
+	UpdatedAt         time.Time  `json:"updated_at"`
 	ConfirmedAt       *time.Time `json:"confirmed_at"`
-	Business          Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	Business          Business   `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
 // AlternativePayment represents a non-crypto payment (cash, card, etc.)
@@ -339,17 +339,17 @@ type PaymentBreakdown struct {
 
 // Staff represents employees/workers of a business
 type Staff struct {
-	ID           uint       `gorm:"primaryKey" json:"id"`
-	BusinessID   uint       `gorm:"index;not null" json:"business_id"`
-	Email        string     `gorm:"uniqueIndex;not null" json:"email"`
-	Name         string     `gorm:"not null" json:"name"`
-	Role         StaffRole  `gorm:"not null" json:"role"`
-	IsActive     bool       `gorm:"default:true" json:"is_active"`
-	LastLoginAt  *time.Time `json:"last_login_at"`
-	InvitedBy    string     `gorm:"not null" json:"invited_by"` // Owner wallet address
-	CreatedAt    time.Time  `json:"created_at"`
-	UpdatedAt    time.Time  `json:"updated_at"`
-	Business     Business   `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	ID          uint       `gorm:"primaryKey" json:"id"`
+	BusinessID  uint       `gorm:"index;not null" json:"business_id"`
+	Email       string     `gorm:"uniqueIndex;not null" json:"email"`
+	Name        string     `gorm:"not null" json:"name"`
+	Role        StaffRole  `gorm:"not null" json:"role"`
+	IsActive    bool       `gorm:"default:true" json:"is_active"`
+	LastLoginAt *time.Time `json:"last_login_at"`
+	InvitedBy   string     `gorm:"not null" json:"invited_by"` // Owner wallet address
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	Business    Business   `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
 // StaffInvitation represents pending staff invitations
@@ -474,54 +474,54 @@ const (
 type ReferralStatus string
 
 const (
-	ReferralStatusActive   ReferralStatus = "active"
-	ReferralStatusInactive ReferralStatus = "inactive"
+	ReferralStatusActive    ReferralStatus = "active"
+	ReferralStatusInactive  ReferralStatus = "inactive"
 	ReferralStatusSuspended ReferralStatus = "suspended"
 )
 
 // Referrer represents a user who can refer businesses
 type Referrer struct {
-	ID                  uint           `gorm:"primaryKey" json:"id"`
-	WalletAddress       string         `gorm:"uniqueIndex;not null" json:"wallet_address"`
-	ReferralCode        string         `gorm:"uniqueIndex;not null" json:"referral_code"`
-	Tier                ReferralTier   `gorm:"not null" json:"tier"`
-	Status              ReferralStatus `gorm:"default:'active'" json:"status"`
-	TotalReferrals      int            `gorm:"default:0" json:"total_referrals"`
-	TotalCommissions    string         `gorm:"default:'0'" json:"total_commissions"` // USDC amount as string
-	ClaimableCommissions string        `gorm:"default:'0'" json:"claimable_commissions"` // USDC amount as string
-	LastClaimedAt       *time.Time     `json:"last_claimed_at"`
-	RegistrationTxHash  string         `json:"registration_tx_hash"` // Blockchain transaction hash
-	CreatedAt           time.Time      `json:"created_at"`
-	UpdatedAt           time.Time      `json:"updated_at"`
+	ID                   uint           `gorm:"primaryKey" json:"id"`
+	WalletAddress        string         `gorm:"uniqueIndex;not null" json:"wallet_address"`
+	ReferralCode         string         `gorm:"uniqueIndex;not null" json:"referral_code"`
+	Tier                 ReferralTier   `gorm:"not null" json:"tier"`
+	Status               ReferralStatus `gorm:"default:'active'" json:"status"`
+	TotalReferrals       int            `gorm:"default:0" json:"total_referrals"`
+	TotalCommissions     string         `gorm:"default:'0'" json:"total_commissions"`     // USDC amount as string
+	ClaimableCommissions string         `gorm:"default:'0'" json:"claimable_commissions"` // USDC amount as string
+	LastClaimedAt        *time.Time     `json:"last_claimed_at"`
+	RegistrationTxHash   string         `json:"registration_tx_hash"` // Blockchain transaction hash
+	CreatedAt            time.Time      `json:"created_at"`
+	UpdatedAt            time.Time      `json:"updated_at"`
 }
 
 // ReferralRecord represents a successful referral of a business
 type ReferralRecord struct {
-	ID                uint      `gorm:"primaryKey" json:"id"`
-	ReferrerID        uint      `gorm:"index;not null" json:"referrer_id"`
-	BusinessID        uint      `gorm:"index;not null" json:"business_id"`
-	RegistrationFee   string    `json:"registration_fee"`   // USDC amount as string
-	Discount          string    `json:"discount"`           // USDC discount given to business
-	Commission        string    `json:"commission"`         // USDC commission earned by referrer
-	CommissionPaid    bool      `gorm:"default:false" json:"commission_paid"`
-	CommissionTxHash  string    `json:"commission_tx_hash"` // Blockchain transaction hash for commission payment
-	ProcessedTxHash   string    `json:"processed_tx_hash"`  // Blockchain transaction hash for referral processing
-	CreatedAt         time.Time `json:"created_at"`
-	UpdatedAt         time.Time `json:"updated_at"`
-	Referrer          Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
-	Business          Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+	ID               uint      `gorm:"primaryKey" json:"id"`
+	ReferrerID       uint      `gorm:"index;not null" json:"referrer_id"`
+	BusinessID       uint      `gorm:"index;not null" json:"business_id"`
+	RegistrationFee  string    `json:"registration_fee"` // USDC amount as string
+	Discount         string    `json:"discount"`         // USDC discount given to business
+	Commission       string    `json:"commission"`       // USDC commission earned by referrer
+	CommissionPaid   bool      `gorm:"default:false" json:"commission_paid"`
+	CommissionTxHash string    `json:"commission_tx_hash"` // Blockchain transaction hash for commission payment
+	ProcessedTxHash  string    `json:"processed_tx_hash"`  // Blockchain transaction hash for referral processing
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
+	Referrer         Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
+	Business         Business  `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
 }
 
 // ReferralCommissionClaim represents a commission claim by a referrer
 type ReferralCommissionClaim struct {
-	ID            uint      `gorm:"primaryKey" json:"id"`
-	ReferrerID    uint      `gorm:"index;not null" json:"referrer_id"`
-	Amount        string    `json:"amount"`         // USDC amount as string
-	TxHash        string    `json:"tx_hash"`        // Blockchain transaction hash
-	Status        string    `gorm:"default:'pending'" json:"status"` // pending, completed, failed
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	Referrer      Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
+	ID         uint      `gorm:"primaryKey" json:"id"`
+	ReferrerID uint      `gorm:"index;not null" json:"referrer_id"`
+	Amount     string    `json:"amount"`                          // USDC amount as string
+	TxHash     string    `json:"tx_hash"`                         // Blockchain transaction hash
+	Status     string    `gorm:"default:'pending'" json:"status"` // pending, completed, failed
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Referrer   Referrer  `gorm:"foreignKey:ReferrerID" json:"referrer,omitempty"`
 }
 
 // TableName methods for referral models
@@ -549,31 +549,31 @@ const (
 
 // OrderStats represents order performance statistics
 type OrderStats struct {
-	BusinessID        uint    `json:"business_id"`
-	Date              string  `json:"date"`
-	TotalOrders       int     `json:"total_orders"`
-	CompletedOrders   int     `json:"completed_orders"`
-	CancelledOrders   int     `json:"cancelled_orders"`
-	AverageTime       float64 `json:"average_time"` // Average preparation time in minutes
-	PeakHour          string  `json:"peak_hour"`
-	TotalRevenue      float64 `json:"total_revenue"`
+	BusinessID      uint    `json:"business_id"`
+	Date            string  `json:"date"`
+	TotalOrders     int     `json:"total_orders"`
+	CompletedOrders int     `json:"completed_orders"`
+	CancelledOrders int     `json:"cancelled_orders"`
+	AverageTime     float64 `json:"average_time"` // Average preparation time in minutes
+	PeakHour        string  `json:"peak_hour"`
+	TotalRevenue    float64 `json:"total_revenue"`
 }
 
 // Order represents a small order within a bill (guest requests)
 type Order struct {
-	ID           uint        `gorm:"primaryKey" json:"id"`
-	BillID       uint        `gorm:"index;not null" json:"bill_id"`
-	BusinessID   uint        `gorm:"index;not null" json:"business_id"`
-	OrderNumber  string      `gorm:"not null" json:"order_number"` // Generated order number for display
-	Status       OrderStatus `gorm:"not null;default:'pending'" json:"status"`
-	CreatedBy    string      `json:"created_by"`    // "guest" or staff member address
-	ApprovedBy   string      `json:"approved_by"`   // staff member who approved
-	Notes        string      `json:"notes"`         // Special instructions
-	Items        string      `gorm:"type:text" json:"items"` // JSON string for SQLite (OrderItem array)
-	CreatedAt    time.Time   `json:"created_at"`
-	UpdatedAt    time.Time   `json:"updated_at"`
-	ApprovedAt   *time.Time  `json:"approved_at"`
-	
+	ID          uint        `gorm:"primaryKey" json:"id"`
+	BillID      uint        `gorm:"index;not null" json:"bill_id"`
+	BusinessID  uint        `gorm:"index;not null" json:"business_id"`
+	OrderNumber string      `gorm:"not null" json:"order_number"` // Generated order number for display
+	Status      OrderStatus `gorm:"not null;default:'pending'" json:"status"`
+	CreatedBy   string      `json:"created_by"`             // "guest" or staff member address
+	ApprovedBy  string      `json:"approved_by"`            // staff member who approved
+	Notes       string      `json:"notes"`                  // Special instructions
+	Items       string      `gorm:"type:text" json:"items"` // JSON string for SQLite (OrderItem array)
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
+	ApprovedAt  *time.Time  `json:"approved_at"`
+
 	// Relationships
 	Bill     Bill     `gorm:"foreignKey:BillID" json:"bill,omitempty"`
 	Business Business `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
@@ -593,10 +593,10 @@ type OrderItem struct {
 type OrderStatus string
 
 const (
-	OrderStatusPending      OrderStatus = "pending"      // Waiting for staff approval
-	OrderStatusApproved     OrderStatus = "approved"     // Staff approved, ready for kitchen
-	OrderStatusInKitchen    OrderStatus = "in_kitchen"   // Sent to kitchen
-	OrderStatusOrderReady   OrderStatus = "ready"        // Kitchen finished
+	OrderStatusPending        OrderStatus = "pending"    // Waiting for staff approval
+	OrderStatusApproved       OrderStatus = "approved"   // Staff approved, ready for kitchen
+	OrderStatusInKitchen      OrderStatus = "in_kitchen" // Sent to kitchen
+	OrderStatusOrderReady     OrderStatus = "ready"      // Kitchen finished
 	OrderStatusOrderDelivered OrderStatus = "delivered"  // Served to table
 	OrderStatusOrderCancelled OrderStatus = "cancelled"  // Cancelled by staff
 )

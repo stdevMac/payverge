@@ -7,8 +7,7 @@ import { GuestTranslationProvider, useGuestTranslation } from '../../../../i18n/
 import { ArrowLeft, Menu } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { PersistentGuestNav } from '../../../../components/navigation/PersistentGuestNav';
-import { TranslationProvider } from '../../../../contexts/TranslationContext';
+import PersistentGuestNav from '../../../../components/navigation/PersistentGuestNav';
 
 // Lazy load heavy components
 const GuestBill = dynamic(() => import('../../../../components/guest/GuestBill'), {
@@ -480,7 +479,6 @@ function GuestBillPageContent() {
   }
 
   return (
-    <TranslationProvider>
         <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Subtle animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -566,7 +564,6 @@ function GuestBillPageContent() {
         />  
       )}
       </div>
-      </TranslationProvider>
   );
 }
 

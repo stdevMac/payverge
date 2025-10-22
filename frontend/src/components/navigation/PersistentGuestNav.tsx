@@ -5,6 +5,7 @@ import { Card, CardBody, Chip } from '@nextui-org/react';
 import { Menu, Receipt, ArrowLeft, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 
 interface PersistentGuestNavProps {
   tableCode: string;
@@ -17,11 +18,8 @@ interface PersistentGuestNavProps {
   showBackToTable?: boolean;
 }
 
-export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
-  tableCode,
-  currentBill,
-  showBackToTable = false,
-}) => {
+function PersistentGuestNav({ tableCode, currentBill, showBackToTable = false }: PersistentGuestNavProps) {
+  const { t } = useGuestTranslation();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -49,7 +47,7 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 )}
               </div>
-              <span className="text-sm font-medium tracking-wide">Table</span>
+              <span className="text-sm font-medium tracking-wide">{t('navigation.table')}</span>
             </div>
           </Link>
 
@@ -69,7 +67,7 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 )}
               </div>
-              <span className="text-sm font-medium tracking-wide">Menu</span>
+              <span className="text-sm font-medium tracking-wide">{t('navigation.menu')}</span>
             </div>
           </Link>
 
@@ -96,7 +94,7 @@ export const PersistentGuestNav: React.FC<PersistentGuestNavProps> = ({
                 )}
               </div>
               <span className="text-sm font-medium tracking-wide">
-                {currentBill ? `$${currentBill.bill.total_amount.toFixed(0)}` : 'Bill'}
+{currentBill ? `$${currentBill.bill.total_amount.toFixed(0)}` : t('navigation.bill')}
               </span>
             </div>
           </Link>

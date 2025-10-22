@@ -35,6 +35,25 @@
     "businessInfo": "Restaurantinformatie"
   },
   "menu": {
+    "unavailable": "Niet beschikbaar",
+    "containsAllergens": "Bevat allergenen",
+    "moreItems": "+{{count}} items",
+    "description": "Omschrijving",
+    "optionsAndAddons": "Opties en extra's",
+    "allergenInformation": "Allergene informatie",
+    "allergenWarning": "⚠️ Dit eten bevat of kan allergenen bevatten:",
+    "dietaryInformation": "Eten informatie",
+    "priceShownIn": "{{currency}}",
+    "quantityQ": "Aantal:",
+    "total": "Totaal:",
+    "close": "Sluiten",
+    "yourOrder": "Bestelling",
+    "itemsInCartCount": "{{count}} items",
+    "cartEmptyM": "Winkelwagen is leeg",
+    "cartEmptyDescriptionM": "Voeg items toe uit het menu om te beginnen",
+    "cartTotalM": "Totaal:",
+    "swipeToBrowse": "Swipe om te bladeren",
+    "poweredByPayverge": "Gemaakt door Payverge • klik op winkelwagen om te bestellen • bestellingen moeten worden goedgekeurd door personeel",
     "title": "Menu",
     "categories": "Categorieën",
     "items": "Items",
@@ -169,7 +188,10 @@
     "viewDetails": "Bekijk details",
     "home": "Home",
     "help": "Hulp",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "table": "Tafel",
+    "menu": "Menu",
+    "bill": "Rekening"
   },
   "bill": {
     "billStatus": {

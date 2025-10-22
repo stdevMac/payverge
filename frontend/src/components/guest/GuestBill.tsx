@@ -20,7 +20,6 @@ import { BillWithItemsResponse, getMenuByTableCode } from '../../api/bills';
 import { Business, MenuCategory, MenuItem } from '../../api/business';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow, { BillData } from '../splitting/BillSplittingFlow';
-import { useTranslation } from '../../contexts/TranslationContext';
 import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 import CurrencyConverter, { CurrencyPrice } from '../common/CurrencyConverter';
 // import ParticipantTracker from '../blockchain/ParticipantTracker'; // Temporarily disabled for debugging
@@ -50,128 +49,13 @@ export const GuestBill: React.FC<GuestBillProps> = ({
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSplittingModalOpen, setIsSplittingModalOpen] = useState(false);
   const { isOpen: isCashierModalOpen, onOpen: onCashierModalOpen, onClose: onCashierModalClose } = useDisclosure();
-  const { getTranslation, loadTranslations, translations } = useTranslation();
-  const [translatedCategories, setTranslatedCategories] = useState<MenuCategory[]>([]);
-  const [originalCategories, setOriginalCategories] = useState<MenuCategory[]>([]);
 
-  // Load translated menu when language is selected
-  const loadTranslatedMenu = async (languageCode: string) => {
-    console.log('Bill: Loading translated menu for table:', tableCode, 'language:', languageCode);
-    try {
-      const menuData = await getMenuByTableCode(tableCode, languageCode);
-      console.log('Bill: Menu data received:', {
-        hasCategories: !!menuData.categories,
-        hasParsedCategories: !!menuData.parsed_categories,
-        language: menuData.language
-      });
-      
-      // Use translated categories if available, otherwise fall back to original
-      const categories = menuData.parsed_categories || menuData.categories;
-      console.log('Bill: Setting translated categories:', {
-        categoriesLength: categories?.length,
-        firstCategoryName: categories?.[0]?.name,
-        firstCategoryItems: categories?.[0]?.items?.map((item: MenuItem) => ({ id: item.id, name: item.name }))
-      });
-      
-      setTranslatedCategories(categories || []);
-    } catch (error) {
-      console.error('Bill: Error loading translated menu:', error);
-      setTranslatedCategories([]);
-    }
-  };
+  // For now, we'll keep item names as-is since translation is handled at the page level
+  // TODO: Implement proper item name translation integration with page-level translation
 
-  // Load original English menu for matching purposes
-  const loadOriginalMenu = async () => {
-    console.log('Bill: Loading original English menu for table:', tableCode);
-    try {
-      const menuData = await getMenuByTableCode(tableCode, 'en');
-      const categories = menuData.parsed_categories || menuData.categories;
-      console.log('Bill: Setting original categories:', {
-        categoriesLength: categories?.length,
-        firstCategoryName: categories?.[0]?.name
-      });
-      setOriginalCategories(categories || []);
-    } catch (error) {
-      console.error('Bill: Error loading original menu:', error);
-      setOriginalCategories([]);
-    }
-  };
-
-  // Load translations when component mounts and language is selected
-  useEffect(() => {
-    // Always load the original English menu for matching
-    loadOriginalMenu();
-    
-    if (business?.id && selectedLanguage && selectedLanguage !== 'en') {
-      loadTranslations(business.id, selectedLanguage);
-      loadTranslatedMenu(selectedLanguage);
-    } else if (selectedLanguage === 'en') {
-      setTranslatedCategories([]);
-    }
-  }, [business?.id, selectedLanguage, loadTranslations, tableCode]);
-
-  // Function to get translated item name by matching against translated menu
+  // For now, just return the original item name
+  // TODO: Implement proper item name translation integration with page-level translation
   const getTranslatedItemName = (item: any) => {
-    if (!selectedLanguage || selectedLanguage === 'en' || !translatedCategories.length) {
-      return item.name;
-    }
-
-    console.log('Bill: Trying to translate item:', {
-      itemName: item.name,
-      itemId: item.menu_item_id,
-      selectedLanguage,
-      translatedCategoriesCount: translatedCategories.length,
-      originalCategoriesCount: originalCategories.length
-    });
-
-    // Strategy 1: Try to find the item in the original English menu first, then get its translation
-    if (originalCategories.length > 0) {
-      for (let catIndex = 0; catIndex < originalCategories.length; catIndex++) {
-        const originalCategory = originalCategories[catIndex];
-        if (originalCategory.items && Array.isArray(originalCategory.items)) {
-          for (let itemIndex = 0; itemIndex < originalCategory.items.length; itemIndex++) {
-            const originalMenuItem = originalCategory.items[itemIndex];
-            
-            // Try to match the bill item with the original menu item
-            if (originalMenuItem.name && item.name && 
-                originalMenuItem.name.toLowerCase() === item.name.toLowerCase()) {
-              
-              // Found match in original menu, now get the translated version
-              const translatedCategory = translatedCategories[catIndex];
-              if (translatedCategory?.items?.[itemIndex]) {
-                const translatedMenuItem = translatedCategory.items[itemIndex];
-                console.log('Bill: Found translation via position matching:', item.name, '->', translatedMenuItem.name);
-                return translatedMenuItem.name;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Strategy 2: Direct matching in translated menu (fallback)
-    for (const category of translatedCategories) {
-      if (category.items && Array.isArray(category.items)) {
-        for (const menuItem of category.items) {
-          // Try to match by menu_item_id first (most reliable)
-          if (item.menu_item_id && menuItem.id && item.menu_item_id.toString() === menuItem.id.toString()) {
-            console.log('Bill: Found translation match by ID:', item.name, '->', menuItem.name);
-            return menuItem.name;
-          }
-          
-          // Try exact name match (case insensitive)
-          if (menuItem.name && item.name && menuItem.name.toLowerCase() === item.name.toLowerCase()) {
-            console.log('Bill: Found translation match by exact name:', item.name, '->', menuItem.name);
-            return menuItem.name;
-          }
-        }
-      }
-    }
-    
-    const availableItems = translatedCategories.flatMap(cat => cat.items?.map((menuItem: MenuItem) => ({ id: menuItem.id, name: menuItem.name })) || []);
-    console.log('Bill: No translation found for item:', item.name, 'Available items:', availableItems);
-    console.log('Bill: Detailed available items:', JSON.stringify(availableItems, null, 2));
-    // Return original name if no translation found
     return item.name;
   };
 
@@ -248,7 +132,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
       subtotal: item.subtotal
     }))
   }), [bill.bill.id, bill.bill.bill_number, bill.bill.subtotal, bill.bill.tax_amount, 
-       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items, selectedLanguage, translatedCategories, originalCategories, getTranslatedItemName]);
+       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items, selectedLanguage, getTranslatedItemName]);
 
   const handleSplitPaymentInitiate = (personId: string, amount: number, tipAmount: number) => {
     // Close splitting modal and open payment processor with split amount

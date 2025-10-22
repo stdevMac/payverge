@@ -35,6 +35,25 @@
     "businessInfo": "Informações do restaurante"
   },
   "menu": {
+    "unavailable": "Indisponível",
+    "containsAllergens": "Contém alérgenos",
+    "moreItems": "+{{count}} itens",
+    "description": "Descrição",
+    "optionsAndAddons": "Opções e adicionais",
+    "allergenInformation": "Informações de alérgenos",
+    "allergenWarning": "⚠️ Este alimento contém ou pode conter alérgenos:",
+    "dietaryInformation": "Informações de dieta",
+    "priceShownIn": "{{currency}}",
+    "quantityQ": "Quantidade:",
+    "total": "Total:",
+    "close": "Fechar",
+    "yourOrder": "Pedido",
+    "itemsInCartCount": "{{count}} itens",
+    "cartEmptyM": "Carrinho vazio",
+    "cartEmptyDescriptionM": "Adicione itens ao menu para começar",
+    "cartTotalM": "Total:",
+    "swipeToBrowse": "Swipe para navegar",
+    "poweredByPayverge": "Feito por Payverge • clique no carrinho para fazer o pedido • os pedidos devem ser aprovados pelo pessoal",
     "title": "Menu",
     "categories": "Categorias",
     "items": "Itens",
@@ -169,7 +188,10 @@
     "viewDetails": "Ver detalhes",
     "home": "Início",
     "help": "Ajuda",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "table": "Mesa",
+    "menu": "Menu",
+    "bill": "Conta"
   },
   "bill": {
     "billStatus": {

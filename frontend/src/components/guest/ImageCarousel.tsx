@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Image, Button } from '@nextui-org/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useGuestTranslation } from '../../i18n/GuestTranslationProvider';
 
 interface ImageCarouselProps {
   images: string[];
@@ -17,6 +18,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   className = '',
   size = 'md'
 }) => {
+  const { t } = useGuestTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -207,7 +209,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         {/* Swipe hint for mobile (only show for lg size) */}
         {validImages.length > 1 && size === 'lg' && (
           <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full opacity-80 z-10">
-            Swipe to browse
+{t('menu.swipeToBrowse')}
           </div>
         )}
 

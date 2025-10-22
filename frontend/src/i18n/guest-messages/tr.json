@@ -35,6 +35,25 @@
     "businessInfo": "Restoran Bilgileri"
   },
   "menu": {
+    "unavailable": "Yok",
+    "containsAllergens": "Alerjik",
+    "moreItems": "+{{count}} ürün",
+    "description": "Açıklama",
+    "optionsAndAddons": "Seçenekler ve ekstralar",
+    "allergenInformation": "Alerjik bilgiler",
+    "allergenWarning": "⚠️ Bu ürün alergen içeriyor:",
+    "dietaryInformation": "İnformasyon",
+    "priceShownIn": "{{currency}}",
+    "quantityQ": "Adet:",
+    "total": "Toplam:",
+    "close": "Kapat",
+    "yourOrder": "Siparişiniz",
+    "itemsInCartCount": "{{count}} ürün",
+    "cartEmptyM": "Sepetiniz boş",
+    "cartEmptyDescriptionM": "Menüden ürün ekleyin",
+    "cartTotalM": "Toplam:",
+    "swipeToBrowse": "Swipe için navigate",
+    "poweredByPayverge": "Payverge tarafından yapıldı • siparişinizi yapmak için sepete tıklayın • siparişler mutfağa gönderilecek",
     "title": "Menü",
     "categories": "Kategoriler",
     "items": "Ürünler",
@@ -169,7 +188,10 @@
     "viewDetails": "Detayları Gör",
     "home": "Ana Sayfa",
     "help": "Yardım",
-    "settings": "Ayarlar"
+    "settings": "Ayarlar",
+    "table": "Masa",
+    "menu": "Menü",
+    "bill": "Hesap"
   },
   "bill": {
     "billStatus": {

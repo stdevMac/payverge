@@ -295,7 +295,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
               {t('menu.orderInstructions')}
             </p>
             <div className="text-xs text-gray-400 font-light tracking-wide">
-              Powered by Payverge • Click cart to place order • Orders require staff approval
+{t('menu.poweredByPayverge')}
             </div>
           </div>
         </div>
@@ -325,7 +325,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                 >
                   {!item.is_available && (
                     <div className="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                      Unavailable
+{t('menu.unavailable')}
                     </div>
                   )}
                   <div className="flex gap-6">
@@ -373,7 +373,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                               <div className="flex items-center gap-1">
                                 <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                                 <span className="text-xs text-orange-600 font-medium">
-                                  Contains allergens
+{t('menu.containsAllergens')}
                                 </span>
                               </div>
                             )}
@@ -397,7 +397,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                                     color="default"
                                     className="text-xs h-5 px-2"
                                   >
-                                    +{item.dietary_tags.length - 2} more
+{t('menu.moreItems', { count: item.dietary_tags.length - 2 })}
                                   </Chip>
                                 )}
                               </div>
@@ -553,18 +553,12 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         size="lg"
                         className="w-full max-w-lg"
                       />
-                      {/* Debug info - remove this after testing */}
-                      {process.env.NODE_ENV === 'development' && (
-                        <div className="absolute top-4 left-4 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                          Debug: {getItemImages(selectedItem).length} images
-                        </div>
-                      )}
                     </div>
                   )}
                   
                   {selectedItem?.description && (
                     <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-3">Description</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">{t('menu.description')}</h3>
                       <p className="text-gray-600 font-light leading-relaxed">
                         {selectedItem.description}
                       </p>
@@ -579,7 +573,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <div>
                           <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
                             <Plus className="w-5 h-5" />
-                            Options & Add-ons
+{t('menu.optionsAndAddons')}
                           </h3>
                           <div className="space-y-2">
                             {selectedItem.options.map((option, index) => {
@@ -621,11 +615,11 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <div>
                           <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                            Allergen Information
+{t('menu.allergenInformation')}
                           </h3>
                           <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
                             <p className="text-sm text-orange-800 mb-3 font-medium">
-                              ⚠️ This item contains or may contain:
+{t('menu.allergenWarning')}
                             </p>
                             <div className="flex flex-wrap gap-2">
                               {selectedItem.allergens.map((allergen, index) => (
@@ -649,7 +643,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <div>
                           <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
                             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            Dietary Information
+{t('menu.dietaryInformation')}
                           </h3>
                           <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                             <div className="flex flex-wrap gap-2">
@@ -674,7 +668,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <p className="text-sm text-blue-800">
                             <Info className="w-4 h-4 inline mr-1" />
-                            Price shown in {selectedItem.currency}
+{t('menu.priceShownIn', { currency: selectedItem.currency })}
                           </p>
                         </div>
                       )}
@@ -699,7 +693,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                   {/* Quantity Selector in Modal */}
                   {selectedItem && (
                     <div className="flex items-center justify-center gap-4">
-                      <span className="text-sm text-gray-600 font-medium">Quantity:</span>
+                      <span className="text-sm text-gray-600 font-medium">{t('menu.quantityQ')}</span>
                       <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-2">
                         <button
                           onClick={() => setItemQuantity(selectedItem.name, getItemQuantity(selectedItem.name) - 1)}
@@ -719,7 +713,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                         </button>
                       </div>
                       <span className="text-sm text-gray-500">
-                        Total: {selectedItem && formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name))}
+{t('menu.total', { amount: selectedItem && formatCurrency(calculateItemTotalPrice(selectedItem) * getItemQuantity(selectedItem.name)) })}
                       </span>
                     </div>
                   )}
@@ -731,7 +725,7 @@ export const GuestMenu: React.FC<GuestMenuProps> = ({
                       onPress={onItemModalClose}
                       className="flex-1"
                     >
-                      Close
+{t('menu.close')}
                     </Button>
                     {selectedItem && (
                       <div className="flex-1 relative">
