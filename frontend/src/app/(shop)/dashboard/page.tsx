@@ -261,7 +261,9 @@ export default function Dashboard() {
             {!isConnected ? (
               <div className="space-y-4">
                 <p className="text-sm text-gray-500">{tString('authentication.connectMessage')}</p>
-                <w3m-button />
+                <div className="flex justify-center">
+                  <w3m-button />
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
