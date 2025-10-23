@@ -1717,6 +1717,8 @@
                 "referralDiscount": "Referral Discount",
                 "totalPayment": "Total Payment",
                 "estimatedTime": "Estimated subscription time: {time}",
+                "subscriptionTime": "Subscription time: {time}",
+                "currentUsdcBalance": "Current USDC Balance: {balance} USDC",
                 "connectedWallet": "Connected Wallet",
                 "publicPageUrl": "This will be your public business page URL",
                 "referralCodeUsing": "Using referral code:",
@@ -1759,7 +1761,7 @@
             "authenticationRequired": "Authentication Required",
             "authenticationMessage": "Please connect your wallet to register your business on Payverge.",
             "loading": "Loading...",
-            "backToDashboard": "Back to Dashboard",
+            "backToDashboard": "Back to Home",
             "stepProgress": "Step {current} of {total}",
             "complete": "Complete",
             "tryAgain": "Try Again"

@@ -1718,6 +1718,8 @@
                 "referralDiscount": "Descuento de Referido",
                 "totalPayment": "Pago Total",
                 "estimatedTime": "Tiempo estimado de suscripción: {time}",
+                "subscriptionTime": "Tiempo de suscripción: {time}",
+                "currentUsdcBalance": "Saldo Actual de USDC: {balance} USDC",
                 "connectedWallet": "Billetera Conectada",
                 "publicPageUrl": "Esta será la URL de tu página pública de negocio",
                 "referralCodeUsing": "Usando código de referido:",
@@ -1760,7 +1762,7 @@
             "authenticationRequired": "Autenticación Requerida",
             "authenticationMessage": "Por favor conecta tu billetera para registrar tu negocio en Payverge.",
             "loading": "Cargando...",
-            "backToDashboard": "Volver al Panel",
+            "backToDashboard": "Volver al Inicio",
             "stepProgress": "Paso {current} de {total}",
             "complete": "Completo",
             "tryAgain": "Intentar de Nuevo"

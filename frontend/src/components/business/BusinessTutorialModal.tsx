@@ -46,24 +46,17 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
   const [isConnecting, setIsConnecting] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { locale } = useSimpleLocale();
-  const [translations, setTranslations] = useState<any>({});
-
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
   useEffect(() => {
-    const loadTranslations = async () => {
-      const t = await getTranslation(locale);
-      setTranslations(t);
-    };
-    loadTranslations();
+    setCurrentLocale(locale);
   }, [locale]);
 
-  // Helper function to get nested translation
-  const t = (key: string) => {
-    const keys = key.split('.');
-    let value = translations;
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return value || key;
+  // Helper function to get translation (following business registration pattern)
+  const t = (key: string): string => {
+    const result = getTranslation(key, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
   };
 
   // Reset connecting state when wallet connection changes
@@ -252,12 +245,9 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             {isConnected && appKitConnected && address ? (
               <div className="bg-green-50 p-4 rounded-lg">
                 <IoCheckmarkCircleOutline className="w-6 h-6 text-green-500 mx-auto mb-2" />
-                <p className="text-green-700 font-medium">Wallet Connected & Authenticated!</p>
+                <p className="text-green-700 font-medium">Wallet Connected Successfully!</p>
                 <p className="text-green-600 text-sm mt-1">
-                  {address.slice(0, 6)}...{address.slice(-4)}
-                </p>
-                <p className="text-green-500 text-xs mt-1">
-                  ✓ SIWE Authentication Complete
+                  You're ready to start building your business
                 </p>
               </div>
             ) : (
@@ -278,9 +268,9 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                    t("businessTutorialModal.buttons.connectWallet")}
                 </Button>
                 {isConnected && !appKitConnected && (
-                  <div className="bg-yellow-50 p-3 rounded-lg">
-                    <p className="text-yellow-700 text-sm text-center">
-                      Please sign the message to authenticate with Payverge
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <p className="text-blue-700 text-sm text-center">
+                      Please sign the message to complete setup
                     </p>
                   </div>
                 )}
@@ -302,6 +292,11 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
   const handleSkipTutorial = () => {
     // Skip to the last step (wallet connection)
     setCurrentStep(tutorialSteps.length - 1);
+  };
+
+  const handleConnectWallet = () => {
+    setIsConnecting(true);
+    open();
   };
 
   const handlePrevious = () => {
@@ -372,12 +367,14 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             </Button>
             
             <div className="flex gap-2">
-              <Button
-                variant="light"
-                onPress={handleSkipTutorial}
-              >
-                {t("businessTutorialModal.buttons.skip") || "Skip Tutorial"}
-              </Button>
+              {!isLastStep && (
+                <Button
+                  variant="light"
+                  onPress={handleSkipTutorial}
+                >
+                  {t("businessTutorialModal.buttons.skip") || "Skip Tutorial"}
+                </Button>
+              )}
               
               {isLastStep ? (
                 <Button
