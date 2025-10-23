@@ -2551,3 +2551,170 @@ func deleteTranslationsForMenuItem(businessID uint, categoryIndex, itemIndex int
 	log.Printf("🗑️ Deleted translations for menu item %d in category %d", itemIndex, categoryIndex)
 	return nil
 }
+
+// Google Places API integration
+
+// GoogleBusinessSearchRequest represents a request to search for Google businesses
+type GoogleBusinessSearchRequest struct {
+	Query string `json:"query" binding:"required"`
+}
+
+// GoogleBusinessUpdateRequest represents a request to update Google business info
+type GoogleBusinessUpdateRequest struct {
+	PlaceID        string `json:"place_id" binding:"required"`
+	BusinessName   string `json:"business_name" binding:"required"`
+}
+
+// SearchGoogleBusinesses searches for businesses using Google Places API
+func SearchGoogleBusinesses(c *gin.Context) {
+	var req GoogleBusinessSearchRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get Google Places service
+	placesService := GetGooglePlacesService()
+	if placesService == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Google Places API not configured"})
+		return
+	}
+
+	// Search for businesses
+	results, err := placesService.SearchBusinesses(req.Query)
+	if err != nil {
+		log.Printf("Error searching Google businesses: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to search businesses"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"results": results,
+		"count":   len(results),
+	})
+}
+
+// UpdateBusinessGoogleInfo updates the Google business information for a business
+func UpdateBusinessGoogleInfo(c *gin.Context) {
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	var req GoogleBusinessUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Get the business and verify ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to update this business"})
+		return
+	}
+
+	// Get Google Places service and validate Place ID
+	placesService := GetGooglePlacesService()
+	if placesService == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Google Places API not configured"})
+		return
+	}
+	
+	isValid, err := placesService.ValidatePlaceID(req.PlaceID)
+	if err != nil {
+		log.Printf("Error validating Place ID: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to validate Google business"})
+		return
+	}
+
+	if !isValid {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Google Place ID"})
+		return
+	}
+
+	// Generate review link and business URL
+	reviewLink := placesService.GenerateReviewLink(req.PlaceID)
+	businessURL := placesService.GenerateBusinessURL(req.PlaceID)
+
+	// Update business with Google information
+	business.GooglePlaceID = req.PlaceID
+	business.GoogleBusinessName = req.BusinessName
+	business.GoogleReviewLink = reviewLink
+	business.GoogleBusinessURL = businessURL
+	business.GoogleReviewsEnabled = true
+	business.UpdatedAt = time.Now()
+
+	if err := database.UpdateBusiness(business); err != nil {
+		log.Printf("Error updating business Google info: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update business"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":            "Google business information updated successfully",
+		"google_place_id":    business.GooglePlaceID,
+		"google_business_name": business.GoogleBusinessName,
+		"google_review_link": business.GoogleReviewLink,
+		"google_business_url": business.GoogleBusinessURL,
+	})
+}
+
+// RemoveBusinessGoogleInfo removes Google business integration from a business
+func RemoveBusinessGoogleInfo(c *gin.Context) {
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.ParseUint(businessIDStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get the business and verify ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to update this business"})
+		return
+	}
+
+	// Clear Google business information
+	business.GooglePlaceID = ""
+	business.GoogleBusinessName = ""
+	business.GoogleReviewLink = ""
+	business.GoogleBusinessURL = ""
+	business.GoogleReviewsEnabled = false
+	business.UpdatedAt = time.Now()
+
+	if err := database.UpdateBusiness(business); err != nil {
+		log.Printf("Error removing business Google info: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update business"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Google business integration removed successfully",
+	})
+}

@@ -32,6 +32,11 @@ export interface Business {
   business_page_enabled?: boolean;
   show_reviews?: boolean;
   google_reviews_enabled?: boolean;
+  // Google Business Integration fields
+  google_place_id?: string;
+  google_business_name?: string;
+  google_review_link?: string;
+  google_business_url?: string;
   // Currency settings
   default_currency?: string;
   display_currency?: string;

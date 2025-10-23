@@ -119,8 +119,13 @@ func main() {
 	log.Println("Translation service initialized")
 	log.Println("Api key Google: ", *googleTranslateAPIKey)
 
-	// Make translation service available to the server package
+	// Initialize Google Places service
+	googlePlacesService := services.NewGooglePlacesService(*googleTranslateAPIKey)
+	log.Println("Google Places service initialized")
+
+	// Make services available to the server package
 	server.SetTranslationService(translationService)
+	server.SetGooglePlacesService(googlePlacesService)
 
 	// Initialize default currencies and languages
 	if err := exchangeRateService.InitializeDefaultCurrencies(); err != nil {
@@ -316,6 +321,11 @@ func main() {
 		protectedRoutes.PUT("/businesses/:id", server.UpdateBusiness)
 		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
 		protectedRoutes.GET("/businesses/check-url", server.CheckCustomURLAvailability)
+		
+		// Google Places API routes
+		protectedRoutes.POST("/google/businesses/search", server.SearchGoogleBusinesses)
+		protectedRoutes.PUT("/businesses/:id/google", server.UpdateBusinessGoogleInfo)
+		protectedRoutes.DELETE("/businesses/:id/google", server.RemoveBusinessGoogleInfo)
 
 		// Counter management routes
 		protectedRoutes.PUT("/businesses/:id/counters/settings", server.UpdateCounterSettings)

@@ -96,6 +96,11 @@ type Business struct {
 	BusinessPageEnabled  bool   `gorm:"default:false" json:"business_page_enabled"`
 	ShowReviews          bool   `gorm:"default:true" json:"show_reviews"`
 	GoogleReviewsEnabled bool   `gorm:"default:false" json:"google_reviews_enabled"`
+	// Google Business Integration
+	GooglePlaceID        string `json:"google_place_id"`        // Google Places API Place ID
+	GoogleBusinessName   string `json:"google_business_name"`   // Google business name for verification
+	GoogleReviewLink     string `json:"google_review_link"`     // Generated review link
+	GoogleBusinessURL    string `json:"google_business_url"`    // Google Maps business URL
 	ReferredByCode       string `json:"referred_by_code"` // Referral code used during registration
 	// Counter support for takeaway/quick service
 	CounterEnabled bool   `gorm:"default:false" json:"counter_enabled"`

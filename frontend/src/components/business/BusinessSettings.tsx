@@ -36,6 +36,7 @@ import BannerImageUploader from './BannerImageUploader';
 import CustomURLInput from './CustomURLInput';
 import { useToast } from '@/contexts/ToastContext';
 import CurrencySettings from './CurrencySettings';
+import GoogleBusinessSearch from './GoogleBusinessSearch';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 
 interface BusinessSettingsProps {
@@ -62,6 +63,12 @@ interface BusinessProfile {
     facebook?: string;
     twitter?: string;
   };
+  // Google Business Integration fields
+  google_place_id?: string;
+  google_business_name?: string;
+  google_review_link?: string;
+  google_business_url?: string;
+  google_reviews_enabled?: boolean;
 }
 
 interface DesignSettings {
@@ -183,6 +190,12 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
               facebook: '',
               twitter: '',
             },
+          // Google Business Integration fields
+          google_place_id: business.google_place_id || '',
+          google_business_name: business.google_business_name || '',
+          google_review_link: business.google_review_link || '',
+          google_business_url: business.google_business_url || '',
+          google_reviews_enabled: business.google_reviews_enabled || false,
         });
 
         // Load business page settings
@@ -813,24 +826,19 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-default-50 rounded-lg border">
-            <div>
-              <span className="font-medium">{tString('businessPage.googleReviewsTitle')}</span>
-              <p className="text-sm text-default-500">{tString('businessPage.googleReviewsDescription')}</p>
-            </div>
-            <Switch
-              isSelected={settings.google_reviews_enabled}
-              onValueChange={(value) => onSettingsChange({ ...settings, google_reviews_enabled: value })}
-              isDisabled
-            />
-          </div>
-
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <h4 className="font-semibold text-blue-900 mb-2">{tString('businessPage.comingSoonTitle')}</h4>
-            <p className="text-blue-700 text-sm">
-              {tString('businessPage.comingSoonDescription')}
-            </p>
-          </div>
+          <GoogleBusinessSearch
+            businessId={businessId.toString()}
+            businessName={profile.name}
+            businessAddress={`${profile.address.street}, ${profile.address.city}, ${profile.address.state} ${profile.address.postal_code}`}
+            currentGoogleInfo={{
+              google_place_id: profile.google_place_id,
+              google_business_name: profile.google_business_name,
+              google_review_link: profile.google_review_link,
+              google_business_url: profile.google_business_url,
+              google_reviews_enabled: profile.google_reviews_enabled
+            }}
+            onUpdate={() => window.location.reload()}
+          />
         </CardBody>
       </Card>
     </div>

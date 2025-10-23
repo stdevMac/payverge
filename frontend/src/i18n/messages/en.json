@@ -1960,5 +1960,71 @@
       "progress": {
         "step": "Step {{current}} of {{total}}"
       }
+    },
+    "googleBusiness": {
+      "errors": {
+        "emptyQuery": "Please enter a search query",
+        "noResults": "No businesses found. Try a different search query.",
+        "searchFailed": "Failed to search businesses. Please try again.",
+        "linkFailed": "Failed to link Google business. Please try again.",
+        "removeFailed": "Failed to remove Google integration. Please try again."
+      },
+      "success": {
+        "linked": "Google business linked successfully!",
+        "removed": "Google business integration removed"
+      },
+      "connected": {
+        "title": "Google Business Connected",
+        "status": "Active",
+        "businessName": "Business Name",
+        "quickActions": "Quick Actions",
+        "actions": {
+          "manage": {
+            "title": "Manage Business Profile",
+            "description": "Google Business Console"
+          },
+          "review": {
+            "title": "Customer Review Link",
+            "description": "Direct link for customers"
+          },
+          "maps": {
+            "title": "View on Google Maps",
+            "description": "Public business listing"
+          }
+        },
+        "integration": {
+          "title": "Reviews Integration Active",
+          "description": "Review links are shown in customer receipts"
+        },
+        "removeButton": "Remove Integration"
+      },
+      "search": {
+        "title": "Connect Google Business",
+        "description": "Link your Google Business Profile to automatically show review links to customers after payment.",
+        "inputLabel": "Search for your business",
+        "inputPlaceholder": "Enter your business name, address, or both...",
+        "inputDescription": "Try different combinations if you don't see your business",
+        "searchButton": "Search Google Business",
+        "selectBusiness": "Select your business:",
+        "tips": {
+          "title": "Search tips:",
+          "tip1": "Start with just your business name",
+          "tip2": "Add your city or neighborhood if needed",
+          "tip3": "Include your full address for more precise results",
+          "tip4": "Try variations of your business name if not found"
+        },
+        "noProfile": {
+          "title": "Don't have a Google Business Profile?",
+          "description": "Create one for free at",
+          "suffix": "to get started with Google Reviews integration."
+        }
+      },
+      "modal": {
+        "title": "Confirm Business Selection",
+        "confirmText": "Are you sure you want to link this Google business?",
+        "description": "This will enable Google Reviews integration for your business. Customers will see a review link after completing their payment.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Confirm & Link Business"
+      }
     }
 }

@@ -1960,5 +1960,71 @@
       "progress": {
         "step": "Paso {{current}} de {{total}}"
       }
+    },
+    "googleBusiness": {
+      "errors": {
+        "emptyQuery": "Por favor ingresa una consulta de búsqueda",
+        "noResults": "No se encontraron negocios. Intenta con una consulta diferente.",
+        "searchFailed": "Error al buscar negocios. Por favor intenta de nuevo.",
+        "linkFailed": "Error al vincular el negocio de Google. Por favor intenta de nuevo.",
+        "removeFailed": "Error al eliminar la integración de Google. Por favor intenta de nuevo."
+      },
+      "success": {
+        "linked": "¡Negocio de Google vinculado exitosamente!",
+        "removed": "Integración de Google eliminada"
+      },
+      "connected": {
+        "title": "Negocio de Google Conectado",
+        "status": "Activo",
+        "businessName": "Nombre del Negocio",
+        "quickActions": "Acciones Rápidas",
+        "actions": {
+          "manage": {
+            "title": "Administrar Perfil del Negocio",
+            "description": "Consola de Google Business"
+          },
+          "review": {
+            "title": "Enlace de Reseñas de Clientes",
+            "description": "Enlace directo para clientes"
+          },
+          "maps": {
+            "title": "Ver en Google Maps",
+            "description": "Listado público del negocio"
+          }
+        },
+        "integration": {
+          "title": "Integración de Reseñas Activa",
+          "description": "Los enlaces de reseñas se muestran en los recibos de clientes"
+        },
+        "removeButton": "Eliminar Integración"
+      },
+      "search": {
+        "title": "Conectar Negocio de Google",
+        "description": "Vincula tu Perfil de Negocio de Google para mostrar automáticamente enlaces de reseñas a los clientes después del pago.",
+        "inputLabel": "Buscar tu negocio",
+        "inputPlaceholder": "Ingresa el nombre de tu negocio, dirección, o ambos...",
+        "inputDescription": "Prueba diferentes combinaciones si no ves tu negocio",
+        "searchButton": "Buscar Negocio de Google",
+        "selectBusiness": "Selecciona tu negocio:",
+        "tips": {
+          "title": "Consejos de búsqueda:",
+          "tip1": "Comienza solo con el nombre de tu negocio",
+          "tip2": "Agrega tu ciudad o vecindario si es necesario",
+          "tip3": "Incluye tu dirección completa para resultados más precisos",
+          "tip4": "Prueba variaciones del nombre de tu negocio si no lo encuentras"
+        },
+        "noProfile": {
+          "title": "¿No tienes un Perfil de Negocio de Google?",
+          "description": "Crea uno gratis en",
+          "suffix": "para comenzar con la integración de Reseñas de Google."
+        }
+      },
+      "modal": {
+        "title": "Confirmar Selección de Negocio",
+        "confirmText": "¿Estás seguro de que quieres vincular este negocio de Google?",
+        "description": "Esto habilitará la integración de Reseñas de Google para tu negocio. Los clientes verán un enlace de reseña después de completar su pago.",
+        "cancelButton": "Cancelar",
+        "confirmButton": "Confirmar y Vincular Negocio"
+      }
     }
 }
