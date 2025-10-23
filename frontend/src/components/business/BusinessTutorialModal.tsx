@@ -72,158 +72,194 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
       title: t("businessTutorialModal.steps.welcome.title"),
       description: t("businessTutorialModal.steps.welcome.description"),
       content: (
-        <div className="text-center space-y-4">
-          <IoRestaurantOutline className="w-16 h-16 text-primary mx-auto" />
-          <p className="text-gray-600">
+        <div className="text-center space-y-6">
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoRestaurantOutline className="w-10 h-10 text-gray-700" />
+          </div>
+          <p className="text-lg font-light text-gray-600 leading-relaxed max-w-2xl mx-auto">
             {t("businessTutorialModal.steps.welcome.content.subtitle")}
           </p>
-          <div className="bg-primary-50 p-4 rounded-lg">
-            <p className="text-primary-700 font-medium">
+          <div className="bg-gray-100 p-6 rounded-2xl border border-gray-200">
+            <p className="text-gray-900 font-medium text-lg">
               {t("businessTutorialModal.steps.welcome.content.callToAction")}
             </p>
           </div>
         </div>
       ),
-      icon: <IoRestaurantOutline className="w-8 h-8 text-primary" />
+      icon: <IoRestaurantOutline className="w-8 h-8 text-gray-700" />
     },
     {
       title: t("businessTutorialModal.steps.digitalMenu.title"),
       description: t("businessTutorialModal.steps.digitalMenu.description"),
       content: (
-        <div className="space-y-4">
-          <IoQrCodeOutline className="w-16 h-16 text-primary mx-auto" />
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+        <div className="space-y-6">
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoQrCodeOutline className="w-10 h-10 text-gray-700" />
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.digitalMenu.features.qrTables.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.digitalMenu.features.realTimeUpdates.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.digitalMenu.features.mobileOptimized.description")}</p>
               </div>
             </div>
           </div>
         </div>
       ),
-      icon: <IoQrCodeOutline className="w-8 h-8 text-primary" />
+      icon: <IoQrCodeOutline className="w-8 h-8 text-gray-700" />
     },
     {
       title: t("businessTutorialModal.steps.usdcPayments.title"),
       description: t("businessTutorialModal.steps.usdcPayments.description"),
       content: (
-        <div className="space-y-4">
-          <IoCardOutline className="w-16 h-16 text-primary mx-auto" />
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+        <div className="space-y-6">
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoCardOutline className="w-10 h-10 text-gray-700" />
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.usdcPayments.features.instantSettlement.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.usdcPayments.features.lowerFees.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.usdcPayments.features.globalAccess.description")}</p>
               </div>
             </div>
           </div>
         </div>
       ),
-      icon: <IoCardOutline className="w-8 h-8 text-primary" />
+      icon: <IoCardOutline className="w-8 h-8 text-gray-700" />
     },
     {
       title: t("businessTutorialModal.steps.smartTipping.title"),
       description: t("businessTutorialModal.steps.smartTipping.description"),
       content: (
-        <div className="space-y-4">
-          <IoWalletOutline className="w-16 h-16 text-primary mx-auto" />
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+        <div className="space-y-6">
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoWalletOutline className="w-10 h-10 text-gray-700" />
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.smartTipping.features.directToStaff.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.smartTipping.features.flexibleOptions.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.smartTipping.features.transparentTracking.description")}</p>
               </div>
             </div>
           </div>
         </div>
       ),
-      icon: <IoWalletOutline className="w-8 h-8 text-primary" />
+      icon: <IoWalletOutline className="w-8 h-8 text-gray-700" />
     },
     {
       title: t("businessTutorialModal.steps.analytics.title"),
       description: t("businessTutorialModal.steps.analytics.description"),
       content: (
-        <div className="space-y-4">
-          <IoBarChartOutline className="w-16 h-16 text-primary mx-auto" />
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+        <div className="space-y-6">
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoBarChartOutline className="w-10 h-10 text-gray-700" />
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.analytics.features.realTimeDashboard.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.analytics.features.itemAnalytics.description")}</p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <IoCheckmarkCircleOutline className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+            <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <IoCheckmarkCircleOutline className="w-5 h-5 text-green-600" />
+              </div>
               <div>
-                <h4 className="font-medium">{t("businessTutorialModal.steps.analytics.features.exportReports.title")}</h4>
-                <p className="text-gray-600 text-sm">{t("businessTutorialModal.steps.analytics.features.exportReports.description")}</p>
+                <h4 className="font-medium text-gray-900 mb-1">{t("businessTutorialModal.steps.analytics.features.exportReports.title")}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{t("businessTutorialModal.steps.analytics.features.exportReports.description")}</p>
               </div>
             </div>
           </div>
         </div>
       ),
-      icon: <IoBarChartOutline className="w-8 h-8 text-primary" />
+      icon: <IoBarChartOutline className="w-8 h-8 text-gray-700" />
     },
     {
       title: t("businessTutorialModal.steps.connectWallet.title"),
       description: t("businessTutorialModal.steps.connectWallet.description"),
       content: (
         <div className="space-y-6">
-          <IoShieldCheckmarkOutline className="w-16 h-16 text-primary mx-auto" />
+          <div className="w-20 h-20 bg-gray-100 border border-gray-200 rounded-3xl flex items-center justify-center mx-auto">
+            <IoShieldCheckmarkOutline className="w-10 h-10 text-gray-700" />
+          </div>
           <div className="text-center space-y-4">
             <p className="text-gray-600">
               {t("businessTutorialModal.steps.connectWallet.content.subtitle")}
@@ -245,9 +281,9 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
             {isConnected && appKitConnected && address ? (
               <div className="bg-green-50 p-4 rounded-lg">
                 <IoCheckmarkCircleOutline className="w-6 h-6 text-green-500 mx-auto mb-2" />
-                <p className="text-green-700 font-medium">Wallet Connected Successfully!</p>
+                <p className="text-green-700 font-medium">{t("businessTutorialModal.steps.connectWallet.content.success.title")}</p>
                 <p className="text-green-600 text-sm mt-1">
-                  You're ready to start building your business
+                  {t("businessTutorialModal.steps.connectWallet.content.success.subtitle")}
                 </p>
               </div>
             ) : (
@@ -279,7 +315,7 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
           </div>
         </div>
       ),
-      icon: <IoShieldCheckmarkOutline className="w-8 h-8 text-primary" />
+      icon: <IoShieldCheckmarkOutline className="w-8 h-8 text-gray-700" />
     }
   ];
 
@@ -319,58 +355,77 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
     <Modal 
       isOpen={isOpen} 
       onClose={onClose}
-      size="2xl"
+      size="3xl"
       isDismissable={false}
       hideCloseButton
       classNames={{
-        backdrop: "bg-zinc-900/50 backdrop-blur-sm"
+        backdrop: "bg-gray-900/50 backdrop-blur-sm",
+        base: "bg-white",
+        body: "p-0",
+        header: "p-0",
+        footer: "p-0"
       }}
     >
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-2 pb-2">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
-              {currentStepData.icon}
-              <div>
-                <h2 className="text-xl font-bold">{currentStepData.title}</h2>
-                <p className="text-sm text-gray-500 font-normal">{currentStepData.description}</p>
+      <ModalContent className="bg-white rounded-2xl shadow-xl">
+        <ModalHeader className="p-6 sm:p-8 pb-4">
+          <div className="w-full">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center">
+                  {currentStepData.icon}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-light text-gray-900 tracking-wide">{currentStepData.title}</h2>
+                  <p className="text-base font-light text-gray-600 mt-1">{currentStepData.description}</p>
+                </div>
+              </div>
+              <div className="text-center sm:text-right">
+                <span className="text-xl font-medium text-gray-900">
+                  {Math.round(progress)}%
+                </span>
+                <p className="text-sm text-gray-500">
+                  {t("businessTutorialModal.progress.step").replace("{{current}}", (currentStep + 1).toString()).replace("{{total}}", tutorialSteps.length.toString())}
+                </p>
               </div>
             </div>
-            <div className="text-sm text-gray-500">
-              {t("businessTutorialModal.progress.step").replace("{{current}}", (currentStep + 1).toString()).replace("{{total}}", tutorialSteps.length.toString())}
-            </div>
+            <Progress 
+              value={progress} 
+              color="primary" 
+              className="w-full"
+              size="md"
+              classNames={{
+                track: "bg-gray-100",
+                indicator: "bg-gray-900"
+              }}
+            />
           </div>
-          <Progress 
-            value={progress} 
-            color="primary" 
-            className="w-full"
-            size="sm"
-          />
         </ModalHeader>
         
-        <ModalBody className="py-6">
-          <Card className="border-none shadow-none">
-            <CardBody className="p-6">
-              {currentStepData.content}
-            </CardBody>
-          </Card>
+        <ModalBody className="px-6 sm:px-8 py-4">
+          <div className="bg-gray-50 rounded-2xl p-6 sm:p-8">
+            {currentStepData.content}
+          </div>
         </ModalBody>
         
-        <ModalFooter className="pt-2">
-          <div className="flex justify-between w-full">
+        <ModalFooter className="p-6 sm:p-8 pt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 w-full">
             <Button
-              variant="light"
+              variant="bordered"
               onPress={handlePrevious}
               isDisabled={currentStep === 0}
+              className="h-12 px-6 border-2 font-medium"
+              size="lg"
             >
               {t("businessTutorialModal.buttons.previous") || "Previous"}
             </Button>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
               {!isLastStep && (
                 <Button
                   variant="light"
                   onPress={handleSkipTutorial}
+                  className="h-12 px-6 font-medium text-gray-600 hover:text-gray-800"
+                  size="lg"
                 >
                   {t("businessTutorialModal.buttons.skip") || "Skip Tutorial"}
                 </Button>
@@ -382,6 +437,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                   onPress={handleComplete}
                   isDisabled={!isConnected || !appKitConnected || !address}
                   startContent={<IoRocketOutline className="w-4 h-4" />}
+                  className="h-12 px-6 bg-gray-900 hover:bg-gray-800 font-medium shadow-sm"
+                  size="lg"
                 >
                   {t("businessTutorialModal.buttons.startBuilding")}
                 </Button>
@@ -389,6 +446,8 @@ export default function BusinessTutorialModal({ isOpen, onClose, onComplete }: B
                 <Button
                   color="primary"
                   onPress={handleNext}
+                  className="h-12 px-6 bg-gray-900 hover:bg-gray-800 font-medium shadow-sm"
+                  size="lg"
                 >
                   {t("businessTutorialModal.buttons.next")}
                 </Button>

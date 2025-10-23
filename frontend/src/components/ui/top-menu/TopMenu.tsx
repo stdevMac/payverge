@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useLogout } from "@/hooks";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export const TopMenu = () => {
@@ -23,6 +23,8 @@ export const TopMenu = () => {
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
   const { user } = useUserStore();
   const userIsAdmin = isAdmin(user);
   const pathname = usePathname();
@@ -30,7 +32,17 @@ export const TopMenu = () => {
   const isHomePage = pathname === "/";
   const { logout } = useLogout();
   const router = useRouter();
-  const { t } = useTranslation();
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `navigation.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -96,7 +108,7 @@ export const TopMenu = () => {
             <div className="relative w-20 h-6 sm:w-32 sm:h-8 md:w-40 md:h-10">
               <Image
                 src="/images/PayvergeLogo.svg"
-                alt={t('app.name', {}, 'Payverge')}
+                alt="Payverge"
                 fill
                 sizes="(max-width: 640px) 80px, (max-width: 768px) 128px, 160px"
                 className="object-contain"
@@ -154,7 +166,7 @@ export const TopMenu = () => {
               variant="light"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="focus:outline-none"
-              aria-label={t('navigation.toggleMenu')}
+              aria-label={tString('toggleMenu')}
             >
               {userIsAdmin ? (
                 <IoMenu size={22} />
@@ -179,24 +191,24 @@ export const TopMenu = () => {
                     className="font-medium"
                     startContent={<IoPersonOutline className="text-xl" />}
                   >
-                    {t('navigation.profile')}
+                    {tString('profile')}
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu aria-label={t('navigation.profileActions')}>
+                <DropdownMenu aria-label={tString('profileActions')}>
                   <DropdownItem
                     key="home"
                     startContent={<IoHomeOutline className="text-xl" />}
                     onClick={() => router.push("/")}
                     isDisabled={isHomePage}
                   >
-                    {t('navigation.home')}
+                    {tString('home')}
                   </DropdownItem>
                   <DropdownItem
-                    key="profile"
+                    key="dashboard"
                     startContent={<IoPersonOutline className="text-xl" />}
-                    onClick={() => router.push("/profile")}
+                    onClick={() => router.push("/dashboard")}
                   >
-                    {t('profile.myProfile')}
+                    {tString('dashboard')}
                   </DropdownItem>
                   <DropdownItem
                     key="admin"
@@ -204,7 +216,7 @@ export const TopMenu = () => {
                     onClick={() => router.push("/admin")}
                     className={userIsAdmin ? "" : "hidden"}
                   >
-                    {t('navigation.admin')}
+                    {tString('admin')}
                   </DropdownItem>
                   <DropdownItem
                     key="logout"
@@ -213,7 +225,7 @@ export const TopMenu = () => {
                     startContent={<IoLogOutOutline className="text-xl" />}
                     onClick={() => logout()}
                   >
-                    {t('navigation.logout')}
+                    {tString('logout')}
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
@@ -238,7 +250,7 @@ export const TopMenu = () => {
                       router.push("/");
                     }}
                   >
-                    {t('navigation.home')}
+                    {tString('home')}
                   </Button>
 
                   <Button
@@ -248,10 +260,10 @@ export const TopMenu = () => {
                     startContent={<IoPersonOutline className="text-xl" />}
                     onClick={() => {
                       setIsMenuOpen(false);
-                      router.push("/profile");
+                      router.push("/dashboard");
                     }}
                   >
-                    {t('profile.myProfile')}
+                    {tString('dashboard')}
                   </Button>
 
                   {userIsAdmin && (
@@ -265,7 +277,7 @@ export const TopMenu = () => {
                         router.push("/admin");
                       }}
                     >
-                      {t('navigation.admin')}
+                      {tString('admin')}
                     </Button>
                   )}
                 </>
@@ -281,7 +293,7 @@ export const TopMenu = () => {
                   setIsMenuOpen(false);
                 }}
               >
-                {t('navigation.logout')}
+                {tString('logout')}
               </Button>
               
               {/* Mobile Language Switcher removed - now using FloatingLanguageSwitcher */}

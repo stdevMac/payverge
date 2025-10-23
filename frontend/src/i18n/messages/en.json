@@ -1946,6 +1946,10 @@
               "register": "Register your business on the blockchain",
               "receive": "Receive payments from customers",
               "manage": "Manage your business settings"
+            },
+            "success": {
+              "title": "Wallet Connected Successfully!",
+              "subtitle": "You're ready to start building your business"
             }
           }
         }
@@ -2028,5 +2032,15 @@
         "cancelButton": "Cancel",
         "confirmButton": "Confirm & Link Business"
       }
+    },
+    "navigation": {
+      "connect": "Connect Wallet",
+      "profile": "Profile",
+      "dashboard": "Dashboard",
+      "home": "Home",
+      "admin": "Admin",
+      "logout": "Logout",
+      "toggleMenu": "Toggle Menu",
+      "profileActions": "Profile Actions"
     }
 }

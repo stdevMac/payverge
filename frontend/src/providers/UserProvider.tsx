@@ -178,6 +178,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       "/drop",
       "/referrals",
       "/referrals/buy",
+      "/business/register",
       "/referrals/dashboard",
       "/b",
       "/t",

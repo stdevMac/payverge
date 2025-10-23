@@ -1946,6 +1946,10 @@
               "register": "Registrar tu negocio en la blockchain",
               "receive": "Recibir pagos de clientes",
               "manage": "Gestionar la configuración de tu negocio"
+            },
+            "success": {
+              "title": "¡Billetera Conectada Exitosamente!",
+              "subtitle": "Estás listo para empezar a construir tu negocio"
             }
           }
         }
@@ -2028,5 +2032,15 @@
         "cancelButton": "Cancelar",
         "confirmButton": "Confirmar y Vincular Negocio"
       }
+    },
+    "navigation": {
+      "connect": "Conectar Billetera",
+      "profile": "Perfil",
+      "dashboard": "Panel",
+      "home": "Inicio",
+      "admin": "Admin",
+      "logout": "Cerrar Sesión",
+      "toggleMenu": "Alternar Menú",
+      "profileActions": "Acciones de Perfil"
     }
 }
