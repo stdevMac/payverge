@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardBody, CardHeader, Button, Input, Checkbox, Divider, Spinner, Textarea, Switch, Progress } from '@nextui-org/react';
 import { ArrowLeft, Building2, Wallet, Settings, Upload, Camera, Check, ChevronRight, ChevronLeft, MapPin, Phone, Globe, Hash, Percent, DollarSign } from 'lucide-react';
 import Link from 'next/link';
@@ -36,6 +36,23 @@ import { checkReferralCodeAvailability, CheckReferralCodeResponse } from '@/api/
 import { uploadFileToS3, uploadProtectedFileToS3 } from '@/api/files/useUploadFileToS3/useUploadFileToS3';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import SimpleLanguageSwitcher from '@/components/SimpleLanguageSwitcher';
+
+// Custom debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 
 // Multi-step form steps
@@ -103,7 +120,7 @@ export default function BusinessRegisterPage() {
   const router = useRouter();
   const { address, isConnected } = useAccount();
   const { user } = useUserStore();
-  const { isAuthenticated } = useAuth();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Translation setup
@@ -127,6 +144,7 @@ export default function BusinessRegisterPage() {
   
   // Smart Contract Hooks
   const { registerBusiness } = useRegisterBusiness();
+  const { registerBusinessWithCoupon } = useRegisterBusinessWithCoupon();
   const { approveUsdc } = useApproveUsdc();
   const { data: registrationFee } = useRegistrationFee();
   const { data: usdcBalance } = useUsdcBalance();
@@ -169,12 +187,19 @@ export default function BusinessRegisterPage() {
   const [referralDiscount, setReferralDiscount] = useState<number>(0);
   const [subscriptionTime, setSubscriptionTime] = useState<number>(0); // in seconds
   
-  // Validate coupon with smart contract
+  // Debounce coupon code to prevent excessive API calls (wait 800ms after user stops typing)
+  const debouncedCouponCode = useDebounce(couponCode, 800);
+  
+  // Validate coupon with smart contract (only after debounce delay)
   const { 
     isValid: isCouponValid, 
     discountAmount: couponDiscountAmount, 
     isLoading: isCouponLoading 
-  } = useValidateCoupon(discountType === 'coupon' && couponCode ? couponCode : '');
+  } = useValidateCoupon(
+    discountType === 'coupon' && debouncedCouponCode && debouncedCouponCode.length >= 3 
+      ? debouncedCouponCode 
+      : ''
+  );
   
   const [formData, setFormData] = useState<ExtendedCreateBusinessRequest>({
     name: "",
@@ -326,6 +351,8 @@ export default function BusinessRegisterPage() {
         }
         
         setLoading(false);
+        // Clear any previous authentication errors
+        setError(null);
       } catch (error) {
         setTimeout(() => {
           setError("Authentication failed. Please try signing in again.");
@@ -334,8 +361,21 @@ export default function BusinessRegisterPage() {
       }
     };
 
-    checkAuth();
-  }, [user]);
+    if (isConnected) {
+      checkAuth();
+    }
+  }, [isConnected, user]);
+
+  // Clear error when user successfully logs in
+  useEffect(() => {
+    if (user && isConnected && error !== null && typeof error === 'string') {
+      const hasSignInError = error.indexOf("sign in") !== -1;
+      const hasAuthFailedError = error.indexOf("Authentication failed") !== -1;
+      if (hasSignInError || hasAuthFailedError) {
+        setError(null);
+      }
+    }
+  }, [user, isConnected, error]);
 
   // Update settlement address when wallet is connected
   useEffect(() => {
@@ -375,7 +415,7 @@ export default function BusinessRegisterPage() {
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
-      // Step 2: Register business on smart contract
+      // Step 2: Register business on blockchain
       setLoadingStep('registration');
       const contractParams: RegisterBusinessParams = {
         name: formData.name,
@@ -384,7 +424,20 @@ export default function BusinessRegisterPage() {
         referralCode: formData.referred_by_code || undefined,
       };
       
-      const txHash = await registerBusiness(contractParams);
+      // Use appropriate registration method based on discount type
+      let txHash: string;
+      if (discountType === 'coupon' && couponCode) {
+        // Use coupon-based registration
+        txHash = await registerBusinessWithCoupon(
+          contractParams.name,
+          contractParams.paymentAddress as Address,
+          contractParams.tippingAddress as Address,
+          couponCode
+        );
+      } else {
+        // Use regular registration (with or without referral)
+        txHash = await registerBusiness(contractParams);
+      }
       
       // Step 3: Create business profile in backend
       setLoadingStep('backend');
@@ -630,50 +683,6 @@ export default function BusinessRegisterPage() {
               <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
             </div>
             <p className="text-gray-600 font-light tracking-wide">{tString('messages.loading')}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show authentication error
-  if (error && (error.includes("sign in") || error.includes("Authentication failed"))) {
-    return (
-      <div className="min-h-screen bg-white relative overflow-hidden">
-        {/* Subtle animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-gray-50 to-blue-50 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        </div>
-        
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <div className="text-center max-w-md mx-auto">
-            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-100">
-              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-light text-gray-900 mb-4 tracking-wide">{tString('messages.authenticationRequired')}</h2>
-            <p className="text-gray-600 font-light tracking-wide mb-8">{error}</p>
-            
-            <div className="space-y-4">
-              <p className="text-sm text-gray-500">{tString('messages.authenticationMessage')}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-md hover:bg-gray-800 transition-colors duration-200"
-              >
-                {tString('messages.tryAgain')}
-              </button>
-            </div>
-            
-            <div className="mt-8">
-              <Link 
-                href="/"
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
-              >
-                ← {tString('messages.backToDashboard')}
-              </Link>
-            </div>
           </div>
         </div>
       </div>
