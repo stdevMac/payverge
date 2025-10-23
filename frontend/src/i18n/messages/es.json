@@ -200,17 +200,27 @@
     },
     "businessDashboard": {
       "title": "Panel de Negocios",
-      "loading": "Cargando panel de negocios...",
+      "loading": {
+        "default": "Cargando panel de negocios...",
+        "authenticating": "Autenticando...",
+        "business": "Cargando negocio..."
+      },
       "errors": {
         "signIn": "Por favor inicia sesión para continuar.",
         "invalidToken": "Token de sesión inválido.",
         "authFailed": "Falló la autenticación.",
         "accessDenied": "Acceso Denegado"
       },
+      "authentication": {
+        "title": "Autenticación Requerida",
+        "connectMessage": "Conecta tu billetera para acceder al panel de negocios.",
+        "signMessage": "Firma el mensaje en tu billetera para autenticarte."
+      },
       "buttons": {
         "signIn": "Iniciar Sesión",
         "openingDashboard": "Abriendo Panel...",
         "goToDashboard": "Ir al Panel",
+        "learnMore": "Saber Más",
         "startExploring": "Comenzar a Explorar",
         "bookCall": "Reservar Llamada con el Fundador",
         "claimEarnings": "Reclamar Ganancias",
@@ -259,6 +269,30 @@
         "status": {
           "active": "Activo",
           "inactive": "Inactivo"
+        },
+        "welcome": {
+          "badge": "Panel de Tu Negocio",
+          "title": "Bienvenido de vuelta a",
+          "subtitle": "Tu negocio está listo para aceptar pagos. Monitorea el rendimiento, gestiona tu menú y rastrea ganancias todo en un lugar.",
+          "todayOverview": "Resumen de Hoy"
+        },
+        "quickActions": {
+          "badge": "Acciones Rápidas",
+          "title": "¿Qué te gustaría",
+          "titleEmphasis": "hacer",
+          "titleSuffix": "hoy?",
+          "viewAnalytics": {
+            "title": "Ver Analíticas",
+            "description": "Monitorea el rendimiento de tu negocio y rastrea métricas de ingresos"
+          },
+          "manageMenu": {
+            "title": "Gestionar Menú",
+            "description": "Actualiza tu menú digital y códigos QR para comidas sin contacto"
+          },
+          "claimEarnings": {
+            "title": "Reclamar Ganancias",
+            "description": "Revisa y reclama tus ganancias de blockchain de pagos y propinas"
+          }
         }
       },
       "blockchain": {
@@ -303,20 +337,33 @@
       },
       "tabs": {
         "overview": "Resumen",
+        "overviewDesc": "Panel de negocios y estadísticas rápidas",
         "analytics": "Analíticas",
+        "analyticsDesc": "Reportes de ventas y métricas de rendimiento",
         "menu": "Menú",
+        "menuDesc": "Gestiona tu menú digital y artículos",
         "tables": "Mesas", 
+        "tablesDesc": "Configura mesas de comedor y códigos QR",
         "bills": "Facturas",
+        "billsDesc": "Crea y gestiona facturas de clientes",
         "staff": "Personal",
+        "staffDesc": "Invita y gestiona miembros del equipo",
         "kitchen": "Cocina",
+        "kitchenDesc": "Órdenes de cocina y preparación",
         "counter": "Mostrador",
+        "counterDesc": "Punto de venta y servicio de mostrador",
+        "blockchain": "Blockchain",
+        "blockchainDesc": "Gestiona configuraciones en cadena y ganancias",
+        "subscriptions": "Suscripciones",
+        "subscriptionsDesc": "Gestiona tu suscripción de negocio",
         "settings": "Configuración",
-        "subscription": "Suscripción"
+        "settingsDesc": "Perfil de negocio y configuración"
       },
       "navigation": "Navegación",
       "dashboard": {
         "title": "Panel de Analíticas",
         "subtitle": "Monitorea el rendimiento de tu negocio, rastrea pagos y analiza el comportamiento del cliente en tiempo real.",
+        "version": "Versión",
         "tabs": {
           "salesOverview": "Resumen de Ventas",
           "liveBills": "Facturas en Vivo", 

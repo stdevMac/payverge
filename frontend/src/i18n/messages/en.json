@@ -258,6 +258,30 @@
         "status": {
           "active": "Active",
           "inactive": "Inactive"
+        },
+        "welcome": {
+          "badge": "Your Business Dashboard",
+          "title": "Welcome back to",
+          "subtitle": "Your business is ready to accept payments. Monitor performance, manage your menu, and track earnings all in one place.",
+          "todayOverview": "Today's Overview"
+        },
+        "quickActions": {
+          "badge": "Quick Actions",
+          "title": "What would you like to",
+          "titleEmphasis": "do",
+          "titleSuffix": "today?",
+          "viewAnalytics": {
+            "title": "View Analytics",
+            "description": "Monitor your business performance and track revenue metrics"
+          },
+          "manageMenu": {
+            "title": "Manage Menu",
+            "description": "Update your digital menu and QR codes for contactless dining"
+          },
+          "claimEarnings": {
+            "title": "Claim Earnings",
+            "description": "Review and claim your blockchain earnings from payments and tips"
+          }
         }
       },
       "blockchain": {
@@ -302,15 +326,27 @@
       },
       "tabs": {
         "overview": "Overview",
+        "overviewDesc": "Business dashboard and quick stats",
         "analytics": "Analytics",
+        "analyticsDesc": "Sales reports and performance metrics",
         "menu": "Menu",
+        "menuDesc": "Manage your digital menu and items",
         "tables": "Tables", 
+        "tablesDesc": "Configure dining tables and QR codes",
         "bills": "Bills",
+        "billsDesc": "Create and manage customer bills",
         "staff": "Staff",
+        "staffDesc": "Invite and manage team members",
         "kitchen": "Kitchen",
+        "kitchenDesc": "Kitchen orders and preparation",
         "counter": "Counter",
+        "counterDesc": "Point of sale and counter service",
+        "blockchain": "Blockchain",
+        "blockchainDesc": "Manage on-chain settings and earnings",
+        "subscriptions": "Subscriptions",
+        "subscriptionsDesc": "Manage your business subscription",
         "settings": "Settings",
-        "subscription": "Subscription"
+        "settingsDesc": "Business profile and configuration"
       },
       "navigation": "Navigation",
       "dashboard": {
