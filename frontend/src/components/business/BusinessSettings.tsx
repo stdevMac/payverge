@@ -416,6 +416,7 @@ export default function BusinessSettings({ businessId }: BusinessSettingsProps) 
                         profile={profile}
                         onProfileChange={handleInputChange}
                         businessId={businessId}
+                        onUpdate={loadBusinessProfile}
                       />
                     )}
                     {tab.key === 'payments' && (
@@ -655,12 +656,13 @@ function DesignBrandingTab({ settings, onSettingsChange }: { settings: DesignSet
   );
 }
 
-function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange, businessId }: {
+function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange, businessId, onUpdate }: {
   settings: BusinessPageSettings,
   onSettingsChange: (settings: BusinessPageSettings) => void,
   profile: BusinessProfile,
   onProfileChange: (field: keyof BusinessProfile, value: any) => void,
-  businessId: number
+  businessId: number,
+  onUpdate: () => Promise<void>
 }) {
   const { locale: currentLocale } = useSimpleLocale();
   
@@ -837,7 +839,7 @@ function BusinessPageTab({ settings, onSettingsChange, profile, onProfileChange,
               google_business_url: profile.google_business_url,
               google_reviews_enabled: profile.google_reviews_enabled
             }}
-            onUpdate={() => window.location.reload()}
+            onUpdate={onUpdate}
           />
         </CardBody>
       </Card>
