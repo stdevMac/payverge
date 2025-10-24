@@ -42,23 +42,33 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Subscription Status Card */}
-      <SubscriptionStatusCard
-        subscriptionData={subscriptionData}
-        tString={tString}
-        onRenewClick={onRenewOpen}
-        onToggleAutoRenewal={onToggleAutoRenewal}
-      />
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('title')}</h1>
+          <p className="text-gray-600 font-light text-sm mt-1">{tString('subtitle')}</p>
+        </div>
+      </div>
 
-      {/* Renewal Modal */}
-      <RenewalModal
-        isOpen={isRenewOpen}
-        onClose={onRenewClose}
-        onRenewalSuccess={handleRenewalSuccess}
-        registrationFee={registrationFee}
-        tString={tString}
-      />
+      <div className="space-y-6">
+        {/* Subscription Status Card */}
+        <SubscriptionStatusCard
+          subscriptionData={subscriptionData}
+          tString={tString}
+          onRenewClick={onRenewOpen}
+          onToggleAutoRenewal={onToggleAutoRenewal}
+        />
+
+        {/* Renewal Modal */}
+        <RenewalModal
+          isOpen={isRenewOpen}
+          onClose={onRenewClose}
+          onRenewalSuccess={handleRenewalSuccess}
+          registrationFee={registrationFee}
+          tString={tString}
+        />
+      </div>
     </div>
   );
 };

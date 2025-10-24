@@ -357,6 +357,10 @@
         "settings": "Settings",
         "settingsDesc": "Business profile and configuration"
       },
+      "subscriptions": {
+        "title": "Subscription Management",
+        "description": "Manage your business subscription and billing settings"
+      },
       "navigation": "Navigation",
       "dashboard": {
         "title": "Analytics Dashboard",

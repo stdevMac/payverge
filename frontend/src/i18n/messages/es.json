@@ -365,6 +365,10 @@
         "settings": "Configuración",
         "settingsDesc": "Perfil de negocio y configuración"
       },
+      "subscriptions": {
+        "title": "Gestión de Suscripciones",
+        "description": "Gestiona tu suscripción de negocio y configuración de facturación"
+      },
       "navigation": "Navegación",
       "dashboard": {
         "title": "Panel de Analíticas",
