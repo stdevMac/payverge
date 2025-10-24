@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -10,12 +10,24 @@ import {
 import { Key } from "@/interface";
 import { StoreSelected, FleetStage } from "@/store/ui/StoreSelected";
 import { IoMenuOutline } from "react-icons/io5";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 export const Selected = () => {
   const selectMenu = StoreSelected((state) => state.selectMenu);
   const setStage = StoreSelected((state) => state.setStage);
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const result = getTranslation(key, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
 
   const fleetStages: FleetStage[] = [
     "All",
@@ -28,13 +40,13 @@ export const Selected = () => {
   ];
 
   const stageLabels: Record<FleetStage, string> = {
-    All: t('fleet.stages.all'),
-    Posted: t('fleet.stages.posted'),
-    Funded: t('fleet.stages.funded'),
-    OnPurchase: t('fleet.stages.onPurchase'),
-    Active: t('fleet.stages.active'),
-    Closing: t('fleet.stages.closing'),
-    Closed: t('fleet.stages.closed'),
+    All: tString('fleet.stages.all'),
+    Posted: tString('fleet.stages.posted'),
+    Funded: tString('fleet.stages.funded'),
+    OnPurchase: tString('fleet.stages.onPurchase'),
+    Active: tString('fleet.stages.active'),
+    Closing: tString('fleet.stages.closing'),
+    Closed: tString('fleet.stages.closed'),
   };
 
   const handleSelectionChange = (key: Key) => {
@@ -71,13 +83,13 @@ export const Selected = () => {
             }
           >
             <div className="flex items-center gap-2">
-              <span className="font-medium whitespace-nowrap">{t('fleet.status')}:</span>
+              <span className="font-medium whitespace-nowrap">{tString("fleets.status.")}:</span>
               <span className="text-default-600">{stageLabels[selectMenu]}</span>
             </div>
           </Button>
         </DropdownTrigger>
         <DropdownMenu
-          aria-label={t('fleet.selectStatus')}
+          aria-label={tString('fleet.selectStatus')}
           selectionMode="single"
           selectedKeys={[selectMenu]}
           onSelectionChange={(keys) =>

@@ -1,10 +1,24 @@
 "use client";
 
 import Image from 'next/image';
-import { useTranslation } from '@/i18n/TranslationContext';
+import { useState, useEffect } from "react";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 export default function ComingSoon() {
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `comingSoon.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-gray-50 to-blue-100">
@@ -17,29 +31,29 @@ export default function ComingSoon() {
           className="h-auto mb-6 mx-auto hover:scale-110 transition-transform duration-300"
         />
         <h1 className="text-6xl md:text-7xl font-extrabold mb-6 animate-gradient bg-gradient-text">
-          {t('comingSoon.title', 'Coming Soon')}
+          {tString('title') || 'Coming Soon'}
         </h1>
         <p className="mb-8 text-lg text-gray-700 animate-slide-up">
-          {t('comingSoon.message', 'Our website is launching soon. We are working hard to bring you an amazing experience!')}
+          {tString('message') || 'Our website is launching soon. We are working hard to bring you an amazing experience!'}
         </p>
         <div className="flex flex-col gap-4 animate-fade-in-delayed">
           <a
             href="https://yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
-            {t('comingSoon.visitWebsite', 'Visit our Website')}
+            {tString('visitWebsite') || 'Visit our Website'}
           </a>
           <a
             href="https://docs.yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
-            {t('comingSoon.checkDocs', 'Check our Documentation')}
+            {tString('checkDocs') || 'Check our Documentation'}
           </a>
           <a
             href="https://links.yourapp.com"
             className="text-blue-500 hover:text-blue-700 hover:translate-x-2 transition-all duration-300"
           >
-            {t('comingSoon.exploreLinks', 'Explore all our Links')}
+            {tString('exploreLinks') || 'Explore all our Links'}
           </a>
         </div>
       </div>

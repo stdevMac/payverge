@@ -1,6 +1,7 @@
 "use client";
 import { titleFont } from "@/config/font/font";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useState, useEffect } from "react";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 interface Props {
   title: string | { key: string; defaultValue?: string };
@@ -10,18 +11,30 @@ interface Props {
 
 export const Title = ({ title, subtitle, className = "" }: Props) => {
   const clientClassName = `${titleFont} antialiased text-4xl font-semibold mt-5 mb-2`;
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const result = getTranslation(key, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   // Handle translation for title
   const translatedTitle = typeof title === 'string' 
     ? title 
-    : t(title.key, {}, title.defaultValue);
+    : tString(title.key) || title.defaultValue || title.key;
   
   // Handle translation for subtitle
   const translatedSubtitle = subtitle 
     ? (typeof subtitle === 'string' 
         ? subtitle 
-        : t(subtitle.key, {}, subtitle.defaultValue)) 
+        : tString(subtitle.key) || subtitle.defaultValue || subtitle.key) 
     : null;
 
   return (

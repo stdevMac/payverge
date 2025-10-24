@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardBody } from "@nextui-org/react";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 type StringArray = string[];
 
@@ -66,24 +66,37 @@ interface PrivacyTranslations {
 }
 
 const PrivacyPage = () => {
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `privacy.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   // Helper function to safely handle array translations
   const getTranslatedArray = (key: string): string[] => {
-    const value = t(key);
+    const value = getTranslation(key, currentLocale);
     return Array.isArray(value) ? value : [];
   };
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">{t('privacy.title')}</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">{tString('title')}</h1>
 
       <div className="space-y-8">
         {/* Introduction */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.introduction.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.introduction.title')}</h2>
             <p className="text-gray-700 mb-4">
-              {t('privacy.sections.introduction.content')}
+              {tString('sections.introduction.content')}
             </p>
           </CardBody>
         </Card>
@@ -91,16 +104,16 @@ const PrivacyPage = () => {
         {/* Information We Collect */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.information.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.information.title')}</h2>
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">{t('privacy.sections.information.personal.title')}</h3>
+              <h3 className="text-lg font-medium">{tString('sections.information.personal.title')}</h3>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 {getTranslatedArray('privacy.sections.information.personal.items').map((item: string, index: number) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
 
-              <h3 className="text-lg font-medium">{t('privacy.sections.information.technical.title')}</h3>
+              <h3 className="text-lg font-medium">{tString('sections.information.technical.title')}</h3>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 {getTranslatedArray('privacy.sections.information.technical.items').map((item: string, index: number) => (
                   <li key={index}>{item}</li>
@@ -113,9 +126,9 @@ const PrivacyPage = () => {
         {/* How We Use Your Information */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.usage.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.usage.title')}</h2>
             <div className="space-y-3 text-gray-700">
-              <p>{t('privacy.sections.usage.intro')}</p>
+              <p>{tString('sections.usage.intro')}</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 {getTranslatedArray('privacy.sections.usage.items').map((item: string, index: number) => (
                   <li key={index}>{item}</li>
@@ -128,15 +141,15 @@ const PrivacyPage = () => {
         {/* Information Sharing */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.sharing.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.sharing.title')}</h2>
             <div className="space-y-4 text-gray-700">
-              <p>{t('privacy.sections.sharing.intro')}</p>
+              <p>{tString('sections.sharing.intro')}</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 {getTranslatedArray('privacy.sections.sharing.items').map((item: string, index: number) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
-              <p>{t('privacy.sections.sharing.note')}</p>
+              <p>{tString('sections.sharing.note')}</p>
             </div>
           </CardBody>
         </Card>
@@ -144,9 +157,9 @@ const PrivacyPage = () => {
         {/* Data Security */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.security.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.security.title')}</h2>
             <p className="text-gray-700">
-              {t('privacy.sections.security.content')}
+              {tString('sections.security.content')}
             </p>
           </CardBody>
         </Card>
@@ -154,9 +167,9 @@ const PrivacyPage = () => {
         {/* Your Rights */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.rights.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.rights.title')}</h2>
             <div className="space-y-3 text-gray-700">
-              <p>{t('privacy.sections.rights.intro')}</p>
+              <p>{tString('sections.rights.intro')}</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 {getTranslatedArray('privacy.sections.rights.items').map((item: string, index: number) => (
                   <li key={index}>{item}</li>
@@ -169,9 +182,9 @@ const PrivacyPage = () => {
         {/* Cookies */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.cookies.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.cookies.title')}</h2>
             <p className="text-gray-700">
-              {t('privacy.sections.cookies.content')}
+              {tString('sections.cookies.content')}
             </p>
           </CardBody>
         </Card>
@@ -179,9 +192,9 @@ const PrivacyPage = () => {
         {/* Changes to Privacy Policy */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.changes.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.changes.title')}</h2>
             <p className="text-gray-700">
-              {t('privacy.sections.changes.content')}
+              {tString('sections.changes.content')}
             </p>
           </CardBody>
         </Card>
@@ -189,20 +202,20 @@ const PrivacyPage = () => {
         {/* Contact Information */}
         <Card>
           <CardBody>
-            <h2 className="text-xl font-semibold mb-4">{t('privacy.sections.contact.title')}</h2>
+            <h2 className="text-xl font-semibold mb-4">{tString('sections.contact.title')}</h2>
             <div className="text-gray-700 space-y-2">
-              <p>{t('privacy.sections.contact.intro')}</p>
-              <p><strong>{t('privacy.sections.contact.company')}</strong></p>
-              <p>{t('privacy.sections.contact.address1')}</p>
-              <p>{t('privacy.sections.contact.address2')}</p>
-              <p>{t('privacy.sections.contact.phone')}</p>
-              <p>{t('privacy.sections.contact.email')}</p>
+              <p>{tString('sections.contact.intro')}</p>
+              <p><strong>{tString('sections.contact.company')}</strong></p>
+              <p>{tString('sections.contact.address1')}</p>
+              <p>{tString('sections.contact.address2')}</p>
+              <p>{tString('sections.contact.phone')}</p>
+              <p>{tString('sections.contact.email')}</p>
             </div>
           </CardBody>
         </Card>
 
         <div className="text-sm text-gray-500 mt-8">
-          {t('privacy.sections.lastUpdated')}
+          {tString('sections.lastUpdated')}
         </div>
       </div>
     </div>

@@ -1,37 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Button,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Chip,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Divider,
-  Spinner,
-  Input,
-  Select,
-  SelectItem,
-  Tabs,
-  Tab,
-} from '@nextui-org/react';
-import { Eye, DollarSign, Clock, Users, Plus, ChefHat, CheckCircle, XCircle, Wallet, CreditCard } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { getBill, getBusinessBills, BillWithItemsResponse, closeBill, Bill } from '../../api/bills';
 import { BillCreator } from './BillCreator';
-import { getOrdersByBillId, updateOrderStatus, Order, getOrderStatusColor, getOrderStatusText, parseOrderItems } from '../../api/orders';
-import AlternativePaymentManager from './AlternativePaymentManager';
+import { getOrdersByBillId, updateOrderStatus, Order } from '../../api/orders';
 import PaymentProcessor from '../payment/PaymentProcessor';
 import BillSplittingFlow from '../splitting/BillSplittingFlow';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
+
+// Import the new smaller components
+import { BillsTable } from './BillsTable';
+import { BillFilters } from './BillFilters';
+import { PendingOrdersSection } from './PendingOrdersSection';
+import { BillDetailsModal } from './BillDetailsModal';
 
 interface BillManagerProps {
   businessId: number;
@@ -39,32 +19,18 @@ interface BillManagerProps {
 
 export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const { locale: currentLocale } = useSimpleLocale();
-  
+
   // Translation helper
   const tString = (key: string): string => {
     const fullKey = `billManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
   };
+
+  // State
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBill, setSelectedBill] = useState<BillWithItemsResponse | null>(null);
-
-  // Helper function to safely parse bill items
-  const parseBillItems = (items: string | any[]): any[] => {
-    if (Array.isArray(items)) {
-      return items;
-    }
-    if (typeof items === 'string') {
-      try {
-        return JSON.parse(items || '[]');
-      } catch (error) {
-        console.error('Error parsing bill items:', error);
-        return [];
-      }
-    }
-    return [];
-  };
   const [showBillDetails, setShowBillDetails] = useState(false);
   const [showBillCreator, setShowBillCreator] = useState(false);
   const [showPaymentProcessor, setShowPaymentProcessor] = useState(false);
@@ -72,29 +38,26 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
   const [orders, setOrders] = useState<Record<number, Order[]>>({});
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<string>('active');
-  
-  // Active Bills Filters
+
+  // Filter states
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [activeDateFrom, setActiveDateFrom] = useState<string>('');
   const [activeDateTo, setActiveDateTo] = useState<string>('');
-  
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [historyStatusFilter, setHistoryStatusFilter] = useState<'all' | 'paid' | 'closed'>('all');
   const [historyDateFrom, setHistoryDateFrom] = useState<string>('');
   const [historyDateTo, setHistoryDateTo] = useState<string>('');
 
+  // Data loading functions
   const loadOrdersForBills = useCallback(async (billsList: Bill[]) => {
     const ordersMap: Record<number, Order[]> = {};
-    
-    // Load orders for each bill (limit to prevent performance issues)
-    const billsToLoad = billsList.slice(0, 50); // Limit to 50 bills to prevent performance issues
+    const billsToLoad = billsList.slice(0, 50);
     
     for (const bill of billsToLoad) {
       try {
         const orderData = await getOrdersByBillId(businessId, bill.id);
         ordersMap[bill.id] = orderData.orders || [];
       } catch (error) {
-        // No orders for this bill, that's okay
         ordersMap[bill.id] = [];
       }
     }
@@ -108,8 +71,6 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
       const data = await getBusinessBills(businessId);
       const billsList = data.bills || [];
       setBills(billsList);
-      
-      // Load orders for all bills
       await loadOrdersForBills(billsList);
     } catch (error) {
       console.error('Error loading bills:', error);
@@ -124,87 +85,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     }
   }, [businessId, loadBills]);
 
-  // Separate filtered lists for each tab
-  const activeBills = React.useMemo(() => {
-    let list = bills.filter((b) => b.status === 'open');
-
-    // Search filter (bill number, table id)
-    const q = activeSearchQuery.trim().toLowerCase();
-    if (q) {
-      list = list.filter((b) => {
-        const billNo = b.bill_number?.toLowerCase() || '';
-        const tableStr = `table ${b.table_id}`.toLowerCase();
-        const totalStr = String(b.total_amount);
-        return billNo.includes(q) || tableStr.includes(q) || totalStr.includes(q);
-      });
-    }
-
-    // Date range filter (created_at)
-    const from = activeDateFrom ? new Date(activeDateFrom) : null;
-    const to = activeDateTo ? new Date(activeDateTo) : null;
-    if (from || to) {
-      list = list.filter((b) => {
-        const created = new Date(b.created_at);
-        const afterFrom = from ? created >= new Date(from.setHours(0, 0, 0, 0)) : true;
-        const beforeTo = to ? created <= new Date(to.setHours(23, 59, 59, 999)) : true;
-        return afterFrom && beforeTo;
-      });
-    }
-
-    // Sort newest first
-    list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    return list;
-  }, [bills, activeSearchQuery, activeDateFrom, activeDateTo]);
-
-  const historyBills = React.useMemo(() => {
-    let list = bills.filter((b) => b.status === 'paid' || b.status === 'closed');
-
-    // Status filter for history
-    if (historyStatusFilter !== 'all') {
-      list = list.filter((b) => b.status === historyStatusFilter);
-    }
-
-    // Search filter (bill number, table id)
-    const q = historySearchQuery.trim().toLowerCase();
-    if (q) {
-      list = list.filter((b) => {
-        const billNo = b.bill_number?.toLowerCase() || '';
-        const tableStr = `table ${b.table_id}`.toLowerCase();
-        const totalStr = String(b.total_amount);
-        return billNo.includes(q) || tableStr.includes(q) || totalStr.includes(q);
-      });
-    }
-
-    // Date range filter (created_at)
-    const from = historyDateFrom ? new Date(historyDateFrom) : null;
-    const to = historyDateTo ? new Date(historyDateTo) : null;
-    if (from || to) {
-      list = list.filter((b) => {
-        const created = new Date(b.created_at);
-        const afterFrom = from ? created >= new Date(from.setHours(0, 0, 0, 0)) : true;
-        const beforeTo = to ? created <= new Date(to.setHours(23, 59, 59, 999)) : true;
-        return afterFrom && beforeTo;
-      });
-    }
-
-    // Sort newest first
-    list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    return list;
-  }, [bills, historyStatusFilter, historySearchQuery, historyDateFrom, historyDateTo]);
-
-  const resetActiveFilters = () => {
-    setActiveSearchQuery('');
-    setActiveDateFrom('');
-    setActiveDateTo('');
-  };
-
-  const resetHistoryFilters = () => {
-    setHistorySearchQuery('');
-    setHistoryStatusFilter('all');
-    setHistoryDateFrom('');
-    setHistoryDateTo('');
-  };
-
+  // Event handlers
   const handleViewBill = async (billId: number) => {
     try {
       const billDetails = await getBill(billId);
@@ -219,7 +100,7 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     setActionLoading(billId);
     try {
       await closeBill(billId);
-      await loadBills(); // Refresh the list
+      await loadBills();
     } catch (error) {
       console.error('Error closing bill:', error);
     } finally {
@@ -227,64 +108,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     }
   };
 
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'open':
-        return 'success';
-      case 'paid':
-        return 'primary';
-      case 'closed':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
-
-  const getOrderStatus = (billId: number) => {
-    const billOrders = orders[billId] || [];
-    if (billOrders.length === 0) return { status: 'none', color: 'default', text: 'No Orders' };
-    
-    // Check if any orders are pending approval
-    const pending = billOrders.some((order: Order) => order.status === 'pending');
-    if (pending) return { status: 'pending', color: 'warning', text: 'Needs Approval' };
-    
-    // Check if any orders are in kitchen
-    const inKitchen = billOrders.some((order: Order) => order.status === 'in_kitchen');
-    if (inKitchen) return { status: 'cooking', color: 'secondary', text: 'In Kitchen' };
-    
-    // Check if any orders are ready
-    const ready = billOrders.some((order: Order) => order.status === 'ready');
-    if (ready) return { status: 'ready', color: 'success', text: 'Ready' };
-    
-    // Check if any orders are approved but not in kitchen
-    const approved = billOrders.some((order: Order) => order.status === 'approved');
-    if (approved) return { status: 'approved', color: 'primary', text: 'Approved' };
-    
-    // All orders are delivered or cancelled
-    const delivered = billOrders.every((order: Order) => order.status === 'delivered' || order.status === 'cancelled');
-    if (delivered) return { status: 'completed', color: 'default', text: 'Completed' };
-    
-    return { status: 'unknown', color: 'default', text: 'Unknown' };
-  };
-
-  // Handle order approval
   const handleApproveOrder = async (orderId: number) => {
     setActionLoading(orderId);
     try {
       await updateOrderStatus(businessId, orderId, {
         status: 'approved',
-        approved_by: 'staff' // TODO: Get actual staff member from auth context
+        approved_by: 'staff'
       });
-      await loadBills(); // Refresh the data
+      await loadBills();
     } catch (error) {
       console.error('Error approving order:', error);
     } finally {
@@ -292,15 +123,14 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     }
   };
 
-  // Handle order rejection
   const handleRejectOrder = async (orderId: number) => {
     setActionLoading(orderId);
     try {
       await updateOrderStatus(businessId, orderId, {
         status: 'cancelled',
-        approved_by: 'staff' // TODO: Get actual staff member from auth context
+        approved_by: 'staff'
       });
-      await loadBills(); // Refresh the data
+      await loadBills();
     } catch (error) {
       console.error('Error rejecting order:', error);
     } finally {
@@ -308,561 +138,224 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
     }
   };
 
+  // Filter functions
+  const resetActiveFilters = () => {
+    setActiveSearchQuery('');
+    setActiveDateFrom('');
+    setActiveDateTo('');
+  };
+
+  const resetHistoryFilters = () => {
+    setHistorySearchQuery('');
+    setHistoryStatusFilter('all');
+    setHistoryDateFrom('');
+    setHistoryDateTo('');
+  };
+
+  // Filtered lists
+  const activeBills = React.useMemo(() => {
+    let list = bills.filter((b) => b.status === 'open');
+
+    const q = activeSearchQuery.trim().toLowerCase();
+    if (q) {
+      list = list.filter((b) => {
+        const billNo = b.bill_number?.toLowerCase() || '';
+        const tableStr = `table ${b.table_id}`.toLowerCase();
+        const totalStr = String(b.total_amount);
+        return billNo.includes(q) || tableStr.includes(q) || totalStr.includes(q);
+      });
+    }
+
+    const from = activeDateFrom ? new Date(activeDateFrom) : null;
+    const to = activeDateTo ? new Date(activeDateTo) : null;
+    if (from || to) {
+      list = list.filter((b) => {
+        const created = new Date(b.created_at);
+        const afterFrom = from ? created >= new Date(from.setHours(0, 0, 0, 0)) : true;
+        const beforeTo = to ? created <= new Date(to.setHours(23, 59, 59, 999)) : true;
+        return afterFrom && beforeTo;
+      });
+    }
+
+    list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    return list;
+  }, [bills, activeSearchQuery, activeDateFrom, activeDateTo]);
+
+  const historyBills = React.useMemo(() => {
+    let list = bills.filter((b) => b.status === 'paid' || b.status === 'closed');
+
+    if (historyStatusFilter !== 'all') {
+      list = list.filter((b) => b.status === historyStatusFilter);
+    }
+
+    const q = historySearchQuery.trim().toLowerCase();
+    if (q) {
+      list = list.filter((b) => {
+        const billNo = b.bill_number?.toLowerCase() || '';
+        const tableStr = `table ${b.table_id}`.toLowerCase();
+        const totalStr = String(b.total_amount);
+        return billNo.includes(q) || tableStr.includes(q) || totalStr.includes(q);
+      });
+    }
+
+    const from = historyDateFrom ? new Date(historyDateFrom) : null;
+    const to = historyDateTo ? new Date(historyDateTo) : null;
+    if (from || to) {
+      list = list.filter((b) => {
+        const created = new Date(b.created_at);
+        const afterFrom = from ? created >= new Date(from.setHours(0, 0, 0, 0)) : true;
+        const beforeTo = to ? created <= new Date(to.setHours(23, 59, 59, 999)) : true;
+        return afterFrom && beforeTo;
+      });
+    }
+
+    list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    return list;
+  }, [bills, historyStatusFilter, historySearchQuery, historyDateFrom, historyDateTo]);
+
+  // Loading state
   if (loading) {
     return (
-      <Card>
-        <CardBody className="flex justify-center items-center py-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="p-4 max-w-6xl mx-auto">
+        <div className="flex justify-center items-center py-16">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+              <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+            </div>
+            <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
-  const renderBillsTable = (billsList: Bill[], isActive: boolean) => {
-    if (billsList.length === 0) {
-      return (
-        <div className="text-center py-8">
-          <DollarSign className="w-12 h-12 mx-auto text-default-300 mb-4" />
-          <h3 className="text-lg font-medium text-default-500 mb-2">
-            {isActive ? tString('emptyState.noActiveBills') : tString('emptyState.noMatchingBills')}
-          </h3>
-          <p className="text-default-400 mb-4">
-            {isActive 
-              ? tString('emptyState.createFirstBill') 
-              : tString('emptyState.adjustFilters')
-            }
+  return (
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">
+            {tString('title')}
+          </h1>
+          <p className="text-gray-600 font-light text-sm mt-1">
+            {tString('subtitle')}
           </p>
-          {isActive ? (
-            <Button color="primary" onPress={() => setShowBillCreator(true)}>
-              {tString('buttons.createBill')}
-            </Button>
+        </div>
+        <button
+          onClick={() => setShowBillCreator(true)}
+          className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center gap-2 shadow-sm"
+        >
+          <Plus className="w-4 h-4" />
+          {tString('buttons.createBill')}
+        </button>
+      </div>
+
+      {/* Pending Orders Section */}
+      <PendingOrdersSection
+        orders={orders}
+        actionLoading={actionLoading}
+        onApproveOrder={handleApproveOrder}
+        onRejectOrder={handleRejectOrder}
+        tString={tString}
+      />
+
+      {/* Tab Navigation */}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="flex border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab('active')}
+            className={`px-6 py-4 text-sm font-medium transition-colors ${
+              activeTab === 'active'
+                ? 'border-b-2 border-gray-900 text-gray-900 bg-gray-50'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            {tString('tabs.active')} ({activeBills.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`px-6 py-4 text-sm font-medium transition-colors ${
+              activeTab === 'history'
+                ? 'border-b-2 border-gray-900 text-gray-900 bg-gray-50'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            {tString('tabs.history')} ({historyBills.length})
+          </button>
+        </div>
+
+        {/* Tab Content */}
+        <div className="p-6">
+          {activeTab === 'active' ? (
+            <div className="space-y-6">
+              <BillFilters
+                searchQuery={activeSearchQuery}
+                onSearchChange={setActiveSearchQuery}
+                dateFrom={activeDateFrom}
+                onDateFromChange={setActiveDateFrom}
+                dateTo={activeDateTo}
+                onDateToChange={setActiveDateTo}
+                onReset={resetActiveFilters}
+                tString={tString}
+              />
+              <BillsTable
+                bills={activeBills}
+                isActive={true}
+                actionLoading={actionLoading}
+                onViewBill={handleViewBill}
+                onCloseBill={handleCloseBill}
+                onCreateBill={() => setShowBillCreator(true)}
+                onResetFilters={resetActiveFilters}
+                tString={tString}
+              />
+            </div>
           ) : (
-            <Button variant="light" onPress={isActive ? resetActiveFilters : resetHistoryFilters}>
-              {tString('buttons.resetFilters')}
-            </Button>
+            <div className="space-y-6">
+              <BillFilters
+                searchQuery={historySearchQuery}
+                onSearchChange={setHistorySearchQuery}
+                dateFrom={historyDateFrom}
+                onDateFromChange={setHistoryDateFrom}
+                dateTo={historyDateTo}
+                onDateToChange={setHistoryDateTo}
+                statusFilter={historyStatusFilter}
+                onStatusFilterChange={setHistoryStatusFilter}
+                onReset={resetHistoryFilters}
+                tString={tString}
+                showStatusFilter={true}
+              />
+              <BillsTable
+                bills={historyBills}
+                isActive={false}
+                actionLoading={actionLoading}
+                onViewBill={handleViewBill}
+                onCloseBill={handleCloseBill}
+                onCreateBill={() => setShowBillCreator(true)}
+                onResetFilters={resetHistoryFilters}
+                tString={tString}
+              />
+            </div>
           )}
         </div>
-      );
-    }
+      </div>
 
-    return (
-      <Table aria-label="Bills table">
-        <TableHeader>
-          <TableColumn>{tString('tableColumns.billNumber')}</TableColumn>
-          <TableColumn>{tString('tableColumns.table')}</TableColumn>
-          <TableColumn>{tString('tableColumns.items')}</TableColumn>
-          <TableColumn>{tString('tableColumns.total')}</TableColumn>
-          <TableColumn>{tString('tableColumns.status')}</TableColumn>
-          <TableColumn>{tString('tableColumns.kitchen')}</TableColumn>
-          <TableColumn>{tString('tableColumns.created')}</TableColumn>
-          <TableColumn>{tString('tableColumns.actions')}</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {billsList.map((bill) => (
-            <TableRow key={bill.id}>
-              <TableCell>
-                <span className="font-mono text-sm">{bill.bill_number}</span>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-default-400" />
-                  <span>{tString('table')} {bill.table_id}</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <span className="text-sm">
-                  {parseBillItems(bill.items).length} {tString('items')}
-                </span>
-              </TableCell>
-              <TableCell>
-                <span className="font-semibold">{formatCurrency(bill.total_amount)}</span>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  color={getStatusColor(bill.status)}
-                  variant="flat"
-                  size="sm"
-                >
-                  {bill.status.toUpperCase()}
-                </Chip>
-              </TableCell>
-              <TableCell>
-                {(() => {
-                  const orderStatus = getOrderStatus(bill.id);
-                  return (
-                    <div className="flex items-center gap-1">
-                      <ChefHat className="w-3 h-3" />
-                      <Chip
-                        color={orderStatus.color as any}
-                        variant="flat"
-                        size="sm"
-                      >
-                        {orderStatus.text}
-                      </Chip>
-                    </div>
-                  );
-                })()}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1 text-sm text-default-500">
-                  <Clock className="w-3 h-3" />
-                  {formatDate(bill.created_at)}
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="light"
-                    startContent={<Eye className="w-3 h-3" />}
-                    onPress={() => handleViewBill(bill.id)}
-                  >
-                    {tString('view')}
-                  </Button>
-                  {bill.status === 'open' && (
-                    <>
-                      <Button
-                        size="sm"
-                        color="warning"
-                        variant="light"
-                        isLoading={actionLoading === bill.id}
-                        onPress={() => handleCloseBill(bill.id)}
-                      >
-                        {tString('close')}
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    );
-  };
-
-  return (
-    <>
-      {/* Pending Orders Section */}
-      {(() => {
-        const pendingOrders = Object.values(orders).flat().filter(order => order.status === 'pending');
-        console.log('Pending orders to display:', pendingOrders);
-        return pendingOrders.length > 0;
-      })() && (
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-warning" />
-              <h3 className="text-lg font-semibold text-warning">{tString('pendingOrdersTitle')}</h3>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(() => {
-                // Deduplicate orders by ID to prevent showing the same order twice
-                const allPendingOrders = Object.entries(orders).flatMap(([billId, billOrders]) => 
-                  billOrders.filter(order => order.status === 'pending').map(order => ({ ...order, billId }))
-                );
-                const uniqueOrders = allPendingOrders.filter((order, index, array) => 
-                  array.findIndex(o => o.id === order.id) === index
-                );
-                console.log('Unique pending orders:', uniqueOrders);
-                return uniqueOrders.map(order => (
-                  <Card key={order.id} className="border-warning">
-                    <CardBody>
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h4 className="font-semibold">Order #{order.order_number}</h4>
-                          <p className="text-sm text-default-500">{tString('billNumber')} #{order.billId}</p>
-                        </div>
-                        <Chip color="warning" size="sm">{tString('pending')}</Chip>
-                      </div>
-                      <div className="space-y-1 mb-3">
-                        {parseOrderItems(order.items).slice(0, 3).map((item, index) => (
-                          <div key={index} className="text-sm">
-                            {item.quantity}x {item.menu_item_name}
-                          </div>
-                        ))}
-                        {parseOrderItems(order.items).length > 3 && (
-                          <div className="text-xs text-default-400">
-                            +{parseOrderItems(order.items).length - 3} {tString('moreItems')}
-                          </div>
-                        )}
-                      </div>
-                      {order.notes && (
-                        <p className="text-xs text-blue-600 mb-3 bg-blue-50 p-2 rounded">
-                          {order.notes}
-                        </p>
-                      )}
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          color="success"
-                          startContent={<CheckCircle className="w-3 h-3" />}
-                          onPress={() => handleApproveOrder(order.id)}
-                          isLoading={actionLoading === order.id}
-                        >
-                          {tString('approve')}
-                        </Button>
-                        <Button
-                          size="sm"
-                          color="danger"
-                          variant="light"
-                          startContent={<XCircle className="w-3 h-3" />}
-                          onPress={() => handleRejectOrder(order.id)}
-                          isLoading={actionLoading === order.id}
-                        >
-                          {tString('reject')}
-                        </Button>
-                      </div>
-                    </CardBody>
-                  </Card>
-                ));
-              })()}
-            </div>
-          </CardBody>
-        </Card>
-      )}
-
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5" />
-            <h2 className="text-xl font-semibold">{tString('title')}</h2>
-          </div>
-          <Button
-            color="primary"
-            startContent={<Plus className="w-4 h-4" />}
-            onPress={() => setShowBillCreator(true)}
-          >
-            {tString('buttons.createBill')}
-          </Button>
-        </CardHeader>
-        <CardBody>
-          <Tabs
-            selectedKey={activeTab}
-            onSelectionChange={(key) => setActiveTab(key as 'active' | 'history')}
-            className="w-full"
-          >
-            <Tab key="active" title={`${tString('tabs.activeBills')} (${activeBills.length})`}>
-              <div className="space-y-4">
-                {/* Active Bills Filters */}
-                <div className="flex flex-col md:flex-row gap-3 md:items-center">
-                  <Input
-                    value={activeSearchQuery}
-                    onValueChange={setActiveSearchQuery}
-                    placeholder={tString('search.activeBillsPlaceholder')}
-                    className="md:w-[280px]"
-                    size="sm"
-                  />
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="date"
-                      value={activeDateFrom}
-                      onChange={(e) => setActiveDateFrom(e.target.value)}
-                      className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
-                      aria-label="From date"
-                    />
-                    <span className="text-default-400 text-sm">{tString('filters.to')}</span>
-                    <input
-                      type="date"
-                      value={activeDateTo}
-                      onChange={(e) => setActiveDateTo(e.target.value)}
-                      className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
-                      aria-label="To date"
-                    />
-                  </div>
-                  <Button variant="light" size="sm" onPress={resetActiveFilters}>
-                    {tString('reset')}
-                  </Button>
-                </div>
-                {renderBillsTable(activeBills, true)}
-              </div>
-            </Tab>
-            <Tab key="history" title={`${tString('tabs.billHistory')} (${historyBills.length})`}>
-              <div className="space-y-4">
-                {/* History Filters */}
-                <div className="flex flex-col md:flex-row gap-3 md:items-center">
-                  <Input
-                    value={historySearchQuery}
-                    onValueChange={setHistorySearchQuery}
-                    placeholder={tString('search.billHistoryPlaceholder')}
-                    className="md:w-[280px]"
-                    size="sm"
-                  />
-                  <Select
-                    selectedKeys={[historyStatusFilter]}
-                    onChange={(e) => setHistoryStatusFilter((e.target.value as any) || 'all')}
-                    size="sm"
-                    className="w-full md:w-[160px]"
-                    aria-label="Filter by status"
-                  >
-                    <SelectItem key="all">{tString('allStatuses')}</SelectItem>
-                    <SelectItem key="paid">{tString('paid')}</SelectItem>
-                    <SelectItem key="closed">{tString('closed')}</SelectItem>
-                  </Select>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="date"
-                      value={historyDateFrom}
-                      onChange={(e) => setHistoryDateFrom(e.target.value)}
-                      className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
-                      aria-label="From date"
-                    />
-                    <span className="text-default-400 text-sm">{tString('filters.to')}</span>
-                    <input
-                      type="date"
-                      value={historyDateTo}
-                      onChange={(e) => setHistoryDateTo(e.target.value)}
-                      className="border rounded-medium px-3 py-1.5 text-sm text-foreground bg-transparent"
-                      aria-label="To date"
-                    />
-                  </div>
-                  <Button variant="light" size="sm" onPress={resetHistoryFilters}>
-                    {tString('reset')}
-                  </Button>
-                </div>
-                {renderBillsTable(historyBills, false)}
-              </div>
-            </Tab>
-          </Tabs>
-        </CardBody>
-      </Card>
-
-      {/* Bill Details Modal */}
-      <Modal
+      {/* Modals */}
+      <BillDetailsModal
         isOpen={showBillDetails}
         onClose={() => setShowBillDetails(false)}
-        size="2xl"
-        scrollBehavior="inside"
-      >
-        <ModalContent>
-          <ModalHeader>
-            <div className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
-              {tString('billDetails')} - {selectedBill?.bill.bill_number}
-            </div>
-          </ModalHeader>
-          <ModalBody>
-            {selectedBill && (
-              <div className="space-y-4">
-                {/* Bill Info */}
-                <Card>
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">{tString('billInformation')}</h3>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-default-500">{tString('tableColumns.billNumber')}</p>
-                        <p className="font-mono">{selectedBill.bill.bill_number}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-default-500">{tString('table')}</p>
-                        <p>{tString('table')} {selectedBill.bill.table_id}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-default-500">{tString('tableColumns.status')}</p>
-                        <Chip
-                          color={getStatusColor(selectedBill.bill.status)}
-                          variant="flat"
-                          size="sm"
-                        >
-                          {selectedBill.bill.status.toUpperCase()}
-                        </Chip>
-                      </div>
-                      <div>
-                        <p className="text-sm text-default-500">{tString('tableColumns.created')}</p>
-                        <p>{formatDate(selectedBill.bill.created_at)}</p>
-                      </div>
-                    </div>
-                    
-                    {selectedBill.bill.notes && (
-                      <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <p className="text-sm font-medium text-blue-700 mb-2">📝 {tString('orderNotes')}:</p>
-                        <p className="text-blue-600 whitespace-pre-wrap">{selectedBill.bill.notes}</p>
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
+        bill={selectedBill}
+        onCloseBill={handleCloseBill}
+        onPayWithCrypto={() => setShowPaymentProcessor(true)}
+        onSplitBill={() => setShowBillSplitting(true)}
+        onPaymentMarked={() => {
+          loadBills();
+          if (selectedBill) {
+            handleViewBill(selectedBill.bill.id);
+          }
+        }}
+        tString={tString}
+      />
 
-                {/* Items */}
-                <Card>
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">{tString('tableColumns.items')} ({selectedBill.items?.length || 0})</h3>
-                  </CardHeader>
-                  <CardBody>
-                    {!selectedBill.items || selectedBill.items.length === 0 ? (
-                      <div className="text-center py-8">
-                        <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
-                        <h3 className="text-lg font-medium text-default-500 mb-2">{tString('noItems')}</h3>
-                        <p className="text-default-400">{tString('noItemsDescription')}</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        {selectedBill.items.map((item, index) => (
-                          <div key={index} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
-                            <div>
-                              <p className="font-medium">{item.name || tString('unknownItem')}</p>
-                              <p className="text-sm text-default-500">
-                                {item.quantity || 1} × {formatCurrency(item.price || 0)}
-                              </p>
-                            </div>
-                            <p className="font-semibold">{formatCurrency(item.subtotal || 0)}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-
-                {/* Totals */}
-                <Card>
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">{tString('billSummary')}</h3>
-                  </CardHeader>
-                  <CardBody>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>{tString('subtotal')}:</span>
-                        <span>{formatCurrency(selectedBill.bill.subtotal)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{tString('tax')}:</span>
-                        <span>{formatCurrency(selectedBill.bill.tax_amount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{tString('serviceFee')}:</span>
-                        <span>{formatCurrency(selectedBill.bill.service_fee_amount)}</span>
-                      </div>
-                      <Divider />
-                      <div className="flex justify-between font-semibold text-lg">
-                        <span>{tString('total')}:</span>
-                        <span>{formatCurrency(selectedBill.bill.total_amount)}</span>
-                      </div>
-                      {selectedBill.bill.paid_amount > 0 && (
-                        <>
-                          <div className="flex justify-between text-success">
-                            <span>{tString('paid')}:</span>
-                            <span>{formatCurrency(selectedBill.bill.paid_amount)}</span>
-                          </div>
-                          {selectedBill.bill.tip_amount > 0 && (
-                            <div className="flex justify-between text-success">
-                              <span>{tString('tips')}:</span>
-                              <span>{formatCurrency(selectedBill.bill.tip_amount)}</span>
-                            </div>
-                          )}
-                          {(() => {
-                            const remaining = selectedBill.bill.total_amount - selectedBill.bill.paid_amount;
-                            if (remaining > 0) {
-                              return (
-                                <div className="flex justify-between text-warning">
-                                  <span>{tString('remaining')}:</span>
-                                  <span>{formatCurrency(remaining)}</span>
-                                </div>
-                              );
-                            } else if (remaining < 0) {
-                              return (
-                                <div className="flex justify-between text-success">
-                                  <span>{tString('overpaid')}:</span>
-                                  <span>{formatCurrency(Math.abs(remaining))}</span>
-                                </div>
-                              );
-                            }
-                            return null; // Exactly paid, no remaining
-                          })()}
-                        </>
-                      )}
-                    </div>
-                  </CardBody>
-                </Card>
-
-                {/* Payment Options - Only show for unpaid bills */}
-                {selectedBill.bill.status === 'open' && (
-                  <Card>
-                    <CardHeader>
-                      <h3 className="text-lg font-semibold">{tString('paymentOptions')}</h3>
-                      <p className="text-sm text-default-500">
-{tString('paymentOptionsDescription')}
-                      </p>
-                    </CardHeader>
-                    <CardBody>
-                      <div className="space-y-3">
-                        {/* Pay with Crypto */}
-                        <Button
-                          color="primary"
-                          size="lg"
-                          onPress={() => setShowPaymentProcessor(true)}
-                          className="w-full"
-                          startContent={<Wallet className="w-5 h-5" />}
-                        >
-                          {tString('payWithCrypto')}
-                        </Button>
-
-                        {/* Pay with Cash/Card */}
-                        <div className="bg-gray-50 rounded-lg p-4">
-                          <h4 className="font-medium mb-3">{tString('cashCardPayments')}</h4>
-                          <AlternativePaymentManager
-                            billId={selectedBill.bill.id.toString()}
-                            billTotal={selectedBill.bill.total_amount}
-                            onPaymentMarked={() => {
-                              // Refresh bill data after payment
-                              loadBills();
-                              if (selectedBill) {
-                                handleViewBill(selectedBill.bill.id);
-                              }
-                            }}
-                          />
-                        </div>
-
-                        {/* Split Bill */}
-                        <Button
-                          color="warning"
-                          variant="bordered"
-                          size="lg"
-                          onPress={() => setShowBillSplitting(true)}
-                          className="w-full"
-                          startContent={<Users className="w-5 h-5" />}
-                        >
-                          {tString('splitBill')}
-                        </Button>
-                      </div>
-
-                      {/* Payment Summary */}
-                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-blue-700 font-medium">{tString('remainingAmount')}:</span>
-                          <span className="font-semibold text-blue-900">
-                            ${(selectedBill.bill.total_amount - selectedBill.bill.paid_amount).toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                )}
-              </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="light" onPress={() => setShowBillDetails(false)}>
-              Close
-            </Button>
-            {selectedBill?.bill.status === 'open' && (
-              <Button
-                color="warning"
-                onPress={() => {
-                  handleCloseBill(selectedBill.bill.id);
-                  setShowBillDetails(false);
-                }}
-              >
-                Close Bill
-              </Button>
-            )}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* Bill Creator Modal */}
       <BillCreator
         isOpen={showBillCreator}
         onClose={() => setShowBillCreator(false)}
@@ -870,54 +363,50 @@ export const BillManager: React.FC<BillManagerProps> = ({ businessId }) => {
         onBillCreated={loadBills}
       />
 
-      {/* Payment Processor Modal */}
       {selectedBill && (
-        <PaymentProcessor
-          isOpen={showPaymentProcessor}
-          onClose={() => setShowPaymentProcessor(false)}
-          billId={selectedBill.bill.id}
-          amount={selectedBill.bill.total_amount - selectedBill.bill.paid_amount}
-          businessName="Business"
-          businessAddress={selectedBill.bill.settlement_address}
-          tipAddress={selectedBill.bill.tipping_address}
-          onPaymentComplete={async () => {
-            setShowPaymentProcessor(false);
-            // Refresh bill data after payment - wait for completion
-            await loadBills();
-            if (selectedBill) {
-              // Reload the specific bill details after bills list is refreshed
-              await handleViewBill(selectedBill.bill.id);
-            }
-          }}
-        />
+        <>
+          <PaymentProcessor
+            isOpen={showPaymentProcessor}
+            onClose={() => setShowPaymentProcessor(false)}
+            billId={selectedBill.bill.id}
+            amount={selectedBill.bill.total_amount - selectedBill.bill.paid_amount}
+            businessName="Business"
+            businessAddress={selectedBill.bill.settlement_address}
+            tipAddress={selectedBill.bill.tipping_address}
+            onPaymentComplete={async () => {
+              setShowPaymentProcessor(false);
+              await loadBills();
+              if (selectedBill) {
+                await handleViewBill(selectedBill.bill.id);
+              }
+            }}
+          />
+
+          <BillSplittingFlow
+            bill={{
+              id: selectedBill.bill.id,
+              billNumber: selectedBill.bill.bill_number,
+              items: selectedBill.items,
+              subtotal: selectedBill.bill.subtotal,
+              taxAmount: selectedBill.bill.tax_amount,
+              serviceFeeAmount: selectedBill.bill.service_fee_amount,
+              totalAmount: selectedBill.bill.total_amount,
+            }}
+            businessName="Business"
+            businessAddress="Business Address"
+            tableNumber={selectedBill.bill.table_id?.toString() || 'Counter'}
+            isOpen={showBillSplitting}
+            onClose={() => setShowBillSplitting(false)}
+            onPaymentInitiate={async () => {
+              setShowBillSplitting(false);
+              await loadBills();
+              if (selectedBill) {
+                await handleViewBill(selectedBill.bill.id);
+              }
+            }}
+          />
+        </>
       )}
-      {selectedBill && (
-        <BillSplittingFlow
-          bill={{
-            id: selectedBill.bill.id,
-            billNumber: selectedBill.bill.bill_number,
-            items: selectedBill.items,
-            subtotal: selectedBill.bill.subtotal,
-            taxAmount: selectedBill.bill.tax_amount,
-            serviceFeeAmount: selectedBill.bill.service_fee_amount,
-            totalAmount: selectedBill.bill.total_amount,
-          }}
-          businessName="Business"
-          businessAddress="Business Address"
-          tableNumber={selectedBill.bill.table_id?.toString() || 'Counter'}
-          isOpen={showBillSplitting}
-          onClose={() => setShowBillSplitting(false)}
-          onPaymentInitiate={async () => {
-            setShowBillSplitting(false);
-            // Refresh bill data after payment - wait for completion
-            await loadBills();
-            if (selectedBill) {
-              // Reload the specific bill details after bills list is refreshed
-              await handleViewBill(selectedBill.bill.id);
-            }
-          }}
-        />
-      )}
-    </>
+    </div>
   );
 };

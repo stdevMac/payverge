@@ -1001,46 +1001,6 @@
             }
           }
         },
-        "billManager": {
-          "title": "Gestión de Cuentas",
-          "buttons": {
-            "createBill": "Crear Cuenta",
-            "reset": "Restablecer",
-            "resetFilters": "Restablecer Filtros",
-            "viewDetails": "Ver Detalles",
-            "closeBill": "Cerrar Cuenta",
-            "splitBill": "Dividir Cuenta"
-          },
-          "tabs": {
-            "activeBills": "Cuentas Activas",
-            "billHistory": "Historial de Cuentas"
-          },
-          "search": {
-            "activeBillsPlaceholder": "Buscar cuentas activas...",
-            "billHistoryPlaceholder": "Buscar historial de cuentas..."
-          },
-          "filters": {
-            "to": "a"
-          },
-          "table": {
-            "columns": {
-              "billNumber": "CUENTA #",
-              "table": "MESA",
-              "items": "ELEMENTOS",
-              "total": "TOTAL",
-              "status": "ESTADO",
-              "kitchen": "COCINA",
-              "created": "CREADA",
-              "actions": "ACCIONES"
-            }
-          },
-          "emptyState": {
-            "noActiveBills": "Sin Cuentas Activas",
-            "noMatchingBills": "Ninguna cuenta coincide con tus filtros",
-            "createFirstBill": "Crea tu primera cuenta para comenzar",
-            "adjustFilters": "Intenta ajustar el estado, fechas o consulta de búsqueda"
-          }
-        },
         "kitchen": {
           "title": "Órdenes de Cocina",
           "buttons": {
@@ -1372,76 +1332,6 @@
       "good": "Bueno",
       "fair": "Regular",
       "low": "Bajo"
-    },
-    "billManager": {
-      "title": "Gestor de Cuentas",
-      "table": "Mesa",
-      "items": "artículos",
-      "view": "Ver",
-      "close": "Cerrar",
-      "pendingOrdersTitle": "Órdenes Pendientes - Requieren Aprobación",
-      "billNumber": "Cuenta",
-      "pending": "Pendiente",
-      "moreItems": "más artículos",
-      "approve": "Aprobar",
-      "reject": "Rechazar",
-      "allStatuses": "Todos los estados",
-      "paid": "Pagado",
-      "closed": "Cerrado",
-      "reset": "Restablecer",
-      "billDetails": "Detalles de la Cuenta",
-      "billInformation": "Información de la Cuenta",
-      "billSummary": "Resumen de la Cuenta",
-      "subtotal": "Subtotal",
-      "tax": "Impuesto",
-      "serviceFee": "Tarifa de Servicio",
-      "total": "Total",
-      "tips": "Propinas",
-      "remaining": "Restante",
-      "overpaid": "Sobrepagado",
-      "paymentOptions": "Opciones de Pago",
-      "splitBill": "Dividir Cuenta",
-      "alternativePayment": "Pago Alternativo",
-      "noItems": "Sin Artículos",
-      "noItemsDescription": "Esta cuenta aún no tiene artículos.",
-      "emptyState": {
-        "noActiveBills": "Sin Cuentas Activas",
-        "noMatchingBills": "Sin Cuentas Coincidentes",
-        "createFirstBill": "Crea tu primera cuenta para comenzar",
-        "adjustFilters": "Intenta ajustar tus filtros de búsqueda"
-      },
-      "buttons": {
-        "createBill": "Crear Cuenta",
-        "resetFilters": "Restablecer Filtros",
-        "reset": "Restablecer"
-      },
-      "tabs": {
-        "activeBills": "Cuentas Activas",
-        "billHistory": "Historial de Cuentas"
-      },
-      "tableColumns": {
-        "billNumber": "Cuenta #",
-        "table": "Mesa",
-        "items": "Artículos",
-        "total": "Total",
-        "status": "Estado",
-        "kitchen": "Cocina",
-        "created": "Creado",
-        "actions": "Acciones"
-      },
-      "search": {
-        "activeBillsPlaceholder": "Buscar cuentas activas...",
-        "billHistoryPlaceholder": "Buscar historial de cuentas..."
-      },
-      "filters": {
-        "to": "hasta"
-      },
-      "orderNotes": "Notas del Pedido",
-      "unknownItem": "Artículo Desconocido",
-      "paymentOptionsDescription": "Procesar pagos para clientes en mostrador o mesa",
-      "payWithCrypto": "Pagar con Cripto (USDC)",
-      "cashCardPayments": "Pagos en Efectivo/Tarjeta",
-      "remainingAmount": "Cantidad Restante"
     },
     "billSplittingFlow": {
       "method": "Método",
@@ -2089,5 +1979,296 @@
       "logout": "Cerrar Sesión",
       "toggleMenu": "Alternar Menú",
       "profileActions": "Acciones de Perfil"
+    },
+    "footer": {
+      "backToTop": "Volver Arriba",
+      "tagline": "Transformando los pagos de hospitalidad con tecnología blockchain",
+      "about": "Acerca de",
+      "aboutLinks": {
+        "mission": "Nuestra Misión",
+        "howItWorks": "Cómo Funciona"
+      },
+      "resources": "Recursos",
+      "resourceLinks": {
+        "documentation": "Documentación",
+        "terms": "Términos de Servicio",
+        "privacy": "Política de Privacidad"
+      },
+      "contact": "Contacto",
+      "companyBy": "Payverge por BlockVantage",
+      "allRightsReserved": "Todos los derechos reservados."
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "sections": {
+        "introduction": {
+          "title": "Introducción",
+          "content": "Esta Política de Privacidad describe cómo recopilamos, usamos y protegemos su información personal cuando utiliza nuestros servicios."
+        },
+        "information": {
+          "title": "Información que Recopilamos",
+          "personal": {
+            "title": "Información Personal",
+            "items": [
+              "Nombre e información de contacto",
+              "Fecha de nacimiento y nacionalidad",
+              "Identificación emitida por el gobierno",
+              "Direcciones de billetera blockchain",
+              "Historial y preferencias de inversión",
+              "Información bancaria y de pago"
+            ]
+          },
+          "technical": {
+            "title": "Información Técnica",
+            "items": [
+              "Dirección IP e información del dispositivo",
+              "Tipo y versión del navegador",
+              "Patrones de uso y preferencias",
+              "Datos de transacciones y registros blockchain"
+            ]
+          }
+        },
+        "usage": {
+          "title": "Cómo Usamos Su Información",
+          "intro": "Usamos su información para:",
+          "items": [
+            "Proporcionar y mejorar nuestros servicios",
+            "Procesar transacciones e inversiones",
+            "Cumplir con requisitos legales y regulatorios",
+            "Comunicarnos con usted sobre su cuenta",
+            "Detectar y prevenir fraudes"
+          ]
+        },
+        "sharing": {
+          "title": "Compartir Información",
+          "intro": "Podemos compartir su información con:",
+          "items": [
+            "Proveedores de servicios y socios comerciales",
+            "Autoridades regulatorias y fuerzas del orden",
+            "Asesores profesionales y auditores"
+          ],
+          "note": "Nunca vendemos su información personal a terceros."
+        },
+        "security": {
+          "title": "Seguridad de Datos",
+          "content": "Implementamos medidas de seguridad estándar de la industria para proteger su información personal, incluyendo encriptación, servidores seguros y auditorías de seguridad regulares."
+        },
+        "rights": {
+          "title": "Sus Derechos",
+          "intro": "Usted tiene derecho a:",
+          "items": [
+            "Acceder a su información personal",
+            "Corregir información inexacta",
+            "Solicitar la eliminación de sus datos",
+            "Objetar el procesamiento",
+            "Portabilidad de datos"
+          ]
+        },
+        "cookies": {
+          "title": "Cookies y Seguimiento",
+          "content": "Utilizamos cookies y tecnologías similares para mejorar su experiencia, analizar patrones de uso y proporcionar contenido personalizado."
+        },
+        "changes": {
+          "title": "Cambios a Esta Política",
+          "content": "Podemos actualizar esta Política de Privacidad de vez en cuando. Le notificaremos cualquier cambio material publicando la nueva política en nuestro sitio web."
+        },
+        "contact": {
+          "title": "Información de Contacto",
+          "intro": "Si tiene preguntas sobre esta Política de Privacidad, contáctenos:",
+          "company": "BlockVantage Technology LLC",
+          "address1": "Dubai Internet City",
+          "address2": "Dubai, Emiratos Árabes Unidos",
+          "phone": "Teléfono: +971-4-XXX-XXXX",
+          "email": "Email: privacy@blockvantage.tech"
+        },
+        "lastUpdated": "Última actualización: Octubre 2025"
+      }
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "sections": {
+        "acceptance": {
+          "title": "Aceptación de Términos",
+          "content": "Al acceder y usar nuestros servicios, acepta y acuerda estar sujeto a los términos y disposiciones de este acuerdo."
+        },
+        "definitions": {
+          "title": "Definiciones",
+          "items": [
+            "\"Servicio\" se refiere a la plataforma Payverge y todos los servicios relacionados",
+            "\"Usuario\" se refiere a cualquier individuo o entidad que use nuestros servicios",
+            "\"Inversión\" se refiere a la propiedad tokenizada de vehículos a través de nuestra plataforma"
+          ]
+        },
+        "eligibility": {
+          "title": "Elegibilidad",
+          "intro": "Para usar nuestros servicios, debe:",
+          "requirements": [
+            "Tener al menos 18 años de edad",
+            "Tener capacidad legal para celebrar acuerdos",
+            "Cumplir con todas las leyes y regulaciones aplicables",
+            "Completar nuestro proceso de verificación"
+          ]
+        },
+        "investment": {
+          "title": "Términos de Inversión",
+          "structure": {
+            "title": "Estructura de Inversión",
+            "content": "Las inversiones están estructuradas como propiedad tokenizada de activos vehiculares, gestionadas a través de contratos inteligentes en blockchain."
+          },
+          "period": {
+            "title": "Período de Inversión",
+            "content": "Los períodos de inversión varían por flota de vehículos, típicamente de 2-5 años con opciones de salida temprana bajo ciertas condiciones."
+          }
+        },
+        "fees": {
+          "title": "Tarifas y Pagos",
+          "setup": {
+            "title": "Tarifas de Configuración",
+            "content": "Pueden aplicarse tarifas únicas de configuración para:",
+            "items": [
+              "Verificación de cuenta y procesamiento KYC",
+              "Despliegue de contratos inteligentes",
+              "Procesamiento de inversión inicial"
+            ]
+          },
+          "deposit": {
+            "title": "Depósitos de Seguridad",
+            "content": "Pueden requerirse depósitos de seguridad para:",
+            "items": [
+              "Reservas de mantenimiento de vehículos",
+              "Cobertura de seguros",
+              "Contingencias operacionales"
+            ]
+          },
+          "charges": {
+            "title": "Cargos Continuos",
+            "content": "Los cargos regulares incluyen:",
+            "items": [
+              "Tarifas de gestión (típicamente 10-15% de ingresos por alquiler)",
+              "Costos de mantenimiento y reparación",
+              "Primas de seguros",
+              "Tarifas de servicio de plataforma"
+            ]
+          }
+        },
+        "income": {
+          "title": "Distribución de Ingresos",
+          "items": [
+            "Los ingresos por alquiler se distribuyen mensualmente basados en su porcentaje de propiedad",
+            "Los ingresos se pagan en USDC a su dirección de billetera registrada",
+            "Los documentos de reporte fiscal se proporcionan anualmente",
+            "Los ingresos pueden variar según la utilización del vehículo y condiciones del mercado"
+          ]
+        },
+        "vehicle": {
+          "title": "Gestión de Vehículos",
+          "items": [
+            "Todos los vehículos son gestionados profesionalmente por nuestros operadores asociados",
+            "Se realizan mantenimiento e inspecciones regulares",
+            "La cobertura de seguros se mantiene en todo momento",
+            "Los datos de rendimiento y utilización del vehículo están disponibles para inversores"
+          ]
+        },
+        "termination": {
+          "title": "Término y Terminación",
+          "items": [
+            "Los términos de inversión se especifican en contratos individuales de vehículos",
+            "La terminación temprana puede ser posible sujeta a condiciones del mercado",
+            "Las distribuciones finales ocurren después de la venta del vehículo y liquidación de gastos",
+            "La plataforma se reserva el derecho de terminar servicios con 30 días de aviso"
+          ]
+        },
+        "risks": {
+          "title": "Riesgos y Descargos",
+          "items": [
+            "Todas las inversiones conllevan riesgos inherentes incluyendo pérdida potencial del principal",
+            "Los valores de vehículos pueden fluctuar según condiciones del mercado",
+            "Los ingresos por alquiler no están garantizados y pueden variar",
+            "Los cambios regulatorios pueden impactar los retornos de inversión",
+            "Riesgos de tecnología de plataforma incluyendo vulnerabilidades de contratos inteligentes"
+          ]
+        },
+        "law": {
+          "title": "Ley Aplicable",
+          "content": "Estos términos se rigen por las leyes de los Emiratos Árabes Unidos. Cualquier disputa se resolverá a través de arbitraje en Dubai."
+        },
+        "contact": {
+          "title": "Información de Contacto",
+          "intro": "Para preguntas sobre estos términos, contáctenos:",
+          "company": "BlockVantage Technology LLC",
+          "address1": "Dubai Internet City",
+          "address2": "Dubai, Emiratos Árabes Unidos",
+          "phone": "Teléfono: +971-4-XXX-XXXX",
+          "email": "Email: legal@blockvantage.tech"
+        },
+        "lastUpdated": "Última actualización: Octubre 2025"
+      }
+    },
+    "billManager": {
+      "title": "Gestión de Facturas",
+      "subtitle": "Gestiona y rastrea todas tus facturas",
+      "loading": "Cargando facturas...",
+      "tabs": {
+        "active": "Facturas Activas",
+        "history": "Historial de Facturas"
+      },
+      "buttons": {
+        "createBill": "Crear Factura",
+        "resetFilters": "Restablecer Filtros"
+      },
+      "tableColumns": {
+        "billNumber": "Número de Factura",
+        "table": "Mesa",
+        "total": "Total",
+        "status": "Estado",
+        "created": "Creado",
+        "actions": "Acciones",
+        "items": "Artículos"
+      },
+      "emptyState": {
+        "noActiveBills": "Sin Facturas Activas",
+        "noMatchingBills": "Sin Facturas Coincidentes",
+        "createFirstBill": "Crea tu primera factura para comenzar",
+        "adjustFilters": "Intenta ajustar tus filtros para ver más resultados"
+      },
+      "search": {
+        "activeBillsPlaceholder": "Buscar facturas activas...",
+        "billHistoryPlaceholder": "Buscar historial de facturas..."
+      },
+      "filters": {
+        "to": "hasta"
+      },
+      "view": "Ver",
+      "close": "Cerrar",
+      "table": "Mesa",
+      "allStatuses": "Todos los Estados",
+      "paid": "Pagado",
+      "closed": "Cerrado",
+      "reset": "Restablecer",
+      "billDetails": "Detalles de Factura",
+      "billInformation": "Información de Factura",
+      "billSummary": "Resumen de Factura",
+      "subtotal": "Subtotal",
+      "tax": "Impuesto",
+      "serviceFee": "Tarifa de Servicio",
+      "total": "Total",
+      "remaining": "Restante",
+      "overpaid": "Sobrepagado",
+      "tips": "Propinas",
+      "paymentOptions": "Opciones de Pago",
+      "paymentOptionsDescription": "Elige cómo te gustaría pagar esta factura",
+      "payWithCrypto": "Pagar con Cripto",
+      "cashCardPayments": "Pagos en Efectivo/Tarjeta",
+      "splitBill": "Dividir Factura",
+      "remainingAmount": "Cantidad Restante",
+      "noItems": "Sin Artículos",
+      "noItemsDescription": "Esta factura no tiene artículos",
+      "unknownItem": "Artículo Desconocido",
+      "orderNotes": "Notas del Pedido",
+      "pendingOrdersTitle": "Pedidos Pendientes",
+      "billNumber": "Factura",
+      "pending": "Pendiente",
+      "approve": "Aprobar",
+      "reject": "Rechazar"
     }
 }

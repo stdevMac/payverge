@@ -13,17 +13,31 @@ import {
   IoDocumentTextOutline,
   IoBarChartOutline,
 } from "react-icons/io5";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useState, useEffect } from "react";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 export default function HowItWorksPage() {
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `howItWorks.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   // Define steps with icons
   const steps = [
     {
-      title: t('howItWorks.steps.0.title'),
-      description: t('howItWorks.steps.0.description'),
-      details: Array.isArray(t('howItWorks.steps.0.details')) ? t('howItWorks.steps.0.details') : [
+      title: tString('steps.0.title'),
+      description: tString('steps.0.description'),
+      details: Array.isArray(getTranslation('howItWorks.steps.0.details', currentLocale)) ? getTranslation('howItWorks.steps.0.details', currentLocale) : [
         "Support for major Web3 wallets",
         "Secure blockchain transactions",
         "Easy portfolio management"
@@ -31,9 +45,9 @@ export default function HowItWorksPage() {
       icon: <IoWalletOutline className="w-12 h-12 text-primary" />
     },
     {
-      title: t('howItWorks.steps.1.title'),
-      description: t('howItWorks.steps.1.description'),
-      details: Array.isArray(t('howItWorks.steps.1.details')) ? t('howItWorks.steps.1.details') : [
+      title: tString('steps.1.title'),
+      description: tString('steps.1.description'),
+      details: Array.isArray(tString('steps.1.details')) ? tString('steps.1.details') : [
         "Quick identity verification",
         "Secure document storage",
         "Regulatory compliance"
@@ -41,9 +55,9 @@ export default function HowItWorksPage() {
       icon: <IoShieldCheckmarkOutline className="w-12 h-12 text-primary" />
     },
     {
-      title: t('howItWorks.steps.2.title'),
-      description: t('howItWorks.steps.2.description'),
-      details: Array.isArray(t('howItWorks.steps.2.details')) ? t('howItWorks.steps.2.details') : [
+      title: tString('steps.2.title'),
+      description: tString('steps.2.description'),
+      details: Array.isArray(tString('steps.2.details')) ? tString('steps.2.details') : [
         "Smart contract integration",
         "Transparent blockchain transactions",
         "Flexible development options"
@@ -51,9 +65,9 @@ export default function HowItWorksPage() {
       icon: <IoCodeSlashOutline className="w-12 h-12 text-primary" />
     },
     {
-      title: t('howItWorks.steps.3.title'),
-      description: t('howItWorks.steps.3.description'),
-      details: Array.isArray(t('howItWorks.steps.3.details')) ? t('howItWorks.steps.3.details') : [
+      title: tString('steps.3.title'),
+      description: tString('steps.3.description'),
+      details: Array.isArray(tString('steps.3.details')) ? tString('steps.3.details') : [
         "Unique portfolio identifier",
         "Secure ownership record",
         "Easy transfer and management"
@@ -65,18 +79,18 @@ export default function HowItWorksPage() {
   // Define features with icons
   const features = [
     {
-      title: t('howItWorks.features.0.title'),
-      description: t('howItWorks.features.0.description'),
+      title: tString('features.0.title'),
+      description: tString('features.0.description'),
       icon: <IoDocumentTextOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: t('howItWorks.features.1.title'),
-      description: t('howItWorks.features.1.description'),
+      title: tString('features.1.title'),
+      description: tString('features.1.description'),
       icon: <IoBarChartOutline className="w-8 h-8 text-primary" />
     },
     {
-      title: t('howItWorks.features.2.title'),
-      description: t('howItWorks.features.2.description'),
+      title: tString('features.2.title'),
+      description: tString('features.2.description'),
       icon: <IoRocketOutline className="w-8 h-8 text-primary" />
     }
   ];
@@ -84,16 +98,16 @@ export default function HowItWorksPage() {
   // Define benefits
   const benefits = [
     {
-      title: t('howItWorks.benefits.0.title'),
-      description: t('howItWorks.benefits.0.description')
+      title: tString('benefits.0.title'),
+      description: tString('benefits.0.description')
     },
     {
-      title: t('howItWorks.benefits.1.title'),
-      description: t('howItWorks.benefits.1.description')
+      title: tString('benefits.1.title'),
+      description: tString('benefits.1.description')
     },
     {
-      title: t('howItWorks.benefits.2.title'),
-      description: t('howItWorks.benefits.2.description')
+      title: tString('benefits.2.title'),
+      description: tString('benefits.2.description')
     }
   ];
 
@@ -104,10 +118,10 @@ export default function HowItWorksPage() {
       <Card className="mb-16 bg-gradient-to-r from-primary to-primary/80">
         <CardBody className="text-center py-12">
           <h1 className="text-4xl font-bold text-white mb-6">
-            {t('howItWorks.title')}
+            {tString('title')}
           </h1>
           <p className="text-white/90 max-w-3xl mx-auto text-lg">
-            {t('howItWorks.subtitle')}
+            {tString('subtitle')}
           </p>
         </CardBody>
       </Card>
@@ -115,7 +129,7 @@ export default function HowItWorksPage() {
       {/* Investment Process */}
       <div className="mb-20">
         <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-          {t('howItWorks.investmentJourney')}
+          {tString('investmentJourney')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {steps.map((step, index) => (
@@ -151,7 +165,7 @@ export default function HowItWorksPage() {
       {/* Platform Features */}
       <section className="mb-20">
         <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-          {t('howItWorks.platformFeatures')}
+          {tString('platformFeatures')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
@@ -175,7 +189,7 @@ export default function HowItWorksPage() {
       {/* Investment Benefits */}
       <section>
         <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-          {t('howItWorks.benefitsOfInvesting')}
+          {tString('benefitsOfInvesting')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {benefits.map((benefit: any, index: number) => (

@@ -11,7 +11,6 @@ import { isAdmin } from "@/utils/auth";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useLogout } from "@/hooks";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 

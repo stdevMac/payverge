@@ -989,46 +989,6 @@
             }
           }
         },
-        "billManager": {
-          "title": "Bill Management",
-          "buttons": {
-            "createBill": "Create Bill",
-            "reset": "Reset",
-            "resetFilters": "Reset Filters",
-            "viewDetails": "View Details",
-            "closeBill": "Close Bill",
-            "splitBill": "Split Bill"
-          },
-          "tabs": {
-            "activeBills": "Active Bills",
-            "billHistory": "Bill History"
-          },
-          "search": {
-            "activeBillsPlaceholder": "Search active bills...",
-            "billHistoryPlaceholder": "Search bill history..."
-          },
-          "filters": {
-            "to": "to"
-          },
-          "table": {
-            "columns": {
-              "billNumber": "BILL #",
-              "table": "TABLE",
-              "items": "ITEMS",
-              "total": "TOTAL",
-              "status": "STATUS",
-              "kitchen": "KITCHEN",
-              "created": "CREATED",
-              "actions": "ACTIONS"
-            }
-          },
-          "emptyState": {
-            "noActiveBills": "No Active Bills",
-            "noMatchingBills": "No bills match your filters",
-            "createFirstBill": "Create your first bill to get started",
-            "adjustFilters": "Try adjusting the status, dates, or search query"
-          }
-        },
         "kitchen": {
           "title": "Kitchen Orders",
           "buttons": {
@@ -1360,76 +1320,6 @@
       "good": "Good",
       "fair": "Fair",
       "low": "Low"
-    },
-    "billManager": {
-      "title": "Bill Manager",
-      "table": "Table",
-      "items": "items",
-      "view": "View",
-      "close": "Close",
-      "pendingOrdersTitle": "Pending Orders - Require Approval",
-      "billNumber": "Bill",
-      "pending": "Pending",
-      "moreItems": "more items",
-      "approve": "Approve",
-      "reject": "Reject",
-      "allStatuses": "All statuses",
-      "paid": "Paid",
-      "closed": "Closed",
-      "reset": "Reset",
-      "billDetails": "Bill Details",
-      "billInformation": "Bill Information",
-      "billSummary": "Bill Summary",
-      "subtotal": "Subtotal",
-      "tax": "Tax",
-      "serviceFee": "Service Fee",
-      "total": "Total",
-      "tips": "Tips",
-      "remaining": "Remaining",
-      "overpaid": "Overpaid",
-      "paymentOptions": "Payment Options",
-      "splitBill": "Split Bill",
-      "alternativePayment": "Alternative Payment",
-      "noItems": "No Items",
-      "noItemsDescription": "This bill doesn't have any items yet.",
-      "emptyState": {
-        "noActiveBills": "No Active Bills",
-        "noMatchingBills": "No Matching Bills",
-        "createFirstBill": "Create your first bill to get started",
-        "adjustFilters": "Try adjusting your search filters"
-      },
-      "buttons": {
-        "createBill": "Create Bill",
-        "resetFilters": "Reset Filters",
-        "reset": "Reset"
-      },
-      "tabs": {
-        "activeBills": "Active Bills",
-        "billHistory": "Bill History"
-      },
-      "tableColumns": {
-        "billNumber": "Bill #",
-        "table": "Table",
-        "items": "Items",
-        "total": "Total",
-        "status": "Status",
-        "kitchen": "Kitchen",
-        "created": "Created",
-        "actions": "Actions"
-      },
-      "search": {
-        "activeBillsPlaceholder": "Search active bills...",
-        "billHistoryPlaceholder": "Search bill history..."
-      },
-      "filters": {
-        "to": "to"
-      },
-      "orderNotes": "Order Notes",
-      "unknownItem": "Unknown Item",
-      "paymentOptionsDescription": "Process payments for customers at counter or table",
-      "payWithCrypto": "Pay with Crypto (USDC)",
-      "cashCardPayments": "Cash/Card Payments",
-      "remainingAmount": "Remaining Amount"
     },
     "billSplittingFlow": {
       "method": "Method",
@@ -2078,5 +1968,296 @@
       "logout": "Logout",
       "toggleMenu": "Toggle Menu",
       "profileActions": "Profile Actions"
+    },
+    "footer": {
+      "backToTop": "Back to Top",
+      "tagline": "Transforming hospitality payments with blockchain technology",
+      "about": "About",
+      "aboutLinks": {
+        "mission": "Our Mission",
+        "howItWorks": "How It Works"
+      },
+      "resources": "Resources",
+      "resourceLinks": {
+        "documentation": "Documentation",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+      },
+      "contact": "Contact",
+      "companyBy": "Payverge by BlockVantage",
+      "allRightsReserved": "All rights reserved."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "sections": {
+        "introduction": {
+          "title": "Introduction",
+          "content": "This Privacy Policy describes how we collect, use, and protect your personal information when you use our services."
+        },
+        "information": {
+          "title": "Information We Collect",
+          "personal": {
+            "title": "Personal Information",
+            "items": [
+              "Name and contact information",
+              "Date of birth and nationality", 
+              "Government-issued identification",
+              "Blockchain wallet addresses",
+              "Investment history and preferences",
+              "Banking and payment information"
+            ]
+          },
+          "technical": {
+            "title": "Technical Information",
+            "items": [
+              "IP address and device information",
+              "Browser type and version",
+              "Usage patterns and preferences",
+              "Transaction data and blockchain records"
+            ]
+          }
+        },
+        "usage": {
+          "title": "How We Use Your Information",
+          "intro": "We use your information to:",
+          "items": [
+            "Provide and improve our services",
+            "Process transactions and investments",
+            "Comply with legal and regulatory requirements",
+            "Communicate with you about your account",
+            "Detect and prevent fraud"
+          ]
+        },
+        "sharing": {
+          "title": "Information Sharing",
+          "intro": "We may share your information with:",
+          "items": [
+            "Service providers and business partners",
+            "Regulatory authorities and law enforcement",
+            "Professional advisors and auditors"
+          ],
+          "note": "We never sell your personal information to third parties."
+        },
+        "security": {
+          "title": "Data Security",
+          "content": "We implement industry-standard security measures to protect your personal information, including encryption, secure servers, and regular security audits."
+        },
+        "rights": {
+          "title": "Your Rights",
+          "intro": "You have the right to:",
+          "items": [
+            "Access your personal information",
+            "Correct inaccurate information",
+            "Request deletion of your data",
+            "Object to processing",
+            "Data portability"
+          ]
+        },
+        "cookies": {
+          "title": "Cookies and Tracking",
+          "content": "We use cookies and similar technologies to improve your experience, analyze usage patterns, and provide personalized content."
+        },
+        "changes": {
+          "title": "Changes to This Policy",
+          "content": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website."
+        },
+        "contact": {
+          "title": "Contact Information",
+          "intro": "If you have questions about this Privacy Policy, please contact us:",
+          "company": "BlockVantage Technology LLC",
+          "address1": "Dubai Internet City",
+          "address2": "Dubai, United Arab Emirates",
+          "phone": "Phone: +971-4-XXX-XXXX",
+          "email": "Email: privacy@blockvantage.tech"
+        },
+        "lastUpdated": "Last updated: October 2025"
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "sections": {
+        "acceptance": {
+          "title": "Acceptance of Terms",
+          "content": "By accessing and using our services, you accept and agree to be bound by the terms and provision of this agreement."
+        },
+        "definitions": {
+          "title": "Definitions",
+          "items": [
+            "\"Service\" refers to the Payverge platform and all related services",
+            "\"User\" refers to any individual or entity using our services",
+            "\"Investment\" refers to tokenized vehicle ownership through our platform"
+          ]
+        },
+        "eligibility": {
+          "title": "Eligibility",
+          "intro": "To use our services, you must:",
+          "requirements": [
+            "Be at least 18 years old",
+            "Have legal capacity to enter into agreements",
+            "Comply with all applicable laws and regulations",
+            "Complete our verification process"
+          ]
+        },
+        "investment": {
+          "title": "Investment Terms",
+          "structure": {
+            "title": "Investment Structure",
+            "content": "Investments are structured as tokenized ownership of vehicle assets, managed through smart contracts on the blockchain."
+          },
+          "period": {
+            "title": "Investment Period",
+            "content": "Investment periods vary by vehicle fleet, typically ranging from 2-5 years with options for early exit under certain conditions."
+          }
+        },
+        "fees": {
+          "title": "Fees and Payments",
+          "setup": {
+            "title": "Setup Fees",
+            "content": "One-time setup fees may apply for:",
+            "items": [
+              "Account verification and KYC processing",
+              "Smart contract deployment",
+              "Initial investment processing"
+            ]
+          },
+          "deposit": {
+            "title": "Security Deposits",
+            "content": "Security deposits may be required for:",
+            "items": [
+              "Vehicle maintenance reserves",
+              "Insurance coverage",
+              "Operational contingencies"
+            ]
+          },
+          "charges": {
+            "title": "Ongoing Charges",
+            "content": "Regular charges include:",
+            "items": [
+              "Management fees (typically 10-15% of rental income)",
+              "Maintenance and repair costs",
+              "Insurance premiums",
+              "Platform service fees"
+            ]
+          }
+        },
+        "income": {
+          "title": "Income Distribution",
+          "items": [
+            "Rental income is distributed monthly based on your ownership percentage",
+            "Income is paid in USDC to your registered wallet address",
+            "Tax reporting documents are provided annually",
+            "Income may vary based on vehicle utilization and market conditions"
+          ]
+        },
+        "vehicle": {
+          "title": "Vehicle Management",
+          "items": [
+            "All vehicles are professionally managed by our partner operators",
+            "Regular maintenance and inspections are conducted",
+            "Insurance coverage is maintained at all times",
+            "Vehicle performance and utilization data is available to investors"
+          ]
+        },
+        "termination": {
+          "title": "Term and Termination",
+          "items": [
+            "Investment terms are specified in individual vehicle contracts",
+            "Early termination may be possible subject to market conditions",
+            "Final distributions occur after vehicle sale and expense settlement",
+            "Platform reserves the right to terminate services with 30 days notice"
+          ]
+        },
+        "risks": {
+          "title": "Risks and Disclaimers",
+          "items": [
+            "All investments carry inherent risks including potential loss of principal",
+            "Vehicle values may fluctuate based on market conditions",
+            "Rental income is not guaranteed and may vary",
+            "Regulatory changes may impact investment returns",
+            "Platform technology risks including smart contract vulnerabilities"
+          ]
+        },
+        "law": {
+          "title": "Governing Law",
+          "content": "These terms are governed by the laws of the United Arab Emirates. Any disputes will be resolved through arbitration in Dubai."
+        },
+        "contact": {
+          "title": "Contact Information",
+          "intro": "For questions about these terms, please contact us:",
+          "company": "BlockVantage Technology LLC",
+          "address1": "Dubai Internet City",
+          "address2": "Dubai, United Arab Emirates", 
+          "phone": "Phone: +971-4-XXX-XXXX",
+          "email": "Email: legal@blockvantage.tech"
+        },
+        "lastUpdated": "Last updated: October 2025"
+      }
+    },
+    "billManager": {
+      "title": "Bill Management",
+      "subtitle": "Manage and track all your bills",
+      "loading": "Loading bills...",
+      "tabs": {
+        "active": "Active Bills",
+        "history": "Bill History"
+      },
+      "buttons": {
+        "createBill": "Create Bill",
+        "resetFilters": "Reset Filters"
+      },
+      "tableColumns": {
+        "billNumber": "Bill Number",
+        "table": "Table",
+        "total": "Total",
+        "status": "Status",
+        "created": "Created",
+        "actions": "Actions",
+        "items": "Items"
+      },
+      "emptyState": {
+        "noActiveBills": "No Active Bills",
+        "noMatchingBills": "No Matching Bills",
+        "createFirstBill": "Create your first bill to get started",
+        "adjustFilters": "Try adjusting your filters to see more results"
+      },
+      "search": {
+        "activeBillsPlaceholder": "Search active bills...",
+        "billHistoryPlaceholder": "Search bill history..."
+      },
+      "filters": {
+        "to": "to"
+      },
+      "view": "View",
+      "close": "Close",
+      "table": "Table",
+      "allStatuses": "All Statuses",
+      "paid": "Paid",
+      "closed": "Closed",
+      "reset": "Reset",
+      "billDetails": "Bill Details",
+      "billInformation": "Bill Information",
+      "billSummary": "Bill Summary",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "serviceFee": "Service Fee",
+      "total": "Total",
+      "remaining": "Remaining",
+      "overpaid": "Overpaid",
+      "tips": "Tips",
+      "paymentOptions": "Payment Options",
+      "paymentOptionsDescription": "Choose how you'd like to pay this bill",
+      "payWithCrypto": "Pay with Crypto",
+      "cashCardPayments": "Cash/Card Payments",
+      "splitBill": "Split Bill",
+      "remainingAmount": "Remaining Amount",
+      "noItems": "No Items",
+      "noItemsDescription": "This bill has no items",
+      "unknownItem": "Unknown Item",
+      "orderNotes": "Order Notes",
+      "pendingOrdersTitle": "Pending Orders",
+      "billNumber": "Bill",
+      "pending": "Pending",
+      "approve": "Approve",
+      "reject": "Reject"
     }
 }

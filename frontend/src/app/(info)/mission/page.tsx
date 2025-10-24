@@ -2,7 +2,8 @@
 
 import React from "react";
 import { Card, CardBody } from "@nextui-org/react";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useState, useEffect } from "react";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 interface CoreValue {
   title: string;
@@ -11,7 +12,20 @@ interface CoreValue {
 }
 
 export default function MissionPage() {
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `mission.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   
   // Define fallback values in case translations fail
   const fallbackValues: CoreValue[] = [
@@ -48,7 +62,7 @@ export default function MissionPage() {
   ];
   
   // Get values from translations with proper type safety
-  const translatedValues = t('mission.values.items');
+  const translatedValues = tString('values.items');
   const values: CoreValue[] = Array.isArray(translatedValues) ? translatedValues : fallbackValues;
 
   return (
@@ -57,10 +71,10 @@ export default function MissionPage() {
       <Card className="mb-16 bg-gradient-to-r from-primary to-primary/80">
         <CardBody className="text-center py-12">
           <h1 className="text-4xl font-bold text-white mb-6">
-            {t('mission.title')}
+            {tString('title')}
           </h1>
           <p className="text-white/90 max-w-3xl mx-auto text-lg leading-relaxed">
-            {t('mission.subtitle')}
+            {tString('subtitle')}
           </p>
         </CardBody>
       </Card>
@@ -69,26 +83,26 @@ export default function MissionPage() {
         {/* Vision Section */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-            {t('mission.vision.title')}
+            {tString('vision.title')}
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <Card>
               <CardBody className="p-8">
                 <h3 className="text-xl font-semibold text-primary mb-4">
-                  {t('mission.vision.democratizing.title')}
+                  {tString('vision.democratizing.title')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {t('mission.vision.democratizing.description')}
+                  {tString('vision.democratizing.description')}
                 </p>
               </CardBody>
             </Card>
             <Card>
               <CardBody className="p-8">
                 <h3 className="text-xl font-semibold text-primary mb-4">
-                  {t('mission.vision.bridging.title')}
+                  {tString('vision.bridging.title')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {t('mission.vision.bridging.description')}
+                  {tString('vision.bridging.description')}
                 </p>
               </CardBody>
             </Card>
@@ -98,26 +112,26 @@ export default function MissionPage() {
         {/* What Sets Us Apart */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-            {t('mission.difference.title')}
+            {tString('difference.title')}
           </h2>
           <div className="space-y-6">
             <Card>
               <CardBody className="p-8">
                 <h3 className="text-xl font-semibold text-primary mb-4">
-                  {t('mission.difference.ownership.title')}
+                  {tString('difference.ownership.title')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {t('mission.difference.ownership.description')}
+                  {tString('difference.ownership.description')}
                 </p>
               </CardBody>
             </Card>
             <Card>
               <CardBody className="p-8">
                 <h3 className="text-xl font-semibold text-primary mb-4">
-                  {t('mission.difference.transparency.title')}
+                  {tString('difference.transparency.title')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {t('mission.difference.transparency.description')}
+                  {tString('difference.transparency.description')}
                 </p>
               </CardBody>
             </Card>
@@ -127,7 +141,7 @@ export default function MissionPage() {
         {/* Core Values */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            {t('mission.values.title')}
+            {tString('values.title')}
           </h2>
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { checkAndTopUp, TopUpResponse } from "@/api/faucet/checkAndTopUp";
-import { useTranslation } from "@/i18n/useTranslation";
+import { useState as useStateForLocale, useEffect } from "react";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 interface UseFaucetReturn {
   isLoading: boolean;
@@ -21,7 +22,19 @@ export const useFaucet = (): UseFaucetReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<TopUpResponse | null>(null);
-  const { t } = useTranslation();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useStateForLocale(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const result = getTranslation(key, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
 
   /**
    * Checks the balance of an Ethereum address and tops it up if needed
@@ -39,12 +52,12 @@ export const useFaucet = (): UseFaucetReturn => {
       
       // Handle different response statuses
       if (result.status === "error") {
-        setError(result.error || t("shared.investmentProcessModal.faucet.unknownError"));
+        setError(result.error || tString("shared.investmentProcessModal.faucet.unknownError"));
       }
       
       return result;
     } catch (err: any) {
-      const errorMessage = err.message || t("shared.investmentProcessModal.faucet.requestFailed");
+      const errorMessage = err.message || tString("shared.investmentProcessModal.faucet.requestFailed");
       setError(errorMessage);
       return {
         status: "error",

@@ -1,11 +1,24 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {useTranslation} from "@/i18n/useTranslation";
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 
 export const Footer = () => {
-    const {t} = useTranslation();
+    const { locale } = useSimpleLocale();
+    const [currentLocale, setCurrentLocale] = useState(locale);
+    
+    // Update translations when locale changes
+    useEffect(() => {
+        setCurrentLocale(locale);
+    }, [locale]);
+    
+    // Translation helper
+    const tString = (key: string): string => {
+        const fullKey = `footer.${key}`;
+        const result = getTranslation(fullKey, currentLocale);
+        return Array.isArray(result) ? result[0] || key : result as string;
+    };
     const currentYear = new Date().getFullYear();
 
     const scrollToTop = () => {
@@ -21,7 +34,7 @@ export const Footer = () => {
             <button
                 onClick={scrollToTop}
                 className="absolute -top-6 right-8 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transform hover:scale-110 transition-all duration-300 group"
-                aria-label={t('footer.backToTop')}
+                aria-label={tString('backToTop')}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -52,20 +65,20 @@ export const Footer = () => {
                             className="w-auto h-auto max-w-[160px]"
                         />
                         <p className="text-sm text-gray-600 dark:text-gray-300 text-center lg:text-left">
-                            {t('footer.tagline')}
+                            {tString('tagline')}
                         </p>
                     </div>
 
                     {/* About Section */}
                     <div className="flex flex-col items-center lg:items-start">
-                        <h2 className="text-primary font-bold text-lg mb-4">{t('footer.about')}</h2>
+                        <h2 className="text-primary font-bold text-lg mb-4">{tString('about')}</h2>
                         <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                             <li>
                                 <Link
                                     href="/mission"
                                     className="hover:text-primary transition-colors"
                                 >
-                                    {t('footer.aboutLinks.mission')}
+                                    {tString('aboutLinks.mission')}
                                 </Link>
                             </li>
                             <li>
@@ -73,7 +86,7 @@ export const Footer = () => {
                                     href="/how-it-works"
                                     className="hover:text-primary transition-colors"
                                 >
-                                    {t('footer.aboutLinks.howItWorks')}
+                                    {tString('aboutLinks.howItWorks')}
                                 </Link>
                             </li>
                         </ul>
@@ -81,14 +94,14 @@ export const Footer = () => {
 
                     {/* Resources Section */}
                     <div className="flex flex-col items-center lg:items-start">
-                        <h2 className="text-primary font-bold text-lg mb-4">{t('footer.resources')}</h2>
+                        <h2 className="text-primary font-bold text-lg mb-4">{tString('resources')}</h2>
                         <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                             <li>
                                 <a
                                     href="https://docs.yourapp.com"
                                     className="hover:text-primary transition-colors"
                                 >
-                                    {t('footer.resourceLinks.documentation')}
+                                    {tString('resourceLinks.documentation')}
                                 </a>
                             </li>
                             <li>
@@ -96,7 +109,7 @@ export const Footer = () => {
                                     href="/terms"
                                     className="hover:text-primary transition-colors"
                                 >
-                                    {t('footer.resourceLinks.terms')}
+                                    {tString('resourceLinks.terms')}
                                 </Link>
                             </li>
                             <li>
@@ -104,7 +117,7 @@ export const Footer = () => {
                                     href="/privacy"
                                     className="hover:text-primary transition-colors"
                                 >
-                                    {t('footer.resourceLinks.privacy')}
+                                    {tString('resourceLinks.privacy')}
                                 </Link>
                             </li>
                         </ul>
@@ -112,7 +125,7 @@ export const Footer = () => {
 
                     {/* Contact Section */}
                     <div className="flex flex-col items-center lg:items-start">
-                        <h2 className="text-primary font-bold text-lg mb-4">{t('footer.contact')}</h2>
+                        <h2 className="text-primary font-bold text-lg mb-4">{tString('contact')}</h2>
                         <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300 flex flex-col lg:items-start items-center">
                             <div className="flex items-center space-x-2">
                                 <Image
@@ -133,8 +146,8 @@ export const Footer = () => {
                 {/* Copyright */}
                 <div className="py-6 text-center text-sm text-gray-600 dark:text-gray-300">
                     <p>
-                        &copy; {currentYear} {t('footer.companyBy')}
-                        <span className="block lg:inline"> {t('footer.allRightsReserved')}</span>
+                        &copy; {currentYear} {tString('companyBy')}
+                        <span className="block lg:inline"> {tString('allRightsReserved')}</span>
                     </p>
                 </div>
             </div>
