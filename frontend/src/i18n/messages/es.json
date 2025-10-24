@@ -771,6 +771,7 @@
         "counterManager": {
           "title": "Gestión de Mostradores",
           "subtitle": "Configura mostradores para pedidos para llevar y servicio rápido",
+          "loading": "Cargando configuración de mostradores...",
           "error": {
             "loadSettings": "Error al cargar configuración de mostradores",
             "updateSettings": "Error al actualizar configuración de mostradores"
@@ -780,6 +781,7 @@
           },
           "settings": {
             "title": "Configuración de Mostradores",
+            "subtitle": "Configura las opciones de tu servicio de mostrador",
             "enableService": "Habilitar Servicio de Mostrador",
             "enableServiceDescription": "Permitir que los clientes hagan pedidos para llevar en mostradores de servicio",
             "counterCount": "Número de Mostradores",

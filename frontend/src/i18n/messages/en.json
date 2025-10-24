@@ -762,6 +762,7 @@
         "counterManager": {
           "title": "Counter Management",
           "subtitle": "Configure counters for takeaway and quick service orders",
+          "loading": "Loading counter settings...",
           "error": {
             "loadSettings": "Failed to load counter settings",
             "updateSettings": "Failed to update counter settings"
@@ -771,6 +772,7 @@
           },
           "settings": {
             "title": "Counter Settings",
+            "subtitle": "Configure your counter service options",
             "enableService": "Enable Counter Service",
             "enableServiceDescription": "Allow customers to place takeaway orders at service counters",
             "counterCount": "Number of Counters",

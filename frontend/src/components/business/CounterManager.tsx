@@ -3,15 +3,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  Button,
   Switch,
   Input,
   Divider,
-  Chip,
-  Spinner,
+  Spinner
 } from '@nextui-org/react';
 import { Coffee, Plus, Settings, CheckCircle, AlertCircle } from 'lucide-react';
 import { updateCounterSettings, getBusinessCounters, Counter } from '../../api/counters';
@@ -38,7 +33,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
   
   // Translation helper
   const tString = useCallback((key: string): string => {
-    const fullKey = `counterManager.${key}`;
+    const fullKey = `businessDashboard.dashboard.counterManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
   }, [currentLocale]);
@@ -113,51 +108,61 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Spinner size="lg" />
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <Coffee className="w-8 h-8 text-orange-600" />
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('title')}</h1>
-          <p className="text-gray-600 mt-1">{tString('subtitle')}</p>
+          <p className="text-gray-600 font-light text-sm mt-1">{tString('subtitle')}</p>
         </div>
       </div>
 
-      {/* Alerts */}
+      {/* Error Alert */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardBody className="flex flex-row items-center gap-3">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-            <p className="text-red-800">{error}</p>
-          </CardBody>
-        </Card>
+            <p className="text-red-800 font-medium">{error}</p>
+          </div>
+        </div>
       )}
 
+      {/* Success Alert */}
       {success && (
-        <Card className="border-green-200 bg-green-50">
-          <CardBody className="flex flex-row items-center gap-3">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-3">
             <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-            <p className="text-green-800">{success}</p>
-          </CardBody>
-        </Card>
+            <p className="text-green-800 font-medium">{success}</p>
+          </div>
+        </div>
       )}
 
       {/* Counter Settings */}
-      <Card>
-        <CardHeader>
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="border-b border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <Settings className="w-6 h-6 text-gray-700" />
-            <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('settings.title')}</h2>
+            <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <Settings className="w-6 h-6 text-gray-700" />
+            </div>
+            <div>
+              <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('settings.title')}</h2>
+              <p className="text-gray-600 font-light text-sm">{tString('settings.subtitle')}</p>
+            </div>
           </div>
-        </CardHeader>
-        <CardBody className="space-y-6">
+        </div>
+        <div className="p-6 space-y-6">
           {/* Enable Counters */}
           <div className="flex items-center justify-between">
             <div>
@@ -209,19 +214,18 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
                 <h4 className="font-medium text-gray-900 mb-3">{tString('settings.preview')}</h4>
                 <div className="flex flex-wrap gap-2">
                   {Array.from({ length: Math.min(settings.counter_count, 10) }, (_, i) => (
-                    <Chip
+                    <span
                       key={i}
-                      variant="flat"
-                      color="primary"
-                      startContent={<Coffee className="w-4 h-4" />}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700"
                     >
+                      <Coffee className="w-4 h-4" />
                       {settings.counter_prefix}{i + 1}
-                    </Chip>
+                    </span>
                   ))}
                   {settings.counter_count > 10 && (
-                    <Chip variant="flat" color="default">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700">
                       +{settings.counter_count - 10} more
-                    </Chip>
+                    </span>
                   )}
                 </div>
               </div>
@@ -232,64 +236,61 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
 
           {/* Save Button */}
           <div className="flex justify-end">
-            <Button
-              color="primary"
-              onPress={handleSaveSettings}
-              isLoading={saving}
-              startContent={!saving && <Plus className="w-4 h-4" />}
+            <button
+              onClick={handleSaveSettings}
+              disabled={saving}
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center gap-2 disabled:opacity-50"
             >
+              {!saving && <Plus className="w-4 h-4" />}
               {saving ? tString('buttons.saving') : tString('buttons.saveSettings')}
-            </Button>
+            </button>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {/* Current Counters */}
       {counters.length > 0 && (
-        <Card>
-          <CardHeader>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
+          <div className="border-b border-gray-200 p-6">
             <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('activeCounters.title')}</h2>
-          </CardHeader>
-          <CardBody>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
               {counters.map((counter) => (
-                <Card key={counter.id} className="border-2 border-gray-200">
-                  <CardBody className="text-center p-4">
+                <div key={counter.id} className="border-2 border-gray-200 rounded-lg">
+                  <div className="text-center p-4">
                     <Coffee className="w-8 h-8 text-orange-600 mx-auto mb-2" />
                     <h3 className="font-medium text-gray-900">{counter.name}</h3>
-                    <Chip
-                      size="sm"
-                      variant="flat"
-                      color={counter.is_active ? "success" : "default"}
-                      className="mt-2"
-                    >
+                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+                      counter.is_active 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-gray-100 text-gray-700'
+                    }`}>
                       {counter.is_active ? tString('status.active') : tString('status.inactive')}
-                    </Chip>
-                  </CardBody>
-                </Card>
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Info Card */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardBody>
-          <div className="flex items-start gap-3">
-            <Coffee className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-medium text-blue-900 mb-2">{tString('info.title')}</h3>
-              <div className="text-sm text-blue-800 space-y-1">
-                <p>• {tString('info.point1')}</p>
-                <p>• {tString('info.point2')}</p>
-                <p>• {tString('info.point3')}</p>
-                <p>• {tString('info.point4')}</p>
-              </div>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="flex items-start gap-3">
+          <Coffee className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-blue-900 mb-2">{tString('info.title')}</h3>
+            <div className="text-sm text-blue-800 space-y-1">
+              <p>• {tString('info.point1')}</p>
+              <p>• {tString('info.point2')}</p>
+              <p>• {tString('info.point3')}</p>
+              <p>• {tString('info.point4')}</p>
             </div>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
