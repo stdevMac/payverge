@@ -95,7 +95,7 @@ export default function TranslationEditor({
     };
 
     loadTranslations();
-  }, [entityType, entityId, businessId, translationLanguages.join(',')]);
+  }, [entityType, entityId, businessId, translationLanguages]);
 
   const handleFieldChange = (langCode: string, field: 'name' | 'description', value: string) => {
     setTranslations(prev => ({

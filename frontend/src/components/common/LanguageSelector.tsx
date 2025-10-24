@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Select,
   SelectItem,
@@ -49,17 +49,7 @@ export default function LanguageSelector({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (businessId) {
-      loadBusinessLanguages();
-    } else if (availableLanguages.length > 0) {
-      setSupportedLanguages(availableLanguages);
-    } else {
-      loadAllSupportedLanguages();
-    }
-  }, [businessId, availableLanguages]);
-
-  const loadBusinessLanguages = async () => {
+  const loadBusinessLanguages = useCallback(async () => {
     if (!businessId) return;
 
     try {
@@ -90,7 +80,17 @@ export default function LanguageSelector({
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessId, selectedLanguage, onLanguageChange]);
+
+  useEffect(() => {
+    if (businessId) {
+      loadBusinessLanguages();
+    } else if (availableLanguages.length > 0) {
+      setSupportedLanguages(availableLanguages);
+    } else {
+      loadAllSupportedLanguages();
+    }
+  }, [businessId, availableLanguages, loadBusinessLanguages]);
 
   const loadAllSupportedLanguages = async () => {
     try {

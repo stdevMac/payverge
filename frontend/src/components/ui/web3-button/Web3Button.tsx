@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { Spinner } from "@nextui-org/react";
 import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
@@ -18,11 +18,11 @@ export const Web3Button = () => {
   }, [locale]);
 
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `navigation.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   useEffect(() => {
     // Only set loading to false when we have a definitive wallet state

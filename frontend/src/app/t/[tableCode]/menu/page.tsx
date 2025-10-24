@@ -111,7 +111,7 @@ function GuestMenuPageContent() {
     } finally {
       setLoading(false);
     }
-  }, [tableCode]);
+  }, [tableCode, setBusinessId]);
 
   const loadTranslatedMenu = useCallback(async (languageCode: string) => {
     console.log('Loading translated menu for table:', tableCode, 'language:', languageCode);
@@ -393,7 +393,7 @@ function GuestMenuPageContent() {
     } finally {
       setOrderLoading(false);
     }
-  }, [currentBill, cart, clearCart, loadTableData, tableData]);
+  }, [currentBill, cart, clearCart, loadTableData, tableData, tableCode]);
 
   const handleAddToBill = useCallback(async (itemName: string, price: number, quantity: number = 1) => {
     if (!currentBill) {

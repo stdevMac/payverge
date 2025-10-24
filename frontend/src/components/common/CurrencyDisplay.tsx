@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Select,
   SelectItem,
@@ -59,51 +59,7 @@ export default function CurrencyDisplay({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (businessId) {
-      loadBusinessCurrencies();
-    } else if (availableCurrencies.length > 0) {
-      loadCurrencyRates(availableCurrencies.map(c => c.code));
-    }
-  }, [businessId, availableCurrencies]);
-
-  useEffect(() => {
-    if (currencyRates.length > 0 && !currencyRates.find(r => r.code === selectedCurrency)) {
-      // If selected currency is not available, select the first one or preferred one
-      const preferredCurrency = businessCurrencies.find(c => c.is_preferred)?.currency_code;
-      setSelectedCurrency(preferredCurrency || currencyRates[0]?.code || defaultCurrency);
-    }
-  }, [currencyRates, businessCurrencies, selectedCurrency, defaultCurrency]);
-
-  const loadBusinessCurrencies = async () => {
-    if (!businessId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const currencies = await getBusinessCurrencies(businessId);
-      setBusinessCurrencies(currencies);
-
-      // Load rates for business currencies
-      const currencyCodes = currencies.map(c => c.currency_code);
-      await loadCurrencyRates(currencyCodes);
-
-      // Set preferred currency as default
-      const preferred = currencies.find(c => c.is_preferred);
-      if (preferred) {
-        setSelectedCurrency(preferred.currency_code);
-      }
-
-    } catch (err: any) {
-      console.error('Error loading business currencies:', err);
-      setError('Failed to load currencies');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadCurrencyRates = async (currencyCodes: string[]) => {
+  const loadCurrencyRates = useCallback(async (currencyCodes: string[]) => {
     const rates: CurrencyRate[] = [];
 
     for (const code of currencyCodes) {
@@ -130,7 +86,51 @@ export default function CurrencyDisplay({
     }
 
     setCurrencyRates(rates);
-  };
+  }, [amount]);
+
+  const loadBusinessCurrencies = useCallback(async () => {
+    if (!businessId) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const currencies = await getBusinessCurrencies(businessId);
+      setBusinessCurrencies(currencies);
+
+      // Load rates for business currencies
+      const currencyCodes = currencies.map(c => c.currency_code);
+      await loadCurrencyRates(currencyCodes);
+
+      // Set preferred currency as default
+      const preferred = currencies.find(c => c.is_preferred);
+      if (preferred) {
+        setSelectedCurrency(preferred.currency_code);
+      }
+
+    } catch (err: any) {
+      console.error('Error loading business currencies:', err);
+      setError('Failed to load currencies');
+    } finally {
+      setLoading(false);
+    }
+  }, [businessId, loadCurrencyRates]);
+
+  useEffect(() => {
+    if (businessId) {
+      loadBusinessCurrencies();
+    } else if (availableCurrencies.length > 0) {
+      loadCurrencyRates(availableCurrencies.map(c => c.code));
+    }
+  }, [businessId, availableCurrencies, loadBusinessCurrencies, loadCurrencyRates]);
+
+  useEffect(() => {
+    if (currencyRates.length > 0 && !currencyRates.find(r => r.code === selectedCurrency)) {
+      // If selected currency is not available, select the first one or preferred one
+      const preferredCurrency = businessCurrencies.find(c => c.is_preferred)?.currency_code;
+      setSelectedCurrency(preferredCurrency || currencyRates[0]?.code || defaultCurrency);
+    }
+  }, [currencyRates, businessCurrencies, selectedCurrency, defaultCurrency]);
 
   const handleCurrencyChange = (currency: string) => {
     setSelectedCurrency(currency);

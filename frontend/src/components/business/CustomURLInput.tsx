@@ -27,11 +27,11 @@ const CustomURLInput = React.memo(function CustomURLInput({
   const { locale: currentLocale } = useSimpleLocale();
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `customUrlInput.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
@@ -64,7 +64,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
     } finally {
       setIsChecking(false);
     }
-  }, [businessId]);
+  }, [businessId, tString]);
 
   // Debounced function to check URL availability
   // eslint-disable-next-line react-hooks/exhaustive-deps

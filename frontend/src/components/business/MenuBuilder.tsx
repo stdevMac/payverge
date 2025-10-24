@@ -48,11 +48,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
   }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `businessDashboard.dashboard.menuBuilder.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   const [menu, setMenu] = useState<MenuCategory[]>(initialMenu);
   const [isLoading, setIsLoading] = useState(false);
@@ -167,7 +167,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     } finally {
       setIsLoading(false);
     }
-  }, [businessId]);
+  }, [businessId, tString]);
 
   // Simple translate menu function
   const handleTranslateMenu = useCallback(async (languageCode: string) => {
@@ -188,7 +188,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     } finally {
       setIsTranslating(false);
     }
-  }, [businessId, loadMenu]);
+  }, [businessId, loadMenu, tString]);
 
   // Load business and menu data
   useEffect(() => {
@@ -256,7 +256,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     } finally {
       setIsLanguageLoading(false);
     }
-  }, [businessId, loadLanguages]);
+  }, [businessId, loadLanguages, tString]);
 
   // Helper functions
   const resetCategoryForm = () => {

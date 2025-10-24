@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardBody,
@@ -45,11 +45,11 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
   const { locale: currentLocale } = useSimpleLocale();
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `currencySettings.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   // Currency State
   const [supportedCurrencies, setSupportedCurrencies] = useState<SupportedCurrency[]>([]);
@@ -81,15 +81,7 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
     defaultToDisplay: number;
   }>({ defaultToUSDC: 100, displayToUSDC: 100, defaultToDisplay: 100 });
 
-  useEffect(() => {
-    loadData();
-  }, [businessId]);
-
-  useEffect(() => {
-    updateConversionPreview();
-  }, [settings.default_currency, settings.display_currency]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -126,9 +118,9 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessId, tString]);
 
-  const updateConversionPreview = async () => {
+  const updateConversionPreview = useCallback(async () => {
     try {
       const previews = { defaultToUSDC: sampleAmount, displayToUSDC: sampleAmount, defaultToDisplay: sampleAmount };
 
@@ -172,7 +164,15 @@ export default function CurrencySettings({ businessId, onSave }: CurrencySetting
     } catch (error) {
       console.warn('Failed to update conversion preview:', error);
     }
-  };
+  }, [settings.default_currency, settings.display_currency, sampleAmount]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  useEffect(() => {
+    updateConversionPreview();
+  }, [updateConversionPreview]);
 
   const handleSaveCurrency = async () => {
     try {

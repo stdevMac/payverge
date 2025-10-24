@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount, useConnect } from 'wagmi';
 import { Button } from '@/components/ui/Button';
@@ -33,14 +33,7 @@ export default function ReferralDashboardPage() {
   const [showUpdateCode, setShowUpdateCode] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load dashboard data when wallet is connected
-  useEffect(() => {
-    if (isConnected && address) {
-      loadDashboardData();
-    }
-  }, [address, isConnected]);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     if (!address) return;
 
     try {
@@ -59,7 +52,14 @@ export default function ReferralDashboardPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [address]);
+
+  // Load dashboard data when wallet is connected
+  useEffect(() => {
+    if (isConnected && address) {
+      loadDashboardData();
+    }
+  }, [address, isConnected, loadDashboardData]);
 
   const handleClaimCommissions = async () => {
     if (!address || !dashboardData?.referrer) return;

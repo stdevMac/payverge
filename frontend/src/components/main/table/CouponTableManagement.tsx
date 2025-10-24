@@ -228,7 +228,7 @@ export const CouponTableManagement = () => {
   };
 
   // Deactivate coupon handler
-  const handleDeactivateCoupon = async (coupon: CouponData) => {
+  const handleDeactivateCoupon = useCallback(async (coupon: CouponData) => {
     if (!confirm(`Are you sure you want to deactivate coupon "${coupon.code}"?`)) {
       return;
     }
@@ -255,7 +255,7 @@ export const CouponTableManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [deactivateCoupon, getStoredCoupons]);
 
   // Filter and pagination
   const filteredCoupons = useMemo(() => {

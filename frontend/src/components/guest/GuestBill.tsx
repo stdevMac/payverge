@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Card,
   CardBody,
@@ -55,9 +55,9 @@ export const GuestBill: React.FC<GuestBillProps> = ({
 
   // For now, just return the original item name
   // TODO: Implement proper item name translation integration with page-level translation
-  const getTranslatedItemName = (item: any) => {
+  const getTranslatedItemName = useCallback((item: any) => {
     return item.name;
-  };
+  }, []);
 
   const formatCurrency = (amount: number) => {
     return `$${amount.toFixed(2)}`;
@@ -132,7 +132,7 @@ export const GuestBill: React.FC<GuestBillProps> = ({
       subtotal: item.subtotal
     }))
   }), [bill.bill.id, bill.bill.bill_number, bill.bill.subtotal, bill.bill.tax_amount, 
-       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items, selectedLanguage, getTranslatedItemName]);
+       bill.bill.service_fee_amount, bill.bill.total_amount, bill.items, getTranslatedItemName]);
 
   const handleSplitPaymentInitiate = (personId: string, amount: number, tipAmount: number) => {
     // Close splitting modal and open payment processor with split amount

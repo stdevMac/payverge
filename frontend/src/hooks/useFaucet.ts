@@ -28,7 +28,7 @@ export const useFaucet = (): UseFaucetReturn => {
   // Update translations when locale changes
   useEffect(() => {
     setCurrentLocale(locale);
-  }, [locale]);
+  }, [locale, setCurrentLocale]);
   
   // Translation helper
   const tString = (key: string): string => {

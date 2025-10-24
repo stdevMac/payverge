@@ -22,6 +22,8 @@ import Dashboard from '../../../../../components/dashboard/Dashboard';
 import BlockchainManager from '../../../../../components/business/BlockchainManager';
 import SubscriptionManagement from '../../../../../components/business/SubscriptionManagement';
 
+// Valid tab names for validation (moved outside component to avoid recreation)
+const validTabs = ['overview', 'analytics', 'menu', 'tables', 'bills', 'staff', 'kitchen', 'counter', 'blockchain', 'subscriptions', 'settings'];
 
 interface BusinessDashboardProps {
   params: {
@@ -53,9 +55,6 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const businessId = parseInt(params.businessId);
-
-  // Valid tab names for validation
-  const validTabs = ['overview', 'analytics', 'menu', 'tables', 'bills', 'staff', 'kitchen', 'counter', 'blockchain', 'subscriptions', 'settings'];
 
   // Custom setActiveTab that syncs with URL
   const handleSetActiveTab = (tab: string) => {

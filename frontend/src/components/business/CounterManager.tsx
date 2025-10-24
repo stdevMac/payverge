@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import {
   Card,
@@ -37,11 +37,11 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
   }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
-    const fullKey = `businessDashboard.dashboard.counterManager.${key}`;
+  const tString = useCallback((key: string): string => {
+    const fullKey = `counterManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -54,12 +54,7 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Load counter data
-  useEffect(() => {
-    loadCounterData();
-  }, [businessId]);
-
-  const loadCounterData = async () => {
+  const loadCounterData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await getBusinessCounters(businessId);
@@ -79,7 +74,12 @@ export const CounterManager: React.FC<CounterManagerProps> = ({ businessId }) =>
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessId, tString]);
+
+  // Load counter data
+  useEffect(() => {
+    loadCounterData();
+  }, [loadCounterData]);
 
   const handleSaveSettings = async () => {
     try {

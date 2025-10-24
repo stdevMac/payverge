@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 import {
   Card,
@@ -65,7 +65,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
   };
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const loadWithdrawals = async (page: number = 1) => {
+  const loadWithdrawals = useCallback(async (page: number = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -94,7 +94,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
     } finally {
       setLoading(false);
     }
-  };
+  }, [businessId]);
 
   const handlePageChange = (page: number) => {
     loadWithdrawals(page);
@@ -174,7 +174,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
       setLoading(false);
       setWithdrawals([]);
     }
-  }, [businessId, isAuthenticated, authLoading]);
+  }, [businessId, isAuthenticated, authLoading, loadWithdrawals]);
 
   if (loading && withdrawals.length === 0) {
     return (

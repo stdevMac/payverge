@@ -282,7 +282,7 @@ export const getReferralTierPricing = () => {
   };
 };
 
-export default {
+const referralsApi = {
   // Public functions
   checkReferralCodeAvailability,
   getReferralStats,
@@ -308,3 +308,5 @@ export default {
   calculateReferralCommission,
   getReferralTierPricing,
 };
+
+export default referralsApi;

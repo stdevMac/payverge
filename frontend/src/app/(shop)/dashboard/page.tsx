@@ -26,11 +26,11 @@ export default function Dashboard() {
   }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `dashboard.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
   
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,19 +84,15 @@ export default function Dashboard() {
       // Ensure address is lowercase to match backend format
       const address = tokenData.address.toLowerCase();
       
-      // Fetch user profile directly
-      const userData = await getUserProfile(address);
-      
-      if (userData) {
-        // Set user in store
-        userData.role = tokenData.role || 'user';
+      // Try to get user profile first
+      try {
+        const userData = await getUserProfile(address);
         useUserStore.getState().setUser(userData);
-        
         setError(null);
         setAuthChecked(true);
         loadBusinesses();
-      } else {
-        // Fallback: If API returns null, create a temporary user profile from token
+      } catch (profileError: any) {
+        // If profile fetch fails, create a temporary user object
         const tempUser: User = {
           username: "",
           email: "",
@@ -119,7 +115,7 @@ export default function Dashboard() {
       setLoading(false);
       setAuthChecked(true);
     }
-  }, [loadBusinesses]);
+  }, [loadBusinesses, tString]);
 
 
 

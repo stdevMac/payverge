@@ -181,25 +181,7 @@ export default function PaymentProcessor({
     }
   };
 
-  const handleBillCreation = async () => {
-    setPaymentStep('creating-bill');
-    setError('');
-
-    try {
-      const result = await createOnChainBill(billId, {
-        business_address: businessAddress,
-        total_amount: totalAmount
-      });
-      
-      setBillCreated(true);
-      await handlePayment();
-    } catch (err: any) {
-      // Continue anyway - bill might already exist
-      await handlePayment();
-    }
-  };
-
-  const handlePayment = async () => {
+  const handlePayment = useCallback(async () => {
     setPaymentStep('payment');
     setError('');
 
@@ -233,8 +215,27 @@ export default function PaymentProcessor({
       setError(err.message || 'Payment transaction failed');
       setPaymentStep('error');
     }
-  };
-  const notifyBackend = async (txHash: Hash) => {
+  }, [tipAmount, billId, processPayment, amount, contractConfig.payments]);
+
+  const handleBillCreation = useCallback(async () => {
+    setPaymentStep('creating-bill');
+    setError('');
+
+    try {
+      const result = await createOnChainBill(billId, {
+        business_address: businessAddress,
+        total_amount: totalAmount
+      });
+      
+      setBillCreated(true);
+      await handlePayment();
+    } catch (err: any) {
+      // Continue anyway - bill might already exist
+      await handlePayment();
+    }
+  }, [billId, businessAddress, totalAmount, handlePayment]);
+
+  const notifyBackend = useCallback(async (txHash: Hash) => {
     try {
       const result = await updateBillPayment(billId, {
         transaction_hash: txHash,
@@ -248,7 +249,7 @@ export default function PaymentProcessor({
       console.error('Failed to notify backend:', error);
       throw error;
     }
-  };
+  }, [billId, totalAmount, tipAmount]);
 
   // Effect to handle approval confirmation
   useEffect(() => {
@@ -261,7 +262,7 @@ export default function PaymentProcessor({
       // Proceed to bill creation
       handleBillCreation();
     }
-  }, [approvalSuccess, approvalReceipt, approvalTx.isConfirmed]);
+  }, [approvalSuccess, approvalReceipt, approvalTx.isConfirmed, handleBillCreation, refetchAllowance]);
 
   // Effect to handle approval errors
   useEffect(() => {
@@ -301,7 +302,7 @@ export default function PaymentProcessor({
           }
         });
     }
-  }, [paymentSuccess, paymentReceipt, paymentTx.isConfirmed]);
+  }, [paymentSuccess, paymentReceipt, paymentTx.isConfirmed, notifyBackend, onPaymentComplete, tipAmount, totalAmount]);
 
   // Effect to handle payment errors
   useEffect(() => {

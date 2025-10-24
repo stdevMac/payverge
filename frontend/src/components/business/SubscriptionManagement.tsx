@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import { Card, CardBody, CardHeader, Button, Chip, Progress, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Checkbox } from '@nextui-org/react';
 import { Calendar, CreditCard, AlertTriangle, CheckCircle, Clock, DollarSign, TrendingUp, Settings, Hash } from 'lucide-react';
@@ -89,11 +89,11 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `businessDashboard.dashboard.subscriptionManagement.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   const { isOpen: isRenewOpen, onOpen: onRenewOpen, onClose: onRenewClose } = useDisclosure();
 

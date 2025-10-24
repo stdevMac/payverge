@@ -94,7 +94,7 @@ export const GuestTableView: React.FC<GuestTableViewProps> = ({ tableCode }) => 
     } finally {
       setLoading(false);
     }
-  }, [tableCode]);
+  }, [tableCode, setBusinessId]);
 
   // Handler functions
   const handlePaymentComplete = useCallback(async () => {

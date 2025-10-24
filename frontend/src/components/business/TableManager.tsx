@@ -29,11 +29,11 @@ export default function TableManager({ businessId }: TableManagerProps) {
   }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
+  const tString = useCallback((key: string): string => {
     const fullKey = `businessDashboard.dashboard.tableManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
 
   const [tables, setTables] = useState<Table[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function TableManager({ businessId }: TableManagerProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [businessId]);
+  }, [businessId, tString]);
 
   useEffect(() => {
     loadTables();

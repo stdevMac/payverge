@@ -71,11 +71,11 @@ export default function GoogleBusinessSearch({
   const { locale: currentLocale } = useSimpleLocale();
   
   // Translation helper
-  const tString = (key: string): string => {
-    const fullKey = `googleBusiness.${key}`;
-    const translation = getTranslation(fullKey, currentLocale);
-    return Array.isArray(translation) ? translation[0] : translation || key;
-  };
+  const tString = useCallback((key: string): string => {
+    const fullKey = `googleBusinessSearch.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  }, [currentLocale]);
 
   // Keep search query empty by default - let users type what they want
 
@@ -104,7 +104,7 @@ export default function GoogleBusinessSearch({
     } finally {
       setIsSearching(false);
     }
-  }, [searchQuery, showError, showWarning]);
+  }, [searchQuery, showError, showWarning, tString]);
 
   const handleSelectBusiness = (business: GooglePlaceResult) => {
     setSelectedBusiness(business);

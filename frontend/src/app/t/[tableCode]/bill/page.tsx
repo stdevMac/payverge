@@ -106,7 +106,7 @@ function GuestBillPageContent() {
     } finally {
       setLoading(false);
     }
-  }, [tableCode]);
+  }, [tableCode, setBusinessId]);
 
   const loadTranslatedMenu = useCallback(async (languageCode: string) => {
     try {
