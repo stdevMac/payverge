@@ -13,6 +13,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   subscriptionData,
   onRenewSubscription,
   onToggleAutoRenewal,
+  businessId,
 }) => {
   // Translation setup
   const { locale } = useSimpleLocale();
@@ -67,6 +68,7 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
           onRenewalSuccess={handleRenewalSuccess}
           registrationFee={registrationFee}
           tString={tString}
+          businessId={businessId}
         />
       </div>
     </div>

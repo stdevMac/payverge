@@ -235,6 +235,8 @@ func autoMigrate() error {
 		&ReferralCommissionClaim{},
 		// Withdrawal history model
 		&WithdrawalHistory{},
+		// Subscription payment model
+		&SubscriptionPayment{},
 		// Multi-currency and multilingual models
 		&SupportedCurrency{},
 		&ExchangeRate{},

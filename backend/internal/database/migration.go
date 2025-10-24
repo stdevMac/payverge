@@ -63,12 +63,13 @@ func (db *DB) OptimizeDatabase() error {
 		&ReferralRecord{},
 		&ReferralCommissionClaim{},
 		&WithdrawalHistory{},
+		&SubscriptionPayment{},
 	); err != nil {
 		return fmt.Errorf("failed to auto-migrate database: %w", err)
 	}
 
 	// Analyze tables for query optimization
-	tables := []string{"bills", "payments", "alternative_payment", "businesses", "tables"}
+	tables := []string{"bills", "payments", "alternative_payment", "businesses", "tables", "subscription_payments"}
 	for _, table := range tables {
 		if err := db.conn.Exec(fmt.Sprintf("ANALYZE %s", table)).Error; err != nil {
 			fmt.Printf("Warning: Failed to analyze table %s: %v\n", table, err)

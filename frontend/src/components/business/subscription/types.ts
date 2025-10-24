@@ -20,6 +20,7 @@ export interface SubscriptionManagementProps {
   subscriptionData: SubscriptionData;
   onRenewSubscription?: () => void;
   onToggleAutoRenewal?: () => void;
+  businessId?: number;
 }
 
 export type ProcessingStep = 'approval' | 'renewal' | 'complete';

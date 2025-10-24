@@ -310,6 +310,59 @@ export const deleteTable = async (tableId: number): Promise<void> => {
   await axiosInstance.delete(`/inside/tables/${tableId}`);
 };
 
+// Subscription data sync interface
+export interface SyncSubscriptionRequest {
+  subscription_status: string;
+  last_payment_date: string;
+  subscription_end_date: string;
+  last_payment_amount: string;
+  total_paid: string;
+  yearly_fee: string;
+  time_remaining: number;
+}
+
+// Sync subscription data from smart contract to backend
+export const syncSubscriptionData = async (businessId: number, subscriptionData: SyncSubscriptionRequest): Promise<void> => {
+  await axiosInstance.put(`/inside/businesses/${businessId}/subscription/sync`, subscriptionData);
+};
+
+// Subscription payment history interface
+export interface SubscriptionPayment {
+  id: number;
+  business_id: number;
+  payment_amount: string;
+  transaction_hash: string;
+  block_number: number;
+  new_expiry_time: number;
+  payment_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubscriptionPaymentHistory {
+  payments: SubscriptionPayment[];
+  latest_payment: SubscriptionPayment | null;
+  total_paid: string;
+}
+
+// Get subscription payment history
+export const getSubscriptionPaymentHistory = async (businessId: number): Promise<SubscriptionPaymentHistory> => {
+  const response = await axiosInstance.get<SubscriptionPaymentHistory>(`/inside/businesses/${businessId}/subscription/payments`);
+  return response.data;
+};
+
+// Record subscription renewal payment
+export interface RecordRenewalRequest {
+  transaction_hash: string;
+  payment_amount: string;
+  new_expiry_time: number;
+  block_number?: number;
+}
+
+export const recordSubscriptionRenewal = async (businessId: number, renewalData: RecordRenewalRequest): Promise<void> => {
+  await axiosInstance.post(`/inside/businesses/${businessId}/subscription/renewal`, renewalData);
+};
+
 // Export all functions as businessApi object
 export const businessApi = {
   createBusiness,
@@ -329,4 +382,6 @@ export const businessApi = {
   createTableWithQR,
   updateTableDetails,
   deleteTable,
+  syncSubscriptionData,
+  getSubscriptionPaymentHistory,
 };

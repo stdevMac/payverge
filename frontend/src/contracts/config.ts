@@ -6,7 +6,7 @@ export interface ContractConfig {
   referrals: Address;
   profitSplit: Address;
   chainId: number;
-  usdcAddress: Address;
+  usdc: Address;
   platformTreasury: Address;
 }
 
@@ -18,7 +18,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 1,
-    usdcAddress: '0xA0b86a33E6441E6C673b3b4b7B4b3b4b7B4b3b4b' as Address, // USDC on mainnet
+    usdc: '0xA0b86a33E6441E6C673b3b4b7B4b3b4b7B4b3b4b' as Address, // USDC on mainnet
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
   // Sepolia Testnet
@@ -27,7 +27,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 11155111,
-    usdcAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Address, // USDC on Sepolia
+    usdc: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Address, // USDC on Sepolia
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
   // Polygon
@@ -36,7 +36,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 137,
-    usdcAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' as Address, // USDC on Polygon
+    usdc: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' as Address, // USDC on Polygon
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
   // Base
@@ -45,7 +45,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 8453,
-    usdcAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address, // USDC on Base
+    usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address, // USDC on Base
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
   // Base Sepolia Testnet
@@ -54,7 +54,7 @@ export const CONTRACT_ADDRESSES: Record<number, ContractConfig> = {
     referrals: process.env.NEXT_PUBLIC_PAYVERGE_REFERRALS_ADDRESS as Address || '0x',
     profitSplit: process.env.NEXT_PUBLIC_PAYVERGE_PROFIT_SPLIT_ADDRESS as Address || '0x',
     chainId: 84532,
-    usdcAddress: process.env.NEXT_PUBLIC_USDC_ADDRESS as Address, // USDC on Base Sepolia
+    usdc: process.env.NEXT_PUBLIC_USDC_ADDRESS as Address, // USDC on Base Sepolia
     platformTreasury: process.env.NEXT_PUBLIC_PLATFORM_TREASURY as Address || '0x',
   },
 };

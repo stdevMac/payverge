@@ -611,3 +611,24 @@ const (
 func (Order) TableName() string {
 	return "orders"
 }
+
+// SubscriptionPayment represents a subscription renewal payment
+type SubscriptionPayment struct {
+	ID                uint      `gorm:"primaryKey" json:"id"`
+	BusinessID        uint      `gorm:"not null;index" json:"business_id"`
+	PaymentAmount     string    `gorm:"not null" json:"payment_amount"`     // USDC amount in wei
+	TransactionHash   string    `gorm:"not null;unique" json:"transaction_hash"`
+	BlockNumber       uint64    `gorm:"not null" json:"block_number"`
+	NewExpiryTime     uint64    `gorm:"not null" json:"new_expiry_time"`    // Unix timestamp
+	PaymentDate       time.Time `gorm:"not null" json:"payment_date"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+
+	// Relationships
+	Business Business `gorm:"foreignKey:BusinessID" json:"business,omitempty"`
+}
+
+// TableName method for SubscriptionPayment model
+func (SubscriptionPayment) TableName() string {
+	return "subscription_payments"
+}

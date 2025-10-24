@@ -1,4 +1,5 @@
 // Wagmi hooks for Payverge ecosystem contract interactions
+import React from 'react';
 import { useReadContract, useWriteContract, useWatchContractEvent } from 'wagmi';
 import { useChainId, useAccount } from 'wagmi';
 import { Address, parseUnits, formatUnits } from 'viem';
@@ -313,7 +314,7 @@ export const useUsdcBalance = (address?: Address) => {
   const targetAddress = address || connectedAddress;
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'balanceOf',
@@ -337,7 +338,7 @@ export const useUsdcAllowance = (spender?: Address) => {
   const spenderAddress = spender || config.payments;
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'allowance',
@@ -366,7 +367,7 @@ export const useApproveUsdc = () => {
     const spenderAddress = spender || config.payments;
 
     const hash = await writeContractAsync({
-      address: config.usdcAddress,
+      address: config.usdc,
       abi: [
         {
           name: 'approve',
@@ -890,7 +891,7 @@ export const useApproveUsdcForReferrals = () => {
 
   const approveUsdcForReferrals = (amount: bigint) => {
     return writeContract({
-      address: config.usdcAddress,
+      address: config.usdc,
       abi: [
         {
           name: 'approve',
@@ -917,7 +918,7 @@ export const useApproveUsdcForProfitSplit = () => {
 
   const approveUsdcForProfitSplit = (amount: bigint) => {
     return writeContract({
-      address: config.usdcAddress,
+      address: config.usdc,
       abi: [
         {
           name: 'approve',
@@ -944,7 +945,7 @@ export const useUsdcAllowanceForReferrals = () => {
   const { address } = useAccount();
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'allowance',
@@ -970,7 +971,7 @@ export const useUsdcAllowanceForProfitSplit = () => {
   const { address } = useAccount();
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'allowance',
@@ -1094,7 +1095,7 @@ export const useProfitSplitBalance = () => {
   const config = useContractConfig();
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'balanceOf',
@@ -1114,7 +1115,7 @@ export const usePaymentsContractBalance = () => {
   const config = useContractConfig();
 
   return useReadContract({
-    address: config.usdcAddress,
+    address: config.usdc,
     abi: [
       {
         name: 'balanceOf',
@@ -1268,17 +1269,209 @@ export const useGetBusinessSubscriptionStatus = (businessAddress: Address) => {
   });
 };
 
-export const useRenewSubscription = () => {
+// Get complete business info from smart contract
+export const useGetBusinessInfo = (businessAddress: Address) => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'businessInfo',
+    args: [businessAddress],
+  });
+};
+
+// Combined hook to get all subscription data
+export const useBusinessSubscriptionData = (businessAddress?: Address, businessId?: number) => {
+  const { data: subscriptionStatus, isLoading: statusLoading, refetch: refetchStatus } = useGetBusinessSubscriptionStatus(businessAddress as Address);
+  const { data: businessInfo, isLoading: infoLoading, refetch: refetchInfo } = useGetBusinessInfo(businessAddress as Address);
+  const { data: registrationFee } = useRegistrationFee();
+
+  // Fetch payment history from backend
+  const [paymentHistory, setPaymentHistory] = React.useState<any>(null);
+  const [historyLoading, setHistoryLoading] = React.useState(false);
+
+  const fetchPaymentHistory = React.useCallback(async () => {
+    if (!businessId) return;
+    
+    try {
+      setHistoryLoading(true);
+      const { getSubscriptionPaymentHistory } = await import('../api/business');
+      const history = await getSubscriptionPaymentHistory(businessId);
+      setPaymentHistory(history);
+    } catch (error) {
+      console.error('Failed to fetch payment history:', error);
+      setPaymentHistory(null);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, [businessId]);
+
+  React.useEffect(() => {
+    fetchPaymentHistory();
+  }, [fetchPaymentHistory]);
+
+  const isLoading = statusLoading || infoLoading || historyLoading;
+
+  // Transform the data into the format expected by the frontend
+  const subscriptionData = React.useMemo(() => {
+    if (!subscriptionStatus || !businessInfo || !businessAddress) {
+      return {
+        status: 'active' as const,
+        lastPaymentDate: '',
+        subscriptionEndDate: '',
+        lastPaymentAmount: '0',
+        totalPaid: '0',
+        yearlyFee: registrationFee ? registrationFee.toString() : '120000000',
+        timeRemaining: 0,
+        remindersSent: 0
+      };
+    }
+
+    const [isActive, subscriptionExpiry, timeRemaining] = subscriptionStatus as [boolean, bigint, bigint];
+    const [paymentAddress, tippingAddress, active, registrationDate, expiry, totalVolume, totalTips] = businessInfo as [string, string, boolean, bigint, bigint, bigint, bigint];
+
+    // Determine status based on smart contract data
+    let status: 'active' | 'expired' | 'suspended' | 'cancelled' = 'active';
+    if (!isActive || !active) {
+      status = 'suspended';
+    } else if (timeRemaining === BigInt(0)) {
+      status = 'expired';
+    }
+
+    // Use payment history data from backend (includes registration + renewals)
+    const lastPaymentAmount = paymentHistory?.latest_payment?.payment_amount || '0';
+    const lastPaymentDate = paymentHistory?.latest_payment?.payment_date || 
+      (registrationDate ? new Date(Number(registrationDate) * 1000).toISOString() : '');
+    const totalPaid = paymentHistory?.total_paid || '0';
+
+    return {
+      status,
+      lastPaymentDate,
+      subscriptionEndDate: subscriptionExpiry ? new Date(Number(subscriptionExpiry) * 1000).toISOString() : '',
+      lastPaymentAmount,
+      totalPaid,
+      yearlyFee: registrationFee ? registrationFee.toString() : '120000000',
+      timeRemaining: Number(timeRemaining),
+      remindersSent: 0
+    };
+  }, [subscriptionStatus, businessInfo, businessAddress, registrationFee, paymentHistory]);
+
+  const refetch = React.useCallback(() => {
+    refetchStatus();
+    refetchInfo();
+    fetchPaymentHistory();
+  }, [refetchStatus, refetchInfo, fetchPaymentHistory]);
+
+  return {
+    data: subscriptionData,
+    isLoading,
+    refetch
+  };
+};
+
+// Hook to listen for subscription renewal events
+export const useSubscriptionRenewalEvents = (businessAddress?: Address) => {
+  const config = useContractConfig();
+
+  return useWatchContractEvent({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    eventName: 'BusinessSubscriptionRenewed',
+    args: businessAddress ? { business: businessAddress } : undefined,
+    onLogs: (logs) => {
+      console.log('Subscription renewal detected:', logs);
+      // This will trigger when a renewal happens
+    },
+  });
+};
+
+// Hook to check if contract is paused
+export const useContractPaused = () => {
+  const config = useContractConfig();
+
+  return useReadContract({
+    address: config.payments,
+    abi: PAYVERGE_PAYMENTS_ABI,
+    functionName: 'paused',
+    args: [],
+  });
+};
+
+export const useRenewSubscription = (businessId?: number) => {
   const config = useContractConfig();
   const { writeContractAsync } = useWriteContract();
+  const { data: usdcBalance } = useUsdcBalance();
+  const { data: usdcAllowance } = useUsdcAllowance();
+  const { address: userAddress } = useAccount();
+  const { data: businessInfo } = useGetBusinessInfo(userAddress as Address);
+  const { data: isPaused } = useContractPaused();
 
   const renewSubscription = async (paymentAmount: bigint) => {
-    return await writeContractAsync({
-      address: config.payments,
-      abi: PAYVERGE_PAYMENTS_ABI,
-      functionName: 'renewSubscription',
-      args: [paymentAmount],
-    });
+    try {
+      console.log('=== RENEWAL DEBUG INFO ===');
+      console.log('Payment amount:', paymentAmount.toString());
+      console.log('Contract address:', config.payments);
+      console.log('User address:', userAddress);
+      console.log('USDC balance:', usdcBalance?.toString() || 'unknown');
+      console.log('USDC allowance:', usdcAllowance?.toString() || 'unknown');
+      console.log('Balance sufficient?', usdcBalance ? usdcBalance >= paymentAmount : 'unknown');
+      console.log('Allowance sufficient?', usdcAllowance ? usdcAllowance >= paymentAmount : 'unknown');
+      console.log('Contract paused?', isPaused);
+      
+      if (isPaused) {
+        console.error('❌ Contract is paused!');
+      }
+      
+      // Check business info
+      if (businessInfo) {
+        const [paymentAddress, tippingAddress, isActive, registrationDate, subscriptionExpiry, totalVolume, totalTips] = businessInfo as [string, string, boolean, bigint, bigint, bigint, bigint];
+        console.log('Business info:');
+        console.log('- Payment address:', paymentAddress);
+        console.log('- Tipping address:', tippingAddress);
+        console.log('- Is active:', isActive);
+        console.log('- Registration date:', new Date(Number(registrationDate) * 1000).toISOString());
+        console.log('- Subscription expiry:', new Date(Number(subscriptionExpiry) * 1000).toISOString());
+        console.log('- Total volume:', totalVolume.toString());
+        console.log('- Total tips:', totalTips.toString());
+        
+        if (!isActive) {
+          console.error('❌ Business is not active!');
+        }
+        if (Number(subscriptionExpiry) * 1000 < Date.now()) {
+          console.log('⚠️ Subscription is expired, but renewal should still work');
+        }
+      } else {
+        console.error('❌ No business info found - business may not be registered!');
+      }
+      
+      const txHash = await writeContractAsync({
+        address: config.payments,
+        abi: PAYVERGE_PAYMENTS_ABI,
+        functionName: 'renewSubscription',
+        args: [paymentAmount],
+      });
+
+      console.log('Renewal transaction hash:', txHash);
+      
+      // TODO: After successful transaction, we could listen for the event
+      // and automatically create a SubscriptionPayment record in the backend
+      // For now, the payment history will be updated on the next page refresh
+      
+      return txHash;
+    } catch (error) {
+      console.error('Renewal failed with error:', error);
+      
+      // Try to extract the real revert reason
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        if ('cause' in error) {
+          console.error('Error cause:', error.cause);
+        }
+      }
+      
+      throw error;
+    }
   };
 
   return { renewSubscription };

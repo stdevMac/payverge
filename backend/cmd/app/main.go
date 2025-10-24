@@ -327,6 +327,11 @@ func main() {
 		protectedRoutes.PUT("/businesses/:id/google", server.UpdateBusinessGoogleInfo)
 		protectedRoutes.DELETE("/businesses/:id/google", server.RemoveBusinessGoogleInfo)
 
+		// Subscription management routes
+		protectedRoutes.PUT("/businesses/:id/subscription/sync", server.SyncBusinessSubscriptionData)
+		protectedRoutes.POST("/businesses/:id/subscription/renewal", server.RecordSubscriptionRenewal)
+		protectedRoutes.GET("/businesses/:id/subscription/payments", server.GetSubscriptionPaymentHistory)
+
 		// Counter management routes
 		protectedRoutes.PUT("/businesses/:id/counters/settings", server.UpdateCounterSettings)
 		protectedRoutes.GET("/businesses/:id/counters", server.GetBusinessCounters)

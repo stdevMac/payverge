@@ -15,6 +15,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SyncSubscriptionRequest represents a request to sync subscription data
+type SyncSubscriptionRequest struct {
+	SubscriptionStatus  string `json:"subscription_status"`
+	LastPaymentDate     string `json:"last_payment_date"`
+	SubscriptionEndDate string `json:"subscription_end_date"`
+	LastPaymentAmount   string `json:"last_payment_amount"`
+	TotalPaid           string `json:"total_paid"`
+	YearlyFee           string `json:"yearly_fee"`
+	TimeRemaining       int64  `json:"time_remaining"`
+}
+
 // Business creation request
 type CreateBusinessRequest struct {
 	Name             string                      `json:"name" binding:"required"`
@@ -138,6 +149,26 @@ func CreateBusiness(c *gin.Context) {
 	if err := database.CreateBusiness(business); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create business"})
 		return
+	}
+
+	// Create initial subscription payment record (registration payment)
+	// This represents the payment made during smart contract registration
+	if req.PaymentAmount != "" && req.PaymentAmount != "0" {
+		initialPayment := &database.SubscriptionPayment{
+			BusinessID:      business.ID,
+			PaymentAmount:   req.PaymentAmount,
+			TransactionHash: "registration_" + business.OwnerAddress, // Placeholder until we get real tx hash
+			BlockNumber:     0, // Will be updated when we sync with smart contract
+			NewExpiryTime:   uint64(time.Now().AddDate(1, 0, 0).Unix()), // 1 year from now
+			PaymentDate:     time.Now(),
+			CreatedAt:       time.Now(),
+			UpdatedAt:       time.Now(),
+		}
+
+		if err := database.CreateSubscriptionPayment(initialPayment); err != nil {
+			// Log error but don't fail business creation
+			log.Printf("Warning: Failed to create initial subscription payment record: %v", err)
+		}
 	}
 
 	c.JSON(http.StatusCreated, business)
@@ -2716,5 +2747,200 @@ func RemoveBusinessGoogleInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Google business integration removed successfully",
+	})
+}
+
+// SyncBusinessSubscriptionData syncs subscription data from smart contract
+func SyncBusinessSubscriptionData(c *gin.Context) {
+	// Get business ID from URL
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.Atoi(businessIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context (set by auth middleware)
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User address not found"})
+		return
+	}
+
+	// Get the business and verify ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to update this business"})
+		return
+	}
+
+	// Parse request body
+	var req SyncSubscriptionRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Convert to map for database update
+	subscriptionData := map[string]interface{}{
+		"subscription_status":   req.SubscriptionStatus,
+		"last_payment_date":     req.LastPaymentDate,
+		"subscription_end_date": req.SubscriptionEndDate,
+		"last_payment_amount":   req.LastPaymentAmount,
+		"total_paid":            req.TotalPaid,
+		"yearly_fee":            req.YearlyFee,
+		"time_remaining":        req.TimeRemaining,
+	}
+
+	// Update subscription data in database
+	if err := database.UpdateBusinessSubscriptionData(uint(businessID), subscriptionData); err != nil {
+		log.Printf("Error updating business subscription data: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update subscription data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Subscription data synced successfully",
+	})
+}
+
+// RecordSubscriptionRenewal records a new subscription renewal payment
+func RecordSubscriptionRenewal(c *gin.Context) {
+	// Get business ID from URL
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.Atoi(businessIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context (set by auth middleware)
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User address not found"})
+		return
+	}
+
+	// Get the business and verify ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to update this business"})
+		return
+	}
+
+	// Parse request body
+	type RenewalRequest struct {
+		TransactionHash string `json:"transaction_hash" binding:"required"`
+		PaymentAmount   string `json:"payment_amount" binding:"required"`
+		NewExpiryTime   uint64 `json:"new_expiry_time" binding:"required"`
+		BlockNumber     uint64 `json:"block_number"`
+	}
+
+	var req RenewalRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Create subscription payment record
+	payment := &database.SubscriptionPayment{
+		BusinessID:      uint(businessID),
+		PaymentAmount:   req.PaymentAmount,
+		TransactionHash: req.TransactionHash,
+		BlockNumber:     req.BlockNumber,
+		NewExpiryTime:   req.NewExpiryTime,
+		PaymentDate:     time.Now(),
+		CreatedAt:       time.Now(),
+		UpdatedAt:       time.Now(),
+	}
+
+	if err := database.CreateSubscriptionPayment(payment); err != nil {
+		log.Printf("Error creating subscription payment: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to record renewal payment"})
+		return
+	}
+
+	// Update business subscription data
+	subscriptionData := map[string]interface{}{
+		"subscription_status":   "active",
+		"last_payment_date":     payment.PaymentDate,
+		"subscription_end_date": time.Unix(int64(req.NewExpiryTime), 0),
+		"last_payment_amount":   req.PaymentAmount,
+	}
+
+	if err := database.UpdateBusinessSubscriptionData(uint(businessID), subscriptionData); err != nil {
+		log.Printf("Error updating business subscription data: %v", err)
+		// Don't fail if business update fails, payment record is more important
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Renewal payment recorded successfully",
+		"payment_id": payment.ID,
+	})
+}
+
+// GetSubscriptionPaymentHistory gets payment history for a business subscription
+func GetSubscriptionPaymentHistory(c *gin.Context) {
+	// Get business ID from URL
+	businessIDStr := c.Param("id")
+	businessID, err := strconv.Atoi(businessIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid business ID"})
+		return
+	}
+
+	// Get user address from context (set by auth middleware)
+	userAddress, exists := c.Get("address")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User address not found"})
+		return
+	}
+
+	// Get the business and verify ownership
+	business, err := database.GetBusinessByID(uint(businessID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Business not found"})
+		return
+	}
+
+	if business.OwnerAddress != userAddress.(string) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Not authorized to view this business"})
+		return
+	}
+
+	// Get subscription payment history
+	payments, err := database.GetSubscriptionPaymentsByBusinessID(uint(businessID))
+	if err != nil {
+		log.Printf("Error getting subscription payment history: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get payment history"})
+		return
+	}
+
+	// Get latest payment and total
+	latestPayment, err := database.GetLatestSubscriptionPayment(uint(businessID))
+	if err != nil {
+		log.Printf("Error getting latest subscription payment: %v", err)
+	}
+
+	totalPaid, err := database.GetTotalSubscriptionPayments(uint(businessID))
+	if err != nil {
+		log.Printf("Error getting total subscription payments: %v", err)
+		totalPaid = "0"
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"payments":       payments,
+		"latest_payment": latestPayment,
+		"total_paid":     totalPaid,
 	})
 }

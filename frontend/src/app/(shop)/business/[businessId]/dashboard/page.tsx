@@ -21,6 +21,7 @@ import BusinessOverview from '../../../../../components/business/BusinessOvervie
 import Dashboard from '../../../../../components/dashboard/Dashboard';
 import BlockchainManager from '../../../../../components/business/BlockchainManager';
 import SubscriptionManagement from '../../../../../components/business/SubscriptionManagement';
+import { useBusinessSubscriptionData } from '../../../../../contracts/hooks';
 
 // Valid tab names for validation (moved outside component to avoid recreation)
 const validTabs = ['overview', 'analytics', 'menu', 'tables', 'bills', 'staff', 'kitchen', 'counter', 'blockchain', 'subscriptions', 'settings'];
@@ -98,6 +99,13 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
     address
   } = useBusinessDashboard(businessId);
 
+  // Fetch subscription data from smart contract
+  const { 
+    data: subscriptionData, 
+    isLoading: subscriptionLoading, 
+    refetch: refetchSubscription 
+  } = useBusinessSubscriptionData(address as `0x${string}`, businessId);
+
   // Analytics hook removed since Dashboard component handles its own data fetching
 
   // Render tab content
@@ -162,16 +170,9 @@ export default function BusinessDashboardPage({ params }: BusinessDashboardProps
               </div>
               
               <SubscriptionManagement 
-                subscriptionData={{
-                  status: 'active',
-                  lastPaymentDate: '',
-                  subscriptionEndDate: '',
-                  lastPaymentAmount: '',
-                  totalPaid: '',
-                  yearlyFee: '',
-                  timeRemaining: 0,
-                  remindersSent: 0
-                }}
+                subscriptionData={subscriptionData}
+                onRenewSubscription={refetchSubscription}
+                businessId={businessId}
               />
             </div>
           </div>

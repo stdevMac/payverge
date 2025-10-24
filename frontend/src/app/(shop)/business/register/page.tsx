@@ -448,6 +448,32 @@ export default function BusinessRegisterPage() {
       };
       const business = await createBusiness(businessData);
       
+      // Step 3.5: Record the initial registration payment
+      if (business.id && txHash) {
+        try {
+          console.log('Recording initial registration payment...');
+          // Import the record function dynamically
+          const { recordSubscriptionRenewal } = await import('@/api/business');
+          
+          // Calculate initial expiry time (1 year from now)
+          const initialExpiryTime = Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60); // 1 year from now
+          
+          // Record the registration payment
+          const registrationPaymentData = {
+            transaction_hash: txHash,
+            payment_amount: regFee.toString(),
+            new_expiry_time: initialExpiryTime,
+            block_number: 0 // Will be updated when we get block info
+          };
+          
+          await recordSubscriptionRenewal(business.id, registrationPaymentData);
+          console.log('Initial registration payment recorded successfully');
+        } catch (recordError) {
+          console.error('Failed to record registration payment:', recordError);
+          // Don't fail the registration if recording fails
+        }
+      }
+      
       // Step 4: Upload logo if provided
       if (logoFile && business.id) {
         try {

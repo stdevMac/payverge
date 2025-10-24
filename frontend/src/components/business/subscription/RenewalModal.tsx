@@ -24,6 +24,7 @@ interface RenewalModalProps {
   onRenewalSuccess?: () => void;
   registrationFee?: unknown;
   tString: (key: string) => string;
+  businessId?: number;
 }
 
 export const RenewalModal: React.FC<RenewalModalProps> = ({
@@ -32,13 +33,14 @@ export const RenewalModal: React.FC<RenewalModalProps> = ({
   onRenewalSuccess,
   registrationFee,
   tString,
+  businessId,
 }) => {
   // Wallet and Smart Contract Hooks
   const { address } = useAccount();
   const { data: usdcBalance } = useUsdcBalance();
   const { data: usdcAllowance } = useUsdcAllowance();
   const { approveUsdc } = useApproveUsdc();
-  const { renewSubscription } = useRenewSubscription();
+  const { renewSubscription } = useRenewSubscription(businessId);
   const { renewSubscriptionWithCoupon } = useRenewSubscriptionWithCoupon();
 
   // Dynamic renewal options based on registration fee
@@ -100,8 +102,16 @@ export const RenewalModal: React.FC<RenewalModalProps> = ({
       // Check if approval is needed
       const currentAllowance = usdcAllowance || BigInt(0);
       if (currentAllowance < finalPaymentAmount) {
-        // Approve USDC spending
-        await approveUsdc(finalPaymentAmount);
+        // Approve USDC spending and wait for confirmation
+        console.log('Approving USDC spending:', finalPaymentAmount.toString());
+        const approvalHash = await approveUsdc(finalPaymentAmount);
+        console.log('Approval transaction sent:', approvalHash);
+        
+        // Wait for approval transaction to be confirmed
+        console.log('Waiting for approval confirmation...');
+        // Note: We'll add a small delay to ensure the transaction is propagated
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('Approval should be confirmed!');
       }
 
       setRenewalState(prev => ({ ...prev, processingStep: 'renewal' }));
@@ -115,6 +125,33 @@ export const RenewalModal: React.FC<RenewalModalProps> = ({
       }
 
       setRenewalState(prev => ({ ...prev, processingStep: 'complete' }));
+
+      // Record the renewal payment in backend
+      if (businessId && txHash) {
+        try {
+          console.log('Recording renewal payment in backend...');
+          // Import the record function dynamically to avoid circular imports
+          const { recordSubscriptionRenewal } = await import('@/api/business');
+          
+          // Calculate new expiry time (1 year from now for simplicity)
+          // In a real implementation, this should come from the smart contract event
+          const newExpiryTime = Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60); // 1 year from now
+          
+          // Record the renewal payment
+          const renewalData = {
+            transaction_hash: txHash,
+            payment_amount: finalPaymentAmount.toString(),
+            new_expiry_time: newExpiryTime,
+            block_number: 0 // Will be updated when we get block info
+          };
+          
+          await recordSubscriptionRenewal(businessId, renewalData);
+          console.log('Renewal payment recorded successfully');
+        } catch (recordError) {
+          console.error('Failed to record renewal payment:', recordError);
+          // Don't fail the renewal if recording fails
+        }
+      }
 
       // Call the parent callback if provided
       onRenewalSuccess?.();

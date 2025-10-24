@@ -43,6 +43,46 @@ func GetBusinessByID(id uint) (*Business, error) {
 	return &business, nil
 }
 
+// UpdateBusinessSubscriptionData updates subscription-related fields for a business
+func UpdateBusinessSubscriptionData(businessID uint, subscriptionData map[string]interface{}) error {
+	updates := make(map[string]interface{})
+	
+	// Map the subscription data to database fields
+	if status, ok := subscriptionData["subscription_status"]; ok {
+		updates["subscription_status"] = status
+	}
+	if lastPaymentDate, ok := subscriptionData["last_payment_date"]; ok {
+		updates["last_payment_date"] = lastPaymentDate
+	}
+	if subscriptionEndDate, ok := subscriptionData["subscription_end_date"]; ok {
+		updates["subscription_end_date"] = subscriptionEndDate
+	}
+	if lastPaymentAmount, ok := subscriptionData["last_payment_amount"]; ok {
+		updates["last_payment_amount"] = lastPaymentAmount
+	}
+	if totalPaid, ok := subscriptionData["total_paid"]; ok {
+		updates["total_paid"] = totalPaid
+	}
+	if timeRemaining, ok := subscriptionData["time_remaining"]; ok {
+		updates["time_remaining"] = timeRemaining
+	}
+	if yearlyFee, ok := subscriptionData["yearly_fee"]; ok {
+		updates["yearly_fee"] = yearlyFee
+	}
+	
+	if len(updates) == 0 {
+		return nil // No updates to make
+	}
+	
+	updates["updated_at"] = time.Now()
+	
+	if err := db.Model(&Business{}).Where("id = ?", businessID).Updates(updates).Error; err != nil {
+		return fmt.Errorf("failed to update business subscription data: %w", err)
+	}
+	
+	return nil
+}
+
 // GetBusinessByOwnerAddress retrieves businesses owned by a specific address
 func GetBusinessByOwnerAddress(ownerAddress string) ([]Business, error) {
 	var businesses []Business
@@ -935,4 +975,45 @@ func MarkBillAsPaid(billID uint, amountPaid, tipAmount float64, paymentMethod, n
 	}
 	
 	return db.Model(&Bill{}).Where("id = ?", billID).Updates(updates).Error
+}
+
+// CreateSubscriptionPayment creates a new subscription payment record
+func CreateSubscriptionPayment(payment *SubscriptionPayment) error {
+	if err := db.Create(payment).Error; err != nil {
+		return fmt.Errorf("failed to create subscription payment: %w", err)
+	}
+	return nil
+}
+
+// GetSubscriptionPaymentsByBusinessID retrieves all subscription payments for a business
+func GetSubscriptionPaymentsByBusinessID(businessID uint) ([]SubscriptionPayment, error) {
+	var payments []SubscriptionPayment
+	if err := db.Where("business_id = ?", businessID).Order("payment_date DESC").Find(&payments).Error; err != nil {
+		return nil, fmt.Errorf("failed to get subscription payments: %w", err)
+	}
+	return payments, nil
+}
+
+// GetLatestSubscriptionPayment gets the most recent subscription payment for a business
+func GetLatestSubscriptionPayment(businessID uint) (*SubscriptionPayment, error) {
+	var payment SubscriptionPayment
+	if err := db.Where("business_id = ?", businessID).Order("payment_date DESC").First(&payment).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // No payments found
+		}
+		return nil, fmt.Errorf("failed to get latest subscription payment: %w", err)
+	}
+	return &payment, nil
+}
+
+// GetTotalSubscriptionPayments calculates total amount paid for subscriptions by a business
+func GetTotalSubscriptionPayments(businessID uint) (string, error) {
+	var total string
+	if err := db.Model(&SubscriptionPayment{}).Where("business_id = ?", businessID).Select("COALESCE(SUM(CAST(payment_amount AS DECIMAL)), '0')").Scan(&total).Error; err != nil {
+		return "0", fmt.Errorf("failed to calculate total subscription payments: %w", err)
+	}
+	if total == "" {
+		total = "0"
+	}
+	return total, nil
 }
