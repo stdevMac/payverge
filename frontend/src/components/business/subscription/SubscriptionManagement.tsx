@@ -4,10 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvider';
 import { useDisclosure } from '@nextui-org/react';
 import { useRegistrationFee } from '@/contracts/hooks';
-import { SubscriptionStatusCard } from './subscription/SubscriptionStatusCard';
-import { RenewalModal } from './subscription/RenewalModal';
-
-import { SubscriptionData, SubscriptionManagementProps } from './subscription/types';
+import { SubscriptionData, SubscriptionManagementProps } from './types';
+import { SubscriptionStatusCard } from './SubscriptionStatusCard';
+import { RenewalModal } from './RenewalModal';
 
 export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   subscriptionData,
@@ -63,4 +62,5 @@ export const SubscriptionManagement: React.FC<SubscriptionManagementProps> = ({
   );
 };
 
-export default SubscriptionManagement;
+// Export types for external use
+export type { SubscriptionData, SubscriptionManagementProps } from './types';
