@@ -2204,6 +2204,39 @@
         "lastUpdated": "Última actualización: Octubre 2025"
       }
     },
+    "withdrawalHistory": {
+      "title": "Historial de Retiros",
+      "subtitle": "Rastrea todos tus retiros de ganancias",
+      "loading": "Cargando historial de retiros...",
+      "errorTitle": "Error al Cargar Historial",
+      "tryAgain": "Intentar de Nuevo",
+      "emptyTitle": "Aún No Hay Retiros",
+      "emptyDescription": "Tu historial de retiros aparecerá aquí una vez que reclames ganancias.",
+      "tableAriaLabel": "Tabla de historial de retiros",
+      "table": {
+        "date": "FECHA",
+        "amount": "CANTIDAD",
+        "status": "ESTADO",
+        "network": "RED",
+        "actions": "ACCIONES",
+        "payment": "Pago",
+        "tips": "Propinas"
+      },
+      "modal": {
+        "title": "Detalles del Retiro",
+        "subtitle": "Información de transacción y desglose",
+        "totalWithdrawn": "Total Retirado",
+        "paymentEarnings": "Ganancias de Pagos",
+        "tipEarnings": "Ganancias de Propinas",
+        "transactionHash": "Hash de Transacción",
+        "withdrawalAddress": "Dirección de Retiro",
+        "network": "Red",
+        "created": "Creado",
+        "confirmed": "Confirmado",
+        "close": "Cerrar",
+        "viewOnExplorer": "Ver en Explorador"
+      }
+    },
     "billManager": {
       "title": "Gestión de Facturas",
       "subtitle": "Gestiona y rastrea todas tus facturas",

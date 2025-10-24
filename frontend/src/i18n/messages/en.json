@@ -200,7 +200,10 @@
     },
     "businessDashboard": {
       "title": "Business Dashboard",
-      "loading": "Loading business dashboard...",
+      "loading": {
+        "authenticating": "Authenticating...",
+        "business": "Loading business dashboard..."
+      },
       "errors": {
         "signIn": "Please sign in to continue.",
         "invalidToken": "Invalid session token.",
@@ -2191,6 +2194,39 @@
           "email": "Email: legal@blockvantage.tech"
         },
         "lastUpdated": "Last updated: October 2025"
+      }
+    },
+    "withdrawalHistory": {
+      "title": "Withdrawal History",
+      "subtitle": "Track all your earnings withdrawals",
+      "loading": "Loading withdrawal history...",
+      "errorTitle": "Error Loading History",
+      "tryAgain": "Try Again",
+      "emptyTitle": "No Withdrawals Yet",
+      "emptyDescription": "Your withdrawal history will appear here once you claim earnings.",
+      "tableAriaLabel": "Withdrawal history table",
+      "table": {
+        "date": "DATE",
+        "amount": "AMOUNT",
+        "status": "STATUS",
+        "network": "NETWORK",
+        "actions": "ACTIONS",
+        "payment": "Payment",
+        "tips": "Tips"
+      },
+      "modal": {
+        "title": "Withdrawal Details",
+        "subtitle": "Transaction information and breakdown",
+        "totalWithdrawn": "Total Withdrawn",
+        "paymentEarnings": "Payment Earnings",
+        "tipEarnings": "Tip Earnings",
+        "transactionHash": "Transaction Hash",
+        "withdrawalAddress": "Withdrawal Address",
+        "network": "Network",
+        "created": "Created",
+        "confirmed": "Confirmed",
+        "close": "Close",
+        "viewOnExplorer": "View on Explorer"
       }
     },
     "billManager": {

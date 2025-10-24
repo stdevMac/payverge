@@ -122,14 +122,6 @@ export default function DashboardSidebar({
     }
   ];
 
-  // Add counter tab (always show for now since counter_enabled doesn't exist in Business interface)
-  menuItems.splice(-1, 0, {
-    key: 'counter',
-    label: tString('tabs.counter'),
-    icon: UserCheck,
-    description: tString('tabs.counterDesc')
-  });
-
   const handleTabClick = (tabKey: string) => {
     setActiveTab(tabKey);
     setSidebarOpen(false); // Close sidebar on mobile after selection

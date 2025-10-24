@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSimpleLocale, getTranslation } from "@/i18n/SimpleTranslationProvider";
 import {
   Card,
   CardBody,
@@ -42,12 +43,26 @@ interface WithdrawalHistoryProps {
 }
 
 export default function WithdrawalHistoryComponent({ businessId, isAuthenticated, authLoading }: WithdrawalHistoryProps) {
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
   const [withdrawals, setWithdrawals] = useState<WithdrawalHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<WithdrawalHistory | null>(null);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
+  
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `withdrawalHistory.${key}`;
+    const result = getTranslation(fullKey, currentLocale);
+    return Array.isArray(result) ? result[0] || key : result as string;
+  };
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const loadWithdrawals = async (page: number = 1) => {
@@ -166,7 +181,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
       <Card className="w-full">
         <CardBody className="flex items-center justify-center py-8">
           <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">Loading withdrawal history...</p>
+          <p className="mt-4 text-gray-600">{tString('loading')}</p>
         </CardBody>
       </Card>
     );
@@ -177,10 +192,10 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
       <Card className="w-full">
         <CardBody className="text-center py-8">
           <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Error Loading History</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{tString('errorTitle')}</h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <Button color="primary" onPress={() => loadWithdrawals()}>
-            Try Again
+            {tString('tryAgain')}
           </Button>
         </CardBody>
       </Card>
@@ -195,26 +210,26 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
             <History className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h4 className="text-lg font-medium text-gray-900">Withdrawal History</h4>
-            <p className="text-sm text-gray-600">Track all your earnings withdrawals</p>
+            <h4 className="text-lg font-medium text-gray-900">{tString('title')}</h4>
+            <p className="text-sm text-gray-600">{tString('subtitle')}</p>
           </div>
         </CardHeader>
         <CardBody>
           {withdrawals.length === 0 ? (
             <div className="text-center py-8">
               <Wallet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Withdrawals Yet</h3>
-              <p className="text-gray-600">Your withdrawal history will appear here once you claim earnings.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{tString('emptyTitle')}</h3>
+              <p className="text-gray-600">{tString('emptyDescription')}</p>
             </div>
           ) : (
             <>
-              <Table aria-label="Withdrawal history table">
+              <Table aria-label={tString('tableAriaLabel')}>
                 <TableHeader>
-                  <TableColumn>DATE</TableColumn>
-                  <TableColumn>AMOUNT</TableColumn>
-                  <TableColumn>STATUS</TableColumn>
-                  <TableColumn>NETWORK</TableColumn>
-                  <TableColumn>ACTIONS</TableColumn>
+                  <TableColumn>{tString('table.date')}</TableColumn>
+                  <TableColumn>{tString('table.amount')}</TableColumn>
+                  <TableColumn>{tString('table.status')}</TableColumn>
+                  <TableColumn>{tString('table.network')}</TableColumn>
+                  <TableColumn>{tString('table.actions')}</TableColumn>
                 </TableHeader>
                 <TableBody>
                   {withdrawals.map((withdrawal) => (
@@ -229,8 +244,8 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                         <div className="flex flex-col">
                           <span className="font-semibold">{formatAmount(withdrawal.total_amount)}</span>
                           <span className="text-xs text-gray-500">
-                            Payment: {formatAmount(withdrawal.payment_amount)} | 
-                            Tips: {formatAmount(withdrawal.tip_amount)}
+                            {tString('table.payment')}: {formatAmount(withdrawal.payment_amount)} | 
+                            {tString('table.tips')}: {formatAmount(withdrawal.tip_amount)}
                           </span>
                         </div>
                       </TableCell>
@@ -291,8 +306,8 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-xl font-semibold">Withdrawal Details</h3>
-            <p className="text-sm text-gray-600">Transaction information and breakdown</p>
+            <h3 className="text-xl font-semibold">{tString('modal.title')}</h3>
+            <p className="text-sm text-gray-600">{tString('modal.subtitle')}</p>
           </ModalHeader>
           <ModalBody>
             {selectedWithdrawal && (
@@ -301,7 +316,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-lg font-semibold">{formatAmount(selectedWithdrawal.total_amount)}</h4>
-                    <p className="text-sm text-gray-600">Total Withdrawn</p>
+                    <p className="text-sm text-gray-600">{tString('modal.totalWithdrawn')}</p>
                   </div>
                   <Chip
                     color={getStatusColor(selectedWithdrawal.status)}
@@ -318,14 +333,14 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                     <CardBody className="text-center py-4">
                       <DollarSign className="w-8 h-8 text-green-600 mx-auto mb-2" />
                       <p className="text-lg font-semibold">{formatAmount(selectedWithdrawal.payment_amount)}</p>
-                      <p className="text-sm text-gray-600">Payment Earnings</p>
+                      <p className="text-sm text-gray-600">{tString('modal.paymentEarnings')}</p>
                     </CardBody>
                   </Card>
                   <Card>
                     <CardBody className="text-center py-4">
                       <DollarSign className="w-8 h-8 text-orange-600 mx-auto mb-2" />
                       <p className="text-lg font-semibold">{formatAmount(selectedWithdrawal.tip_amount)}</p>
-                      <p className="text-sm text-gray-600">Tip Earnings</p>
+                      <p className="text-sm text-gray-600">{tString('modal.tipEarnings')}</p>
                     </CardBody>
                   </Card>
                 </div>
@@ -333,7 +348,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                 {/* Transaction Details */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Transaction Hash</label>
+                    <label className="text-sm font-medium text-gray-700">{tString('modal.transactionHash')}</label>
                     <div className="flex items-center gap-2 mt-1">
                       <code className="flex-1 p-2 bg-gray-100 rounded text-sm font-mono">
                         {selectedWithdrawal.transaction_hash}
@@ -350,7 +365,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Withdrawal Address</label>
+                    <label className="text-sm font-medium text-gray-700">{tString('modal.withdrawalAddress')}</label>
                     <code className="block mt-1 p-2 bg-gray-100 rounded text-sm font-mono">
                       {selectedWithdrawal.withdrawal_address}
                     </code>
@@ -358,18 +373,18 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Network</label>
+                      <label className="text-sm font-medium text-gray-700">{tString('modal.network')}</label>
                       <p className="mt-1 capitalize">{selectedWithdrawal.blockchain_network}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Created</label>
+                      <label className="text-sm font-medium text-gray-700">{tString('modal.created')}</label>
                       <p className="mt-1">{formatDate(selectedWithdrawal.created_at)}</p>
                     </div>
                   </div>
 
                   {selectedWithdrawal.confirmed_at && (
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Confirmed</label>
+                      <label className="text-sm font-medium text-gray-700">{tString('modal.confirmed')}</label>
                       <p className="mt-1">{formatDate(selectedWithdrawal.confirmed_at)}</p>
                     </div>
                   )}
@@ -379,7 +394,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>
-              Close
+              {tString('modal.close')}
             </Button>
             {selectedWithdrawal && (
               <Button
@@ -387,7 +402,7 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                 onPress={() => openBlockchainExplorer(selectedWithdrawal.transaction_hash, selectedWithdrawal.blockchain_network)}
                 startContent={<ExternalLink className="w-4 h-4" />}
               >
-                View on Explorer
+                {tString('modal.viewOnExplorer')}
               </Button>
             )}
           </ModalFooter>
