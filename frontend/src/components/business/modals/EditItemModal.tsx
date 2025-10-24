@@ -100,20 +100,20 @@ export default function EditItemModal({
   tString,
 }: EditItemModalProps) {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" scrollBehavior="inside">
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" scrollBehavior="inside">
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex items-center gap-2">
-              <Edit className="w-5 h-5" />
+            <ModalHeader className="flex items-center gap-2 text-lg font-medium text-gray-900">
+              <Edit className="w-4 h-4" />
               {tString('items.editItem')}
               {selectedCategoryIndex !== null && (
-                <Chip size="sm" variant="flat" color="primary">
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
                   {menu[selectedCategoryIndex]?.name}
-                </Chip>
+                </span>
               )}
             </ModalHeader>
-            <ModalBody className="space-y-6">
+            <ModalBody className="space-y-4">
               {/* Basic Information */}
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -327,20 +327,23 @@ export default function EditItemModal({
                 )}
               </div>
             </ModalBody>
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={() => {
-                onResetForm();
-                onClose();
-              }}>
+            <ModalFooter className="gap-2">
+              <button
+                onClick={() => {
+                  onResetForm();
+                  onClose();
+                }}
+                className="text-gray-600 hover:text-gray-800 px-4 py-2 text-sm font-medium transition-colors rounded-lg hover:bg-gray-100"
+              >
                 {tString('buttons.cancel')}
-              </Button>
-              <Button 
-                color="primary" 
-                onPress={onUpdateItem}
-                isDisabled={!itemName.trim() || !itemPrice}
+              </button>
+              <button
+                onClick={onUpdateItem}
+                disabled={!itemName.trim() || !itemPrice}
+                className="bg-gray-900 text-white px-4 py-2 text-sm font-medium hover:bg-gray-800 transition-colors rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {tString('buttons.updateItem')}
-              </Button>
+              </button>
             </ModalFooter>
           </>
         )}
