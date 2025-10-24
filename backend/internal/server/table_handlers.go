@@ -9,8 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"payverge/internal/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Table creation request
@@ -69,7 +70,7 @@ func CreateTable(c *gin.Context) {
 	}
 
 	// Generate QR code URL (this would point to the guest interface)
-	qrCodeURL := fmt.Sprintf("https://payverge.com/t/%s", tableCode)
+	qrCodeURL := fmt.Sprintf("https://payverge.io/t/%s", tableCode)
 
 	table := &database.Table{
 		BusinessID: uint(businessID),
@@ -599,4 +600,3 @@ func GetBusinessTables(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"tables": response})
 }
-

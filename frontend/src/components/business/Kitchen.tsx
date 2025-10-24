@@ -25,14 +25,21 @@ interface KitchenProps {
 }
 
 const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
-  const { locale: currentLocale } = useSimpleLocale();
+  // Translation setup
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
   
   // Translation helper
-  const tString = (key: string): string => {
-    const fullKey = `businessDashboard.dashboard.kitchen.${key}`;
+  const tString = useCallback((key: string): string => {
+    const fullKey = `businessDashboard.dashboard.kitchenManager.${key}`;
     const result = getTranslation(fullKey, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
-  };
+  }, [currentLocale]);
   
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -136,31 +143,47 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
 
   if (loading) {
     return (
-      <Card>
-        <CardBody className="flex justify-center items-center py-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <ChefHat className="w-5 h-5" />
-            <h2 className="text-xl font-semibold">{tString('title')}</h2>
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('title')}</h1>
+          <p className="text-gray-600 font-light text-sm mt-1">{tString('subtitle')}</p>
+        </div>
+        <button
+          onClick={() => loadOrders(activeTab === 'all' ? undefined : activeTab)}
+          className="bg-gray-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+        >
+          {tString('buttons.refresh')}
+        </button>
+      </div>
+
+      {/* Kitchen Orders */}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="border-b border-gray-200 p-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <ChefHat className="w-6 h-6 text-gray-700" />
+            </div>
+            <div>
+              <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('orders.title')}</h2>
+              <p className="text-gray-600 font-light text-sm">{tString('orders.subtitle')}</p>
+            </div>
           </div>
-          <Button
-            color="primary"
-            size="sm"
-            onPress={() => loadOrders(activeTab === 'all' ? undefined : activeTab)}
-          >
-            {tString('buttons.refresh')}
-          </Button>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="p-6">
           <Tabs
             selectedKey={activeTab}
             onSelectionChange={(key) => setActiveTab(key as string)}
@@ -173,10 +196,12 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
           </Tabs>
 
           {orders.length === 0 ? (
-            <div className="text-center py-8">
-              <ChefHat className="w-12 h-12 mx-auto text-default-300 mb-4" />
-              <h3 className="text-lg font-medium text-default-500 mb-2">{tString('emptyState.title')}</h3>
-              <p className="text-default-400">{tString('emptyState.description')}</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+                <ChefHat className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-light text-gray-900 tracking-wide mb-2">{tString(`emptyStates.${activeTab}.title`)}</h3>
+              <p className="text-gray-600 font-light text-sm">{tString(`emptyStates.${activeTab}.description`)}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -184,6 +209,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                 <Card 
                   key={order.id} 
                   className="cursor-pointer hover:shadow-md transition-shadow"
+                  isPressable
                   onPress={() => {
                     setSelectedOrder(order);
                     setShowOrderModal(true);
@@ -283,8 +309,8 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
               ))}
             </div>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {/* Order Detail Modal */}
       <Modal 
@@ -296,7 +322,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
           <ModalHeader>
             <div className="flex items-center gap-2">
               <ChefHat className="w-5 h-5" />
-              <span>Order #{selectedOrder?.order_number}</span>
+              <span>{tString('modal.orderNumber').replace('{orderNumber}', selectedOrder?.order_number || '')}</span>
               <Chip size="sm" color={getOrderStatusColor(selectedOrder?.status || '')}>
                 {getOrderStatusText(selectedOrder?.status || '')}
               </Chip>
@@ -307,24 +333,24 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-default-500">Bill ID</p>
+                    <p className="text-sm text-default-500">{tString('modal.billId')}</p>
                     <p className="font-medium">#{selectedOrder.bill_id}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-default-500">Created</p>
+                    <p className="text-sm text-default-500">{tString('modal.created')}</p>
                     <p className="font-medium">{formatTime(selectedOrder.created_at)}</p>
                   </div>
                 </div>
 
                 {selectedOrder.notes && (
                   <div className="bg-blue-50 rounded-lg p-3">
-                    <p className="text-sm font-medium text-blue-700 mb-1">Order Notes:</p>
+                    <p className="text-sm font-medium text-blue-700 mb-1">{tString('modal.orderNotes')}</p>
                     <p className="text-blue-600">{selectedOrder.notes}</p>
                   </div>
                 )}
 
                 <div>
-                  <h4 className="font-medium mb-2">Items to Prepare:</h4>
+                  <h4 className="font-medium mb-2">{tString('modal.itemsToPrepare')}</h4>
                   <div className="space-y-2">
                     {parseOrderItems(selectedOrder.items).map((item, index) => (
                       <div key={index} className="flex justify-between items-center bg-default-50 rounded-lg p-3">
@@ -333,9 +359,23 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                             <span className="font-medium">{item.quantity}x</span>
                             <span>{item.menu_item_name}</span>
                           </div>
+                          {item.options && item.options.length > 0 && (
+                            <div className="mt-1">
+                              {item.options.map((option, optionIndex) => (
+                                <p key={optionIndex} className="text-sm text-blue-600">
+                                  + {option.name}
+                                  {option.price_change !== 0 && (
+                                    <span className="ml-1">
+                                      ({option.price_change > 0 ? '+' : ''}${option.price_change.toFixed(2)})
+                                    </span>
+                                  )}
+                                </p>
+                              ))}
+                            </div>
+                          )}
                           {item.special_requests && (
                             <p className="text-sm text-orange-600 mt-1">
-                              Special: {item.special_requests}
+                              {tString('modal.special')} {item.special_requests}
                             </p>
                           )}
                         </div>
@@ -349,7 +389,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={() => setShowOrderModal(false)}>
-              Close
+              {tString('modal.close')}
             </Button>
             {selectedOrder && (
               <div className="flex gap-2">
@@ -363,7 +403,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                     }}
                     isLoading={actionLoading === selectedOrder.id}
                   >
-                    Start Cooking
+                    {tString('modal.startCooking')}
                   </Button>
                 )}
                 {selectedOrder.status === 'in_kitchen' && (
@@ -373,7 +413,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                     onPress={() => updateOrderStatusHandler(selectedOrder.id, 'ready')}
                     isLoading={actionLoading === selectedOrder.id}
                   >
-                    Mark Ready
+                    {tString('modal.markReady')}
                   </Button>
                 )}
                 {selectedOrder.status === 'ready' && (
@@ -383,7 +423,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
                     onPress={() => updateOrderStatusHandler(selectedOrder.id, 'delivered')}
                     isLoading={actionLoading === selectedOrder.id}
                   >
-                    Mark Delivered
+                    {tString('modal.markDelivered')}
                   </Button>
                 )}
               </div>
@@ -391,7 +431,7 @@ const Kitchen: React.FC<KitchenProps> = ({ businessId }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 };
 

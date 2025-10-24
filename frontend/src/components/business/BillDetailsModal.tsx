@@ -316,7 +316,7 @@ export const BillDetailsModal: React.FC<BillDetailsModalProps> = ({
 
         <ModalFooter className="border-t border-gray-200 pt-4">
           <Button variant="light" onPress={onClose}>
-            Close
+            {tString('buttons.close')}
           </Button>
           {bill.bill.status === 'open' && (
             <Button
@@ -326,7 +326,7 @@ export const BillDetailsModal: React.FC<BillDetailsModalProps> = ({
                 onClose();
               }}
             >
-              Close Bill
+              {tString('buttons.closeBill')}
             </Button>
           )}
         </ModalFooter>

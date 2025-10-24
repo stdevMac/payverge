@@ -292,7 +292,11 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     setItemImage(item.image || '');
     setItemImages(item.images || []);
     setItemAvailable(item.is_available);
-    setItemOptions(item.options || []);
+    setItemOptions((item.options || []).map(option => ({
+      ...option,
+      id: option.id || `option-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      is_required: option.is_required ?? false
+    })));
     setItemAllergens(item.allergens || []);
     setItemDietaryTags(item.dietary_tags || []);
     setItemSortOrder(item.sort_order || 0);
@@ -449,8 +453,10 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
     if (isNaN(price) || price < 0) return;
     
     const option: MenuItemOption = {
+      id: `option-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: newOptionName.trim(),
-      price_change: price
+      price_change: price,
+      is_required: false
     };
     
     setItemOptions([...itemOptions, option]);

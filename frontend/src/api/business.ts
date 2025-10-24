@@ -142,10 +142,10 @@ export const checkCustomURLAvailability = async (
 
 // Menu Management Types
 export interface MenuItemOption {
-  id?: string;
+  id: string;
   name: string;
   price_change: number;
-  is_required?: boolean;
+  is_required: boolean;
 }
 
 export interface MenuItem {

@@ -236,6 +236,11 @@ export const BillCreator: React.FC<BillCreatorProps> = ({
           menu_item_name: item.name,
           quantity: item.quantity,
           price: item.price,
+          options: (item.selectedOptions || []).map(option => ({
+            ...option,
+            id: option.id || `option-${option.name.toLowerCase().replace(/\s+/g, '-')}`,
+            is_required: option.is_required || false
+          })), // Include selected add-ons/options with proper IDs
           special_requests: item.specialRequests || '',
         })),
       };

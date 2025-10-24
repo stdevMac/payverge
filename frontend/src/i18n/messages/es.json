@@ -940,6 +940,70 @@
             }
           }
         },
+        "kitchenManager": {
+          "title": "Gestión de Cocina",
+          "subtitle": "Gestiona pedidos y rastrea el progreso de cocción",
+          "loading": "Cargando pedidos de cocina...",
+          "orders": {
+            "title": "Pedidos de Cocina",
+            "subtitle": "Rastrea y gestiona todos los pedidos entrantes"
+          },
+          "tabs": {
+            "approved": "Aprobados",
+            "inKitchen": "En Cocina",
+            "ready": "Listos",
+            "allOrders": "Todos los Pedidos"
+          },
+          "emptyState": {
+            "title": "No hay pedidos para preparar",
+            "description": "Los pedidos aparecerán aquí cuando estén listos para la cocina"
+          },
+          "order": {
+            "itemsToPrepare": "{count} artículos para preparar",
+            "moreItems": "+{count} artículos más",
+            "notes": "Notas del Pedido"
+          },
+          "buttons": {
+            "refresh": "Actualizar",
+            "startCooking": "Comenzar a Cocinar",
+            "markReady": "Marcar Listo",
+            "markDelivered": "Marcar Entregado"
+          },
+          "time": {
+            "minutesAgo": "hace {minutes}m",
+            "hoursMinutesAgo": "hace {hours}h {minutes}m"
+          },
+          "modal": {
+            "orderNumber": "Pedido #{orderNumber}",
+            "billId": "ID de Cuenta",
+            "created": "Creado",
+            "orderNotes": "Notas del Pedido:",
+            "itemsToPrepare": "Artículos para Preparar:",
+            "special": "Especial:",
+            "close": "Cerrar",
+            "startCooking": "Comenzar a Cocinar",
+            "markReady": "Marcar Listo",
+            "markDelivered": "Marcar Entregado"
+          },
+          "emptyStates": {
+            "approved": {
+              "title": "No hay pedidos aprobados",
+              "description": "Los nuevos pedidos aparecerán aquí cuando sean aprobados para cocinar"
+            },
+            "in_kitchen": {
+              "title": "No hay pedidos en cocina",
+              "description": "Los pedidos que se están preparando aparecerán aquí"
+            },
+            "ready": {
+              "title": "No hay pedidos listos",
+              "description": "Los pedidos completados listos para entrega aparecerán aquí"
+            },
+            "all": {
+              "title": "No hay pedidos para preparar",
+              "description": "Los pedidos aparecerán aquí cuando estén listos para la cocina"
+            }
+          }
+        },
         "tableManager": {
           "title": "Gestión de Mesas",
           "subtitle": "Crea y gestiona las mesas de tu restaurante",
@@ -2310,5 +2374,81 @@
       "pending": "Pendiente",
       "approve": "Aprobar",
       "reject": "Rechazar"
+    },
+    "billDetailsModal": {
+      "buttons": {
+        "close": "Cerrar",
+        "closeBill": "Cerrar Factura"
+      }
+    },
+    "alternativePaymentManager": {
+      "title": "Estado del Pago",
+      "subtitle": "Acepta pagos vía USDC y otros métodos cripto",
+      "buttons": {
+        "markPaid": "Marcar Pago Recibido",
+        "cancel": "Cancelar",
+        "close": "Cerrar",
+        "addPayment": "Agregar Pago",
+        "confirmPayment": "Confirmar Pago"
+      },
+      "fields": {
+        "amount": {
+          "label": "Monto (USD)",
+          "placeholder": "0.00"
+        },
+        "paymentMethod": {
+          "label": "Método de Pago"
+        }
+      },
+      "messages": {
+        "info": "Los métodos de pago alternativos permiten a los clientes pagar usando criptomonedas u otras soluciones de pago digital.",
+        "success": "¡Pago marcado exitosamente!",
+        "error": "Error al marcar el pago. Por favor intenta de nuevo.",
+        "loading": "Cargando datos de pago...",
+        "validation": {
+          "amountRequired": "Por favor completa todos los campos",
+          "amountInvalid": "El monto debe ser mayor a 0",
+          "amountTooHigh": "El monto no puede exceder el total de la factura"
+        }
+      },
+      "status": {
+        "complete": "Factura Completa"
+      },
+      "breakdown": {
+        "total": "Total de la Factura",
+        "cryptoPaid": "Pagado en Cripto",
+        "alternativePaid": "Pagado Alternativo",
+        "remaining": "Restante"
+      },
+      "pendingPayments": {
+        "title": "Pagos Alternativos Pendientes",
+        "via": "vía"
+      },
+      "manualPayment": {
+        "title": "Marcar Pago Alternativo",
+        "description": "Marca manualmente pagos realizados en efectivo, tarjeta u otros métodos."
+      },
+      "modal": {
+        "title": "Marcar Pago Alternativo",
+        "fields": {
+          "customerAddress": {
+            "label": "Dirección del Cliente",
+            "placeholder": "0x... o identificador del cliente",
+            "description": "Dirección de Ethereum o identificador del cliente"
+          }
+        },
+        "warning": {
+          "title": "Nota",
+          "message": "Solo marca los pagos como recibidos después de haber cobrado físicamente el pago. Esta acción no se puede deshacer."
+        }
+      },
+      "paymentMethods": {
+        "usdc": "USDC",
+        "bitcoin": "Bitcoin",
+        "ethereum": "Ethereum",
+        "cash": "Efectivo",
+        "card": "Tarjeta",
+        "bankTransfer": "Transferencia Bancaria"
+      }
     }
 }

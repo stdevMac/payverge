@@ -152,7 +152,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
     }
 
     if (hasChecked && isAvailable) {
-      return tString('status.available').replace('{url}', `payverge.com/b/${value}`);
+      return tString('status.available').replace('{url}', `payverge.io/b/${value}`);
     }
 
     if (hasChecked && !isAvailable) {
@@ -193,7 +193,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
         color={getColor() as any}
         startContent={
           <div className="flex items-center gap-2 text-default-400">
-            <span className="text-sm">payverge.com/b/</span>
+            <span className="text-sm">payverge.io/b/</span>
           </div>
         }
         endContent={getEndContent()}
@@ -220,7 +220,7 @@ const CustomURLInput = React.memo(function CustomURLInput({
                 {tString('preview.message')}
               </p>
               <p className="text-sm text-success-600 font-mono">
-                https://payverge.com/b/{value}
+                https://payverge.io/b/{value}
               </p>
             </div>
           </div>

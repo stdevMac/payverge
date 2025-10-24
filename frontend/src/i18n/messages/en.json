@@ -931,6 +931,70 @@
             }
           }
         },
+        "kitchenManager": {
+          "title": "Kitchen Management",
+          "subtitle": "Manage orders and track cooking progress",
+          "loading": "Loading kitchen orders...",
+          "orders": {
+            "title": "Kitchen Orders",
+            "subtitle": "Track and manage all incoming orders"
+          },
+          "tabs": {
+            "approved": "Approved",
+            "inKitchen": "In Kitchen",
+            "ready": "Ready",
+            "allOrders": "All Orders"
+          },
+          "emptyState": {
+            "title": "No orders to prepare",
+            "description": "Orders will appear here when they're ready for the kitchen"
+          },
+          "order": {
+            "itemsToPrepare": "{count} items to prepare",
+            "moreItems": "+{count} more items",
+            "notes": "Order Notes"
+          },
+          "buttons": {
+            "refresh": "Refresh",
+            "startCooking": "Start Cooking",
+            "markReady": "Mark Ready",
+            "markDelivered": "Mark Delivered"
+          },
+          "time": {
+            "minutesAgo": "{minutes}m ago",
+            "hoursMinutesAgo": "{hours}h {minutes}m ago"
+          },
+          "modal": {
+            "orderNumber": "Order #{orderNumber}",
+            "billId": "Bill ID",
+            "created": "Created",
+            "orderNotes": "Order Notes:",
+            "itemsToPrepare": "Items to Prepare:",
+            "special": "Special:",
+            "close": "Close",
+            "startCooking": "Start Cooking",
+            "markReady": "Mark Ready",
+            "markDelivered": "Mark Delivered"
+          },
+          "emptyStates": {
+            "approved": {
+              "title": "No approved orders",
+              "description": "New orders will appear here when they're approved for cooking"
+            },
+            "in_kitchen": {
+              "title": "No orders in kitchen",
+              "description": "Orders currently being prepared will appear here"
+            },
+            "ready": {
+              "title": "No orders ready",
+              "description": "Completed orders ready for delivery will appear here"
+            },
+            "all": {
+              "title": "No orders to prepare",
+              "description": "Orders will appear here when they're ready for the kitchen"
+            }
+          }
+        },
         "tableManager": {
           "title": "Table Management",
           "subtitle": "Create and manage your restaurant tables",
@@ -2302,5 +2366,81 @@
       "pending": "Pending",
       "approve": "Approve",
       "reject": "Reject"
+    },
+    "billDetailsModal": {
+      "buttons": {
+        "close": "Close",
+        "closeBill": "Close Bill"
+      }
+    },
+    "alternativePaymentManager": {
+      "title": "Payment Status",
+      "subtitle": "Accept payments via USDC and other crypto methods",
+      "buttons": {
+        "markPaid": "Mark Payment Received",
+        "cancel": "Cancel",
+        "close": "Close",
+        "addPayment": "Add Payment",
+        "confirmPayment": "Confirm Payment"
+      },
+      "fields": {
+        "amount": {
+          "label": "Amount (USD)",
+          "placeholder": "0.00"
+        },
+        "paymentMethod": {
+          "label": "Payment Method"
+        }
+      },
+      "messages": {
+        "info": "Alternative payment methods allow customers to pay using cryptocurrency or other digital payment solutions.",
+        "success": "Payment marked successfully!",
+        "error": "Failed to mark payment. Please try again.",
+        "loading": "Loading payment data...",
+        "validation": {
+          "amountRequired": "Please fill in all fields",
+          "amountInvalid": "Amount must be greater than 0",
+          "amountTooHigh": "Amount cannot exceed bill total"
+        }
+      },
+      "status": {
+        "complete": "Bill Complete"
+      },
+      "breakdown": {
+        "total": "Total Bill",
+        "cryptoPaid": "Crypto Paid",
+        "alternativePaid": "Alternative Paid",
+        "remaining": "Remaining"
+      },
+      "pendingPayments": {
+        "title": "Pending Alternative Payments",
+        "via": "via"
+      },
+      "manualPayment": {
+        "title": "Mark Alternative Payment",
+        "description": "Manually mark payments made through cash, card, or other methods."
+      },
+      "modal": {
+        "title": "Mark Alternative Payment",
+        "fields": {
+          "customerAddress": {
+            "label": "Customer Address",
+            "placeholder": "0x... or customer identifier",
+            "description": "Ethereum address or customer identifier"
+          }
+        },
+        "warning": {
+          "title": "Note",
+          "message": "Only mark payments as received after you have physically collected the payment. This action cannot be undone."
+        }
+      },
+      "paymentMethods": {
+        "usdc": "USDC",
+        "bitcoin": "Bitcoin",
+        "ethereum": "Ethereum",
+        "cash": "Cash",
+        "card": "Card",
+        "bankTransfer": "Bank Transfer"
+      }
     }
 }

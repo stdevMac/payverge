@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -43,7 +43,13 @@ export default function AlternativePaymentManager({
   billTotal,
   onPaymentMarked
 }: AlternativePaymentManagerProps) {
-  const { locale: currentLocale } = useSimpleLocale();
+  const { locale } = useSimpleLocale();
+  const [currentLocale, setCurrentLocale] = useState(locale);
+  
+  // Update translations when locale changes
+  useEffect(() => {
+    setCurrentLocale(locale);
+  }, [locale]);
   
   // Translation helper
   const tString = (key: string): string => {
@@ -84,7 +90,7 @@ export default function AlternativePaymentManager({
       );
 
       if (response.success) {
-        toast.success('Alternative payment marked successfully!');
+        toast.success(tString('messages.success'));
         onPaymentMarked?.();
         
         // Clear form if it was manual entry
@@ -98,7 +104,7 @@ export default function AlternativePaymentManager({
       }
     } catch (error) {
       console.error('Error marking payment:', error);
-      toast.error('Failed to mark payment');
+      toast.error(tString('messages.error'));
     } finally {
       setMarkingPayment(false);
     }
@@ -106,13 +112,18 @@ export default function AlternativePaymentManager({
 
   const handleManualPaymentSubmit = () => {
     if (!participantAddress || !amount) {
-      toast.error('Please fill in all fields');
+      toast.error(tString('messages.validation.amountRequired'));
       return;
     }
 
     const numAmount = parseFloat(amount);
     if (numAmount <= 0) {
-      toast.error('Amount must be greater than 0');
+      toast.error(tString('messages.validation.amountInvalid'));
+      return;
+    }
+
+    if (numAmount > billTotal) {
+      toast.error(tString('messages.validation.amountTooHigh'));
       return;
     }
 
@@ -134,7 +145,7 @@ export default function AlternativePaymentManager({
         <CardBody className="flex items-center justify-center p-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p>Loading payment data...</p>
+            <p>{tString('messages.loading')}</p>
           </div>
         </CardBody>
       </Card>
@@ -147,9 +158,9 @@ export default function AlternativePaymentManager({
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center w-full">
-            <h3 className="text-lg font-semibold">Payment Status</h3>
+            <h3 className="text-lg font-semibold">{tString('title')}</h3>
             {paymentBreakdown?.isComplete && (
-              <Chip color="success" variant="flat">Bill Complete</Chip>
+              <Chip color="success" variant="flat">{tString('status.complete')}</Chip>
             )}
           </div>
         </CardHeader>
@@ -164,19 +175,19 @@ export default function AlternativePaymentManager({
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Total Bill</p>
+                  <p className="text-gray-500">{tString('breakdown.total')}</p>
                   <p className="font-semibold">${formatUSDCAmount(paymentBreakdown.totalAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Crypto Paid</p>
+                  <p className="text-gray-500">{tString('breakdown.cryptoPaid')}</p>
                   <p className="font-semibold text-green-600">${formatUSDCAmount(paymentBreakdown.cryptoPaid)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Alternative Paid</p>
+                  <p className="text-gray-500">{tString('breakdown.alternativePaid')}</p>
                   <p className="font-semibold text-blue-600">${formatUSDCAmount(paymentBreakdown.alternativePaid)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Remaining</p>
+                  <p className="text-gray-500">{tString('breakdown.remaining')}</p>
                   <p className="font-semibold text-orange-600">${formatUSDCAmount(paymentBreakdown.remaining)}</p>
                 </div>
               </div>
@@ -189,7 +200,7 @@ export default function AlternativePaymentManager({
       {pendingPayments.length > 0 && (
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Pending Alternative Payments</h3>
+            <h3 className="text-lg font-semibold">{tString('pendingPayments.title')}</h3>
           </CardHeader>
           <CardBody>
             <div className="space-y-3">
@@ -202,7 +213,7 @@ export default function AlternativePaymentManager({
                         {payment.participantName || `${payment.participantAddress.slice(0, 6)}...${payment.participantAddress.slice(-4)}`}
                       </p>
                       <p className="text-sm text-gray-500">
-                        ${formatUSDCAmount(payment.amount)} via {getPaymentMethodLabel(payment.paymentMethod)}
+                        ${formatUSDCAmount(payment.amount)} {tString('pendingPayments.via')} {getPaymentMethodLabel(payment.paymentMethod)}
                       </p>
                     </div>
                   </div>
@@ -216,7 +227,7 @@ export default function AlternativePaymentManager({
                       payment.paymentMethod
                     )}
                   >
-                    Confirm Payment
+                    {tString('buttons.confirmPayment')}
                   </Button>
                 </div>
               ))}
@@ -229,15 +240,15 @@ export default function AlternativePaymentManager({
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center w-full">
-            <h3 className="text-lg font-semibold">Mark Alternative Payment</h3>
+            <h3 className="text-lg font-semibold">{tString('manualPayment.title')}</h3>
             <Button color="primary" onPress={onOpen}>
-              Add Payment
+              {tString('buttons.addPayment')}
             </Button>
           </div>
         </CardHeader>
         <CardBody>
           <p className="text-gray-600">
-            Manually mark payments made through cash, card, or other methods.
+            {tString('manualPayment.description')}
           </p>
         </CardBody>
       </Card>
@@ -245,20 +256,20 @@ export default function AlternativePaymentManager({
       {/* Manual Payment Modal */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalContent>
-          <ModalHeader>Mark Alternative Payment</ModalHeader>
+          <ModalHeader>{tString('modal.title')}</ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               <Input
-                label="Customer Address"
-                placeholder="0x... or customer identifier"
+                label={tString('modal.fields.customerAddress.label')}
+                placeholder={tString('modal.fields.customerAddress.placeholder')}
                 value={participantAddress}
                 onValueChange={setParticipantAddress}
-                description="Ethereum address or customer identifier"
+                description={tString('modal.fields.customerAddress.description')}
               />
               
               <Input
-                label="Amount (USD)"
-                placeholder="0.00"
+                label={tString('fields.amount.label')}
+                placeholder={tString('fields.amount.placeholder')}
                 type="number"
                 step="0.01"
                 min="0"
@@ -268,7 +279,7 @@ export default function AlternativePaymentManager({
               />
               
               <Select
-                label="Payment Method"
+                label={tString('fields.paymentMethod.label')}
                 selectedKeys={[selectedMethod.toString()]}
                 onSelectionChange={(keys) => {
                   const key = Array.from(keys)[0] as string;
@@ -276,7 +287,11 @@ export default function AlternativePaymentManager({
                 }}
               >
                 {PAYMENT_METHOD_OPTIONS.filter(option => option.value !== PaymentMethod.CRYPTO).map((option) => (
-                  <SelectItem key={option.value.toString()} value={option.value.toString()}>
+                  <SelectItem 
+                    key={option.value.toString()} 
+                    value={option.value.toString()}
+                    textValue={option.label}
+                  >
                     <div className="flex items-center space-x-2">
                       <span>{option.icon}</span>
                       <span>{option.label}</span>
@@ -287,22 +302,21 @@ export default function AlternativePaymentManager({
               
               <div className="bg-blue-50 p-3 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  <strong>Note:</strong> Only mark payments as received after you have physically collected the payment.
-                  This action cannot be undone.
+                  <strong>{tString('modal.warning.title')}:</strong> {tString('modal.warning.message')}
                 </p>
               </div>
             </div>
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>
-              Cancel
+              {tString('buttons.cancel')}
             </Button>
             <Button
               color="primary"
               isLoading={markingPayment}
               onPress={handleManualPaymentSubmit}
             >
-              Mark Payment Received
+              {tString('buttons.markPaid')}
             </Button>
           </ModalFooter>
         </ModalContent>

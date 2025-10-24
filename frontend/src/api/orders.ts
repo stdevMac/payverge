@@ -1,11 +1,19 @@
 import { axiosInstance } from './tools/instance';
 
 // Order interfaces
+export interface MenuItemOption {
+  id: string;
+  name: string;
+  price_change: number;
+  is_required: boolean;
+}
+
 export interface OrderItem {
   id: string;
   menu_item_name: string;
   quantity: number;
   price: number;
+  options: MenuItemOption[];        // Add-ons/modifiers
   special_requests: string;
   subtotal: number;
 }
@@ -34,6 +42,7 @@ export interface CreateOrderRequest {
     menu_item_name: string;
     quantity: number;
     price: number;
+    options?: MenuItemOption[];     // Add-ons/modifiers
     special_requests?: string;
   }[];
 }
@@ -124,6 +133,7 @@ export const createGuestOrder = async (
       menu_item_name: string;
       quantity: number;
       price: number;
+      options?: MenuItemOption[];     // Add-ons/modifiers
       special_requests?: string;
     }[];
     notes?: string;

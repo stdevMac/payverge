@@ -261,30 +261,23 @@ function GuestMenuPageContent() {
       
       // Create guest order for approval
       const kitchenOrderItems = cart.map(item => {
-        let itemName = item.name;
-        let totalPrice = item.price;
-        let specialRequests = item.specialRequests || '';
+        // Convert addOns to options format for backend
+        const options = item.addOns ? item.addOns.map(addon => ({
+          id: `addon-${addon.name.toLowerCase().replace(/\s+/g, '-')}`,
+          name: addon.name,
+          price_change: addon.price,
+          is_required: false
+        })) : [];
         
-        // Include add-ons in the item name and price
-        if (item.addOns && item.addOns.length > 0) {
-          const addOnNames = item.addOns.map(addon => addon.name).join(', ');
-          itemName = `${item.name} (${addOnNames})`;
-          totalPrice = item.price + item.addOns.reduce((sum, addon) => sum + addon.price, 0);
-          
-          // Add add-ons to special requests if not already there
-          const addOnDetails = item.addOns.map(addon => 
-            `${addon.name}${addon.price > 0 ? ` (+$${addon.price.toFixed(2)})` : ''}`
-          ).join(', ');
-          specialRequests = specialRequests 
-            ? `${specialRequests}. Add-ons: ${addOnDetails}`
-            : `Add-ons: ${addOnDetails}`;
-        }
+        // Calculate total price including add-ons
+        const totalPrice = item.price + (item.addOns ? item.addOns.reduce((sum, addon) => sum + addon.price, 0) : 0);
         
         return {
-          menu_item_name: itemName,
+          menu_item_name: item.name,
           quantity: item.quantity,
-          price: totalPrice,
-          special_requests: specialRequests,
+          price: item.price, // Base price only
+          options: options,  // Add-ons as separate options
+          special_requests: item.specialRequests || '',
         };
       });
 
@@ -332,30 +325,20 @@ function GuestMenuPageContent() {
     try {
       // Create a new order for additional items
       const orderItems = cart.map(item => {
-        let itemName = item.name;
-        let totalPrice = item.price;
-        let specialRequests = item.specialRequests || '';
-        
-        // Include add-ons in the item name and price
-        if (item.addOns && item.addOns.length > 0) {
-          const addOnNames = item.addOns.map(addon => addon.name).join(', ');
-          itemName = `${item.name} (${addOnNames})`;
-          totalPrice = item.price + item.addOns.reduce((sum, addon) => sum + addon.price, 0);
-          
-          // Add add-ons to special requests if not already there
-          const addOnDetails = item.addOns.map(addon => 
-            `${addon.name}${addon.price > 0 ? ` (+$${addon.price.toFixed(2)})` : ''}`
-          ).join(', ');
-          specialRequests = specialRequests 
-            ? `${specialRequests}. Add-ons: ${addOnDetails}`
-            : `Add-ons: ${addOnDetails}`;
-        }
+        // Convert addOns to options format for backend
+        const options = item.addOns ? item.addOns.map(addon => ({
+          id: `addon-${addon.name.toLowerCase().replace(/\s+/g, '-')}`,
+          name: addon.name,
+          price_change: addon.price,
+          is_required: false
+        })) : [];
         
         return {
-          menu_item_name: itemName,
+          menu_item_name: item.name,
           quantity: item.quantity,
-          price: totalPrice,
-          special_requests: specialRequests,
+          price: item.price, // Base price only
+          options: options,  // Add-ons as separate options
+          special_requests: item.specialRequests || '',
         };
       });
 
@@ -408,6 +391,7 @@ function GuestMenuPageContent() {
         menu_item_name: itemName,
         quantity,
         price: price,
+        options: [], // No add-ons for single item orders
         special_requests: ''
       }];
       

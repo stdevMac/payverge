@@ -70,8 +70,8 @@ export const validateTableCode = async (code: string): Promise<QRValidationResul
 export const extractTableCodeFromURL = (url: string): string | null => {
   try {
     // Handle various URL formats:
-    // https://payverge.com/t/ABC123
-    // https://app.payverge.com/t/ABC123
+    // https://payverge.io/t/ABC123
+    // https://app.payverge.io/t/ABC123
     // /t/ABC123
     // ABC123
     
@@ -94,6 +94,6 @@ export const extractTableCodeFromURL = (url: string): string | null => {
 };
 
 export const generateTableURL = (tableCode: string): string => {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://payverge.com';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://payverge.io';
   return `${baseUrl}/t/${tableCode}`;
 };

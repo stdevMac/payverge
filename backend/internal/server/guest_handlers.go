@@ -299,10 +299,11 @@ func CreateGuestOrder(c *gin.Context) {
 	var req struct {
 		BillID uint `json:"bill_id" binding:"required"`
 		Items  []struct {
-			MenuItemName    string  `json:"menu_item_name" binding:"required"`
-			Quantity        int     `json:"quantity" binding:"required"`
-			Price           float64 `json:"price" binding:"required"`
-			SpecialRequests string  `json:"special_requests"`
+			MenuItemName    string                      `json:"menu_item_name" binding:"required"`
+			Quantity        int                         `json:"quantity" binding:"required"`
+			Price           float64                     `json:"price" binding:"required"`
+			Options         []database.MenuItemOption  `json:"options"`         // Add-ons/modifiers
+			SpecialRequests string                      `json:"special_requests"`
 		} `json:"items" binding:"required"`
 		Notes string `json:"notes"`
 	}
@@ -347,13 +348,20 @@ func CreateGuestOrder(c *gin.Context) {
 	// Convert request items to order items
 	var orderItems []database.OrderItem
 	for _, itemReq := range req.Items {
+		// Calculate subtotal including options
+		subtotal := itemReq.Price * float64(itemReq.Quantity)
+		for _, option := range itemReq.Options {
+			subtotal += option.PriceChange * float64(itemReq.Quantity)
+		}
+
 		orderItem := database.OrderItem{
 			ID:              fmt.Sprintf("%s-%d", itemReq.MenuItemName, time.Now().UnixNano()),
 			MenuItemName:    itemReq.MenuItemName,
 			Quantity:        itemReq.Quantity,
 			Price:           itemReq.Price,
+			Options:         itemReq.Options,
 			SpecialRequests: itemReq.SpecialRequests,
-			Subtotal:        itemReq.Price * float64(itemReq.Quantity),
+			Subtotal:        subtotal,
 		}
 		orderItems = append(orderItems, orderItem)
 	}

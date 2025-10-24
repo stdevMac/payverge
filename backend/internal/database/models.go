@@ -586,12 +586,13 @@ type Order struct {
 
 // OrderItem represents an item within an order
 type OrderItem struct {
-	ID              string  `json:"id"`
-	MenuItemName    string  `json:"menu_item_name"`
-	Quantity        int     `json:"quantity"`
-	Price           float64 `json:"price"`
-	SpecialRequests string  `json:"special_requests"`
-	Subtotal        float64 `json:"subtotal"`
+	ID              string           `json:"id"`
+	MenuItemName    string           `json:"menu_item_name"`
+	Quantity        int              `json:"quantity"`
+	Price           float64          `json:"price"`
+	Options         []MenuItemOption `json:"options"`         // Add-ons/modifiers
+	SpecialRequests string           `json:"special_requests"`
+	Subtotal        float64          `json:"subtotal"`
 }
 
 // OrderStatus represents the status of an order

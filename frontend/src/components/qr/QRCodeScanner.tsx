@@ -94,7 +94,7 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({
 
   const extractTableCode = (qrData: string): string | null => {
     // Extract table code from QR data
-    // Expected format: https://payverge.com/t/ABC123 or just ABC123
+    // Expected format: https://payverge.io/t/ABC123 or just ABC123
     const match = qrData.match(/\/t\/([A-Z0-9]+)/) || qrData.match(/^([A-Z0-9]+)$/);
     return match ? match[1] : null;
   };
