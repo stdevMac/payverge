@@ -812,13 +812,18 @@
         "staffManagement": {
           "title": "Gestión de Personal",
           "subtitle": "Invita y gestiona el personal de tu restaurante",
+          "loading": "Cargando datos del personal...",
           "error": {
             "loadStaffData": "Error al cargar datos del personal",
             "fillAllFields": "Por favor completa todos los campos",
             "sendInvitation": "Error al enviar invitación",
             "removeStaff": "Error al remover miembro del personal",
             "resendInvitation": "Error al reenviar invitación",
-            "updateRole": "Error al actualizar rol del personal"
+            "updateRole": "Error al actualizar rol del personal",
+            "nameRequired": "El nombre del miembro del personal es requerido",
+            "emailRequired": "La dirección de correo electrónico es requerida",
+            "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+            "roleRequired": "Por favor selecciona un rol"
           },
           "success": {
             "invitationSent": "¡Invitación de personal enviada exitosamente!",

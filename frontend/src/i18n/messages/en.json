@@ -803,13 +803,18 @@
         "staffManagement": {
           "title": "Staff Management",
           "subtitle": "Invite and manage your restaurant staff",
+          "loading": "Loading staff data...",
           "error": {
             "loadStaffData": "Failed to load staff data",
             "fillAllFields": "Please fill in all fields",
             "sendInvitation": "Failed to send invitation",
             "removeStaff": "Failed to remove staff member",
             "resendInvitation": "Failed to resend invitation",
-            "updateRole": "Failed to update staff role"
+            "updateRole": "Failed to update staff role",
+            "nameRequired": "Staff member name is required",
+            "emailRequired": "Email address is required",
+            "emailInvalid": "Please enter a valid email address",
+            "roleRequired": "Please select a role"
           },
           "success": {
             "invitationSent": "Staff invitation sent successfully!",
