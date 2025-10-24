@@ -139,122 +139,112 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
 
   if (loading && bills.length === 0) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
-            <Badge 
-              content={bills.length} 
-              color={bills.length > 0 ? 'primary' : 'default'}
-              size="lg"
-              className="text-sm"
-            >
-              <div className="w-6 h-6" />
-            </Badge>
+            <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+              {bills.length}
+            </span>
             {isConnected && (
-              <Chip size="md" color="success" variant="dot" className="animate-pulse">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></div>
                 {tString('live')}
-              </Chip>
+              </span>
             )}
           </div>
-          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
+          <p className="text-gray-600 font-light text-sm">{tString('subtitle')}</p>
         </div>
         
         <div className="flex items-center gap-3">
-          <span className="text-sm text-default-500">
+          <span className="text-sm text-gray-500">
             {tString('lastUpdated')}: {lastUpdated.toLocaleTimeString()}
           </span>
-          <Button
-            size="md"
-            variant="bordered"
-            onPress={fetchLiveBills}
-            isLoading={loading}
-            startContent={<RefreshCw className="w-4 h-4" />}
+          <button
+            onClick={fetchLiveBills}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
           >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             {tString('refresh')}
-          </Button>
+          </button>
         </div>
       </div>
 
       {error && (
-        <Card className="border-danger-200 bg-danger-50">
-          <CardBody className="p-4">
-            <div className="text-danger">
-              <p>{tString('error')}: {error}</p>
-            </div>
-          </CardBody>
-        </Card>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center gap-3">
+            <Clock className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-red-800 font-medium">{tString('error')}: {error}</p>
+          </div>
+        </div>
       )}
 
       {bills.length === 0 ? (
-        <Card className="shadow-md">
-          <CardBody className="p-12">
-            <div className="text-center text-default-500">
-              <div className="w-20 h-20 mx-auto mb-6 bg-default-100 rounded-full flex items-center justify-center">
-                <Users className="w-10 h-10 text-default-400" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-default-700">{tString('noActiveBills')}</h3>
-              <p className="text-default-500">{tString('noActiveBillsDesc')}</p>
-            </div>
-          </CardBody>
-        </Card>
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <Users className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-light text-gray-900 tracking-wide mb-2">{tString('noActiveBills')}</h3>
+          <p className="text-gray-600 font-light text-sm">{tString('noActiveBillsDesc')}</p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {bills.map((bill) => (
-            <Card key={bill.id} className="border-none shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start w-full">
+            <div key={bill.id} className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="border-b border-gray-200 p-4">
+                <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-xl text-default-900">#{bill.bill_number}</h3>
+                    <h3 className="font-semibold text-lg text-gray-900">#{bill.bill_number}</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <DollarSign className="w-4 h-4 text-default-500" />
-                      <p className="text-sm font-medium text-default-600">{bill.table_name}</p>
+                      <DollarSign className="w-4 h-4 text-gray-500" />
+                      <p className="text-sm font-medium text-gray-600">{bill.table_name}</p>
                     </div>
                   </div>
-                  <Chip
-                    size="md"
-                    color={getStatusColor(bill)}
-                    variant="flat"
-                    className="font-semibold"
-                  >
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    getStatusColor(bill) === 'success' ? 'bg-green-100 text-green-700' :
+                    getStatusColor(bill) === 'warning' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-gray-100 text-gray-700'
+                  }`}>
                     {getStatusText(bill)}
-                  </Chip>
+                  </span>
                 </div>
-              </CardHeader>
+              </div>
               
-              <Divider />
-              
-              <CardBody className="pt-4">
-                <div className="space-y-5">
+              <div className="p-4">
+                <div className="space-y-4">
                   {/* Amount Details */}
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
-                      <span className="text-sm font-medium text-default-600">{tString('amounts.totalAmount')}</span>
-                      <span className="font-bold text-lg text-default-900">{formatCurrency(bill.total_amount)}</span>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">{tString('amounts.totalAmount')}</span>
+                      <span className="font-semibold text-lg text-gray-900">{formatCurrency(bill.total_amount)}</span>
                     </div>
                     
-                    <div className="flex justify-between items-center p-3 bg-success-50 rounded-lg">
-                      <span className="text-sm font-medium text-success-700">{tString('amounts.paidAmount')}</span>
-                      <span className="font-bold text-lg text-success-700">
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span className="text-sm font-medium text-green-700">{tString('amounts.paidAmount')}</span>
+                      <span className="font-semibold text-lg text-green-700">
                         {formatCurrency(bill.paid_amount)}
                       </span>
                     </div>
                     
                     {bill.remaining_amount > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-default-600">{tString('amounts.remaining')}</span>
-                        <span className="font-semibold text-warning">
+                        <span className="text-sm text-gray-600">{tString('amounts.remaining')}</span>
+                        <span className="font-semibold text-yellow-600">
                           {formatCurrency(bill.remaining_amount)}
                         </span>
                       </div>
@@ -262,8 +252,8 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                     
                     {bill.tip_amount > 0 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-default-600">{tString('amounts.tips')}</span>
-                        <span className="font-semibold text-secondary">
+                        <span className="text-sm text-gray-600">{tString('amounts.tips')}</span>
+                        <span className="font-semibold text-blue-600">
                           {formatCurrency(bill.tip_amount)}
                         </span>
                       </div>
@@ -272,18 +262,18 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
 
                   {/* Payment Progress Bar */}
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-default-500">
+                    <div className="flex justify-between text-xs text-gray-500">
                       <span>{tString('paymentProgress')}</span>
                       <span>{Math.round(getPaymentProgress(bill))}%</span>
                     </div>
-                    <div className="w-full bg-default-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full transition-all duration-300 ${
                           getPaymentProgress(bill) === 100 
-                            ? 'bg-success' 
+                            ? 'bg-green-500' 
                             : getPaymentProgress(bill) > 0 
-                              ? 'bg-warning' 
-                              : 'bg-default-300'
+                              ? 'bg-yellow-500' 
+                              : 'bg-gray-300'
                         }`}
                         style={{ width: `${Math.min(getPaymentProgress(bill), 100)}%` }}
                       />
@@ -291,7 +281,7 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
                   </div>
 
                   {/* Time Info */}
-                  <div className="flex items-center justify-between text-xs text-default-500">
+                  <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>{tString('created')} {formatTime(bill.created_at)}</span>
@@ -301,63 +291,60 @@ export default function LiveBills({ businessId }: LiveBillsProps) {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      startContent={<Eye className="w-4 h-4" />}
-                      className="flex-1"
-                      onPress={() => {
+                    <button
+                      onClick={() => {
                         // Navigate to bill details or open modal
                         window.open(`/t/${bill.table_code}/bill`, '_blank')
                       }}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100"
                     >
+                      <Eye className="w-4 h-4" />
                       {tString('view')}
-                    </Button>
+                    </button>
                   </div>
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
 
       {/* Summary Stats */}
       {bills.length > 0 && (
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">{tString('quickStats.title')}</h3>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('quickStats.title')}</h3>
+          </div>
+          <div className="p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-primary">{bills.length}</p>
-                <p className="text-sm text-default-600">{tString('quickStats.activeBills')}</p>
+                <p className="text-2xl font-semibold text-blue-600">{bills.length}</p>
+                <p className="text-sm text-gray-600">{tString('quickStats.activeBills')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-success">
+                <p className="text-2xl font-semibold text-green-600">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.total_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">{tString('quickStats.totalValue')}</p>
+                <p className="text-sm text-gray-600">{tString('quickStats.totalValue')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-warning">
+                <p className="text-2xl font-semibold text-yellow-600">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.remaining_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">{tString('quickStats.outstanding')}</p>
+                <p className="text-sm text-gray-600">{tString('quickStats.outstanding')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-secondary">
+                <p className="text-2xl font-semibold text-purple-600">
                   {formatCurrency(bills.reduce((sum, bill) => sum + bill.tip_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">{tString('quickStats.tipsCollected')}</p>
+                <p className="text-sm text-gray-600">{tString('quickStats.tipsCollected')}</p>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

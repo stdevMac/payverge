@@ -65,35 +65,36 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
 
   if (loading) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     )
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardBody className="p-8">
-          <div className="text-center text-danger">
-            <p>{tString('error')}: {error}</p>
-          </div>
-        </CardBody>
-      </Card>
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center gap-3">
+          <TrendingDown className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <p className="text-red-800 font-medium">{tString('error')}: {error}</p>
+        </div>
+      </div>
     )
   }
 
   if (!salesData) {
     return (
-      <Card className="w-full">
-        <CardBody className="p-8">
-          <div className="text-center text-default-500">
-            <p>{tString('noData')}</p>
-          </div>
-        </CardBody>
-      </Card>
+      <div className="text-center py-12">
+        <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+          <DollarSign className="w-8 h-8 text-gray-400" />
+        </div>
+        <p className="text-gray-600 font-light tracking-wide">{tString('noData')}</p>
+      </div>
     )
   }
 
@@ -157,15 +158,15 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
     : 0
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header with Period Selector */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
-          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
+          <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+          <p className="text-gray-600 font-light text-sm">{tString('subtitle')}</p>
         </div>
         <Select
-          size="md"
+          size="sm"
           selectedKeys={[period]}
           onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
           className="w-full sm:w-48"
@@ -180,83 +181,87 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {metrics.map((metric, index) => {
           const Icon = metric.icon
           return (
-            <Card key={index} className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
-              <CardBody className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${metric.bgColor}`}>
-                    <Icon className={`w-6 h-6 ${metric.color}`} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{metric.title}</p>
-                    <p className="text-2xl font-bold text-default-900 mt-1">{metric.value}</p>
-                  </div>
+            <div key={index} className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                  <Icon className="w-5 h-5 text-gray-700" />
                 </div>
-              </CardBody>
-            </Card>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{metric.title}</p>
+                  <p className="text-lg font-semibold text-gray-900 mt-1">{metric.value}</p>
+                </div>
+              </div>
+            </div>
           )
         })}
       </div>
 
       {/* Additional Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tip Performance */}
-        <Card className="shadow-md">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-success" />
-              <h3 className="text-xl font-semibold text-default-900">{tString('tipPerformance.title')}</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <TrendingUp className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('tipPerformance.title')}</h3>
+              </div>
             </div>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-6">
-            <div className="space-y-6">
-              <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
+          </div>
+          <div className="p-4">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('tipPerformance.tipRate')}</p>
-                  <p className="text-xs text-default-500 mt-1">{tString('tipPerformance.tipRateDesc')}</p>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('tipPerformance.tipRate')}</p>
+                  <p className="text-xs text-gray-500 mt-1">{tString('tipPerformance.tipRateDesc')}</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {tipRate >= 15 ? (
-                    <TrendingUp className="w-5 h-5 text-success" />
+                    <TrendingUp className="w-4 h-4 text-green-600" />
                   ) : (
-                    <TrendingDown className="w-5 h-5 text-danger" />
+                    <TrendingDown className="w-4 h-4 text-red-600" />
                   )}
-                  <span className={`text-2xl font-bold ${tipRate >= 15 ? 'text-success' : 'text-danger'}`}>
+                  <span className={`text-lg font-semibold ${tipRate >= 15 ? 'text-green-600' : 'text-red-600'}`}>
                     {formatPercentage(tipRate)}
                   </span>
                 </div>
               </div>
-              <div className="flex justify-between items-center p-4 bg-default-50 rounded-lg">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('tipPerformance.averageTip')}</p>
-                  <p className="text-xs text-default-500 mt-1">{tString('tipPerformance.averageTipDesc')}</p>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('tipPerformance.averageTip')}</p>
+                  <p className="text-xs text-gray-500 mt-1">{tString('tipPerformance.averageTipDesc')}</p>
                 </div>
-                <span className="text-2xl font-bold text-default-900">
+                <span className="text-lg font-semibold text-gray-900">
                   {formatCurrency((salesData.transaction_count || 0) > 0 ? (salesData.total_tips || 0) / (salesData.transaction_count || 1) : 0)}
                 </span>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Payment Methods */}
-        <Card className="shadow-md">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-primary" />
-              <h3 className="text-xl font-semibold text-default-900">{tString('paymentMethods.title')}</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <CreditCard className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('paymentMethods.title')}</h3>
+              </div>
             </div>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-6">
-            <div className="space-y-4">
+          </div>
+          <div className="p-4">
+            <div className="space-y-3">
               {Object.entries(salesData.payment_methods || {}).length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-default-500">{tString('paymentMethods.noData')}</p>
+                <div className="text-center py-6">
+                  <p className="text-gray-500 font-light">{tString('paymentMethods.noData')}</p>
                 </div>
               ) : (
                 Object.entries(salesData.payment_methods || {}).map(([method, count]) => {
@@ -264,10 +269,10 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
                     ? (count / (salesData.transaction_count || 1)) * 100 
                     : 0
                   return (
-                    <div key={method} className="flex justify-between items-center p-3 bg-default-50 rounded-lg">
-                      <span className="text-default-700 font-medium capitalize">{method}</span>
+                    <div key={method} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-700 font-medium capitalize">{method}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-default-500">
+                        <span className="text-sm text-gray-500">
                           {count} ({formatPercentage(percentage)})
                         </span>
                       </div>
@@ -276,39 +281,42 @@ export default function SalesOverview({ businessId }: SalesOverviewProps) {
                 })
               )}
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Hourly Breakdown */}
       {Object.keys(salesData.hourly_breakdown || {}).length > 0 && (
-        <Card className="shadow-md">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-warning" />
-              <h3 className="text-xl font-semibold text-default-900">{tString('hourlyBreakdown.title')}</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <Clock className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('hourlyBreakdown.title')}</h3>
+                <p className="text-sm text-gray-600 font-light">{tString('hourlyBreakdown.subtitle')}</p>
+              </div>
             </div>
-            <p className="text-sm text-default-600 mt-1">{tString('hourlyBreakdown.subtitle')}</p>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {Object.entries(salesData.hourly_breakdown || {})
                 .sort(([a], [b]) => parseInt(a) - parseInt(b))
                 .map(([hour, data]) => (
-                  <div key={hour} className="text-center p-4 bg-gradient-to-br from-default-50 to-default-100 rounded-xl border border-default-200 hover:shadow-md transition-all duration-200">
-                    <p className="text-lg font-bold text-default-900">{hour}:00</p>
-                    <p className="text-sm font-semibold text-success mt-2">
+                  <div key={hour} className="text-center p-3 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-all duration-200">
+                    <p className="text-sm font-semibold text-gray-900">{hour}:00</p>
+                    <p className="text-sm font-medium text-green-600 mt-1">
                       {formatCurrency(data.revenue)}
                     </p>
-                    <p className="text-xs text-default-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       {data.bill_count} {tString('hourlyBreakdown.bills')}
                     </p>
                   </div>
                 ))}
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -363,6 +363,10 @@
       "dashboard": {
         "title": "Panel de Analíticas",
         "subtitle": "Monitorea el rendimiento de tu negocio, rastrea pagos y analiza el comportamiento del cliente en tiempo real.",
+        "analytics": {
+          "title": "Analíticas del Negocio",
+          "subtitle": "Rastrea métricas de rendimiento e insights"
+        },
         "version": "Versión",
         "tabs": {
           "salesOverview": "Resumen de Ventas",

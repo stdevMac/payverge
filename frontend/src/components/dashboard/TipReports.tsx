@@ -107,35 +107,36 @@ export default function TipReports({ businessId }: TipReportsProps) {
 
   if (loading) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     )
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardBody className="p-8">
-          <div className="text-center text-danger">
-            <p>{tString('error')}: {error}</p>
-          </div>
-        </CardBody>
-      </Card>
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center gap-3">
+          <TrendingDown className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <p className="text-red-800 font-medium">{tString('error')}: {error}</p>
+        </div>
+      </div>
     )
   }
 
   if (!tipData) {
     return (
-      <Card className="w-full">
-        <CardBody className="p-8">
-          <div className="text-center text-default-500">
-            <p>{tString('noData')}</p>
-          </div>
-        </CardBody>
-      </Card>
+      <div className="text-center py-12">
+        <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+          <DollarSign className="w-8 h-8 text-gray-400" />
+        </div>
+        <p className="text-gray-600 font-light tracking-wide">{tString('noData')}</p>
+      </div>
     )
   }
 
@@ -152,177 +153,191 @@ export default function TipReports({ businessId }: TipReportsProps) {
   const totalTipTransactions = Object.values(tipData.tip_distribution || {}).reduce((sum, count) => sum + (typeof count === 'number' ? count : 0), 0)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header with Period Selector */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
-          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
+          <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+          <p className="text-gray-600 font-light text-sm">{tString('subtitle')}</p>
         </div>
-        <Select
-          size="md"
-          selectedKeys={[period]}
-          onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
-          className="w-full sm:w-48"
-          variant="bordered"
-        >
-          {periods.map((p) => (
-            <SelectItem key={p.key} value={p.key}>
-              {p.label}
-            </SelectItem>
-          ))}
-        </Select>
+        <div className="space-y-1">
+          <label className="text-xs text-gray-500 uppercase tracking-wide">{tString('period')}</label>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          >
+            {periods.map((p) => (
+              <option key={p.key} value={p.key}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
-          <CardBody className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-success/10">
-                <DollarSign className="w-6 h-6 text-success" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('metrics.totalTips')}</p>
-                <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.total_tips || 0)}</p>
-              </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <DollarSign className="w-5 h-5 text-gray-700" />
             </div>
-          </CardBody>
-        </Card>
+            <div className="flex-1">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('metrics.totalTips')}</p>
+              <p className="text-lg font-semibold text-gray-900 mt-1">{formatCurrency(tipData.total_tips || 0)}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-none shadow-md hover:shadow-lg transition-shadow duration-200">
-          <CardBody className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-primary/10">
-                <TrendingUp className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-default-600 uppercase tracking-wide">{tString('metrics.averageTip')}</p>
-                <p className="text-2xl font-bold text-default-900 mt-1">{formatCurrency(tipData.average_tip || 0)}</p>
-              </div>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <TrendingUp className="w-5 h-5 text-gray-700" />
             </div>
-          </CardBody>
-        </Card>
+            <div className="flex-1">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('metrics.averageTip')}</p>
+              <p className="text-lg font-semibold text-gray-900 mt-1">{formatCurrency(tipData.average_tip || 0)}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="border-none shadow-sm">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${getTipRateColor(tipData.average_tip_rate) === 'success' ? 'bg-success/10' : getTipRateColor(tipData.average_tip_rate) === 'warning' ? 'bg-warning/10' : 'bg-danger/10'}`}>
-                <TrendingUp className={`w-5 h-5 ${getTipRateColor(tipData.average_tip_rate) === 'success' ? 'text-success' : getTipRateColor(tipData.average_tip_rate) === 'warning' ? 'text-warning' : 'text-danger'}`} />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-default-600">{tString('metrics.tipRate')}</p>
-                <div className="flex items-center gap-2">
-                  <p className="text-xl font-semibold">{formatPercentage(tipData.average_tip_rate)}</p>
-                  <Chip
-                    size="sm"
-                    color={getTipRateColor(tipData.average_tip_rate)}
-                    variant="flat"
-                  >
-                    {getTipRateLabel(tipData.average_tip_rate)}
-                  </Chip>
-                </div>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <Target className="w-5 h-5 text-gray-700" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('metrics.tipRate')}</p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-lg font-semibold text-gray-900">{formatPercentage(tipData.average_tip_rate)}</p>
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  tipData.average_tip_rate >= 20 ? 'bg-green-100 text-green-700' :
+                  tipData.average_tip_rate >= 15 ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-red-100 text-red-700'
+                }`}>
+                  {getTipRateLabel(tipData.average_tip_rate)}
+                </span>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="border-none shadow-sm">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-secondary/10">
-                <Users className="w-5 h-5 text-secondary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-default-600">{tString('metrics.tipTransactions')}</p>
-                <p className="text-xl font-semibold">{tipData.tip_count}</p>
-              </div>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <Users className="w-5 h-5 text-gray-700" />
             </div>
-          </CardBody>
-        </Card>
+            <div className="flex-1">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('metrics.tipTransactions')}</p>
+              <p className="text-lg font-semibold text-gray-900 mt-1">{tipData.tip_count}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Daily Comparison */}
       {tipData.daily_comparison && (
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">{tString('dailyComparison.title')}</h3>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <Clock className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('dailyComparison.title')}</h3>
+              </div>
+            </div>
+          </div>
+          <div className="p-4">
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-sm text-default-600">{tString('dailyComparison.today')}</p>
-                <p className="text-2xl font-bold text-primary">
+                <p className="text-sm text-gray-600">{tString('dailyComparison.today')}</p>
+                <p className="text-2xl font-semibold text-blue-600">
                   {formatCurrency(tipData.daily_comparison.today)}
                 </p>
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-default-600">{tString('dailyComparison.yesterday')}</p>
-                <p className="text-2xl font-bold text-default-600">
+                <p className="text-sm text-gray-600">{tString('dailyComparison.yesterday')}</p>
+                <p className="text-2xl font-semibold text-gray-600">
                   {formatCurrency(tipData.daily_comparison.yesterday)}
                 </p>
               </div>
               
               <div className="text-center">
-                <p className="text-sm text-default-600">{tString('dailyComparison.change')}</p>
+                <p className="text-sm text-gray-600">{tString('dailyComparison.change')}</p>
                 <div className="flex items-center justify-center gap-2">
                   {tipData.daily_comparison.change_percentage >= 0 ? (
-                    <TrendingUp className="w-5 h-5 text-success" />
+                    <TrendingUp className="w-5 h-5 text-green-600" />
                   ) : (
-                    <TrendingDown className="w-5 h-5 text-danger" />
+                    <TrendingDown className="w-5 h-5 text-red-600" />
                   )}
-                  <p className={`text-2xl font-bold ${tipData.daily_comparison.change_percentage >= 0 ? 'text-success' : 'text-danger'}`}>
+                  <p className={`text-2xl font-semibold ${tipData.daily_comparison.change_percentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {formatPercentage(Math.abs(tipData.daily_comparison.change_percentage))}
                   </p>
                 </div>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tip Distribution */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">{tString('tipDistribution.title')}</h3>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <DollarSign className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('tipDistribution.title')}</h3>
+              </div>
+            </div>
+          </div>
+          <div className="p-4">
             <div className="space-y-4">
               {tipDistributionEntries.map(([range, count]) => {
                 const percentage = totalTipTransactions > 0 ? (count / totalTipTransactions) * 100 : 0
                 return (
                   <div key={range} className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">{range}</span>
+                      <span className="font-medium text-gray-900">{range}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-default-600">{count} {tString('tipDistribution.tips')}</span>
-                        <span className="font-semibold">{formatPercentage(percentage)}</span>
+                        <span className="text-sm text-gray-600">{count} {tString('tipDistribution.tips')}</span>
+                        <span className="font-semibold text-gray-900">{formatPercentage(percentage)}</span>
                       </div>
                     </div>
-                    <Progress 
-                      value={percentage}
-                      color={percentage > 30 ? 'success' : percentage > 15 ? 'warning' : 'default'}
-                      size="sm"
-                    />
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          percentage > 30 ? 'bg-green-500' : percentage > 15 ? 'bg-yellow-500' : 'bg-gray-400'
+                        }`}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
                   </div>
                 )
               })}
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Hourly Tips */}
         {Object.keys(tipData.hourly_tips || {}).length > 0 && (
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-semibold">{tString('hourlyTips.title')}</h3>
-            </CardHeader>
-            <Divider />
-            <CardBody className="p-4">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="border-b border-gray-200 p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                  <Clock className="w-5 h-5 text-gray-700" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('hourlyTips.title')}</h3>
+                </div>
+              </div>
+            </div>
+            <div className="p-4">
               <div className="grid grid-cols-3 gap-3">
                 {Object.entries(tipData.hourly_tips || {})
                   .sort(([a], [b]) => parseInt(a) - parseInt(b))
@@ -331,80 +346,85 @@ export default function TipReports({ businessId }: TipReportsProps) {
                     const percentage = maxHourlyTip > 0 ? (amount / maxHourlyTip) * 100 : 0
                     
                     return (
-                      <div key={hour} className="text-center p-3 bg-default-50 rounded-lg">
-                        <p className="text-sm font-medium">{hour}:00</p>
-                        <p className="text-lg font-bold text-success">{formatCurrency(amount)}</p>
-                        <Progress 
-                          value={percentage}
-                          color="success"
-                          size="sm"
-                          className="mt-2"
-                        />
+                      <div key={hour} className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-900">{hour}:00</p>
+                        <p className="text-lg font-semibold text-green-600">{formatCurrency(amount)}</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                          <div
+                            className="h-2 rounded-full bg-green-500 transition-all duration-300"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
                       </div>
                     )
                   })}
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
 
       {/* Top Tippers */}
       {tipData.top_tippers && tipData.top_tippers.length > 0 && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-warning" />
-              <h3 className="text-lg font-semibold">{tString('topTippers.title')}</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <Award className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('topTippers.title')}</h3>
+              </div>
             </div>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-0">
-            <Table aria-label="Top tippers table">
-              <TableHeader>
-                <TableColumn>{tString('topTippers.rank')}</TableColumn>
-                <TableColumn>{tString('topTippers.customer')}</TableColumn>
-                <TableColumn>{tString('topTippers.totalTips')}</TableColumn>
-                <TableColumn>{tString('topTippers.tipCount')}</TableColumn>
-                <TableColumn>{tString('topTippers.averageTip')}</TableColumn>
-              </TableHeader>
-              <TableBody>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('topTippers.rank')}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('topTippers.customer')}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('topTippers.totalTips')}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('topTippers.tipCount')}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('topTippers.averageTip')}</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {tipData.top_tippers.slice(0, 10).map((tipper, index) => (
-                  <TableRow key={tipper.payer_address}>
-                    <TableCell>
+                  <tr key={tipper.payer_address} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-lg">#{index + 1}</span>
+                        <span className="font-semibold text-lg text-gray-900">#{index + 1}</span>
                         {index < 3 && (
-                          <Award className={`w-4 h-4 ${index === 0 ? 'text-warning' : index === 1 ? 'text-default-400' : 'text-orange-600'}`} />
+                          <Award className={`w-4 h-4 ${index === 0 ? 'text-yellow-500' : index === 1 ? 'text-gray-400' : 'text-orange-600'}`} />
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-mono text-sm">
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-mono text-sm text-gray-600">
                         {truncateAddress(tipper.payer_address)}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-semibold text-success">
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-green-600">
                         {formatCurrency(tipper.total_tips)}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-default-600">
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-gray-600">
                         {tipper.tip_count}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-semibold">
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-gray-900">
                         {formatCurrency(tipper.average_tip)}
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
-          </CardBody>
-        </Card>
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   )

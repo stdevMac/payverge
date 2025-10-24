@@ -66,74 +66,62 @@ export default function Dashboard({ businessId }: DashboardProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header Section */}
-      <section className="py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        {/* Clean background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gray-100 rounded-full blur-3xl opacity-10"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gray-100 rounded-full blur-3xl opacity-8"></div>
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('title')}</h1>
+          <p className="text-gray-600 font-light text-sm mt-1">{tString('subtitle')}</p>
         </div>
-
-        <div className="container mx-auto px-6 relative">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 hover:bg-white hover:shadow-sm transition-all duration-300">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-              Analytics Dashboard
-            </div>
-
-            <h1 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-              {tString('title')}
-            </h1>
-            <p className="text-lg font-light leading-relaxed max-w-2xl mx-auto text-gray-600 mb-12 tracking-wide">
-              {tString('subtitle')}
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* Tab Navigation */}
-      <section className="py-8 bg-white border-b border-gray-200">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`
-                      group flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
-                      ${isActive 
-                        ? 'bg-gray-900 text-white shadow-lg' 
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:shadow-sm border border-gray-200'
-                      }
-                    `}
-                  >
-                    <Icon className={`w-4 h-4 transition-colors duration-300 ${
-                      isActive ? 'text-white' : 'text-gray-600 group-hover:text-gray-700'
-                    }`} />
-                    <span>{tab.title}</span>
-                  </button>
-                );
-              })}
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
+        <div className="border-b border-gray-200 p-6">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <BarChart3 className="w-6 h-6 text-gray-700" />
+            </div>
+            <div>
+              <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('analytics.title')}</h2>
+              <p className="text-gray-600 font-light text-sm">{tString('analytics.subtitle')}</p>
             </div>
           </div>
         </div>
-      </section>
+        <div className="p-6">
+          <div className="flex flex-wrap gap-2">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`
+                    group flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${isActive 
+                      ? 'bg-gray-900 text-white shadow-sm' 
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                    }
+                  `}
+                >
+                  <Icon className={`w-4 h-4 transition-colors duration-200 ${
+                    isActive ? 'text-white' : 'text-gray-600 group-hover:text-gray-700'
+                  }`} />
+                  <span>{tab.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       {/* Content Section */}
-      <section className="py-16 lg:py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-              {tabs.find(tab => tab.key === activeTab)?.component}
-            </div>
-          </div>
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="p-6">
+          {tabs.find(tab => tab.key === activeTab)?.component}
         </div>
-      </section>
+      </div>
     </div>
   )
 }

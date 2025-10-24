@@ -355,6 +355,10 @@
       "dashboard": {
         "title": "Analytics Dashboard",
         "subtitle": "Monitor your business performance, track payments, and analyze customer behavior in real-time.",
+        "analytics": {
+          "title": "Business Analytics",
+          "subtitle": "Track performance metrics and insights"
+        },
         "tabs": {
           "salesOverview": "Sales Overview",
           "liveBills": "Live Bills", 

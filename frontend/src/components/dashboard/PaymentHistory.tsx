@@ -188,273 +188,276 @@ export default function PaymentHistory({ businessId }: PaymentHistoryProps) {
 
   if (loading) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
-          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
+          <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+          <p className="text-gray-600 font-light text-sm">{tString('subtitle')}</p>
         </div>
-        <Button
-          color="primary"
-          size="lg"
-          variant="flat"
-          startContent={<Download className="w-5 h-5" />}
-          onPress={handleExportPayments}
-          className="w-full sm:w-auto"
+        <button
+          onClick={handleExportPayments}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
         >
+          <Download className="w-4 h-4" />
           {tString('exportData')}
-        </Button>
+        </button>
       </div>
 
       {/* Filters */}
-      <Card className="shadow-md">
-        <CardHeader className="pb-3">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="border-b border-gray-200 p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Filter className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <Filter className="w-5 h-5 text-gray-700" />
             </div>
-            <h3 className="text-xl font-semibold text-default-900">{tString('searchAndFilter')}</h3>
+            <div>
+              <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('searchAndFilter')}</h3>
+            </div>
           </div>
-        </CardHeader>
-        <Divider />
-        <CardBody className="p-6">
-          <div className="space-y-6">
+        </div>
+        <div className="p-4">
+          <div className="space-y-4">
             {/* Search Section */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-default-700">{tString('searchPayments')}</label>
-              <Input
-                placeholder={tString('searchPlaceholder')}
-                startContent={<Search className="w-4 h-4 text-default-400" />}
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-                isClearable
-                size="lg"
-                variant="bordered"
-                className="w-full"
-                classNames={{
-                  input: "text-sm",
-                  inputWrapper: "h-12"
-                }}
-              />
+              <label className="text-sm font-medium text-gray-700">{tString('searchPayments')}</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder={tString('searchPlaceholder')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
             
             {/* Filters Section */}
-            <div className="space-y-4">
-              <label className="text-sm font-medium text-default-700">{tString('filterOptions')}</label>
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-700">{tString('filterOptions')}</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs text-default-500 uppercase tracking-wide">{tString('status')}</label>
-                  <Select
-                    placeholder={tString('statusOptions.all')}
-                    selectedKeys={[statusFilter]}
-                    onSelectionChange={(keys) => setStatusFilter(Array.from(keys)[0] as string)}
-                    size="lg"
-                    variant="bordered"
-                    className="w-full"
-                    classNames={{
-                      trigger: "h-12"
-                    }}
+                  <label className="text-xs text-gray-500 uppercase tracking-wide">{tString('status')}</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     {statusOptions.map((option) => (
-                      <SelectItem key={option.key} value={option.key}>
+                      <option key={option.key} value={option.key}>
                         {option.label}
-                      </SelectItem>
+                      </option>
                     ))}
-                  </Select>
+                  </select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-default-500 uppercase tracking-wide">{tString('dateRange')}</label>
-                  <DateRangePicker
-                    value={dateRange}
-                    onChange={setDateRange}
-                    size="lg"
-                    variant="bordered"
-                    className="w-full"
-                    classNames={{
-                      base: "w-full",
-                      input: "h-12"
-                    }}
+                  <label className="text-xs text-gray-500 uppercase tracking-wide">{tString('dateRange')}</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Select date range"
                   />
                 </div>
 
                 <div className="flex items-end">
-                  <Button
-                    variant="flat"
-                    size="lg"
-                    startContent={<X className="w-4 h-4" />}
-                    onPress={() => {
+                  <button
+                    onClick={() => {
                       setSearchTerm('')
                       setStatusFilter('all')
                       setDateRange(null)
                     }}
-                    className="w-full h-12"
-                    color="default"
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100"
                   >
+                    <X className="w-4 h-4" />
                     {tString('clearAll')}
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {error && (
-        <Card className="border-danger-200 bg-danger-50 shadow-md">
-          <CardBody className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center">
-                <X className="h-6 w-6 text-danger-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-danger-900">{tString('error')}</h3>
-                <p className="text-danger-700">{error}</p>
-              </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center gap-3">
+            <X className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-red-900">{tString('error')}</h3>
+              <p className="text-sm text-red-700">{error}</p>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Payment Table */}
-      <Card className="shadow-md">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between w-full">
-            <h3 className="text-xl font-semibold text-default-900">{tString('paymentRecords')}</h3>
-            <div className="text-sm text-default-600">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="border-b border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('paymentRecords')}</h3>
+            <div className="text-sm text-gray-600">
               {filteredPayments.length} {tString('paymentsCount').replace('{total}', payments.length.toString())}
             </div>
           </div>
-        </CardHeader>
-        <Divider />
-        <CardBody className="p-0">
-          <Table aria-label="Payment history table">
-            <TableHeader>
-              <TableColumn>{tString('tableHeaders.bill')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.table')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.amount')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.tips')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.payer')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.status')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.date')}</TableColumn>
-              <TableColumn>{tString('tableHeaders.actions')}</TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={tString('noPayments')}>
-              {paginatedPayments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>
-                    <div className="font-medium">#{payment.bill_number}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-default-600">{payment.table_name}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-semibold">{formatCurrency(payment.amount)}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-success">
-                      {payment.tip_amount > 0 ? formatCurrency(payment.tip_amount) : '-'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-mono text-sm">
-                      {truncateAddress(payment.payer_address)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      size="sm"
-                      color={getStatusColor(payment.status)}
-                      variant="flat"
-                    >
-                      {payment.status}
-                    </Chip>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm text-default-600">
-                      {formatDate(payment.created_at)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        variant="ghost"
-                        onPress={() => {
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.bill')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.table')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.amount')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.tips')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.payer')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.status')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.date')}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('tableHeaders.actions')}</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {paginatedPayments.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                    {tString('noPayments')}
+                  </td>
+                </tr>
+              ) : (
+                paginatedPayments.map((payment) => (
+                  <tr key={payment.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-gray-900">#{payment.bill_number}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-gray-600">{payment.table_name}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-gray-900">{formatCurrency(payment.amount)}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-green-600">
+                        {payment.tip_amount > 0 ? formatCurrency(payment.tip_amount) : '-'}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-mono text-sm text-gray-600">
+                        {truncateAddress(payment.payer_address)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        payment.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                        payment.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {payment.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-sm text-gray-600">
+                        {formatDate(payment.created_at)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => {
                           window.open(`https://etherscan.io/tx/${payment.tx_hash}`, '_blank')
                         }}
+                        className="text-gray-400 hover:text-gray-600"
                       >
                         <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center p-4">
-              <Pagination
-                total={totalPages}
-                page={currentPage}
-                onChange={setCurrentPage}
-                showControls
-              />
+            <div className="flex justify-center p-4 border-t border-gray-200">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="px-3 py-2 text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {/* Summary Stats */}
       {filteredPayments.length > 0 && (
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">{tString('summary.title')}</h3>
-          </CardHeader>
-          <Divider />
-          <CardBody className="p-4">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('summary.title')}</h3>
+          </div>
+          <div className="p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-primary">{filteredPayments.length}</p>
-                <p className="text-sm text-default-600">{tString('summary.totalPayments')}</p>
+                <p className="text-2xl font-semibold text-blue-600">{filteredPayments.length}</p>
+                <p className="text-sm text-gray-600">{tString('summary.totalPayments')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-success">
+                <p className="text-2xl font-semibold text-green-600">
                   {formatCurrency(filteredPayments.reduce((sum, p) => sum + p.amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">{tString('summary.totalAmount')}</p>
+                <p className="text-sm text-gray-600">{tString('summary.totalAmount')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-secondary">
+                <p className="text-2xl font-semibold text-purple-600">
                   {formatCurrency(filteredPayments.reduce((sum, p) => sum + p.tip_amount, 0))}
                 </p>
-                <p className="text-sm text-default-600">{tString('summary.totalTips')}</p>
+                <p className="text-sm text-gray-600">{tString('summary.totalTips')}</p>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-warning">
+                <p className="text-2xl font-semibold text-yellow-600">
                   {filteredPayments.filter(p => p.status === 'confirmed').length}
                 </p>
-                <p className="text-sm text-default-600">{tString('summary.confirmed')}</p>
+                <p className="text-sm text-gray-600">{tString('summary.confirmed')}</p>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

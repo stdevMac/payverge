@@ -144,125 +144,137 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
 
   if (loading) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     )
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardBody className="p-8">
-          <div className="text-center text-danger">
-            <p>Error loading item analytics: {error}</p>
-          </div>
-        </CardBody>
-      </Card>
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center gap-3">
+          <TrendingDown className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <p className="text-red-800 font-medium">Error loading item analytics: {error}</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header with Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-default-900">{tString('title')}</h2>
-          <p className="text-default-600 mt-1">{tString('subtitle')}</p>
+          <h2 className="text-xl font-light text-gray-900 tracking-wide">{tString('title')}</h2>
+          <p className="text-gray-600 font-light text-sm">{tString('subtitle')}</p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3">
-          <Select
-            size="md"
-            selectedKeys={[period]}
-            onSelectionChange={(keys) => setPeriod(Array.from(keys)[0] as string)}
-            className="w-full sm:w-40"
-            variant="bordered"
-            label={tString('period')}
-          >
-            {periods.map((p) => (
-              <SelectItem key={p.key} value={p.key}>
-                {p.label}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="space-y-1">
+            <label className="text-xs text-gray-500 uppercase tracking-wide">{tString('period')}</label>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            >
+              {periods.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </div>
           
-          <Select
-            size="md"
-            selectedKeys={[sortBy]}
-            onSelectionChange={(keys) => setSortBy(Array.from(keys)[0] as string)}
-            className="w-full sm:w-48"
-            variant="bordered"
-            label={tString('sortBy')}
-          >
-            {sortOptions.map((option) => (
-              <SelectItem key={option.key} value={option.key}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="space-y-1">
+            <label className="text-xs text-gray-500 uppercase tracking-wide">{tString('sortBy')}</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       {items.length === 0 ? (
-        <Card>
-          <CardBody className="p-8">
-            <div className="text-center text-default-500">
-              <Package className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">{tString('noItemData')}</p>
-              <p>{tString('noSalesData')}</p>
-            </div>
-          </CardBody>
-        </Card>
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <Package className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-light text-gray-900 tracking-wide mb-2">{tString('noItemData')}</h3>
+          <p className="text-gray-600 font-light text-sm">{tString('noSalesData')}</p>
+        </div>
       ) : (
         <>
           {/* Top Categories */}
           {topCategories.length > 0 && (
-            <Card>
-              <CardHeader>
-                <h3 className="text-lg font-semibold">{tString('topCategories')}</h3>
-              </CardHeader>
-              <Divider />
-              <CardBody className="p-4">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="border-b border-gray-200 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                    <BarChart3 className="w-5 h-5 text-gray-700" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('topCategories')}</h3>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {topCategories.map(([category, stats], index) => (
-                    <div key={category} className="text-center p-4 bg-default-50 rounded-lg">
+                    <div key={category} className="text-center p-4 bg-gray-50 rounded-lg">
                       <div className="flex items-center justify-center gap-2 mb-2">
-                        <span className="text-lg font-bold text-primary">#{index + 1}</span>
-                        <Chip size="sm" color="primary" variant="flat">
+                        <span className="text-lg font-semibold text-blue-600">#{index + 1}</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
                           {stats.item_count} {tString('items')}
-                        </Chip>
+                        </span>
                       </div>
-                      <p className="font-semibold text-sm mb-1">{category}</p>
-                      <p className="text-xs text-success font-medium">
+                      <p className="font-semibold text-sm mb-1 text-gray-900">{category}</p>
+                      <p className="text-xs text-green-600 font-medium">
                         {formatCurrency(stats.revenue)}
                       </p>
-                      <p className="text-xs text-default-600">
+                      <p className="text-xs text-gray-600">
                         {stats.total_sold} {tString('sold')}
                       </p>
                     </div>
                   ))}
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           )}
 
           {/* Item Performance List */}
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center w-full">
-                <h3 className="text-lg font-semibold">{tString('itemPerformance')}</h3>
-                <span className="text-sm text-default-500">
-                  {tString('sortedBy')} {sortOptions.find(opt => opt.key === sortBy)?.label}
-                </span>
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="border-b border-gray-200 p-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                    <Package className="w-5 h-5 text-gray-700" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('itemPerformance')}</h3>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {items.length} {tString('totalItems')}
+                </div>
               </div>
-            </CardHeader>
-            <Divider />
-            <CardBody className="p-0">
-              <div className="divide-y divide-default-200">
-                {sortedItems.slice(0, 20).map((item, index) => {
+            </div>
+            <div className="p-4">
+              <div className="space-y-4">
+                {sortedItems.map((item, index) => {
                   const currentValue = (() => {
                     switch (sortBy) {
                       case 'total_sold': return item.total_sold
@@ -274,120 +286,118 @@ export default function ItemAnalytics({ businessId }: ItemAnalyticsProps) {
                   })()
                   
                   const progressValue = maxValue > 0 ? (currentValue / maxValue) * 100 : 0
+                  const rank = index + 1
                   
                   return (
-                    <div key={item.item_id} className="p-4 hover:bg-default-50 transition-colors">
+                    <div key={item.item_name} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-default-400">
-                              #{index + 1}
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              rank <= 3 ? 'bg-green-100 text-green-700' :
+                              rank <= 10 ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}>
+                              {rank <= 3 ? <TrendingUp className="w-3 h-3 mr-1" /> :
+                               rank <= 10 ? <BarChart3 className="w-3 h-3 mr-1" /> :
+                               <TrendingDown className="w-3 h-3 mr-1" />}
+                              #{rank}
                             </span>
-                            <Chip
-                              size="sm"
-                              color={getPerformanceColor(item.popularity_rank)}
-                              variant="flat"
-                              startContent={getPerformanceIcon(item.popularity_rank)}
-                            >
-                              {tString('rank')} {item.popularity_rank}
-                            </Chip>
                           </div>
-                          
                           <div>
-                            <h4 className="font-semibold text-lg">{item.item_name}</h4>
-                            <p className="text-sm text-default-600">{item.category}</p>
+                            <h4 className="font-semibold text-gray-900">{item.item_name}</h4>
+                            <p className="text-sm text-gray-600">{item.category}</p>
                           </div>
                         </div>
                         
                         <div className="text-right">
-                          <p className="text-lg font-bold">
+                          <p className="font-semibold text-lg text-gray-900">
                             {sortBy === 'revenue' || sortBy === 'avg_price' 
                               ? formatCurrency(currentValue)
                               : currentValue.toLocaleString()
                             }
                           </p>
-                          <p className="text-sm text-default-600">
+                          <p className="text-xs text-gray-500 uppercase tracking-wide">
                             {sortOptions.find(opt => opt.key === sortBy)?.label}
                           </p>
                         </div>
                       </div>
                       
-                      <Progress 
-                        value={progressValue}
-                        color={getPerformanceColor(item.popularity_rank)}
-                        size="sm"
-                        className="mb-3"
-                      />
+                      <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            rank <= 3 ? 'bg-green-500' :
+                            rank <= 10 ? 'bg-yellow-500' :
+                            'bg-gray-400'
+                          }`}
+                          style={{ width: `${progressValue}%` }}
+                        />
+                      </div>
                       
-                      <div className="grid grid-cols-4 gap-4 text-sm">
-                        <div className="text-center">
-                          <p className="font-semibold text-primary">{item.total_sold}</p>
-                          <p className="text-xs text-default-600">{tString('sold')}</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">{tString('metrics.sold')}</p>
+                          <p className="font-semibold text-gray-900">{item.total_sold}</p>
                         </div>
-                        <div className="text-center">
-                          <p className="font-semibold text-success">{formatCurrency(item.revenue)}</p>
-                          <p className="text-xs text-default-600">{tString('sortOptions.revenue')}</p>
+                        <div>
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">{tString('metrics.revenue')}</p>
+                          <p className="font-semibold text-green-600">{formatCurrency(item.revenue)}</p>
                         </div>
-                        <div className="text-center">
-                          <p className="font-semibold text-warning">{item.bills_featured}</p>
-                          <p className="text-xs text-default-600">{tString('bills')}</p>
+                        <div>
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">{tString('metrics.avgPrice')}</p>
+                          <p className="font-semibold text-gray-900">{formatCurrency(item.avg_price)}</p>
                         </div>
-                        <div className="text-center">
-                          <p className="font-semibold text-secondary">{formatCurrency(item.avg_price)}</p>
-                          <p className="text-xs text-default-600">{tString('avgPrice')}</p>
+                        <div>
+                          <p className="text-gray-500 text-xs uppercase tracking-wide">{tString('metrics.billsFeatured')}</p>
+                          <p className="font-semibold text-blue-600">{item.bills_featured}</p>
                         </div>
                       </div>
                     </div>
                   )
                 })}
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </div>
 
           {/* Summary Stats */}
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-semibold">{tString('summaryStats')}</h3>
-            </CardHeader>
-            <Divider />
-            <CardBody className="p-4">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="border-b border-gray-200 p-4">
+              <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('summaryStats')}</h3>
+            </div>
+            <div className="p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-primary/10 rounded-lg">
-                  <Package className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <p className="text-2xl font-bold text-primary">{items.length}</p>
-                  <p className="text-sm text-default-600">{tString('totalItems')}</p>
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-blue-600">{items.length}</p>
+                  <p className="text-sm text-gray-600">{tString('totalItems')}</p>
                 </div>
                 
-                <div className="text-center p-4 bg-success/10 rounded-lg">
-                  <DollarSign className="w-8 h-8 mx-auto mb-2 text-success" />
-                  <p className="text-2xl font-bold text-success">
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-green-600">
                     {formatCurrency(items.reduce((sum, item) => sum + item.revenue, 0))}
                   </p>
-                  <p className="text-sm text-default-600">{tString('totalRevenue')}</p>
+                  <p className="text-sm text-gray-600">{tString('totalRevenue')}</p>
                 </div>
                 
-                <div className="text-center p-4 bg-warning/10 rounded-lg">
-                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-warning" />
-                  <p className="text-2xl font-bold text-warning">
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-yellow-600">
                     {items.reduce((sum, item) => sum + item.total_sold, 0)}
                   </p>
-                  <p className="text-sm text-default-600">{tString('itemsSold')}</p>
+                  <p className="text-sm text-gray-600">{tString('itemsSold')}</p>
                 </div>
                 
-                <div className="text-center p-4 bg-secondary/10 rounded-lg">
-                  <BarChart3 className="w-8 h-8 mx-auto mb-2 text-secondary" />
-                  <p className="text-2xl font-bold text-secondary">
+                <div className="text-center">
+                  <p className="text-2xl font-semibold text-purple-600">
                     {formatCurrency(
                       items.length > 0 
                         ? items.reduce((sum, item) => sum + item.revenue, 0) / items.length
                         : 0
                     )}
                   </p>
-                  <p className="text-sm text-default-600">{tString('avgRevenuePerItem')}</p>
+                  <p className="text-sm text-gray-600">{tString('avgRevenuePerItem')}</p>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         </>
       )}
     </div>
