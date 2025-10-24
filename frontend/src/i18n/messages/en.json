@@ -290,6 +290,12 @@
       "blockchain": {
         "title": "Blockchain",
         "subtitle": "Manage your on-chain business settings and claim earnings",
+        "status": {
+          "walletConnected": "Wallet Connected",
+          "walletNotConnected": "Wallet Not Connected",
+          "registered": "Registered on Smart Contract",
+          "notRegistered": "Not Registered on Smart Contract"
+        },
         "claimableEarnings": {
           "title": "Claimable Earnings",
           "subtitle": "Available to claim from payments and tips",

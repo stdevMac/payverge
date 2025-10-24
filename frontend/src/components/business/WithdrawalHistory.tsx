@@ -178,171 +178,192 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
 
   if (loading && withdrawals.length === 0) {
     return (
-      <Card className="w-full">
-        <CardBody className="flex items-center justify-center py-8">
-          <Spinner size="lg" />
-          <p className="mt-4 text-gray-600">{tString('loading')}</p>
-        </CardBody>
-      </Card>
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-600 font-light tracking-wide">{tString('loading')}</p>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card className="w-full">
-        <CardBody className="text-center py-8">
-          <XCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{tString('errorTitle')}</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button color="primary" onPress={() => loadWithdrawals()}>
-            {tString('tryAgain')}
-          </Button>
-        </CardBody>
-      </Card>
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center gap-3">
+          <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <div>
+            <h3 className="text-lg font-medium text-red-800">{tString('errorTitle')}</h3>
+            <p className="text-red-700 text-sm">{error}</p>
+            <button
+              className="mt-2 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+              onClick={() => loadWithdrawals()}
+            >
+              {tString('tryAgain')}
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
     <>
-      <Card className="w-full">
-        <CardHeader className="flex gap-3">
-          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50">
-            <History className="w-6 h-6 text-blue-600" />
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="border-b border-gray-200 p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+              <History className="w-5 h-5 text-gray-700" />
+            </div>
+            <div>
+              <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('title')}</h3>
+              <p className="text-sm text-gray-600">{tString('subtitle')}</p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-lg font-medium text-gray-900">{tString('title')}</h4>
-            <p className="text-sm text-gray-600">{tString('subtitle')}</p>
-          </div>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="p-4">
           {withdrawals.length === 0 ? (
-            <div className="text-center py-8">
-              <Wallet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{tString('emptyTitle')}</h3>
-              <p className="text-gray-600">{tString('emptyDescription')}</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+                <Wallet className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-light text-gray-900 tracking-wide mb-2">{tString('emptyTitle')}</h3>
+              <p className="text-gray-600 font-light text-sm">{tString('emptyDescription')}</p>
             </div>
           ) : (
             <>
-              <Table aria-label={tString('tableAriaLabel')}>
-                <TableHeader>
-                  <TableColumn>{tString('table.date')}</TableColumn>
-                  <TableColumn>{tString('table.amount')}</TableColumn>
-                  <TableColumn>{tString('table.status')}</TableColumn>
-                  <TableColumn>{tString('table.network')}</TableColumn>
-                  <TableColumn>{tString('table.actions')}</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {withdrawals.map((withdrawal) => (
-                    <TableRow key={withdrawal.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm">{formatDate(withdrawal.created_at)}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-semibold">{formatAmount(withdrawal.total_amount)}</span>
-                          <span className="text-xs text-gray-500">
-                            {tString('table.payment')}: {formatAmount(withdrawal.payment_amount)} | 
-                            {tString('table.tips')}: {formatAmount(withdrawal.tip_amount)}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('table.date')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('table.amount')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('table.status')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('table.network')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{tString('table.actions')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {withdrawals.map((withdrawal) => (
+                      <tr key={withdrawal.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm text-gray-900">{formatDate(withdrawal.created_at)}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-gray-900">{formatAmount(withdrawal.total_amount)}</span>
+                            <span className="text-xs text-gray-500">
+                              {tString('table.payment')}: {formatAmount(withdrawal.payment_amount)} | 
+                              {tString('table.tips')}: {formatAmount(withdrawal.tip_amount)}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            withdrawal.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                            withdrawal.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {getStatusIcon(withdrawal.status)}
+                            <span className="ml-1">{withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}</span>
                           </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          color={getStatusColor(withdrawal.status)}
-                          variant="flat"
-                          startContent={getStatusIcon(withdrawal.status)}
-                          size="sm"
-                        >
-                          {withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm capitalize">{withdrawal.blockchain_network}</span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() => viewDetails(withdrawal)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() => openBlockchainExplorer(withdrawal.transaction_hash, withdrawal.blockchain_network)}
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-sm capitalize text-gray-900">{withdrawal.blockchain_network}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2">
+                            <button
+                              className="p-1 text-gray-400 hover:text-gray-600"
+                              onClick={() => viewDetails(withdrawal)}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="p-1 text-gray-400 hover:text-gray-600"
+                              onClick={() => openBlockchainExplorer(withdrawal.transaction_hash, withdrawal.blockchain_network)}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
               {totalPages > 1 && (
                 <div className="flex justify-center mt-6">
-                  <Pagination
-                    total={totalPages}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    showControls
-                  />
+                  <div className="flex items-center space-x-2">
+                    <button
+                      className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                    <span className="px-3 py-2 text-sm text-gray-700">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               )}
             </>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
       {/* Withdrawal Details Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">
-            <h3 className="text-xl font-semibold">{tString('modal.title')}</h3>
-            <p className="text-sm text-gray-600">{tString('modal.subtitle')}</p>
-          </ModalHeader>
-          <ModalBody>
-            {selectedWithdrawal && (
+      {isOpen && selectedWithdrawal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="border-b border-gray-200 p-4">
+              <h3 className="text-xl font-light text-gray-900 tracking-wide">{tString('modal.title')}</h3>
+              <p className="text-sm text-gray-600">{tString('modal.subtitle')}</p>
+            </div>
+            <div className="p-6">
               <div className="space-y-6">
                 {/* Status and Amount */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-lg font-semibold">{formatAmount(selectedWithdrawal.total_amount)}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900">{formatAmount(selectedWithdrawal.total_amount)}</h4>
                     <p className="text-sm text-gray-600">{tString('modal.totalWithdrawn')}</p>
                   </div>
-                  <Chip
-                    color={getStatusColor(selectedWithdrawal.status)}
-                    variant="flat"
-                    startContent={getStatusIcon(selectedWithdrawal.status)}
-                  >
-                    {selectedWithdrawal.status.charAt(0).toUpperCase() + selectedWithdrawal.status.slice(1)}
-                  </Chip>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    selectedWithdrawal.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                    selectedWithdrawal.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+                    {getStatusIcon(selectedWithdrawal.status)}
+                    <span className="ml-1">{selectedWithdrawal.status.charAt(0).toUpperCase() + selectedWithdrawal.status.slice(1)}</span>
+                  </span>
                 </div>
 
                 {/* Amount Breakdown */}
                 <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardBody className="text-center py-4">
-                      <DollarSign className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                      <p className="text-lg font-semibold">{formatAmount(selectedWithdrawal.payment_amount)}</p>
-                      <p className="text-sm text-gray-600">{tString('modal.paymentEarnings')}</p>
-                    </CardBody>
-                  </Card>
-                  <Card>
-                    <CardBody className="text-center py-4">
-                      <DollarSign className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-                      <p className="text-lg font-semibold">{formatAmount(selectedWithdrawal.tip_amount)}</p>
-                      <p className="text-sm text-gray-600">{tString('modal.tipEarnings')}</p>
-                    </CardBody>
-                  </Card>
+                  <div className="text-center py-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <DollarSign className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                    <p className="text-lg font-semibold text-gray-900">{formatAmount(selectedWithdrawal.payment_amount)}</p>
+                    <p className="text-sm text-gray-600">{tString('modal.paymentEarnings')}</p>
+                  </div>
+                  <div className="text-center py-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <DollarSign className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+                    <p className="text-lg font-semibold text-gray-900">{formatAmount(selectedWithdrawal.tip_amount)}</p>
+                    <p className="text-sm text-gray-600">{tString('modal.tipEarnings')}</p>
+                  </div>
                 </div>
 
                 {/* Transaction Details */}
@@ -350,23 +371,21 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                   <div>
                     <label className="text-sm font-medium text-gray-700">{tString('modal.transactionHash')}</label>
                     <div className="flex items-center gap-2 mt-1">
-                      <code className="flex-1 p-2 bg-gray-100 rounded text-sm font-mono">
+                      <code className="flex-1 p-2 bg-gray-50 border border-gray-200 rounded text-sm font-mono">
                         {selectedWithdrawal.transaction_hash}
                       </code>
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => openBlockchainExplorer(selectedWithdrawal.transaction_hash, selectedWithdrawal.blockchain_network)}
+                      <button
+                        className="p-1 text-gray-400 hover:text-gray-600"
+                        onClick={() => openBlockchainExplorer(selectedWithdrawal.transaction_hash, selectedWithdrawal.blockchain_network)}
                       >
                         <ExternalLink className="w-4 h-4" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-gray-700">{tString('modal.withdrawalAddress')}</label>
-                    <code className="block mt-1 p-2 bg-gray-100 rounded text-sm font-mono">
+                    <code className="block mt-1 p-2 bg-gray-50 border border-gray-200 rounded text-sm font-mono">
                       {selectedWithdrawal.withdrawal_address}
                     </code>
                   </div>
@@ -374,40 +393,41 @@ export default function WithdrawalHistoryComponent({ businessId, isAuthenticated
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">{tString('modal.network')}</label>
-                      <p className="mt-1 capitalize">{selectedWithdrawal.blockchain_network}</p>
+                      <p className="mt-1 capitalize text-gray-900">{selectedWithdrawal.blockchain_network}</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">{tString('modal.created')}</label>
-                      <p className="mt-1">{formatDate(selectedWithdrawal.created_at)}</p>
+                      <p className="mt-1 text-gray-900">{formatDate(selectedWithdrawal.created_at)}</p>
                     </div>
                   </div>
 
                   {selectedWithdrawal.confirmed_at && (
                     <div>
                       <label className="text-sm font-medium text-gray-700">{tString('modal.confirmed')}</label>
-                      <p className="mt-1">{formatDate(selectedWithdrawal.confirmed_at)}</p>
+                      <p className="mt-1 text-gray-900">{formatDate(selectedWithdrawal.confirmed_at)}</p>
                     </div>
                   )}
                 </div>
               </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="light" onPress={onClose}>
-              {tString('modal.close')}
-            </Button>
-            {selectedWithdrawal && (
-              <Button
-                color="primary"
-                onPress={() => openBlockchainExplorer(selectedWithdrawal.transaction_hash, selectedWithdrawal.blockchain_network)}
-                startContent={<ExternalLink className="w-4 h-4" />}
+            </div>
+            <div className="border-t border-gray-200 p-4 flex justify-end gap-3">
+              <button
+                className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+                onClick={onClose}
               >
+                {tString('modal.close')}
+              </button>
+              <button
+                className="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 flex items-center gap-2"
+                onClick={() => openBlockchainExplorer(selectedWithdrawal.transaction_hash, selectedWithdrawal.blockchain_network)}
+              >
+                <ExternalLink className="w-4 h-4" />
                 {tString('modal.viewOnExplorer')}
-              </Button>
-            )}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

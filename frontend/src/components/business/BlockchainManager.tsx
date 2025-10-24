@@ -155,283 +155,302 @@ export default function BlockchainManager({ business, businessId, userAddress, i
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100">
-            <Wallet className="w-6 h-6 text-blue-600" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-medium text-gray-900">{tString('blockchain.title')}</h3>
-            <p className="text-gray-600">{tString('blockchain.subtitle')}</p>
-          </div>
-        </div>
-
-        {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <div className={`w-3 h-3 rounded-full ${
-              isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'
-            }`}></div>
-            <span className="text-sm font-medium text-gray-700">
-              {isConnected ? 'Wallet Connected' : 'Wallet Not Connected'}
-            </span>
-            {userAddress && (
-              <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
-                {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-              </span>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-            <div className={`w-3 h-3 rounded-full ${
-              businessInfo ? 'bg-green-400' : 'bg-yellow-400'
-            }`}></div>
-            <span className="text-sm font-medium text-gray-700">
-              {businessInfo ? 'Registered on Smart Contract' : 'Not Registered on Smart Contract'}
-            </span>
-            {business?.settlement_address && (
-              <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
-                {business.settlement_address.slice(0, 6)}...{business.settlement_address.slice(-4)}
-              </span>
-            )}
-          </div>
+    <div className="p-4 max-w-6xl mx-auto">
+      {/* Compact Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-light text-gray-900 tracking-wide">{tString('blockchain.title')}</h1>
+          <p className="text-gray-600 font-light text-sm mt-1">{tString('blockchain.subtitle')}</p>
         </div>
       </div>
 
-      {/* Claimable Balances */}
-      <Card className="bg-white border border-gray-200 shadow-sm">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100">
-              <Wallet className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h4 className="text-lg font-medium text-gray-900">{tString('blockchain.claimableEarnings.title')}</h4>
-              <p className="text-sm text-gray-600">{tString('blockchain.claimableEarnings.subtitle')}</p>
+      <div className="space-y-6">
+        {/* Status Section */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <Wallet className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h2 className="text-lg font-light text-gray-900 tracking-wide">{tString('blockchain.subtitle')}</h2>
+              </div>
             </div>
           </div>
-        </CardHeader>
-        <CardBody className="pt-0">
-          <div className="space-y-6">
-            {/* Payment and Tip Amounts */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-5 h-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">{tString('blockchain.claimableEarnings.paymentEarnings')}</span>
-                </div>
-                <div className="text-2xl font-medium text-green-600">
-                  ${claimableBalance && Array.isArray(claimableBalance) ? formatBalance(claimableBalance[0]) : '0.00'}
-                </div>
-              </div>
-              
-              <div className="bg-orange-50 border border-orange-100 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-5 h-5 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-800">{tString('blockchain.claimableEarnings.tipEarnings')}</span>
-                </div>
-                <div className="text-2xl font-medium text-orange-600">
-                  ${claimableBalance && Array.isArray(claimableBalance) ? formatBalance(claimableBalance[1]) : '0.00'}
-                </div>
-              </div>
-            </div>
+          <div className="p-4">
 
-            {/* Total and Claim Button */}
-            <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-medium text-gray-900">{tString('blockchain.claimableEarnings.totalAvailable')}</span>
-                <span className="text-2xl font-medium text-blue-600">
-                  ${getTotalClaimable()}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className={`w-3 h-3 rounded-full ${
+                  isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+                }`}></div>
+                <span className="text-sm font-medium text-gray-700">
+                  {isConnected ? tString('blockchain.status.walletConnected') : tString('blockchain.status.walletNotConnected')}
                 </span>
-              </div>
-              
-              <Button
-                size="lg"
-                className={`w-full ${
-                  getTotalClaimable() !== '0.00'
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                }`}
-                onPress={handleClaimEarnings}
-                isDisabled={claimingEarnings || getTotalClaimable() === '0.00'}
-                startContent={claimingEarnings ? <Spinner size="sm" /> : <Wallet className="w-5 h-5" />}
-              >
-                {claimingEarnings ? claimingStep : tString('buttons.claimEarnings')}
-              </Button>
-
-              {transactionHash && (
-                <div className="mt-4 text-center">
-                  <a
-                    href={`https://sepolia.basescan.org/tx/${transactionHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 font-medium"
-                  >
-                    {tString('blockchain.viewTransaction')} <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </CardBody>
-      </Card>
-
-      {/* Transaction Processing Overlay */}
-      {claimingEarnings && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <Card className="w-full max-w-md mx-4">
-            <CardBody className="text-center py-8">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Spinner size="lg" color="primary" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {tString('blockchain.claiming.processingTitle')}
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {claimingStep}
-                </p>
-                {transactionHash && (
-                  <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                    <p className="text-xs text-gray-500 mb-1">{tString('blockchain.claimableEarnings.transactionHash')}</p>
-                    <p className="text-xs font-mono text-gray-700 break-all">
-                      {transactionHash}
-                    </p>
-                  </div>
+                {userAddress && (
+                  <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
+                    {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+                  </span>
                 )}
               </div>
               
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-yellow-800">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <div className="text-sm">
-                    <p className="font-medium">{tString('blockchain.claiming.dontClose')}</p>
-                    <p>{tString('blockchain.claiming.blockchainProcessing')}</p>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className={`w-3 h-3 rounded-full ${
+                  businessInfo ? 'bg-green-500' : 'bg-yellow-500'
+                }`}></div>
+                <span className="text-sm font-medium text-gray-700">
+                  {businessInfo ? tString('blockchain.status.registered') : tString('blockchain.status.notRegistered')}
+                </span>
+                {business?.settlement_address && (
+                  <span className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border ml-auto">
+                    {business.settlement_address.slice(0, 6)}...{business.settlement_address.slice(-4)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Claimable Balances */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <DollarSign className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('blockchain.claimableEarnings.title')}</h3>
+                <p className="text-sm text-gray-600">{tString('blockchain.claimableEarnings.subtitle')}</p>
+              </div>
+            </div>
+          </div>
+          <div className="p-4">
+            <div className="space-y-4">
+              {/* Payment and Tip Amounts */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('blockchain.claimableEarnings.paymentEarnings')}</span>
+                  </div>
+                  <div className="text-2xl font-semibold text-green-600">
+                    ${claimableBalance && Array.isArray(claimableBalance) ? formatBalance(claimableBalance[0]) : '0.00'}
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">{tString('blockchain.claimableEarnings.tipEarnings')}</span>
+                  </div>
+                  <div className="text-2xl font-semibold text-yellow-600">
+                    ${claimableBalance && Array.isArray(claimableBalance) ? formatBalance(claimableBalance[1]) : '0.00'}
                   </div>
                 </div>
               </div>
-            </CardBody>
-          </Card>
-        </div>
-      )}
 
-      {/* Business Addresses */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-        <h3 className="text-xl font-medium text-gray-900 mb-6">{tString('blockchain.addressManagement.title')}</h3>
-        
-        <div className="space-y-6">
-          {/* Payment Address */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.paymentAddress')}</h4>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  setEditingPaymentAddress(!editingPaymentAddress);
-                  setNewPaymentAddress(paymentAddress || '');
-                }}
-                startContent={<Edit3 className="w-4 h-4" />}
-              >
-                {tString('blockchain.addressManagement.edit')}
-              </Button>
-            </div>
-            
-            {editingPaymentAddress ? (
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={newPaymentAddress}
-                  onChange={(e) => setNewPaymentAddress(e.target.value)}
-                  placeholder="0x..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className="bg-blue-600 text-white hover:bg-blue-700"
-                    onClick={handleUpdatePaymentAddress}
-                  >
-                    {tString('blockchain.addressManagement.update')}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setEditingPaymentAddress(false);
-                      setNewPaymentAddress('');
-                    }}
-                  >
-                    {tString('buttons.cancel')}
-                  </Button>
+              {/* Total and Claim Button */}
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-lg font-light text-gray-900">{tString('blockchain.claimableEarnings.totalAvailable')}</span>
+                  <span className="text-2xl font-semibold text-blue-600">
+                    ${getTotalClaimable()}
+                  </span>
                 </div>
-              </div>
-            ) : (
-              <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 break-all">
-                {paymentAddress || 'Not set'}
-              </div>
-            )}
-          </div>
+                
+                <button
+                  className={`w-full px-4 py-3 rounded-lg font-medium transition-colors ${
+                    getTotalClaimable() !== '0.00'
+                      ? 'bg-gray-900 text-white hover:bg-gray-800'
+                      : 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                  }`}
+                  onClick={handleClaimEarnings}
+                  disabled={claimingEarnings || getTotalClaimable() === '0.00'}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    {claimingEarnings ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <Wallet className="w-5 h-5" />
+                    )}
+                    {claimingEarnings ? claimingStep : tString('buttons.claimEarnings')}
+                  </div>
+                </button>
 
-          {/* Tipping Address */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.tippingAddress')}</h4>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  setEditingTippingAddress(!editingTippingAddress);
-                  setNewTippingAddress(tippingAddress || '');
-                }}
-                startContent={<Edit3 className="w-4 h-4" />}
-              >
-                {tString('blockchain.addressManagement.edit')}
-              </Button>
+                {transactionHash && (
+                  <div className="mt-4 text-center">
+                    <a
+                      href={`https://sepolia.basescan.org/tx/${transactionHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 font-medium"
+                    >
+                      {tString('blockchain.viewTransaction')} <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
-            
-            {editingTippingAddress ? (
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={newTippingAddress}
-                  onChange={(e) => setNewTippingAddress(e.target.value)}
-                  placeholder="0x..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className="bg-blue-600 text-white hover:bg-blue-700"
-                    onClick={handleUpdateTippingAddress}
-                  >
-                    {tString('blockchain.addressManagement.update')}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setEditingTippingAddress(false);
-                      setNewTippingAddress('');
-                    }}
-                  >
-                    {tString('buttons.cancel')}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100 break-all">
-                {tippingAddress || 'Not set'}
-              </div>
-            )}
           </div>
         </div>
+
+        {/* Transaction Processing Overlay */}
+        {claimingEarnings && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="w-full max-w-md mx-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="text-center py-8 p-6">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
+                    <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+                  </div>
+                  <h3 className="text-xl font-light text-gray-900 mb-2 tracking-wide">
+                    {tString('blockchain.claiming.processingTitle')}
+                  </h3>
+                  <p className="text-gray-600 mb-4 font-light">
+                    {claimingStep}
+                  </p>
+                  {transactionHash && (
+                    <div className="bg-gray-50 rounded-lg p-3 mb-4 border border-gray-200">
+                      <p className="text-xs text-gray-500 mb-1">{tString('blockchain.claimableEarnings.transactionHash')}</p>
+                      <p className="text-xs font-mono text-gray-700 break-all">
+                        {transactionHash}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-yellow-800">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium">{tString('blockchain.claiming.dontClose')}</p>
+                      <p>{tString('blockchain.claiming.blockchainProcessing')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Business Addresses */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100">
+                <Wallet className="w-5 h-5 text-gray-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-light text-gray-900 tracking-wide">{tString('blockchain.addressManagement.title')}</h3>
+              </div>
+            </div>
+          </div>
+          <div className="p-4">
+            <div className="space-y-6">
+              {/* Payment Address */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.paymentAddress')}</h4>
+                  <button
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                    onClick={() => {
+                      setEditingPaymentAddress(!editingPaymentAddress);
+                      setNewPaymentAddress(paymentAddress || '');
+                    }}
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    {tString('blockchain.addressManagement.edit')}
+                  </button>
+                </div>
+                
+                {editingPaymentAddress ? (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={newPaymentAddress}
+                      onChange={(e) => setNewPaymentAddress(e.target.value)}
+                      placeholder="0x..."
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        className="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800"
+                        onClick={handleUpdatePaymentAddress}
+                      >
+                        {tString('blockchain.addressManagement.update')}
+                      </button>
+                      <button
+                        className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+                        onClick={() => {
+                          setEditingPaymentAddress(false);
+                          setNewPaymentAddress('');
+                        }}
+                      >
+                        {tString('buttons.cancel')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200 break-all">
+                    {paymentAddress || 'Not set'}
+                  </div>
+                )}
+              </div>
+
+              {/* Tipping Address */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-gray-900">{tString('blockchain.addressManagement.tippingAddress')}</h4>
+                  <button
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                    onClick={() => {
+                      setEditingTippingAddress(!editingTippingAddress);
+                      setNewTippingAddress(tippingAddress || '');
+                    }}
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    {tString('blockchain.addressManagement.edit')}
+                  </button>
+                </div>
+                
+                {editingTippingAddress ? (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={newTippingAddress}
+                      onChange={(e) => setNewTippingAddress(e.target.value)}
+                      placeholder="0x..."
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        className="px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800"
+                        onClick={handleUpdateTippingAddress}
+                      >
+                        {tString('blockchain.addressManagement.update')}
+                      </button>
+                      <button
+                        className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+                        onClick={() => {
+                          setEditingTippingAddress(false);
+                          setNewTippingAddress('');
+                        }}
+                      >
+                        {tString('buttons.cancel')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="font-mono text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200 break-all">
+                    {tippingAddress || 'Not set'}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Withdrawal History */}
+        <WithdrawalHistory businessId={businessId} isAuthenticated={() => true} authLoading={false} />
       </div>
-
-      {/* Withdrawal History */}
-      <WithdrawalHistory businessId={businessId} isAuthenticated={() => true} authLoading={false} />
     </div>
   );
 }

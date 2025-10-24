@@ -298,6 +298,12 @@
       "blockchain": {
         "title": "Blockchain",
         "subtitle": "Gestiona la configuración de tu negocio en cadena y reclama ganancias",
+        "status": {
+          "walletConnected": "Billetera Conectada",
+          "walletNotConnected": "Billetera No Conectada",
+          "registered": "Registrado en Contrato Inteligente",
+          "notRegistered": "No Registrado en Contrato Inteligente"
+        },
         "claimableEarnings": {
           "title": "Ganancias Reclamables",
           "subtitle": "Disponible para reclamar de pagos y propinas",
