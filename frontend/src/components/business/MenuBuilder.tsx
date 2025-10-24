@@ -30,6 +30,10 @@ import { PrimarySpinner } from '../ui/spinners/PrimarySpinner';
 import ImageUpload from './ImageUpload';
 import MultipleImageUpload from './MultipleImageUpload';
 import { Plus, Edit, Trash2, Image as ImageIcon, Tag, AlertTriangle, DollarSign, Search, X, Globe, Languages } from 'lucide-react';
+import AddCategoryModal from './modals/AddCategoryModal';
+import EditCategoryModal from './modals/EditCategoryModal';
+import AddItemModal from './modals/AddItemModal';
+import EditItemModal from './modals/EditItemModal';
 
 interface MenuBuilderProps {
   businessId: number;
@@ -1146,580 +1150,111 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
         </div>
       )}
 
-      {/* Add Category Modal */}
-      <Modal isOpen={isAddCategoryOpen} onOpenChange={onAddCategoryOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>{tString('categories.addCategory')}</ModalHeader>
-              <ModalBody>
-                <Input
-                  label={tString('categories.categoryName')}
-                  placeholder={tString('categories.categoryNamePlaceholder')}
-                  value={categoryName}
-                  onValueChange={setCategoryName}
-                  isRequired
-                />
-                <Textarea
-                  label={tString('categories.categoryDescription')}
-                  placeholder={tString('categories.categoryDescriptionPlaceholder')}
-                  value={categoryDescription}
-                  onValueChange={setCategoryDescription}
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={() => {
-                  resetCategoryForm();
-                  onClose();
-                }}>
-                  {tString('buttons.cancel')}
-                </Button>
-                <Button color="primary" onPress={handleAddCategory} isDisabled={!categoryName.trim()}>
-                  {tString('buttons.createCategory')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <AddCategoryModal
+        isOpen={isAddCategoryOpen}
+        onOpenChange={onAddCategoryOpenChange}
+        categoryName={categoryName}
+        setCategoryName={setCategoryName}
+        categoryDescription={categoryDescription}
+        setCategoryDescription={setCategoryDescription}
+        onAddCategory={handleAddCategory}
+        onResetForm={resetCategoryForm}
+        tString={tString}
+      />
 
-      {/* Edit Category Modal */}
-      <Modal isOpen={isEditCategoryOpen} onOpenChange={onEditCategoryOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex items-center gap-2">
-                <Edit className="w-5 h-5" />
-                {tString('categories.editCategory')}
-              </ModalHeader>
-              <ModalBody>
-                <Input
-                  label={tString('categories.categoryName')}
-                  placeholder={tString('categories.categoryNamePlaceholder')}
-                  value={categoryName}
-                  onValueChange={setCategoryName}
-                  isRequired
-                />
-                <Textarea
-                  label={tString('categories.categoryDescription')}
-                  placeholder={tString('categories.categoryDescriptionPlaceholder')}
-                  value={categoryDescription}
-                  onValueChange={setCategoryDescription}
-                />
+      <EditCategoryModal
+        isOpen={isEditCategoryOpen}
+        onOpenChange={onEditCategoryOpenChange}
+        categoryName={categoryName}
+        setCategoryName={setCategoryName}
+        categoryDescription={categoryDescription}
+        setCategoryDescription={setCategoryDescription}
+        onUpdateCategory={handleUpdateCategory}
+        onResetForm={resetCategoryForm}
+        tString={tString}
+      />
 
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={() => {
-                  resetCategoryForm();
-                  onClose();
-                }}>
-                  {tString('buttons.cancel')}
-                </Button>
-                <Button color="primary" onPress={handleUpdateCategory} isDisabled={!categoryName.trim()}>
-                  {tString('buttons.updateCategory')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <AddItemModal
+        isOpen={isAddItemOpen}
+        onOpenChange={onAddItemOpenChange}
+        selectedCategoryIndex={selectedCategoryIndex}
+        menu={menu}
+        itemName={itemName}
+        setItemName={setItemName}
+        itemDescription={itemDescription}
+        setItemDescription={setItemDescription}
+        itemPrice={itemPrice}
+        setItemPrice={setItemPrice}
+        defaultCurrency={defaultCurrency}
+        itemImages={itemImages}
+        setItemImages={setItemImages}
+        itemAvailable={itemAvailable}
+        setItemAvailable={setItemAvailable}
+        itemSortOrder={itemSortOrder}
+        setItemSortOrder={setItemSortOrder}
+        businessId={businessId}
+        itemOptions={itemOptions}
+        newOptionName={newOptionName}
+        setNewOptionName={setNewOptionName}
+        newOptionPrice={newOptionPrice}
+        setNewOptionPrice={setNewOptionPrice}
+        onAddOption={addOption}
+        onRemoveOption={removeOption}
+        itemAllergens={itemAllergens}
+        newAllergen={newAllergen}
+        setNewAllergen={setNewAllergen}
+        onAddAllergen={addAllergen}
+        onRemoveAllergen={removeAllergen}
+        itemDietaryTags={itemDietaryTags}
+        newDietaryTag={newDietaryTag}
+        setNewDietaryTag={setNewDietaryTag}
+        onAddDietaryTag={addDietaryTag}
+        onRemoveDietaryTag={removeDietaryTag}
+        onAddItem={handleAddItem}
+        onResetForm={resetItemForm}
+        tString={tString}
+      />
 
-      {/* Add Item Modal */}
-      <Modal isOpen={isAddItemOpen} onOpenChange={onAddItemOpenChange} size="2xl" scrollBehavior="inside">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex items-center gap-2">
-                <Plus className="w-5 h-5" />
-                {tString('items.addItem')}
-                {selectedCategoryIndex !== null && (
-                  <Chip size="sm" variant="flat" color="primary">
-                    {menu[selectedCategoryIndex]?.name}
-                  </Chip>
-                )}
-              </ModalHeader>
-              <ModalBody className="space-y-6">
-                {/* Basic Information */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    {tString('items.title')}
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label={tString('items.itemName')}
-                      placeholder={tString('items.itemNamePlaceholder')}
-                      value={itemName}
-                      onValueChange={setItemName}
-                      isRequired
-                    />
-                    <div className="flex gap-2">
-                      <Input
-                        label={tString('items.itemPrice')}
-                        placeholder={tString('items.itemPricePlaceholder')}
-                        value={itemPrice}
-                        onValueChange={setItemPrice}
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
-                        isRequired
-                      />
-                      <div className="w-32">
-                        <label className="text-sm text-gray-600 mb-1 block">{tString('currency.defaultCurrency')}</label>
-                        <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
-                          <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">From business settings</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Textarea
-                    label={tString('items.itemDescription')}
-                    placeholder={tString('items.itemDescriptionPlaceholder')}
-                    value={itemDescription}
-                    onValueChange={setItemDescription}
-                    minRows={2}
-                  />
-                  <div className="flex items-center gap-4">
-                    <Switch
-                      isSelected={itemAvailable}
-                      onValueChange={setItemAvailable}
-                      color="success"
-                    >
-                      {tString('items.available')}
-                    </Switch>
-                    <Input
-                      label={tString('items.sortOrder')}
-                      placeholder="0"
-                      value={itemSortOrder.toString()}
-                      onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
-                      type="number"
-                      className="w-32"
-                    />
-                  </div>
-                </div>
-
-                <Divider />
-
-                {/* Multiple Image Upload */}
-                <MultipleImageUpload
-                  images={itemImages}
-                  onImagesChange={setItemImages}
-                  maxImages={5}
-                  businessId={businessId}
-                />
-
-                <Divider />
-
-                {/* Options */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    {tString('items.options')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.optionName')}
-                      placeholder={tString('items.optionNamePlaceholder')}
-                      value={newOptionName}
-                      onValueChange={setNewOptionName}
-                    />
-                    <Input
-                      label={tString('items.optionPrice')}
-                      placeholder={tString('items.optionPricePlaceholder')}
-                      value={newOptionPrice}
-                      onValueChange={setNewOptionPrice}
-                      type="number"
-                      step="0.01"
-                      startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
-                      className="w-32"
-                    />
-                    <Button
-                      color="primary"
-                      variant="flat"
-                      onPress={addOption}
-                      isDisabled={!newOptionName.trim() || !newOptionPrice}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemOptions.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemOptions.map((option, index) => (
-                        <Chip
-                          key={`allergen-${option.name}-${index}`}
-                          onClose={() => removeOption(index)}
-                          variant="flat"
-                          color="primary"
-                        >
-                          {option.name} (+${(option.price_change || 0).toFixed(2)})
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Divider />
-
-                {/* Allergens */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" />
-                    {tString('items.allergens')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.allergens')}
-                      placeholder={tString('items.addAllergen')}
-                      value={newAllergen}
-                      onValueChange={setNewAllergen}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addAllergen();
-                        }
-                      }}
-                      />
-                    <Button
-                      color="warning"
-                      variant="flat"
-                      onPress={addAllergen}
-                      isDisabled={!newAllergen.trim()}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemAllergens.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemAllergens.map((allergen, index) => (
-                        <Chip
-                          key={`allergen-${allergen}-${index}`}
-                          onClose={() => removeAllergen(allergen)}
-                          variant="flat"
-                          color="warning"
-                        >
-                          {allergen}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Divider />
-
-                {/* Dietary Tags */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Tag className="w-5 h-5" />
-                    {tString('items.dietaryTags')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.dietaryTags')}
-                      placeholder={tString('items.addDietaryTag')}
-                      value={newDietaryTag}
-                      onValueChange={setNewDietaryTag}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addDietaryTag();
-                        }
-                      }}
-                      />
-                    <Button
-                      color="success"
-                      variant="flat"
-                      onPress={addDietaryTag}
-                      isDisabled={!newDietaryTag.trim()}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemDietaryTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemDietaryTags.map((tag, index) => (
-                        <Chip
-                          key={`dietary-${tag}-${index}`}
-                          onClose={() => removeDietaryTag(tag)}
-                          variant="flat"
-                          color="success"
-                        >
-                          {tag}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={() => {
-                  resetItemForm();
-                  onClose();
-                }}>
-                  {tString('buttons.cancel')}
-                </Button>
-                <Button 
-                  color="primary" 
-                  onPress={handleAddItem}
-                  isDisabled={!itemName.trim() || !itemPrice}
-                >
-                  {tString('buttons.createItem')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Edit Item Modal */}
-      <Modal isOpen={isEditItemOpen} onOpenChange={onEditItemOpenChange} size="2xl" scrollBehavior="inside">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex items-center gap-2">
-                <Edit className="w-5 h-5" />
-                {tString('items.editItem')}
-                {selectedCategoryIndex !== null && (
-                  <Chip size="sm" variant="flat" color="primary">
-                    {menu[selectedCategoryIndex]?.name}
-                  </Chip>
-                )}
-              </ModalHeader>
-              <ModalBody className="space-y-6">
-                {/* Basic Information */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    {tString('items.title')}
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label={tString('items.itemName')}
-                      placeholder={tString('items.itemNamePlaceholder')}
-                      value={itemName}
-                      onValueChange={setItemName}
-                      isRequired
-                    />
-                    <div className="flex gap-2">
-                      <Input
-                        label={tString('items.itemPrice')}
-                        placeholder={tString('items.itemPricePlaceholder')}
-                        value={itemPrice}
-                        onValueChange={setItemPrice}
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
-                        isRequired
-                      />
-                      <div className="w-32">
-                        <label className="text-sm text-gray-600 mb-1 block">{tString('currency.defaultCurrency')}</label>
-                        <div className="flex items-center h-10 px-3 bg-gray-50 rounded-lg border">
-                          <span className="text-sm font-medium text-gray-700">{defaultCurrency}</span>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">From business settings</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Textarea
-                    label={tString('items.itemDescription')}
-                    placeholder={tString('items.itemDescriptionPlaceholder')}
-                    value={itemDescription}
-                    onValueChange={setItemDescription}
-                    minRows={2}
-                  />
-                  <div className="flex items-center gap-4">
-                    <Switch
-                      isSelected={itemAvailable}
-                      onValueChange={setItemAvailable}
-                      color="success"
-                    >
-                      {tString('items.available')}
-                    </Switch>
-                    <Input
-                      label={tString('items.sortOrder')}
-                      placeholder="0"
-                      value={itemSortOrder.toString()}
-                      onValueChange={(value) => setItemSortOrder(parseInt(value) || 0)}
-                      type="number"
-                      className="w-32"
-                    />
-                  </div>
-                </div>
-
-                <Divider />
-
-                {/* Multiple Image Upload */}
-                <MultipleImageUpload
-                  images={itemImages}
-                  onImagesChange={setItemImages}
-                  maxImages={5}
-                  businessId={businessId}
-                />
-
-                <Divider />
-
-                {/* Options */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    {tString('items.options')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.optionName')}
-                      placeholder={tString('items.optionNamePlaceholder')}
-                      value={newOptionName}
-                      onValueChange={setNewOptionName}
-                    />
-                    <Input
-                      label={tString('items.optionPrice')}
-                      placeholder={tString('items.optionPricePlaceholder')}
-                      value={newOptionPrice}
-                      onValueChange={setNewOptionPrice}
-                      type="number"
-                      step="0.01"
-                      startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
-                      className="w-32"
-                    />
-                    <Button
-                      color="primary"
-                      variant="flat"
-                      onPress={addOption}
-                      isDisabled={!newOptionName.trim() || !newOptionPrice}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemOptions.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemOptions.map((option, index) => (
-                        <Chip
-                          key={`allergen-${option.name}-${index}`}
-                          onClose={() => removeOption(index)}
-                          variant="flat"
-                          color="primary"
-                        >
-                          {option.name} (+${(option.price_change || 0).toFixed(2)})
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Divider />
-
-                {/* Allergens */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5" />
-                    {tString('items.allergens')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.allergens')}
-                      placeholder={tString('items.addAllergen')}
-                      value={newAllergen}
-                      onValueChange={setNewAllergen}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addAllergen();
-                        }
-                      }}
-                      />
-                    <Button
-                      color="warning"
-                      variant="flat"
-                      onPress={addAllergen}
-                      isDisabled={!newAllergen.trim()}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemAllergens.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemAllergens.map((allergen, index) => (
-                        <Chip
-                          key={`allergen-${allergen}-${index}`}
-                          onClose={() => removeAllergen(allergen)}
-                          variant="flat"
-                          color="warning"
-                        >
-                          {allergen}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Divider />
-
-                {/* Dietary Tags */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Tag className="w-5 h-5" />
-                    {tString('items.dietaryTags')}
-                  </h4>
-                  <div className="flex gap-2">
-                    <Input
-                      label={tString('items.dietaryTags')}
-                      placeholder={tString('items.addDietaryTag')}
-                      value={newDietaryTag}
-                      onValueChange={setNewDietaryTag}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addDietaryTag();
-                        }
-                      }}
-                      />
-                    <Button
-                      color="success"
-                      variant="flat"
-                      onPress={addDietaryTag}
-                      isDisabled={!newDietaryTag.trim()}
-                    >
-                      {tString('buttons.add')}
-                    </Button>
-                  </div>
-                  {itemDietaryTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {itemDietaryTags.map((tag, index) => (
-                        <Chip
-                          key={`dietary-${tag}-${index}`}
-                          onClose={() => removeDietaryTag(tag)}
-                          variant="flat"
-                          color="success"
-                        >
-                          {tag}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={() => {
-                  resetItemForm();
-                  onClose();
-                }}>
-                  {tString('buttons.cancel')}
-                </Button>
-                <Button 
-                  color="primary" 
-                  onPress={handleUpdateItem}
-                  isDisabled={!itemName.trim() || !itemPrice}
-                >
-                  {tString('buttons.updateItem')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <EditItemModal
+        isOpen={isEditItemOpen}
+        onOpenChange={onEditItemOpenChange}
+        selectedCategoryIndex={selectedCategoryIndex}
+        menu={menu}
+        itemName={itemName}
+        setItemName={setItemName}
+        itemDescription={itemDescription}
+        setItemDescription={setItemDescription}
+        itemPrice={itemPrice}
+        setItemPrice={setItemPrice}
+        defaultCurrency={defaultCurrency}
+        itemImages={itemImages}
+        setItemImages={setItemImages}
+        itemAvailable={itemAvailable}
+        setItemAvailable={setItemAvailable}
+        itemSortOrder={itemSortOrder}
+        setItemSortOrder={setItemSortOrder}
+        businessId={businessId}
+        itemOptions={itemOptions}
+        newOptionName={newOptionName}
+        setNewOptionName={setNewOptionName}
+        newOptionPrice={newOptionPrice}
+        setNewOptionPrice={setNewOptionPrice}
+        onAddOption={addOption}
+        onRemoveOption={removeOption}
+        itemAllergens={itemAllergens}
+        newAllergen={newAllergen}
+        setNewAllergen={setNewAllergen}
+        onAddAllergen={addAllergen}
+        onRemoveAllergen={removeAllergen}
+        itemDietaryTags={itemDietaryTags}
+        newDietaryTag={newDietaryTag}
+        setNewDietaryTag={setNewDietaryTag}
+        onAddDietaryTag={addDietaryTag}
+        onRemoveDietaryTag={removeDietaryTag}
+        onUpdateItem={handleUpdateItem}
+        onResetForm={resetItemForm}
+        tString={tString}
+      />
 
     </div>
   );
