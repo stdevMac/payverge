@@ -33,7 +33,7 @@ if (typeof window !== 'undefined') {
       siweConfig: siweConfig(),
       debug: false,
       defaultNetwork: network,
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || process.env.NEXT_PUBLIC_PROJECT_ID || process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dummy-project-id",
+      projectId: process.env.NEXT_PUBLIC_PROJECT_ID || process.env.NEXT_PUBLIC_PROJECT_ID || process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dummy-project-id",
       features: {
         analytics: true,
         email: true, // default to true

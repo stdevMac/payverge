@@ -2,10 +2,10 @@ import { base, baseSepolia } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { getNetwork } from "../network";
 
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dummy-project-id";
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dummy-project-id";
 
-if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID && !process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
-  console.warn("NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not defined, using dummy value for build");
+if (!process.env.NEXT_PUBLIC_PROJECT_ID && !process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
+  console.warn("NEXT_PUBLIC_PROJECT_ID is not defined, using dummy value for build");
 }
 
 export const metadata = {
