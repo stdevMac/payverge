@@ -5,9 +5,9 @@
     },
     "landing": {
         "hero": {
-            "badge": "Próximamente",
+            "badge": "Ahora En Vivo - 0% Comisiones",
             "title": "De la mesa a tu billetera,",
-            "subtitle": "Payverge hace que los pagos gastronómicos sean sin fronteras, justos y sin esfuerzo. Los huéspedes escanean, pagan en USDC, y te pagan al instante. Sin bancos. Sin fricción.",
+            "subtitle": "Payverge hace que los pagos gastronómicos sean sin fronteras, justos y sin esfuerzo. Los huéspedes escanean, pagan en USDC, y te pagan al instante. 0% comisiones de transacción. Controlado por contratos inteligentes. Sin bancos. Sin fricción.",
             "dreamWords": [
                 "instantáneamente",
                 "sin esfuerzo",
@@ -37,8 +37,8 @@
                 "description": "Recibe el pago en USDC en el momento en que tus huéspedes terminan su comida."
             },
             "fair": {
-                "title": "Tarifas Justas",
-                "description": "Sin costos ocultos. Sin cargos sorpresa. Solo tarifas transparentes y bajas."
+                "title": "Cero Comisiones",
+                "description": "0% comisiones de transacción. Sin costos ocultos. Sin cargos sorpresa. Mantén el 100% de tus ingresos."
             },
             "global": {
                 "title": "Alcance Global",
@@ -69,8 +69,8 @@
                 "label": "Tiempo Promedio de Liquidación"
             },
             "fees": {
-                "value": "2.5%",
-                "label": "Tarifa de Transacción"
+                "value": "0%",
+                "label": "Comisiones de Transacción"
             },
             "uptime": {
                 "value": "99.9%",
@@ -81,24 +81,44 @@
                 "label": "Países Soportados"
             }
         },
-        "waitlist": {
-            "badge": "Únete a la revolución",
-            "title": "Sé de los primeros en experimentar el futuro de los pagos de hospitalidad",
-            "subtitle": "Únete a nuestra lista de espera y obtén acceso temprano a Payverge cuando lancemos.",
-            "form": {
-                "email": "Tu dirección de correo electrónico",
-                "businessName": "Nombre del negocio (opcional)",
-                "message": "Cuéntanos sobre tu negocio (opcional)",
-                "submit": "Unirse a Lista de Espera",
-                "submitting": "Uniéndose..."
+        "founderCall": {
+            "badge": "Comienza Hoy",
+            "title": "¿Listo para revolucionar los pagos de tu restaurante?",
+            "subtitle": "Reserva una llamada personal con nuestro fundador para ver Payverge en acción y obtener un cupón de $20 USDC para tu primer mes.",
+            "whatYouGet": "Lo que obtendrás:",
+            "benefits": {
+                "demo": "Demostración en vivo de la plataforma",
+                "demoDescription": "Ve exactamente cómo funciona Payverge para tu restaurante",
+                "setup": "Guía de configuración personalizada",
+                "setupDescription": "Obtén ayuda configurando tu perfil de negocio y menú",
+                "coupon": "Cupón de $20 USDC incluido",
+                "couponDescription": "Cupón exclusivo para comenzar sin costos",
+                "support": "Soporte directo del fundador",
+                "supportDescription": "Línea directa con nuestro fundador para preguntas y soporte"
             },
-            "success": {
-                "title": "¡Bienvenido al Programa de Socios Tempranos! 🚀",
-                "message": "¡Gracias por unirte! Te contactaremos con detalles de precios especiales y acceso temprano a Payverge.",
-                "sharePrompt": "¡Ayúdanos a correr la voz!",
-                "shareButton": "Compartir en X",
-                "closeButton": "Cerrar"
+            "cta": {
+                "primary": "Reservar Llamada con Fundador",
+                "title": "Reserva Tu Llamada",
+                "duration": "15 minutos • Consulta gratuita"
+            },
+            "testimonial": {
+                "text": "La llamada con el fundador fue increíblemente valiosa. Me mostró exactamente cómo funcionaría Payverge para mi restaurante y me ayudó a configurarlo en minutos.",
+                "author": "Propietario de Restaurante"
             }
+        },
+        "payment": {
+            "badge": "Potenciado por Smart Contracts",
+            "title": "Paga según creces",
+            "subtitle": "Elige la duración de tu suscripción y paga con USDC. Los smart contracts calculan automáticamente el tiempo de tu negocio basado en tu pago.",
+            "options": {
+                "1month": "Acceso por 1 Mes",
+                "3months": "Acceso por 3 Meses", 
+                "6months": "Acceso por 6 Meses",
+                "12months": "Acceso por 1 Año"
+            },
+            "popular": "Más Popular",
+            "description": "Paga desde $1 para comenzar. El tiempo de tu negocio se calcula automáticamente por nuestros smart contracts.",
+            "cta": "Iniciar Tu Negocio"
         },
         "roadmap": {
             "badge": "Próximamente",
@@ -158,9 +178,9 @@
                     "description": "USDC en tu billetera inmediatamente"
                 },
                 "fee": {
-                    "value": "2%",
-                    "label": "Tarifa Fija",
-                    "description": "Sin cargos ocultos"
+                    "value": "0%",
+                    "label": "Comisiones de Transacción",
+                    "description": "Mantén el 100% de tus ingresos"
                 },
                 "chargebacks": {
                     "value": "0%",
@@ -171,6 +191,26 @@
                     "value": "24/7",
                     "label": "Soporte",
                     "description": "Siempre aquí para ayudar"
+                }
+            }
+        },
+        "smartContract": {
+            "badge": "Impulsado por Contratos Inteligentes",
+            "title": "Pagos controlados por",
+            "titleEmphasis": "contratos inteligentes",
+            "subtitle": "Tus pagos están asegurados y automatizados por tecnología blockchain",
+            "features": {
+                "automated": {
+                    "title": "Liquidaciones Automatizadas",
+                    "description": "Los contratos inteligentes distribuyen automáticamente los pagos a tu billetera en el momento que los clientes pagan"
+                },
+                "transparent": {
+                    "title": "100% Transparente",
+                    "description": "Cada transacción se registra en la blockchain - sin comisiones ocultas, sin sorpresas"
+                },
+                "secure": {
+                    "title": "Criptográficamente Seguro",
+                    "description": "Tus fondos están protegidos por la misma tecnología que asegura miles de millones en DeFi"
                 }
             }
         },

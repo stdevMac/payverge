@@ -5,9 +5,9 @@
     },
     "landing": {
         "hero": {
-            "badge": "Coming soon",
+            "badge": "Now Live - 0% Fees",
             "title": "From the table to your wallet,",
-            "subtitle": "Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC, and you're paid instantly. No banks. No friction.",
+            "subtitle": "Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC, and you're paid instantly. 0% transaction fees. Smart contract controlled. No banks. No friction.",
             "dreamWords": [
                 "instantly",
                 "effortlessly",
@@ -37,8 +37,8 @@
                 "description": "Get paid in USDC the moment your guests finish their meal."
             },
             "fair": {
-                "title": "Fair Fees",
-                "description": "No hidden costs. No surprise charges. Just transparent, low fees."
+                "title": "Zero Fees",
+                "description": "0% transaction fees. No hidden costs. No surprise charges. Keep 100% of your revenue."
             },
             "global": {
                 "title": "Global Reach",
@@ -69,8 +69,8 @@
                 "label": "Average Settlement Time"
             },
             "fees": {
-                "value": "2.5%",
-                "label": "Transaction Fee"
+                "value": "0%",
+                "label": "Transaction Fees"
             },
             "uptime": {
                 "value": "99.9%",
@@ -81,24 +81,44 @@
                 "label": "Countries Supported"
             }
         },
-        "waitlist": {
-            "badge": "Join the revolution",
-            "title": "Be among the first to experience the future of hospitality payments",
-            "subtitle": "Join our waitlist and get early access to Payverge when we launch.",
-            "form": {
-                "email": "Your email address",
-                "businessName": "Business name (optional)",
-                "message": "Tell us about your business (optional)",
-                "submit": "Join Waitlist",
-                "submitting": "Joining..."
+        "founderCall": {
+            "badge": "Get Started Today",
+            "title": "Ready to revolutionize your restaurant payments?",
+            "subtitle": "Book a personal call with our founder to see Payverge in action and get a $20 USDC coupon for your first month.",
+            "whatYouGet": "What you'll get:",
+            "benefits": {
+                "demo": "Live platform demonstration",
+                "demoDescription": "See exactly how Payverge works for your restaurant",
+                "setup": "Personalized setup guidance",
+                "setupDescription": "Get help setting up your business profile and menu",
+                "coupon": "$20 USDC coupon included",
+                "couponDescription": "Exclusive coupon to get started with zero costs",
+                "support": "Direct founder support",
+                "supportDescription": "Direct line to our founder for questions and support"
             },
-            "success": {
-                "title": "Welcome to the Early Partner Program! 🚀",
-                "message": "Thanks for joining! We'll contact you with special pricing details and early access to Payverge.",
-                "sharePrompt": "Help us spread the word!",
-                "shareButton": "Share on X",
-                "closeButton": "Close"
+            "cta": {
+                "primary": "Book Founder Call",
+                "title": "Book Your Call",
+                "duration": "15 minutes • Free consultation"
+            },
+            "testimonial": {
+                "text": "The founder call was incredibly valuable. They showed me exactly how Payverge would work for my restaurant and helped me get set up in minutes.",
+                "author": "Restaurant Owner"
             }
+        },
+        "payment": {
+            "badge": "Smart Contract Powered",
+            "title": "Pay as you grow",
+            "subtitle": "Choose your subscription length and pay with USDC. Smart contracts automatically calculate your business time based on your payment.",
+            "options": {
+                "1month": "1 Month Access",
+                "3months": "3 Months Access", 
+                "6months": "6 Months Access",
+                "12months": "1 Year Access"
+            },
+            "popular": "Most Popular",
+            "description": "Pay anywhere from $1 to get started. Your business time is calculated automatically by our smart contracts.",
+            "cta": "Start Your Business"
         },
         "roadmap": {
             "badge": "Coming Soon",
@@ -158,9 +178,9 @@
                     "description": "USDC in your wallet immediately"
                 },
                 "fee": {
-                    "value": "2%",
-                    "label": "Flat Fee",
-                    "description": "No hidden charges"
+                    "value": "0%",
+                    "label": "Transaction Fees",
+                    "description": "Keep 100% of your revenue"
                 },
                 "chargebacks": {
                     "value": "0%",
@@ -171,6 +191,26 @@
                     "value": "24/7",
                     "label": "Support",
                     "description": "Always here to help"
+                }
+            }
+        },
+        "smartContract": {
+            "badge": "Smart Contract Powered",
+            "title": "Payments controlled by",
+            "titleEmphasis": "smart contracts",
+            "subtitle": "Your payments are secured and automated by blockchain technology",
+            "features": {
+                "automated": {
+                    "title": "Automated Settlements",
+                    "description": "Smart contracts automatically distribute payments to your wallet the moment customers pay"
+                },
+                "transparent": {
+                    "title": "100% Transparent",
+                    "description": "Every transaction is recorded on the blockchain - no hidden fees, no surprises"
+                },
+                "secure": {
+                    "title": "Cryptographically Secure",
+                    "description": "Your funds are protected by the same technology that secures billions in DeFi"
                 }
             }
         },

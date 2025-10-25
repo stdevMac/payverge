@@ -5,6 +5,7 @@ import { useSimpleLocale, getTranslation } from '@/i18n/SimpleTranslationProvide
 import { TypewriterText } from "@/components/ui/TypewriterText";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useRegistrationFee, formatUsdcAmount } from '@/contracts/hooks';
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,40 @@ export default function Home() {
   const [currentLocale, setCurrentLocale] = useState(locale);
   const router = useRouter();
 
+  // Smart contract data
+  const { data: registrationFee } = useRegistrationFee();
+
+  // Helper function to get subscription options based on registration fee
+  const getSubscriptionOptions = () => {
+    const yearlyFee = registrationFee && typeof registrationFee === 'bigint'
+      ? Number(formatUsdcAmount(registrationFee))
+      : 120; // Fallback value
+
+    return [
+      {
+        months: 1,
+        amount: (yearlyFee / 12).toFixed(2),
+        description: tString('payment.options.1month') || '1 Month Access',
+      },
+      {
+        months: 3,
+        amount: (yearlyFee / 4).toFixed(2),
+        description: tString('payment.options.3months') || '3 Months Access',
+      },
+      {
+        months: 6,
+        amount: (yearlyFee / 2).toFixed(2),
+        description: tString('payment.options.6months') || '6 Months Access',
+        popular: true,
+      },
+      {
+        months: 12,
+        amount: yearlyFee.toFixed(2),
+        description: tString('payment.options.12months') || '1 Year Access',
+      },
+    ];
+  };
+
   // Update translations when locale changes
   useEffect(() => {
     setCurrentLocale(locale);
@@ -25,7 +60,7 @@ export default function Home() {
     const result = getTranslation(`landing.${key}`, currentLocale);
     return Array.isArray(result) ? result : result as string;
   };
-  
+
   const tString = (key: string): string => {
     const result = getTranslation(`landing.${key}`, currentLocale);
     return Array.isArray(result) ? result[0] || key : result as string;
@@ -34,7 +69,7 @@ export default function Home() {
   // Dynamic content for typewriter effect - get from translations
   const dreamWords = getTranslation('landing.hero.dreamWords', currentLocale) as string[] || [
     "instantly",
-    "effortlessly", 
+    "effortlessly",
     "globally",
     "fairly",
     "seamlessly",
@@ -67,7 +102,7 @@ export default function Home() {
   };
 
   const handleShareOnX = () => {
-    const tweetText = encodeURIComponent("Just signed up for updates from https://payverge.io, the future of crypto payments for hospitality! 🚀 Excited to see what they're building.");
+    const tweetText = encodeURIComponent("Just discovered https://payverge.io - 0% transaction fees for restaurants with crypto payments! 🚀 This is the future of hospitality payments.");
     const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
     window.open(tweetUrl, '_blank');
   };
@@ -109,7 +144,7 @@ export default function Home() {
                 {t('hero.title')}<br />
                 <TypewriterText
                   words={dreamWords}
-                  className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-semibold italic"
+                  className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 bg-clip-text text-transparent font-semibold italic"
                 />
               </h1>
               <p className="text-lg font-light leading-relaxed max-w-2xl mx-auto text-gray-600 mb-12 tracking-wide">
@@ -117,18 +152,13 @@ export default function Home() {
               </p>
               {/* Not yet to be deployed! */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Button size="large" onClick={() => router.push('/business/register')}>
-                {t('hero.cta.register')}
-              </Button>
-              <Button variant="secondary" size="large" onClick={() => router.push('/dashboard')}>
-                {t('hero.cta.dashboard')}
-              </Button>
-            </div>
-              {/* <div className="text-center">
-                <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
-                  Become an Early Partner
+                <Button size="large" onClick={() => router.push('/business/register')}>
+                  {t('hero.cta.register')}
                 </Button>
-              </div> */}
+                <Button variant="secondary" size="large" onClick={() => router.push('/dashboard')}>
+                  {t('hero.cta.dashboard')}
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -276,7 +306,7 @@ export default function Home() {
               </div>
 
               <div className="text-center">
-                <Button size="large" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
+                <Button size="large" onClick={() => document.getElementById('founder-call')?.scrollIntoView({ behavior: 'smooth' })}>
                   {tString('roadmap.cta')}
                 </Button>
               </div>
@@ -518,118 +548,167 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final CTA Section */}
-        <section id="waitlist" className="py-16 lg:py-20 bg-white">
+        {/* Founder Call CTA Section */}
+        <section id="founder-call" className="py-16 lg:py-20 bg-white">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '3s' }}></div>
-                {t('waitlist.badge')}
+                {t('founderCall.badge')}
               </div>
               <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                {t('waitlist.title')}
+                {t('founderCall.title')}
               </h2>
               <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                {t('waitlist.subtitle')}
+                {t('founderCall.subtitle')}
               </p>
             </div>
 
-            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button size="large" onClick={() => router.push('/business/register')}>
-                Register Your Business
-              </Button>
-              <Button variant="secondary" size="large" onClick={() => router.push('/dashboard')}>
-                Access Dashboard
-              </Button>
-            </div> */}
+            <div className="max-w-5xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                {/* Benefits List */}
+                <div className="space-y-6">
+                  <h3 className="text-xl font-medium text-gray-900 mb-6 tracking-wide">{tString('founderCall.whatYouGet')}</h3>
 
-            {/* Pricing info */}
-            <div className="text-center mb-16">
-              <p className="text-sm text-gray-600 mb-2">
-                One-time setup fee • Annual subscription • 2% transaction fee
-              </p>
-              {/* <button
-                onClick={() => document.getElementById('updates')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-gray-500 hover:text-gray-700 transition-colors underline text-sm"
-              >
-                Become an Early Partner for Special Pricing
-              </button> */}
-            </div>
-
-            <div id="updates" className="max-w-2xl mx-auto">
-              <div className="bg-gray-50 p-8 rounded-2xl text-center">
-                <h3 className="text-xl font-medium text-gray-900 mb-4 tracking-wide">Become an Early Partner</h3>
-                <p className="text-gray-600 font-light mb-6 leading-relaxed">
-                  Get special pricing, priority support, and help shape the future of restaurant payments.
-                </p>
-
-                <form onSubmit={handleWaitlistSubmit} className="max-w-sm mx-auto space-y-4">
-                  <input
-                    type="email"
-                    placeholder={tString('waitlist.form.email')}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-light"
-                  />
-                  <input
-                    type="text"
-                    placeholder={tString('waitlist.form.businessName')}
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    className="w-full px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-light"
-                  />
-                  <input
-                    type="text"
-                    placeholder={tString('waitlist.form.message')}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="w-full px-4 py-3 bg-white text-gray-900 placeholder-gray-500 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-light"
-                  />
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full"
-                  >
-                    {isSubmitting ? tString('waitlist.form.submitting') : tString('waitlist.form.submit')}
-                  </Button>
-                </form>
-              </div>
-            </div>
-
-            <div className="mt-16 text-center">
-              <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.demo')}</h4>
+                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.demoDescription')}</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.usdc.title')}</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.usdc.description')}</p>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.setup')}</h4>
+                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.setupDescription')}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.coupon')}</h4>
+                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.couponDescription')}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.support')}</h4>
+                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.supportDescription')}</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
+                {/* CTA Card */}
+                <div className="bg-gray-50 rounded-2xl p-8 lg:p-12 shadow-sm border border-gray-200">
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                      <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-medium text-gray-900 mb-2">{tString('founderCall.cta.title')}</h3>
+                    <p className="text-gray-600 font-light mb-6">{tString('founderCall.cta.duration')}</p>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.hospitality.title')}</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.hospitality.description')}</p>
-                </div>
 
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
+                  <div className="space-y-4">
+                    <Button
+                      size="large"
+                      onClick={() => window.open('https://calendar.app.google/Etej2zEcndeK8LgU7', '_blank')}
+                      className="w-full"
+                    >
+                      {tString('founderCall.cta.primary')}
+                    </Button>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{tString('trust.global.title')}</h3>
-                  <p className="text-gray-600 font-light leading-relaxed">{tString('trust.global.description')}</p>
+
+                  {/* Testimonial */}
+                  {/* <div className="mt-8 pt-6 border-t border-gray-200">
+                    <blockquote className="text-sm text-gray-600 font-light italic mb-3">
+                      &ldquo;{tString('founderCall.testimonial.text')}&rdquo;
+                    </blockquote>
+                    <cite className="text-xs text-gray-500 font-medium">
+                      — {tString('founderCall.testimonial.author')}
+                    </cite>
+                  </div> */}
                 </div>
               </div>
             </div>
+
+            {/* Smart Contract Payment Section */}
+            <section className="py-16 lg:py-20 bg-gray-50">
+              <div className="container mx-auto px-6">
+                <div className="max-w-4xl mx-auto text-center mb-16">
+                  <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                    {t('payment.badge')}
+                  </div>
+                  <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
+                    {t('payment.title')}
+                  </h2>
+                  <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
+                    {t('payment.subtitle')}
+                  </p>
+                </div>
+
+                <div className="max-w-4xl mx-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                    {getSubscriptionOptions().map((option) => (
+                      <div
+                        key={option.months}
+                        className={`relative bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center hover:shadow-md transition-all duration-200 ${option.popular ? 'ring-2 ring-gray-900' : ''
+                          }`}
+                      >
+                        {option.popular && (
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                            <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-medium">
+                              {tString('payment.popular')}
+                            </span>
+                          </div>
+                        )}
+                        <div className="text-2xl font-light text-gray-900 mb-2 tracking-wide">
+                          ${option.amount}
+                        </div>
+                        <div className="text-sm text-gray-600 mb-3 font-light">
+                          {option.description}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-gray-600 mb-8 font-light leading-relaxed max-w-2xl mx-auto">
+                      {t('payment.description')}
+                    </p>
+                    <Button
+                      size="large"
+                      onClick={() => router.push('/business/register')}
+                    >
+                      {tString('payment.cta')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </section>
 
@@ -660,10 +739,10 @@ export default function Home() {
               {/* Modal content */}
               <div className="text-center">
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  {tString('waitlist.success.title')}
+                  {tString('founderCall.testimonial.author')} Says Thanks!
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  {tString('waitlist.success.message')}
+                  Thanks for your interest! We&apos;ll be in touch soon with updates about Payverge.
                 </p>
 
                 {/* Share section */}
