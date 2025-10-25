@@ -2464,5 +2464,76 @@
         "card": "Tarjeta",
         "bankTransfer": "Transferencia Bancaria"
       }
+    },
+    "googleBusinessSearch": {
+      "errors": {
+        "emptyQuery": "Por favor ingresa un término de búsqueda",
+        "noResults": "No se encontraron negocios que coincidan con tu búsqueda",
+        "searchFailed": "Error al buscar negocios. Por favor intenta de nuevo.",
+        "linkFailed": "Error al vincular Google Business. Por favor intenta de nuevo.",
+        "removeFailed": "Error al eliminar la integración con Google Business. Por favor intenta de nuevo."
+      },
+      "success": {
+        "linked": "¡Google Business vinculado exitosamente!",
+        "removed": "¡Integración con Google Business eliminada exitosamente!"
+      },
+      "connected": {
+        "title": "Google Business Conectado",
+        "status": "Conectado",
+        "businessName": "Nombre del Negocio",
+        "quickActions": "Acciones Rápidas",
+        "actions": {
+          "manage": {
+            "title": "Administrar Perfil del Negocio",
+            "description": "Actualiza tu perfil y configuración de Google Business"
+          },
+          "review": {
+            "title": "Ver Reseñas",
+            "description": "Ve y responde a las reseñas de los clientes"
+          },
+          "maps": {
+            "title": "Ver en Google Maps",
+            "description": "Ve cómo aparece tu negocio en Google Maps"
+          }
+        },
+        "integration": {
+          "title": "Integración Activa",
+          "description": "Tu negocio está conectado a los servicios de Google"
+        },
+        "removeButton": "Eliminar Integración"
+      },
+      "search": {
+        "title": "Conectar Google Business",
+        "description": "Vincula tu Perfil de Google Business para habilitar solicitudes de reseñas y mejorar tu presencia en línea.",
+        "inputLabel": "Busca tu negocio",
+        "inputPlaceholder": "Ingresa el nombre de tu negocio y ubicación",
+        "inputDescription": "Intenta buscar con el nombre de tu negocio y ciudad para mejores resultados",
+        "searchButton": "Buscar Negocios",
+        "selectBusiness": "Selecciona Tu Negocio",
+        "tips": {
+          "title": "Consejos de Búsqueda:",
+          "tip1": "Incluye el nombre de tu negocio y ciudad",
+          "tip2": "Prueba diferentes variaciones del nombre de tu negocio",
+          "tip3": "Incluye la dirección si es necesario",
+          "tip4": "Asegúrate de que tu negocio tenga un Perfil de Google Business"
+        },
+        "noProfile": {
+          "title": "¿No ves tu negocio?",
+          "description": "Es posible que necesites crear un Perfil de Google Business primero en",
+          "suffix": "antes de poder conectarlo aquí."
+        }
+      },
+      "modal": {
+        "title": "Confirmar Selección del Negocio",
+        "confirmText": "¿Es este tu negocio?",
+        "businessDetails": "Detalles del Negocio:",
+        "address": "Dirección:",
+        "rating": "Calificación:",
+        "reviews": "reseñas",
+        "businessTypes": "Tipos de Negocio:",
+        "confirmButton": "Sí, Este Es Mi Negocio",
+        "cancelButton": "Cancelar",
+        "linking": "Vinculando Negocio..."
+      }
     }
 }

@@ -2456,5 +2456,76 @@
         "card": "Card",
         "bankTransfer": "Bank Transfer"
       }
+    },
+    "googleBusinessSearch": {
+      "errors": {
+        "emptyQuery": "Please enter a search term",
+        "noResults": "No businesses found matching your search",
+        "searchFailed": "Failed to search for businesses. Please try again.",
+        "linkFailed": "Failed to link Google Business. Please try again.",
+        "removeFailed": "Failed to remove Google Business integration. Please try again."
+      },
+      "success": {
+        "linked": "Google Business successfully linked!",
+        "removed": "Google Business integration removed successfully!"
+      },
+      "connected": {
+        "title": "Google Business Connected",
+        "status": "Connected",
+        "businessName": "Business Name",
+        "quickActions": "Quick Actions",
+        "actions": {
+          "manage": {
+            "title": "Manage Business Profile",
+            "description": "Update your Google Business profile and settings"
+          },
+          "review": {
+            "title": "View Reviews",
+            "description": "See and respond to customer reviews"
+          },
+          "maps": {
+            "title": "View on Google Maps",
+            "description": "See how your business appears on Google Maps"
+          }
+        },
+        "integration": {
+          "title": "Integration Active",
+          "description": "Your business is connected to Google services"
+        },
+        "removeButton": "Remove Integration"
+      },
+      "search": {
+        "title": "Connect Google Business",
+        "description": "Link your Google Business Profile to enable review requests and improve your online presence.",
+        "inputLabel": "Search for your business",
+        "inputPlaceholder": "Enter your business name and location",
+        "inputDescription": "Try searching with your business name and city for best results",
+        "searchButton": "Search Businesses",
+        "selectBusiness": "Select Your Business",
+        "tips": {
+          "title": "Search Tips:",
+          "tip1": "Include your business name and city",
+          "tip2": "Try different variations of your business name",
+          "tip3": "Include street address if needed",
+          "tip4": "Make sure your business has a Google Business Profile"
+        },
+        "noProfile": {
+          "title": "Don't see your business?",
+          "description": "You may need to create a Google Business Profile first at",
+          "suffix": "before you can connect it here."
+        }
+      },
+      "modal": {
+        "title": "Confirm Business Selection",
+        "confirmText": "Is this your business?",
+        "businessDetails": "Business Details:",
+        "address": "Address:",
+        "rating": "Rating:",
+        "reviews": "reviews",
+        "businessTypes": "Business Types:",
+        "confirmButton": "Yes, This Is My Business",
+        "cancelButton": "Cancel",
+        "linking": "Linking Business..."
+      }
     }
 }

@@ -788,7 +788,7 @@ export default function MenuBuilder({ businessId, initialMenu = [], onMenuUpdate
                 return (
                   <>
                     Found <strong>{totalItems}</strong> items in <strong>{totalCategories}</strong> categories
-                    {searchQuery && <span> matching "{searchQuery}"</span>}
+                    {searchQuery && <span> matching &ldquo;{searchQuery}&rdquo;</span>}
                     {searchFilter !== 'all' && <span> ({searchFilter})</span>}
                   </>
                 );
