@@ -5,7 +5,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Now Live - 0% Fees",
+            "badge": "Live on Base Testnet - 0% Fees",
             "title": "From the table to your wallet,",
             "subtitle": "Payverge makes dining payments borderless, fair, and effortless. Guests scan, pay in USDC, and you're paid instantly. 0% transaction fees. Smart contract controlled. No banks. No friction.",
             "dreamWords": [
@@ -32,17 +32,23 @@
             "benefitsTitle": "Fast. Fair. Global."
         },
         "benefits": {
+            "badge": "Benefits",
+            "title": "Why restaurants choose Payverge",
             "instant": {
-                "title": "Instant Settlement",
-                "description": "Get paid in USDC the moment your guests finish their meal."
+                "title": "Ready to Claim",
+                "description": "Payments are ready to claim instantly. Withdraw to your wallet anytime, no delays."
             },
-            "fair": {
-                "title": "Zero Fees",
-                "description": "0% transaction fees. No hidden costs. No surprise charges. Keep 100% of your revenue."
+            "fees": {
+                "title": "Lower Fees",
+                "description": "Transparent pricing with no hidden costs or surprise monthly charges."
             },
             "global": {
                 "title": "Global Reach",
-                "description": "Accept payments from anywhere in the world, in any currency."
+                "description": "Accept payments from anywhere in the world with USDC."
+            },
+            "comingSoon": {
+                "title": "Zero Transaction Fees",
+                "description": "Coming soon: We'll cover all blockchain transaction fees for you."
             }
         },
         "features": {
@@ -229,12 +235,14 @@
             }
         },
         "footer": {
+            "companyName": "Payverge",
+            "companyDescription": "Modern payments for hospitality",
             "tagline": "Payverge operates exclusively on USDC. No banks. No borders. Just better payments.",
             "links": {
                 "about": "About",
                 "contact": "Contact",
                 "privacy": "Privacy",
-                "clear": "Clear"
+                "terms": "Terms"
             }
         }
     },

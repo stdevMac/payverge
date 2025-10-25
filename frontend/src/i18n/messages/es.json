@@ -5,7 +5,7 @@
     },
     "landing": {
         "hero": {
-            "badge": "Ahora En Vivo - 0% Comisiones",
+            "badge": "En Vivo en Base Testnet - 0% Comisiones",
             "title": "De la mesa a tu billetera,",
             "subtitle": "Payverge hace que los pagos gastronómicos sean sin fronteras, justos y sin esfuerzo. Los huéspedes escanean, pagan en USDC, y te pagan al instante. 0% comisiones de transacción. Controlado por contratos inteligentes. Sin bancos. Sin fricción.",
             "dreamWords": [
@@ -32,17 +32,23 @@
             "benefitsTitle": "Rápido. Justo. Global."
         },
         "benefits": {
+            "badge": "Beneficios",
+            "title": "Por qué los restaurantes eligen Payverge",
             "instant": {
-                "title": "Liquidación Instantánea",
-                "description": "Recibe el pago en USDC en el momento en que tus huéspedes terminan su comida."
+                "title": "Listo para Reclamar",
+                "description": "Los pagos están listos para reclamar instantáneamente. Retira a tu billetera en cualquier momento, sin demoras."
             },
-            "fair": {
-                "title": "Cero Comisiones",
-                "description": "0% comisiones de transacción. Sin costos ocultos. Sin cargos sorpresa. Mantén el 100% de tus ingresos."
+            "fees": {
+                "title": "Comisiones Más Bajas",
+                "description": "Precios transparentes sin costos ocultos o cargos mensuales sorpresa."
             },
             "global": {
                 "title": "Alcance Global",
-                "description": "Acepta pagos desde cualquier parte del mundo, en cualquier moneda."
+                "description": "Acepta pagos desde cualquier parte del mundo con USDC."
+            },
+            "comingSoon": {
+                "title": "Cero Comisiones de Transacción",
+                "description": "Próximamente: Cubriremos todas las comisiones de transacción blockchain por ti."
             }
         },
         "features": {
@@ -229,6 +235,8 @@
             }
         },
         "footer": {
+            "companyName": "Payverge",
+            "companyDescription": "Pagos modernos para hostelería",
             "tagline": "Payverge opera exclusivamente con USDC. Sin bancos. Sin fronteras. Solo mejores pagos.",
             "links": {
                 "about": "Acerca de",

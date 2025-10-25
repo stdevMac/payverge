@@ -165,8 +165,7 @@ export default function Home() {
 
         {/* Vision Section */}
         <section id="vision" className="py-16 lg:py-20 bg-gray-50">
-          <div className="w-full">
-            <div className="container mx-auto px-6">
+          <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
@@ -224,7 +223,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
         </section>
 
         {/* How It Works Section */}
@@ -288,8 +286,7 @@ export default function Home() {
 
         {/* Roadmap / Coming Soon Section */}
         <section className="py-16 lg:py-20 bg-gray-50">
-          <div className="w-full">
-            <div className="container mx-auto px-6">
+          <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
@@ -311,7 +308,6 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-          </div>
         </section>
 
         {/* Complete Platform Section */}
@@ -412,23 +408,23 @@ export default function Home() {
             <div className="max-w-4xl mx-auto text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '2.5s' }}></div>
-                Benefits
+                {t('benefits.badge')}
               </div>
               <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                Why restaurants choose Payverge
+                {t('benefits.title')}
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-12">
               <div className="text-center">
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Instant Settlements</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{t('benefits.instant.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Money hits your wallet the moment guests pay. No 2-3 day delays.
+                  {t('benefits.instant.description')}
                 </p>
               </div>
 
@@ -438,9 +434,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Lower Fees</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{t('benefits.fees.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Transparent pricing with no hidden costs or surprise monthly charges.
+                  {t('benefits.fees.description')}
                 </p>
               </div>
 
@@ -450,9 +446,26 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">Global Reach</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{t('benefits.global.title')}</h3>
                 <p className="text-gray-600 text-sm font-light leading-relaxed">
-                  Accept payments from anywhere in the world with USDC.
+                  {t('benefits.global.description')}
+                </p>
+              </div>
+
+              <div className="text-center relative">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                    Coming Soon
+                  </span>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 tracking-wide">{t('benefits.comingSoon.title')}</h3>
+                <p className="text-gray-600 text-sm font-light leading-relaxed">
+                  {t('benefits.comingSoon.description')}
                 </p>
               </div>
             </div>
@@ -460,9 +473,8 @@ export default function Home() {
         </section>
 
         {/* Social Proof Section */}
-        <section className="py-16 lg:py-20 bg-gray-50">
-          <div className="w-full">
-            <div className="container mx-auto px-6">
+        <section className="py-16 lg:py-20 bg-white">
+          <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto text-center mb-16">
                 <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8 shadow-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" style={{ animationDelay: '2.5s' }}></div>
@@ -545,6 +557,62 @@ export default function Home() {
                 </div>
               </div>
             </div>
+        </section>
+
+        {/* Smart Contract Payment Section */}
+        <section className="py-16 lg:py-20 bg-gray-50">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center mb-16">
+              <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                {t('payment.badge')}
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
+                {t('payment.title')}
+              </h2>
+              <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
+                {t('payment.subtitle')}
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                {getSubscriptionOptions().map((option) => (
+                  <div
+                    key={option.months}
+                    className={`relative bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center hover:shadow-md transition-all duration-200 ${
+                      option.popular ? 'ring-2 ring-gray-900' : ''
+                    }`}
+                  >
+                    {option.popular && (
+                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                        <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-medium">
+                          {tString('payment.popular')}
+                        </span>
+                      </div>
+                    )}
+                    <div className="text-2xl font-light text-gray-900 mb-2 tracking-wide">
+                      ${option.amount}
+                    </div>
+                    <div className="text-sm text-gray-600 mb-3 font-light">
+                      {option.description}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <p className="text-gray-600 mb-8 font-light leading-relaxed max-w-2xl mx-auto">
+                  {t('payment.description')}
+                </p>
+                <Button
+                  size="large"
+                  onClick={() => router.push('/business/register')}
+                >
+                  {tString('payment.cta')}
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -574,30 +642,6 @@ export default function Home() {
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                       <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.demo')}</h4>
-                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.demoDescription')}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-1">{tString('founderCall.benefits.setup')}</h4>
-                      <p className="text-gray-600 font-light">{tString('founderCall.benefits.setupDescription')}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                       </svg>
                     </div>
                     <div>
@@ -653,62 +697,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* Smart Contract Payment Section */}
-            <section className="py-16 lg:py-20 bg-gray-50">
-              <div className="container mx-auto px-6">
-                <div className="max-w-4xl mx-auto text-center mb-16">
-                  <div className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 mb-8">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
-                    {t('payment.badge')}
-                  </div>
-                  <h2 className="text-3xl lg:text-4xl font-light text-gray-900 mb-6 tracking-wide">
-                    {t('payment.title')}
-                  </h2>
-                  <p className="text-lg font-light leading-relaxed text-gray-600 tracking-wide">
-                    {t('payment.subtitle')}
-                  </p>
-                </div>
-
-                <div className="max-w-4xl mx-auto">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                    {getSubscriptionOptions().map((option) => (
-                      <div
-                        key={option.months}
-                        className={`relative bg-white p-6 rounded-2xl shadow-sm border border-gray-200 text-center hover:shadow-md transition-all duration-200 ${option.popular ? 'ring-2 ring-gray-900' : ''
-                          }`}
-                      >
-                        {option.popular && (
-                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                            <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-medium">
-                              {tString('payment.popular')}
-                            </span>
-                          </div>
-                        )}
-                        <div className="text-2xl font-light text-gray-900 mb-2 tracking-wide">
-                          ${option.amount}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-3 font-light">
-                          {option.description}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-gray-600 mb-8 font-light leading-relaxed max-w-2xl mx-auto">
-                      {t('payment.description')}
-                    </p>
-                    <Button
-                      size="large"
-                      onClick={() => router.push('/business/register')}
-                    >
-                      {tString('payment.cta')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
           </div>
         </section>
 
@@ -769,24 +757,17 @@ export default function Home() {
         <footer className="py-12 bg-gray-50 border-t border-gray-200">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-                <div className="mb-4 md:mb-0">
-                  <h3 className="text-lg font-medium text-gray-900 tracking-wide">Payverge</h3>
-                  <p className="text-sm text-gray-600 font-light">Modern payments for hospitality</p>
+              <div className="text-center">
+                <div className="mb-6">
+                  <h3 className="text-lg font-medium text-gray-900 tracking-wide mb-2">{t('footer.companyName')}</h3>
+                  <p className="text-sm text-gray-600 font-light">{t('footer.companyDescription')}</p>
                 </div>
 
-                <div className="flex gap-6 text-sm">
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.about')}</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.contact')}</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.privacy')}</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">{t('footer.links.terms')}</a>
+                <div className="pt-6 border-t border-gray-200">
+                  <p className="text-sm text-gray-500 font-light">
+                    &ldquo;{t('footer.tagline')}&rdquo;
+                  </p>
                 </div>
-              </div>
-
-              <div className="text-center pt-8 border-t border-gray-200">
-                <p className="text-sm text-gray-500 font-light">
-                  &ldquo;{t('footer.tagline')}&rdquo;
-                </p>
               </div>
             </div>
           </div>
