@@ -1,16 +1,16 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/mail"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"payverge/internal/database"
 	"payverge/internal/metrics"
 	"payverge/internal/structs"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Subscribe it's a function for subscribing our emails to our newsletter
@@ -56,11 +56,6 @@ func Subscribe(c *gin.Context) {
 		metrics.SubscriptionOperations.WithLabelValues("subscribe", "error").Inc()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error subscribing"})
 		return
-	}
-
-	err = structs.SendToNotion(subscriber)
-	if err != nil {
-		fmt.Println("Error sending to Notion:", err)
 	}
 
 	// Update metrics
