@@ -14,9 +14,9 @@ contract DeployPayvergeEcosystem is Script {
 
         // Get environment variables
         address usdcToken = vm.envAddress("USDC_TOKEN_ADDRESS");
-        uint256 platformFeeBps = vm.envUint("PLATFORM_FEE_BPS"); // Default: 200 (2%)
+        uint256 platformFeeBps = 0; // 0% platform fee
         address billCreator = vm.envAddress("BILL_CREATOR_ADDRESS");
-        uint256 registrationFee = vm.envUint("REGISTRATION_FEE"); // Default: 0 (free registration)
+        uint256 registrationFee = 100 * 10**6; // $100 USDC (6 decimals)
 
         console.log("Deployer:", deployer);
         console.log("USDC Token:", usdcToken);
