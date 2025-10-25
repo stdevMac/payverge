@@ -1,18 +1,18 @@
 == Logs ==
   Deployer: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
   USDC Token: 0x82d491aB292C06Aa7148234b910cdea5FE788223
-  Platform Fee BPS: 200
+  Platform Fee BPS: 0
   Bill Creator: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
-  Registration Fee: 1000
-  Implementation deployed at: 0x71c7beae26b3b6f5030831d615deacb7633331c4
-  Proxy deployed at: 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
+  Registration Fee: 100000000
+  Implementation deployed at: 0xB6caDDC82572BF0d4b9577Ca83264A011B9Df7C9
+  Proxy deployed at: 0x14135F46553a29c1cCa74ADdC886cC2732c7124B
   
 === DEPLOYING PROFIT SPLIT CONTRACT ===
-  Profit split contract deployed at: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  Profit split contract deployed at: 0xcfccE291bBCe2503eEa1bD6c35c8802744e8f128
   
 === DEPLOYING REFERRALS CONTRACT ===
-  Referrals contract deployed at: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  Referrals treasury set to profit split contract: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  Referrals contract deployed at: 0xC462861BF7F52453E06CC03BCd935Ef84AC42c1c
+  Referrals treasury set to profit split contract: 0xcfccE291bBCe2503eEa1bD6c35c8802744e8f128
   
 === CONNECTING CONTRACTS ===
   Set referrals contract in PayvergePayments
@@ -21,25 +21,25 @@
   Granted distributor role to deployer
   
 === VERIFYING DEPLOYMENT ===
-  PayvergePayments version: 2.1.0-profit-split-only
+  PayvergePayments version: 2.2.0-coupons-and-subscriptions
   USDC token address: 0x82d491aB292C06Aa7148234b910cdea5FE788223
-  Platform fee rate: 200
+  Platform fee rate: 0
   Bill creator address: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
-  Registration fee: 1000
-  Referrals contract: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  Profit split contract: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  Registration fee: 100000000
+  Referrals contract: 0xC462861BF7F52453E06CC03BCd935Ef84AC42c1c
+  Profit split contract: 0xcfccE291bBCe2503eEa1bD6c35c8802744e8f128
   
 === DEPLOYMENT COMPLETE ===
-  PayvergePayments Implementation: 0x71c7beae26b3b6f5030831d615deacb7633331c4
-  PayvergePayments Proxy (Main Contract): 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
-  PayvergeReferrals Proxy: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  PayvergeProfitSplit Proxy: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
-  Contract Version: 2.1.0-profit-split-only
+  PayvergePayments Implementation: 0xB6caDDC82572BF0d4b9577Ca83264A011B9Df7C9
+  PayvergePayments Proxy (Main Contract): 0x14135F46553a29c1cCa74ADdC886cC2732c7124B
+  PayvergeReferrals Proxy: 0xC462861BF7F52453E06CC03BCd935Ef84AC42c1c
+  PayvergeProfitSplit Proxy: 0xcfccE291bBCe2503eEa1bD6c35c8802744e8f128
+  Contract Version: 2.2.0-coupons-and-subscriptions
   
 === ENVIRONMENT VARIABLES NEEDED ===
-  PAYVERGE_CONTRACT_ADDRESS=0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
-  PAYVERGE_REFERRALS_ADDRESS=0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  PAYVERGE_PROFIT_SPLIT_ADDRESS=0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
+  PAYVERGE_CONTRACT_ADDRESS= 0x14135F46553a29c1cCa74ADdC886cC2732c7124B
+  PAYVERGE_REFERRALS_ADDRESS= 0xC462861BF7F52453E06CC03BCd935Ef84AC42c1c
+  PAYVERGE_PROFIT_SPLIT_ADDRESS= 0xcfccE291bBCe2503eEa1bD6c35c8802744e8f128
   USDC_CONTRACT_ADDRESS= 0x82d491aB292C06Aa7148234b910cdea5FE788223
   
 === FRONTEND INTEGRATION ===
@@ -53,113 +53,3 @@
   2. Configure profit distribution percentages
   3. Grant additional distributor roles if needed
   4. Test referral system with basic/premium registrations
-
-## Setting up 1 EVM.
-
-
-==================
-Upgrade
-
-Script ran successfully.
-
-== Logs ==
-  Deployer: 0xe287a52A3ce43C480c7247D10242ee7227aFb90F
-  PayvergePayments Proxy: 0xaef5dd65F73828b45bd5aD0CfB082e574F81Af84
-  PayvergeReferrals Proxy: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  PayvergeProfitSplit Proxy: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
-  Upgrade Type: 3
-  
-=== UPGRADING PAYVERGE PAYMENTS ===
-  New PayvergePayments implementation: 0x9CE8D0E72992F0Df6462aC5F23bd9156761c0DD4
-  Old version: 2.1.0-profit-split-only
-  New version: 2.2.0-coupons-and-subscriptions
-  USDC token: 0x82d491aB292C06Aa7148234b910cdea5FE788223
-  Platform fee rate: 200
-  Referrals contract: 0x253eb66E94Ebb110E630902E04ec5B473e9Ac111
-  Profit split contract: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
-  PayvergePayments upgrade successful
-  
-=== UPGRADING PAYVERGE REFERRALS ===
-  New PayvergeReferrals implementation: 0xc9Eb187Ee4e128587cfc55dafA45Fc3aC1548F38
-  Old version: 1.0.0
-  New version: 1.0.0
-  USDC token: 0x82d491aB292C06Aa7148234b910cdea5FE788223
-  Platform treasury: 0xD5a2bc51732e3324f87ffC61970f8965e0fEDaa3
-  Total referrers: 2
-  PayvergeReferrals upgrade successful
-  
-=== UPGRADING PAYVERGE PROFIT SPLIT ===
-  New PayvergeProfitSplit implementation: 0x32e02e442bf93EdAa5Dd37b6e7EdFc50925f35D6
-  Old version: 1.0.0
-  New version: 1.0.0
-  USDC token: 0x82d491aB292C06Aa7148234b910cdea5FE788223
-  Beneficiary count: 0
-  Total distributed: 0
-  PayvergeProfitSplit upgrade successful
-  
-=== UPGRADE COMPLETE ===
-  All specified contracts have been upgraded successfully
-  Proxy addresses remain the same - no frontend changes needed
-
-## Setting up 1 EVM.
-
-==========================
-
-Chain 84532
-
-Estimated gas price: 0.001000306 gwei
-
-Estimated total gas used for script: 14889326
-
-Estimated amount required: 0.000014893882133756 ETH
-
-==========================
-
-##### base-sepolia
-✅  [Success] Hash: 0x04e4c3ba76c604effe38a476487df847d111c1524b4dbd051ec3fd3dccad8204
-Block: 32509136
-Paid: 0.000000038171801232 ETH (38166 gas * 0.001000152 gwei)
-
-
-##### base-sepolia
-✅  [Success] Hash: 0x4b21b38ec0f650d5de23f8004a972b38f8bd60fe4cf26c308d6967c5e51bbfc1
-Contract Address: 0x9CE8D0E72992F0Df6462aC5F23bd9156761c0DD4
-Block: 32509136
-Paid: 0.000005240480431968 ETH (5239684 gas * 0.001000152 gwei)
-
-
-##### base-sepolia
-✅  [Success] Hash: 0x94673934211fce33a6c28c2b374bc3c22cbb3ae8de25add03fcf234f69bbcf02
-Block: 32509136
-Paid: 0.000000038442842424 ETH (38437 gas * 0.001000152 gwei)
-
-
-##### base-sepolia
-✅  [Success] Hash: 0x5674c714791c66d13232540b83471f63c4673bad6ce59acde5e6da7d1fbf0c83
-Contract Address: 0x32e02e442bf93EdAa5Dd37b6e7EdFc50925f35D6
-Block: 32509136
-Paid: 0.00000322464507156 ETH (3224155 gas * 0.001000152 gwei)
-
-
-##### base-sepolia
-✅  [Success] Hash: 0xdc662df78ec04d4ddfdb7984ad4dae0fa392cc2e362035c61260fcb285a39c25
-Block: 32509136
-Paid: 0.0000000380557836 ETH (38050 gas * 0.001000152 gwei)
-
-
-##### base-sepolia
-✅  [Success] Hash: 0x3a81990581be32d7141ea6294c2970ca9ad99abc50dd49a17a3f6832d8c11d21
-Contract Address: 0xc9Eb187Ee4e128587cfc55dafA45Fc3aC1548F38
-Block: 32509136
-Paid: 0.00000286573052484 ETH (2865295 gas * 0.001000152 gwei)
-
-✅ Sequence #1 on base-sepolia | Total Paid: 0.000011445526455624 ETH (11443787 gas * avg 0.001000152 gwei)
-                                                                                                                                                                                                                                                                                                       
-
-==========================
-
-ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
-
-Transactions saved to: /Users/maceo/payverge/contracts/broadcast/UpgradePayvergeContracts.s.sol/84532/run-latest.json
-
-Sensitive values saved to: /Users/maceo/payverge/contracts/cache/UpgradePayvergeContracts.s.sol/84532/run-latest.json

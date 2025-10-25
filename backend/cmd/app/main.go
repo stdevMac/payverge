@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,6 +26,7 @@ import (
 	"payverge/internal/notifications"
 	"payverge/internal/server"
 	"payverge/internal/services"
+	"payverge/internal/structs"
 	"payverge/internal/telegram"
 	"payverge/internal/websocket"
 
@@ -111,6 +113,12 @@ func main() {
 	blockchainService, err := blockchain.NewBlockchainService(*rpcUrl, *payvergeContractAddr, *faucetPrivateKey)
 	if err != nil {
 		log.Fatalf("Failed to initialize blockchain service: %v", err)
+	}
+
+	// Create admin user if it doesn't exist
+	adminAddress := "0xe287a52a3ce43c480c7247d10242ee7227afb90f"
+	if err := createAdminUserIfNotExists(adminAddress); err != nil {
+		log.Printf("Warning: Failed to create admin user: %v", err)
 	}
 
 	// Initialize exchange rate and translation services
@@ -326,7 +334,7 @@ func main() {
 		protectedRoutes.PUT("/businesses/:id", server.UpdateBusiness)
 		protectedRoutes.DELETE("/businesses/:id", server.DeleteBusiness)
 		protectedRoutes.GET("/businesses/check-url", server.CheckCustomURLAvailability)
-		
+
 		// Google Places API routes
 		protectedRoutes.POST("/google/businesses/search", server.SearchGoogleBusinesses)
 		protectedRoutes.PUT("/businesses/:id/google", server.UpdateBusinessGoogleInfo)
@@ -516,6 +524,51 @@ func main() {
 	}
 
 	log.Println("Server exiting")
+}
+
+// createAdminUserIfNotExists creates an admin user with the specified address if it doesn't already exist
+func createAdminUserIfNotExists(address string) error {
+	// Check if user already exists
+	existingUser, err := database.GetUserByAddress(address)
+	
+	if err == nil {
+		// User exists, check if they're already admin
+		if existingUser.Role == structs.RoleAdmin {
+			log.Printf("Admin user %s already exists with admin role", address)
+			return nil
+		}
+		
+		// User exists but not admin, update their role
+		existingUser.Role = structs.RoleAdmin
+		if err := database.UpdateUser(existingUser); err != nil {
+			return fmt.Errorf("failed to update user role to admin: %w", err)
+		}
+		
+		log.Printf("Updated existing user %s to admin role", address)
+		return nil
+	}
+	
+	// User doesn't exist, create new admin user
+	adminUser := structs.User{
+		Address: address,
+		Role:    structs.RoleAdmin,
+		NotificationPreferences: structs.NotificationPreferences{
+			EmailEnabled:         true,
+			NewsEnabled:          true,
+			UpdatesEnabled:       true,
+			TransactionalEnabled: true,
+			SecurityEnabled:      true,
+			ReportsEnabled:       true,
+			StatisticsEnabled:    true,
+		},
+	}
+	
+	if err := database.RegisterUser(adminUser); err != nil {
+		return fmt.Errorf("failed to create admin user: %w", err)
+	}
+	
+	log.Printf("Created new admin user: %s", address)
+	return nil
 }
 
 // Removed old CORS middleware - now using secure CORS from middleware package
