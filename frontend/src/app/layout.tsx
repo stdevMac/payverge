@@ -16,7 +16,7 @@ import { SimpleTranslationProvider } from '@/i18n/SimpleTranslationProvider';
 export const metadata: Metadata = {
   title: "Payverge",
   description:
-    "Payverge, the hospitality solution for the crypto space",
+    "Payverge, the future of crypto payments for hospitality!",
 };
 
 export default function RootLayout({

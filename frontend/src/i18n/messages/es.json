@@ -2583,5 +2583,57 @@
         "cancelButton": "Cancelar",
         "linking": "Vinculando Negocio..."
       }
+    },
+    "faucet": {
+      "modal": {
+        "connect": {
+          "title": "Conecta Tu Billetera",
+          "description": "Conecta tu billetera para recibir tokens de prueba",
+          "whatYouGet": "Lo que recibirás:",
+          "whatYouGetDescription": "Tokens de prueba gratuitos para probar Payverge",
+          "ethAmount": "0.001 ETH para tarifas de transacción",
+          "usdcAmount": "1000 USDC para probar pagos",
+          "networkWarning": "Por favor cambia a la red Base Sepolia para usar el faucet",
+          "cancelButton": "Cancelar",
+          "connectButton": "Conectar Billetera"
+        },
+        "eligibility": {
+          "title": "Verificando Elegibilidad",
+          "checking": "Verificando tu dirección..."
+        },
+        "confirm": {
+          "title": "Confirmar Solicitud de Tokens",
+          "description": "Eres elegible para recibir tokens de prueba",
+          "currentBalance": "Saldo Actual:",
+          "willReceive": "Recibirás:",
+          "networkInfo": "Red: Base Sepolia Testnet",
+          "cancelButton": "Cancelar",
+          "confirmButton": "Solicitar Tokens"
+        },
+        "processing": {
+          "title": "Enviando Tokens",
+          "description": "Procesando tu solicitud de tokens...",
+          "pleaseWait": "Por favor espera mientras enviamos tus tokens"
+        },
+        "success": {
+          "title": "¡Tokens Enviados Exitosamente!",
+          "description": "Tus tokens de prueba han sido enviados",
+          "transactionDetails": "Detalles de la Transacción:",
+          "newBalance": "Nuevo Saldo:",
+          "viewOnExplorer": "Ver en el Explorador de Bloques",
+          "doneButton": "Listo"
+        },
+        "error": {
+          "title": "Solicitud Fallida",
+          "tryAgainButton": "Intentar de Nuevo",
+          "closeButton": "Cerrar"
+        }
+      },
+      "banner": {
+        "needTokens": "¿Necesitas tokens de prueba?",
+        "description": "Obtén ETH y USDC gratuitos para pruebas en Base Sepolia",
+        "networkIndicator": "Base Sepolia",
+        "claimButton": "Reclamar Tokens"
+      }
     }
 }

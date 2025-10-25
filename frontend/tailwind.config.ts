@@ -74,10 +74,20 @@ const config: Config = {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(1px)' },
         },
+        'slideFromLeft': {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'slideToRight': {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' },
+        },
       },
       animation: {
         'subtle-bounce': 'subtle-bounce 2s ease-in-out infinite',
         'subtle-bounce-reverse': 'subtle-bounce-reverse 2s ease-in-out infinite',
+        'slideFromLeft': 'slideFromLeft 0.5s ease-out forwards',
+        'slideToRight': 'slideToRight 0.5s ease-out forwards',
       },
     },
     scrollbar: ["rounded"],

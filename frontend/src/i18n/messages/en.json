@@ -2575,5 +2575,57 @@
         "cancelButton": "Cancel",
         "linking": "Linking Business..."
       }
+    },
+    "faucet": {
+      "modal": {
+        "connect": {
+          "title": "Connect Your Wallet",
+          "description": "Connect your wallet to receive testnet tokens",
+          "whatYouGet": "What you'll get:",
+          "whatYouGetDescription": "Free testnet tokens to try Payverge",
+          "ethAmount": "0.001 ETH for transaction fees",
+          "usdcAmount": "1000 USDC for testing payments",
+          "networkWarning": "Please switch to Base Sepolia network to use the faucet",
+          "cancelButton": "Cancel",
+          "connectButton": "Connect Wallet"
+        },
+        "eligibility": {
+          "title": "Checking Eligibility",
+          "checking": "Checking your address..."
+        },
+        "confirm": {
+          "title": "Confirm Token Request",
+          "description": "You're eligible to receive testnet tokens",
+          "currentBalance": "Current Balance:",
+          "willReceive": "You will receive:",
+          "networkInfo": "Network: Base Sepolia Testnet",
+          "cancelButton": "Cancel",
+          "confirmButton": "Request Tokens"
+        },
+        "processing": {
+          "title": "Sending Tokens",
+          "description": "Processing your token request...",
+          "pleaseWait": "Please wait while we send your tokens"
+        },
+        "success": {
+          "title": "Tokens Sent Successfully!",
+          "description": "Your testnet tokens have been sent",
+          "transactionDetails": "Transaction Details:",
+          "newBalance": "New Balance:",
+          "viewOnExplorer": "View on Block Explorer",
+          "doneButton": "Done"
+        },
+        "error": {
+          "title": "Request Failed",
+          "tryAgainButton": "Try Again",
+          "closeButton": "Close"
+        }
+      },
+      "banner": {
+        "needTokens": "Need testnet tokens?",
+        "description": "Get free ETH & USDC for Base Sepolia testing",
+        "networkIndicator": "Base Sepolia",
+        "claimButton": "Claim Tokens"
+      }
     }
 }

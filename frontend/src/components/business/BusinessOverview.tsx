@@ -47,7 +47,7 @@ export default function BusinessOverview({ business, onNavigateToTab }: Business
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-medium text-gray-900 mb-6 sm:mb-8 leading-tight tracking-tight">
               {tString('welcome.title')} <br />
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-semibold italic">
+              <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 bg-clip-text text-transparent font-semibold italic">
                 {business.name}
               </span>
             </h1>

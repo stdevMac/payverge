@@ -288,6 +288,7 @@ func main() {
 			couponHandlers := handlers.NewCouponHandlers(couponService)
 			publicRoutes.GET("/coupons/validate/:code", couponHandlers.ValidateCoupon)
 		}
+
 	}
 
 	// Protected routes (require authentication)
@@ -297,6 +298,10 @@ func main() {
 		// Faucet endpoint
 		protectedRoutes.POST("/faucet", server.CheckAndTopUp)
 		protectedRoutes.GET("/faucet/check/:address", server.CheckFaucetAvailability)
+
+		// Testnet faucet routes (protected - requires authentication)
+		protectedRoutes.GET("/testnet-faucet/check/:address", server.TestnetFaucetCheck)
+		protectedRoutes.POST("/testnet-faucet/topup", server.TestnetFaucetTopUp)
 
 		// File upload endpoints
 		protectedRoutes.POST("/upload", server.UploadFile) // S3 upload - commented for now
