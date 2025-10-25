@@ -46,6 +46,10 @@
                 "title": "Global Reach",
                 "description": "Accept payments from anywhere in the world with USDC."
             },
+            "fair": {
+                "title": "Fair & Transparent",
+                "description": "No hidden fees, no surprise charges. What you see is what you pay, with full transparency on every transaction."
+            },
             "comingSoon": {
                 "title": "Zero Transaction Fees",
                 "description": "Coming soon: We'll cover all blockchain transaction fees for you."

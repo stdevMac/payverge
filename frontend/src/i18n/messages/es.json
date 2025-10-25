@@ -46,6 +46,10 @@
                 "title": "Alcance Global",
                 "description": "Acepta pagos desde cualquier parte del mundo con USDC."
             },
+            "fair": {
+                "title": "Justo y Transparente",
+                "description": "Sin comisiones ocultas, sin cargos sorpresa. Lo que ves es lo que pagas, con total transparencia en cada transacción."
+            },
             "comingSoon": {
                 "title": "Cero Comisiones de Transacción",
                 "description": "Próximamente: Cubriremos todas las comisiones de transacción blockchain por ti."
