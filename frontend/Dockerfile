@@ -2,7 +2,7 @@
 # Use an official Node runtime as the base image.
 # node:20.18.0-alpine pinned the (now-EOL) 20.18.0 patch, leaving 23 HIGH/CRITICAL
 # CVEs in the Alpine base. node:22-alpine is the current LTS with a clean base.
-FROM node:22.22.0-alpine@sha256:e4bf2a82ad0a4037d28035ae71529873c069b13eb0455466ae0bc13363826e34 AS deps
+FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS deps
 
 # Install dependencies only when needed
 WORKDIR /app
@@ -27,7 +27,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm cache clean --force
 
 # Builder stage
-FROM node:22.22.0-alpine@sha256:e4bf2a82ad0a4037d28035ae71529873c069b13eb0455466ae0bc13363826e34 AS builder
+FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS builder
 
 # Add build arguments
 ARG NODE_ENV=production
@@ -121,7 +121,7 @@ RUN --mount=type=secret,id=sentry_auth_token,required=false \
     npm run build
 
 # Production image
-FROM node:22.22.0-alpine@sha256:e4bf2a82ad0a4037d28035ae71529873c069b13eb0455466ae0bc13363826e34 AS runner
+FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS runner
 
 # Drop npm/npx. They're build-only and bundle their own copy of picomatch
 # (HIGH CVE) that isn't reachable at runtime but still shows up in any
