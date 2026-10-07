@@ -1,0 +1,13 @@
+{
+  "key": "6d80b78ae74e921e",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Pour une première visite, je vous recommande de commencer par notre menu dégustation du chef. Il comprend nos plats les plus populaires et vous donne un excellent aperçu de notre cuisine. Le saumon grillé et les pâtes maison sont deux excellents choix.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "updateError": "Failed to update settings. Please try again.",
+  "button": {
+    "disable": "Disable Delivery"
+  },
+  "activationCard": {
+    "title": "Enable delivery",
+    "description": "Connect the delivery providers your guests already trust. They appear on your business page in one place.",
+    "button": "Enable Delivery",
+    "hint": "Guests choose their preferred provider without leaving your branded page.",
+    "features": {
+      "zones": {
+        "title": "Trusted partners",
+        "description": "Curate the providers visible to your guests"
+      },
+      "fees": {
+        "title": "Branded handoff",
+        "description": "Show provider names and logos on your page"
+      },
+      "tracking": {
+        "title": "One-tap launch",
+        "description": "Guests jump straight to the partner's checkout"
+      },
+      "management": {
+        "title": "Reversible anytime",
+        "description": "Pause delivery without losing your providers"
+      }
+    }
+  },
+  "enableModal": {
+    "title": "Enable delivery",
+    "description": "Once delivery is on, your guests will be able to:",
+    "buttons": {
+      "confirm": "Enable Delivery",
+      "cancel": "Cancel"
+    },
+    "features": {
+      "zones": "See the providers you've curated",
+      "fees": "Recognize provider names and logos",
+      "tracking": "Hand off to a familiar checkout",
+      "management": "Switch providers if one is unavailable"
+    }
+  },
+  "disableModal": {
+    "title": "Disable Delivery?",
+    "description": "Are you sure you want to disable delivery? Your guests will no longer see:",
+    "confirmation": "You can enable delivery again anytime without losing your providers.",
+    "buttons": {
+      "confirm": "Disable Delivery",
+      "cancel": "Keep delivery on"
+    },
+    "features": {
+      "zones": "The delivery section on your business page",
+      "fees": "Your configured partner providers",
+      "tracking": "Direct handoff links",
+      "management": "Customer delivery messaging"
+    }
+  }
+}

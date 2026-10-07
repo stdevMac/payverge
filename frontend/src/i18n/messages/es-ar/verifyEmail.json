@@ -1,0 +1,9 @@
+{
+  "resend": {
+    "emailLabel": "Correo electrónico"
+  },
+  "messages": {
+    "successDefault": "Correo verificado correctamente. Ya podés iniciar sesión.",
+    "alreadyVerified": "Este correo ya está verificado. Ya podés iniciar sesión."
+  }
+}

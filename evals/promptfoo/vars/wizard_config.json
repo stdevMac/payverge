@@ -1,0 +1,7 @@
+{
+  "cuisine": "Italian",
+  "price_range": "Mid-range",
+  "categories": ["Appetizers", "Pizzas", "Pastas", "Desserts", "Drinks"],
+  "items_per_category": "4 appetizers, 6 pizzas, 5 pastas, 4 desserts, 6 drinks",
+  "signature_dishes": "Prosciutto e Funghi pizza"
+}

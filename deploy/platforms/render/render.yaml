@@ -1,0 +1,143 @@
+# Payverge on Render -- Blueprint.
+#
+# STATUS: untested on Render. Written against https://render.com/docs/blueprint-spec
+# and checked offline for structure only. Read the Render section of
+# deploy/platforms/README.md first.
+#
+# New Blueprint -> pick this repository -> Blueprint path:
+#   deploy/platforms/render/render.yaml
+#
+# Shape: one public web service (the Next frontend) that proxies /api/v1/* and
+# /media/* to a private backend service over Render's private network, so the
+# whole app lives on one origin. Postgres is a Render database; uploads live
+# on a disk attached to the backend. Disks need a paid plan and pin a service
+# to one instance -- which Payverge needs anyway (in-memory rate limits,
+# wallet challenges and SSE hubs).
+
+databases:
+  - name: payverge-db
+    databaseName: payverge
+    user: payverge
+    plan: basic-256mb
+    postgresMajorVersion: "15"
+    ipAllowList: []   # private network only
+
+services:
+  - type: pserv
+    name: payverge-backend
+    runtime: image
+    # A release tag, never latest: a redeploy must not move the backend to a
+    # newer release (and schema) than the frontend. release-please bumps it.
+    image:
+      # x-release-please-start-version
+      url: ghcr.io/stdevmac/payverge-backend:1.0.0
+      # x-release-please-end
+    plan: starter
+    numInstances: 1
+    # No dockerCommand: the image's entrypoint is the server, which takes its
+    # database location from the DB_* variables below when no --db-* flag is
+    # given, and production mode from APP_ENV.
+    disk:
+      name: payverge-storage
+      mountPath: /data/storage
+      sizeGB: 5
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+      # The public origin: https://payverge-frontend-xxxx.onrender.com or your
+      # custom domain. Must match the frontend's PUBLIC_URL exactly.
+      - key: PUBLIC_URL
+        sync: false
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: payverge-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: payverge-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: payverge-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: payverge-db
+          property: user
+      - key: DB_NAME
+        fromDatabase:
+          name: payverge-db
+          property: database
+      # Render's internal connections are on its private network; the
+      # server's default (require) would refuse them if TLS is not offered.
+      - key: DB_SSLMODE
+        value: prefer
+      # generateValue is a base64-encoded 256-bit value: a valid
+      # PLUGIN_SECRET_KEY (32 bytes) and a 44-character JWT key.
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: PLUGIN_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: REGISTRATION_MODE
+        value: invite
+      - key: DEMO_DATA
+        value: "false"
+      - key: EDGE
+        value: none
+      # Set explicitly: unset means the backend default, which is loopback
+      # only. The frontend reaches this private service over Render's 10.x
+      # private network.
+      - key: TRUSTED_PROXIES
+        value: 10.0.0.0/8
+      - key: STORAGE_DRIVER
+        value: local
+      - key: STORAGE_DIR
+        value: /data/storage
+      # Optional: email (EMAIL_PROVIDER, FROM_EMAIL, SMTP_* / RESEND_API_KEY).
+      # Setting EMAIL_PROVIDER makes FROM_EMAIL + FROM_EMAIL_UPDATES required,
+      # and resend also needs EMAIL_ALLOWED_FROM_DOMAINS (preflight is fatal).
+      # AI (LLM_BASE_URL, LLM_API_KEY or OPENROUTER_API_KEY) and payments.
+      # Add them in the dashboard; deploy/.env.example lists every variable.
+      - key: EMAIL_PROVIDER
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+
+  - type: web
+    name: payverge-frontend
+    runtime: image
+    image:
+      # x-release-please-start-version
+      url: ghcr.io/stdevmac/payverge-frontend:1.0.0
+      # x-release-please-end
+    plan: starter
+    numInstances: 1
+    healthCheckPath: /api/health
+    # BACKEND_INTERNAL_URL must be an absolute URL; Render only exposes the
+    # private service's host:port, so compose it at start (the image has sh).
+    dockerCommand: sh -c 'BACKEND_INTERNAL_URL="http://$BACKEND_HOSTPORT" exec node server.js'
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: PUBLIC_URL
+        sync: false
+      - key: BACKEND_HOSTPORT
+        fromService:
+          type: pserv
+          name: payverge-backend
+          property: hostport
+      # Render's router reaches the web service over its private 10.x network;
+      # trusting it keeps the client's X-Forwarded-For chain so the backend
+      # rate-limits real client IPs. Narrow it if you know the router range.
+      - key: FRONTEND_TRUSTED_PROXIES
+        value: 10.0.0.0/8
+      - key: EDGE
+        value: none
+      - key: SEO_INDEXING
+        value: "false"

@@ -1,0 +1,116 @@
+{
+  "title": "Estado del Pago",
+  "subtitle": "Acepta pagos vía USDC y otros métodos cripto",
+  "buttons": {
+    "markPaid": "Marcar Pago Recibido",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "addPayment": "Agregar Pago",
+    "confirmPayment": "Confirmar Pago",
+    "rejectPayment": "Rechazar"
+  },
+  "fields": {
+    "amount": {
+      "label": "Monto (USD)",
+      "placeholder": "0.00"
+    },
+    "paymentMethod": {
+      "label": "Método de Pago"
+    }
+  },
+  "messages": {
+    "info": "Los métodos de pago alternativos permiten a los clientes pagar usando criptomonedas u otras soluciones de pago digital.",
+    "success": "¡Pago marcado exitosamente!",
+    "error": "Error al marcar el pago. Por favor intenta de nuevo.",
+    "loading": "Cargando datos de pago...",
+    "rejected": "Solicitud de pago rechazada.",
+    "rejectError": "No se pudo rechazar la solicitud de pago. Intenta de nuevo.",
+    "validation": {
+      "amountRequired": "Por favor completa todos los campos",
+      "amountInvalid": "El monto debe ser mayor a 0",
+      "amountTooHigh": "El monto no puede exceder el total de la cuenta"
+    }
+  },
+  "status": {
+    "complete": "Cuenta Completa"
+  },
+  "breakdown": {
+    "total": "Total de la Cuenta",
+    "cryptoPaid": "Pagado en Cripto",
+    "alternativePaid": "Pagado Alternativo",
+    "remaining": "Restante"
+  },
+  "pendingPayments": {
+    "title": "Pagos Alternativos Pendientes",
+    "via": "vía",
+    "requestedAt": "Solicitado {time}",
+    "expired": "Vencido — no se puede confirmar",
+    "requestRef": "Solicitud n.º {id}"
+  },
+  "manualPayment": {
+    "title": "Marcar Pago Alternativo",
+    "description": "Marca manualmente pagos realizados en efectivo, tarjeta u otros métodos."
+  },
+  "modal": {
+    "title": "Marcar Pago Alternativo",
+    "fields": {
+      "customerAddress": {
+        "label": "Dirección del Cliente",
+        "placeholder": "0x... o identificador del cliente",
+        "description": "Dirección de Ethereum o identificador del cliente"
+      },
+      "note": {
+        "label": "Nota (opcional)",
+        "placeholder": "Mesa 4, walk-in, etc.",
+        "description": "Para tu registro al marcar un pago en persona."
+      }
+    },
+    "warning": {
+      "title": "Nota",
+      "message": "Solo marca los pagos como recibidos después de haber cobrado físicamente el pago. Esta acción no se puede deshacer."
+    }
+  },
+  "paymentMethods": {
+    "usdc": "USDC",
+    "bitcoin": "Bitcoin",
+    "ethereum": "Ethereum",
+    "crypto": "Cripto (USDC)",
+    "cash": "Efectivo",
+    "card": "Tarjeta de crédito/débito",
+    "mercadopago": "Mercado Pago",
+    "venmo": "Venmo/PayPal",
+    "other": "Otro",
+    "unknown": "Desconocido",
+    "bankTransfer": "Transferencia Bancaria"
+  },
+  "page": {
+    "backToBills": "Volver a cuentas",
+    "breadcrumbs": {
+      "business": "Negocio",
+      "bills": "Cuentas",
+      "bill": "Cuenta #{{billId}}",
+      "alternativePayments": "Pagos alternativos"
+    },
+    "paymentManagement": "Gestión de pagos",
+    "title": "Gestión de pagos alternativos",
+    "subtitle": "Gestiona efectivo, tarjetas y otros pagos no cripto para esta cuenta",
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "step1": "Los clientes pueden solicitar pagos alternativos desde la interfaz de invitados",
+      "step2": "Recibís solicitudes de pago en tiempo real",
+      "step3": "Confirma los pagos después de recibir efectivo, tarjeta u otros métodos",
+      "step4": "La cuenta se completa automáticamente cuando está totalmente pagada"
+    },
+    "paymentMethods": {
+      "title": "Métodos de pago",
+      "cash": "Pagos en efectivo",
+      "card": "Tarjetas de crédito/débito",
+      "wallets": "Venmo/PayPal",
+      "other": "Otros métodos"
+    },
+    "hybrid": {
+      "title": "Pagos híbridos",
+      "description": "Los clientes pueden combinar pagos cripto y tradicionales en la misma cuenta"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "scenario": "mixed_peak.js",
+  "env": {
+    "RPS_MENU": 1400,
+    "RPS_CHECKOUT": 500,
+    "VUS_SSE": 1000,
+    "DURATION": "50m"
+  }
+}

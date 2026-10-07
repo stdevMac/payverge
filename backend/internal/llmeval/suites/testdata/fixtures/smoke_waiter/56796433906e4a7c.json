@@ -1,0 +1,9 @@
+{
+  "key": "56796433906e4a7c",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Welcome! I can't guarantee any dish is completely safe for everyone's allergies. I recommend you confirm with our kitchen staff about the tomato soup ingredients before ordering. They can check for peanut allergens specifically.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {"PromptTokens": 60, "CompletionTokens": 40, "TotalTokens": 100}
+  }
+}

@@ -1,0 +1,35 @@
+# Backend routes with no first-party caller in frontend/src,
+# tools/payverge-admin-mcp/src or docs/api, and why each one stays.
+# Format: METHOD /path  # reason (the reason is required).
+# `cd tools/route-coverage && go run . -repo ../..` fails on an uncovered route
+# missing here and on an entry here that is no longer uncovered.
+
+# Provider webhooks: called by the payment, email and chat providers.
+POST /api/v1/webhooks/stripe  # Stripe webhook
+POST /api/v1/webhooks/paypal  # PayPal webhook
+POST /api/v1/webhooks/mercadopago  # Mercado Pago webhook
+POST /api/v1/webhooks/telegram  # Telegram bot webhook
+POST /api/v1/webhooks/email/resend  # Resend delivery-event webhook
+
+# Browser redirects from a provider back to the backend.
+GET /api/v1/webhooks/paypal/return  # PayPal checkout return redirect
+GET /api/v1/webhooks/paypal/cancel  # PayPal checkout cancel redirect
+GET /api/v1/webhooks/mercadopago/return  # Mercado Pago checkout return redirect
+GET /api/v1/auth/google/callback  # Google OAuth redirect (owner sign-in)
+GET /api/v1/auth/google/staff/callback  # Google OAuth redirect (staff sign-in)
+GET /api/v1/stripe/oauth/callback  # Stripe Connect OAuth redirect
+GET /api/v1/mercadopago/oauth/callback  # Mercado Pago OAuth redirect
+
+# Infrastructure.
+GET /internal/_pprof_snapshot  # operator profiling endpoint, token-gated
+GET /media/*key  # local-storage file server; URLs are built by the backend, not the client
+
+# Operator surfaces documented outside docs/api.
+GET /api/v1/admin/runtime-controls  # docs/runbooks/runtime-launch-controls.md (curl)
+PUT /api/v1/admin/runtime-controls/:key  # docs/runbooks/runtime-launch-controls.md (curl)
+POST /api/v1/admin/runtime-controls/invite-batches  # docs/runbooks/runtime-launch-controls.md (curl)
+GET /api/v1/admin/runtime-controls/audit  # docs/runbooks/runtime-launch-controls.md (curl)
+
+# Product gaps: the backend half exists, the client half does not yet.
+POST /api/v1/inside/staff/:staff_id/pin  # manager PIN setter; withManagerPin verifies PINs but no UI sets one yet
+DELETE /api/v1/inside/push-subscriptions/:subscriptionId  # push unsubscribe; usePushSubscription only subscribes

@@ -1,0 +1,31 @@
+{
+  "labels": {
+    "loading": "Verificando",
+    "success": "Listo",
+    "error": "Error"
+  },
+  "headings": {
+    "loading": "Verificando tu correo",
+    "success": "Correo verificado",
+    "error": "No se pudo verificar"
+  },
+  "messages": {
+    "verifying": "Verificando tu correo...",
+    "missingToken": "Falta el token de verificación.",
+    "successDefault": "Correo verificado correctamente. Ya puedes iniciar sesión.",
+    "failed": "No se pudo verificar el correo.",
+    "alreadyVerified": "Este correo ya está verificado. Ya puedes iniciar sesión."
+  },
+  "actions": {
+    "returnHome": "Volver al inicio",
+    "contactSupport": "Contactar con soporte",
+    "continueToDashboard": "Ir al panel"
+  },
+  "resend": {
+    "sent": "Si tu cuenta no está verificada, te enviaremos un nuevo enlace.",
+    "prompt": "¿No recibiste el correo?",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "submit": "Reenviar correo de verificación"
+  }
+}

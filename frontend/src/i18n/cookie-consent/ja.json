@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "プライバシーを大切にしています",
+    "description": "Payverge を動作させるために必須 Cookie を使用します。ご許可いただければ、サイトの利用状況を把握するための分析 Cookie も使用します。選択はフッターの「Cookie 設定」からいつでも変更できます。",
+    "acceptAll": "すべて許可",
+    "declineAll": "必須以外を拒否",
+    "customize": "カスタマイズ",
+    "essentialLabel": "必須",
+    "essentialDescription": "サイトの動作に必要（セキュリティ、言語、セッション）。常にオン。",
+    "analyticsLabel": "分析",
+    "analyticsDescription": "利用状況を把握し製品改善に役立てます。同意するまでオフ。",
+    "marketingLabel": "マーケティング",
+    "marketingDescription": "キャンペーンの測定と改善に使用します。同意するまでオフ。",
+    "savePreferences": "設定を保存",
+    "privacyLink": "プライバシーポリシーを読む",
+    "closeLabel": "Cookie バナーを閉じる"
+  },
+  "footer": {
+    "preferences": "Cookie 設定"
+  }
+}

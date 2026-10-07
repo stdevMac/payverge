@@ -1,0 +1,77 @@
+{
+    "title": "Gestión de Plugins",
+    "subtitle": "Administra los plugins e integraciones de la plataforma",
+    "toasts": {
+        "createSuccess": "Plugin creado correctamente.",
+        "createError": "No se pudo crear el plugin.",
+        "updateSuccess": "Plugin actualizado correctamente.",
+        "updateError": "No se pudo actualizar el plugin.",
+        "enabledSuccess": "Plugin habilitado correctamente.",
+        "disabledSuccess": "Plugin deshabilitado correctamente.",
+        "toggleError": "No se pudo cambiar el estado del plugin.",
+        "deactivateSuccess": "Plugin desactivado correctamente.",
+        "deactivateError": "No se pudo desactivar el plugin."
+    },
+    "addNewPlugin": "Agregar Nuevo Plugin",
+    "searchPlaceholder": "Buscar por nombre...",
+    "categoryLabel": "Categoría",
+    "allCategories": "Todas las Categorías",
+    "category": {
+        "payment": "Procesamiento de Pagos",
+        "analytics": "Analítica e Informes",
+        "integration": "Integración de Terceros",
+        "reporting": "Impuestos y Cumplimiento",
+        "marketing": "Marketing y CRM"
+    },
+    "tableHeader": {
+        "name": "NOMBRE",
+        "category": "CATEGORÍA",
+        "status": "ESTADO",
+        "actions": "ACCIONES"
+    },
+    "status": {
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "comingSoon": "Próximamente"
+    },
+    "actions": {
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancelar",
+        "create": "Crear Plugin",
+        "update": "Actualizar Plugin"
+    },
+    "views": {
+        "group": "Vista de plugins",
+        "table": "Vista de tabla",
+        "list": "Vista de lista",
+        "grid": "Vista de cuadrícula"
+    },
+    "noPluginsFound": "No se encontraron plugins",
+    "noDescription": "Descripción no disponible.",
+    "createModal": {
+        "title": "Crear Nuevo Plugin"
+    },
+    "editModal": {
+        "title": "Editar Plugin"
+    },
+    "deleteModal": {
+        "title": "Eliminar Plugin",
+        "confirmMessage": "¿Estás seguro de que quieres eliminar el plugin \"{name}\"?",
+        "warning": "Esta acción no se puede deshacer."
+    },
+    "form": {
+        "pluginName": "Nombre del Plugin",
+        "displayName": "Nombre para Mostrar",
+        "category": "Categoría",
+        "version": "Versión",
+        "image": "URL de la Imagen",
+        "comingSoon": "Próximamente",
+        "description": "Descripción (Legado)",
+        "message": "Mensaje",
+        "features": "Características (Array JSON)",
+        "configSchema": "Esquema de Configuración (JSON)"
+    }
+}

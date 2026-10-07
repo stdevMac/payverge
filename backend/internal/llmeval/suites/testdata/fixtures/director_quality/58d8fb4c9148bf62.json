@@ -1,0 +1,13 @@
+{
+  "key": "58d8fb4c9148bf62",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Weekday morning overstaffing is likely driven by a mismatch between labor scheduling and actual morning covers. Confirming requires comparing labor cost per hour against revenue per daypart.\",\"actions\":[{\"title\":\"Run a labor-cost-vs-covers report for weekday mornings (7am-11am) over the last 4 weeks\",\"priority\":\"high\"},{\"title\":\"Adjust the weekday morning schedule to match average covers, trimming the slowest hours first\",\"priority\":\"high\"},{\"title\":\"Cross-train morning staff for prep work to absorb idle time productively\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

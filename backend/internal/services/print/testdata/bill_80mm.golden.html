@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  @page { size: 80mm 96mm; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { width: 80mm; min-width: 80mm; max-width: 80mm; margin: 0; padding: 0; background: #fff; color: #000; }
+  body { padding: 3.5mm; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 11px; line-height: 1.35; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  main { width: 100%; }
+  h1 { margin: 0; text-align: center; font-family: Arial, sans-serif; font-size: 18px; line-height: 1.15; overflow-wrap: anywhere; }
+  .address, .document-type, .footer { text-align: center; overflow-wrap: anywhere; }
+  .address { margin-top: 3px; font-size: 9px; line-height: 1.3; }
+  .document-type { margin-top: 5px; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+  .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; break-inside: avoid; }
+  .row + .row { margin-top: 2px; }
+  .label, .amount { flex: 0 0 auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .value { min-width: 0; text-align: right; overflow-wrap: anywhere; }
+  .item-name { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+  .item-amount { flex: 0 0 auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .detail { padding-left: 8px; color: #333; font-size: 9px; }
+  .detail .item-name::before { content: "↳ "; }
+  .discount { font-weight: 600; }
+  .sep { border-top: 1px dashed #000; margin: 7px 0; }
+  .total { margin-top: 5px; padding-top: 4px; border-top: 2px solid #000; font-size: 13px; font-weight: 800; }
+  .footer { margin-top: 9px; font-size: 9px; font-weight: 700; letter-spacing: .04em; }
+</style></head><body><main>
+<h1>Test Bistro</h1>
+
+<div class="document-type">PRE-BILL — Not a receipt</div>
+<div class="sep"></div>
+<div class="row"><span class="label">Bill</span><span class="value">B-0001</span></div>
+<div class="row"><span class="label">Table</span><span class="value">4</span></div>
+<div class="row"><span class="label">Date</span><span class="value">2026-05-19T19:32:00Z</span></div>
+<div class="sep"></div>
+<div class="row item"><span class="item-name">2× Burger</span><span class="item-amount">24.00</span></div>
+<div class="row item"><span class="item-name">1× Fries</span><span class="item-amount">5.50</span></div>
+<div class="sep"></div>
+<div class="row"><span class="label">Subtotal</span><span class="amount">29.50</span></div>
+<div class="row"><span class="label">Tax</span><span class="amount">2.95</span></div>
+<div class="row"><span class="label">Service</span><span class="amount">1.48</span></div>
+<div class="row total"><span>Total USD</span><span class="amount">33.93</span></div>
+<div class="footer">Thank you!</div>
+</main></body></html>

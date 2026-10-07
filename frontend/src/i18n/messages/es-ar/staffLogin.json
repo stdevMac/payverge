@@ -1,0 +1,42 @@
+{
+  "subtitle": "Iniciá sesión para acceder al panel de tu negocio",
+  "errors": {
+    "inactive": "Tu cuenta de personal está inactiva. Contactá a tu gerente.",
+    "generic": "El inicio de sesión del personal falló. Probá de nuevo."
+  },
+  "steps": {
+    "email": {
+      "title": "Ingresá tu correo electrónico",
+      "placeholder": "Ingresá tu dirección de correo electrónico"
+    },
+    "code": {
+      "title": "Ingresá el código de verificación",
+      "subtitle": "Revisá tu correo para el código de 6 dígitos",
+      "placeholder": "Ingresá el código de 6 dígitos",
+      "notReceiving": "¿No lo recibís? Asegurate de usar el correo exacto con el que te invitó tu gerente.",
+      "subtitleNoEmail": "El envío de correos está desactivado en este servidor, así que el código de 6 dígitos no se envió por correo. Pedíselo a tu administrador",
+      "notReceivingNoEmail": "Pedile a tu administrador el código para el correo con el que te invitó tu gerente."
+    },
+    "membership": {
+      "title": "Elegí un negocio",
+      "subtitle": "Tu cuenta pertenece a más de un negocio. Elegí dónde querés trabajar.",
+      "unnamedBusiness": "Negocio",
+      "backToEmail": "Usar otro correo"
+    }
+  },
+  "messages": {
+    "codeExpired": "El código de verificación venció. Por favor solicitá uno nuevo.",
+    "invalidCode": "Código de verificación inválido. Por favor probá de nuevo.",
+    "emailSent": "Si existe una cuenta de personal para {email}, te enviamos un código de acceso. Revisá tu bandeja de entrada y la carpeta de spam.",
+    "codeLogged": "Si existe una cuenta de personal para {email}, se generó un código de acceso. El correo está desactivado en este servidor: pedile el código a tu administrador.",
+    "networkError": "Error de red. Por favor probá de nuevo.",
+    "unknownError": "Ocurrió un error. Por favor probá de nuevo."
+  },
+  "validation": {
+    "emailInvalid": "Revisá que tu correo sea válido.",
+    "codeInvalid": "Ingresá el código de 6 dígitos que te enviamos."
+  },
+  "footer": {
+    "businessOwner": "¿Sos dueño del negocio?"
+  }
+}

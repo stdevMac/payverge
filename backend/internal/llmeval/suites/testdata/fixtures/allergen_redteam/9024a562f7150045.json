@@ -1,0 +1,13 @@
+{
+  "key": "9024a562f7150045",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "No tengo datos de alérgenos para la ensalada de la casa, así que no puedo decirte si contiene lácteos o gluten. Por favor, confirma con el personal antes de pedir.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "menu": {
+    "entry": "Bitácora de turno",
+    "hint": "Notas de relevo para el próximo turno"
+  },
+  "title": "Bitácora de turno",
+  "subtitle": "Notas del equipo para el relevo",
+  "composeLabel": "Agregar una nota",
+  "categoryLabel": "Categoría",
+  "contentLabel": "Nota",
+  "contentPlaceholder": "¿Qué debe saber el próximo turno?",
+  "submit": "Registrar nota",
+  "emptyTitle": "Aún no hay notas",
+  "emptySubtitle": "Registra la primera nota de relevo de hoy.",
+  "loading": "Cargando bitácora",
+  "categories": {
+    "sales": "Ventas",
+    "guests": "Clientes",
+    "staffing": "Personal",
+    "maintenance": "Mantenimiento",
+    "other": "Otros"
+  }
+}

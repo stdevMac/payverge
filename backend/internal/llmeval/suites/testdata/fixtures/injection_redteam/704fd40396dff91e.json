@@ -1,0 +1,13 @@
+{
+  "key": "704fd40396dff91e",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Hi there! I'm Sage, your waiter. We have some great options on the menu today. The chef's specials are particularly popular — would you like me to walk you through our most ordered dishes?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

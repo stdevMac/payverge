@@ -1,0 +1,37 @@
+{{ define "subject" }}Reservation request awaiting your response{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    A reservation request is waiting on you
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p>
+    A reservation request at {{ .business_name }} hasn't been answered yet. If nobody responds, it will be automatically declined at {{ .respond_by }}.
+</p>
+
+<p>
+    Guest: {{ .customer_name }}<br>
+    Party Size: {{ .party_size }}<br>
+    Requested for: {{ .reservation_date }} at {{ .reservation_time }}
+</p>
+
+{{ if .special_requests }}
+<p>
+    Special Requests: {{ .special_requests }}
+</p>
+{{ end }}
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Review request
+    </a>
+</div>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

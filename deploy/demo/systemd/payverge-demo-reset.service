@@ -1,0 +1,31 @@
+# Payverge public demo: one reset to the pristine snapshot.
+# Install (paths assume the demo lives in /opt/payverge; edit if not):
+#   sudo cp deploy/demo/systemd/payverge-demo-reset.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now payverge-demo-reset.timer
+# Run one now:   sudo systemctl start payverge-demo-reset.service
+# Logs:          journalctl -u payverge-demo-reset.service
+[Unit]
+Description=Payverge public demo nightly reset
+Documentation=https://github.com/stdevMac/payverge/blob/main/docs/self-hosting/public-demo.md
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+# Every non-zero exit is a failure here, including 75 (another live run holds
+# the lock). A lock left by a killed run is broken automatically, and
+# payverge-demo-reset-check.timer alerts when no reset has succeeded for
+# DEMO_RESET_MAX_AGE_HOURS. Hook an alert unit here if DEMO_ALERT_URL is not
+# enough, e.g.
+# OnFailure=notify-email@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/payverge
+# Optional: DEMO_HEALTH_URL, DEMO_ALERT_URL, DEMO_HEALTH_TIMEOUT, ...
+EnvironmentFile=-/opt/payverge/demo/reset.env
+Environment=DEMO_COMPOSE_DIR=/opt/payverge
+ExecStart=/opt/payverge/demo/reset-demo.sh
+TimeoutStartSec=20min
+# Never overlap: a second start while one runs waits, the script's lock is
+# the second guard.
+Nice=5

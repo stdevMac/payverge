@@ -1,0 +1,30 @@
+description: Ops Assistant — procedural help and navigation tone
+prompts:
+  - file://../lib/prod_prompts.js:opsAssistant
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    config:
+      temperature: 0.2
+      max_tokens: 2048
+      response_format: { type: json_object }
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+  vars:
+    business_id: "42"
+    active_tab: overview
+tests:
+  - vars:
+      LANG: en
+      active_tab: bills
+      user_message: How do I add a menu item?
+    assert:
+      - type: llm-rubric
+        value: Explains menu items are managed in Menu tab, not Bills; gives short steps.
+  - vars:
+      LANG: es
+      active_tab: overview
+      user_message: ¿Dónde configuro Stripe?
+    assert:
+      - type: llm-rubric
+        value: Responde en español y apunta a Plugins o pagos.

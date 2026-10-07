@@ -1,0 +1,192 @@
+Payverge
+Copyright 2025-2026 Marcos Maceo
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes or links third-party software, data and fonts that remain under
+their own licences, which the Apache License does not change. The full list
+of dependencies and their licences is in docs/licensing/THIRD_PARTY_LICENSES.md;
+images and other media are credited in docs/licensing/CREDITS.md. The
+"Payverge" name and logo are covered by TRADEMARKS.md, not by the Apache
+License.
+
+The sections below carry the attributions and notices those licences
+require, plus the source pointers for the weak-copyleft components. The
+verbatim GNU LGPL-3.0 and the GNU GPL-3.0 it incorporates are in LICENSES/
+(LGPL-3.0.txt, GPL-3.0.txt), and the container images ship them under
+/usr/share/doc/payverge/LICENSES/.
+
+
+===============================================================================
+Backend (Go binaries: cmd/app, cmd/email-smoke, cmd/healthcheck)
+===============================================================================
+
+go-ethereum - https://github.com/ethereum/go-ethereum
+  Copyright 2014 The go-ethereum Authors.
+  The backend links only go-ethereum library packages (everything outside
+  go-ethereum's cmd/ directory). Upstream licenses those packages under the
+  GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later),
+  https://www.gnu.org/licenses/lgpl-3.0.html. No GPL-3.0 go-ethereum command
+  package is linked; scripts/licenses/check.sh enforces this.
+  The backend is a statically linked Go executable. The complete
+  corresponding source for every binary built from this repository is the
+  repository itself plus the module versions pinned in backend/go.mod and
+  backend/go.sum. To use a modified go-ethereum, point a `replace` directive
+  in backend/go.mod at your copy and rebuild.
+
+Freetype-Go (github.com/golang/freetype: raster, truetype)
+  Copyright 2010 The Freetype-Go Authors. All rights reserved.
+  Used under the FreeType License (FTL), which Payverge elects from
+  Freetype-Go's choice of FTL or GPL-2.0-or-later.
+  This software is based in part on the work of the FreeType Team.
+  Portions of this software are copyright (c) 2010 The FreeType Project
+  (www.freetype.org). All rights reserved.
+
+Code under its own licence inside linked modules. The full licence texts are
+reproduced verbatim in LICENSES/go-subpackages.txt.
+
+  github.com/ethereum/go-ethereum/crypto/keccak
+  Copyright 2009 The Go Authors. BSD-3-Clause.
+
+  github.com/ethereum/go-ethereum/metrics
+  Copyright 2012 Richard Crowley. All rights reserved. BSD-2-Clause.
+
+  github.com/aws/aws-sdk-go-v2/internal/sync/singleflight
+  Copyright (c) 2009 The Go Authors. All rights reserved. BSD-3-Clause.
+
+  github.com/aws/smithy-go/internal/sync/singleflight
+  Copyright (c) 2009 The Go Authors. All rights reserved. BSD-3-Clause.
+
+  github.com/klauspost/compress/internal/snapref
+  Copyright (c) 2011 The Snappy-Go Authors. All rights reserved. BSD-3-Clause.
+
+  github.com/klauspost/compress/zstd/internal/xxhash
+  Copyright (c) 2016 Caleb Spare. MIT.
+
+  github.com/prometheus/client_golang/internal/github.com/golang/gddo
+  Copyright (c) 2013 The Go Authors. All rights reserved. BSD-3-Clause.
+
+Notices reproduced from Apache-2.0 dependencies (Apache License 2.0, 4(d)):
+
+  AWS SDK for Go (github.com/aws/aws-sdk-go-v2)
+  Copyright 2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  Copyright 2014-2015 Stripe, Inc.
+
+  Smithy Go (github.com/aws/smithy-go)
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+  Prometheus instrumentation library for Go applications
+  (github.com/prometheus/client_golang)
+  Copyright 2012-2015 The Prometheus Authors
+  This product includes software developed at SoundCloud Ltd.
+  (http://soundcloud.com/).
+  The following components are included in this product:
+    perks - a fork of https://github.com/bmizerany/perks
+    https://github.com/beorn7/perks
+    Copyright 2013-2015 Blake Mizerany, Bjorn Rabenstein
+    See https://github.com/beorn7/perks/blob/master/README.md for license
+    details.
+    Go support for Protocol Buffers - Google's data interchange format
+    http://github.com/golang/protobuf/
+    Copyright 2010 The Go Authors
+    See source code for license details.
+
+  Data model artifacts for Prometheus (github.com/prometheus/client_model)
+  Copyright 2012-2015 The Prometheus Authors
+  This product includes software developed at SoundCloud Ltd.
+  (http://soundcloud.com/).
+
+  Common libraries shared by Prometheus Go components
+  (github.com/prometheus/common)
+  Copyright 2015 The Prometheus Authors
+  This product includes software developed at SoundCloud Ltd.
+  (http://soundcloud.com/).
+
+  procfs (github.com/prometheus/procfs)
+  Copyright 2014-2015 The Prometheus Authors
+  This product includes software developed at SoundCloud Ltd.
+  (http://soundcloud.com/).
+
+  yaml.v3 (gopkg.in/yaml.v3)
+  Copyright 2011-2016 Canonical Ltd.
+  Licensed under the Apache License, Version 2.0.
+
+Optional WhatsApp channel (not in the default build)
+  The `whatsapp` build tag links go.mau.fi/whatsmeow (MPL-2.0) and
+  go.mau.fi/libsignal (GPL-3.0). A binary built with that tag is covered by
+  the GPL-3.0 as a whole. The default build and the published images do not
+  include it.
+
+
+===============================================================================
+Frontend (Next.js application and image)
+===============================================================================
+
+sharp-libvips - https://github.com/lovell/sharp-libvips
+  The @img/sharp-libvips-* packages hold prebuilt shared libraries of libvips
+  (https://github.com/libvips/libvips) and its dependencies, copyright the
+  libvips authors and the authors of each bundled library, packaged by
+  Lovell Fuller and contributors. Licensed under LGPL-3.0-or-later; each
+  package's README lists the bundled libraries and their licences.
+  sharp (Apache-2.0), which Next.js uses for image optimisation, loads these
+  libraries dynamically and unmodified. You may replace them with your own
+  build of libvips. Source: https://github.com/lovell/sharp-libvips and
+  https://github.com/libvips/libvips.
+
+caniuse-lite - https://github.com/browserslist/caniuse-lite
+  Browser-support data from Can I use (https://caniuse.com) by Alexis
+  Deveria, licensed under Creative Commons Attribution 4.0 International
+  (https://creativecommons.org/licenses/by/4.0/). Packaging by Ben Briggs and
+  contributors.
+
+DOMPurify - https://github.com/cure53/DOMPurify
+  (c) Cure53 and other contributors.
+  Dual-licensed MPL-2.0 or Apache-2.0; Payverge uses it under Apache-2.0.
+
+rgbcolor - https://github.com/yetzt/node-rgbcolor
+  Copyright (c) 2016 Stoyan Stefanov, http://phpied.com/
+  Offered under MIT or the author's FEEL-FREE terms; Payverge uses it under
+  MIT.
+
+Notices reproduced from Apache-2.0 dependencies (Apache License 2.0, 4(d)):
+
+  Orchestrion-JS (@apm-js-collab/code-transformer)
+  Copyright 2025-Present Datadog, Inc.
+  This product includes software developed at Datadog
+  (<https://www.datadoghq.com/>).
+
+  import-in-the-middle
+  Copyright 2024 Node.js contributors. All rights reserved.
+  Parts originating from https://github.com/DataDog/import-in-the-middle:
+  This product includes software developed at Datadog
+  (https://www.datadoghq.com/). Copyright 2021 Datadog, Inc.
+
+Container base images
+  The published images build on node:22-alpine (frontend) and
+  gcr.io/distroless/static-debian12 (backend). The operating-system packages
+  in those images carry their own licences and notices, available from the
+  respective image distributions.
+
+
+===============================================================================
+Fonts
+===============================================================================
+
+The fonts under frontend/public/fonts/ (DM Sans, DM Serif Display, Cormorant
+Garamond, EB Garamond, Noto Naskh Arabic, Noto Sans Arabic, Noto Sans CJK
+JP/KR/SC/TC, Noto Serif CJK JP, Noto Sans Hebrew, Oswald) are licensed under
+the SIL Open Font License, Version 1.1. Each family's directory holds its
+OFL.txt with the copyright notice. The latin subsets of DM Sans and DM Serif
+Display under site/assets/fonts/ (the payverge.io landing page) are under the
+same licence, with their OFL.txt beside them. The fonts are not relicensed
+under the Apache License.
+
+
+===============================================================================
+Third-party marks
+===============================================================================
+
+Names and logos of payment providers, wallets, chains and other services that
+appear in this repository (for example in frontend/public/images/plugins/)
+are trademarks of their respective owners. They are used only to identify
+the integrations, and their use does not imply endorsement.

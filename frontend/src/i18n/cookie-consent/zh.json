@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "我们重视您的隐私",
+    "description": "我们使用必要的 Cookie 以确保 Payverge 正常运行。经您同意后，我们还会使用分析 Cookie 了解网站使用情况。您可随时在页脚的“Cookie 偏好”中更改选择。",
+    "acceptAll": "全部接受",
+    "declineAll": "拒绝非必要",
+    "customize": "自定义",
+    "essentialLabel": "必要",
+    "essentialDescription": "网站运行所必需（安全、语言、会话）。始终开启。",
+    "analyticsLabel": "分析",
+    "analyticsDescription": "帮助我们了解使用情况以改进产品。在您选择前关闭。",
+    "marketingLabel": "营销",
+    "marketingDescription": "用于衡量并改进我们的营销活动。在您选择前关闭。",
+    "savePreferences": "保存偏好",
+    "privacyLink": "阅读隐私政策",
+    "closeLabel": "关闭 Cookie 提示"
+  },
+  "footer": {
+    "preferences": "Cookie 偏好"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "key": "a7af4857f4aae0e6",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Le Pad Thai contient des cacahuètes d'après ses données d'allergènes, donc je ne le recommande pas pour vous. Veuillez confirmer avec le personnel avant de commander.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

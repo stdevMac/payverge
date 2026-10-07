@@ -1,0 +1,32 @@
+{
+  "template": {
+    "notConfigured": "(contact address not configured)",
+    "label": "Template.",
+    "banner": "This is a generic notice shipped with the software. {legalName} has not published its own version of this document; write to {supportEmail} for the binding terms.",
+    "privacy": {
+      "title": "Privacy notice",
+      "body": [
+        "{legalName} runs this service at {publicUrl} with {productName}, self-hosted restaurant software.",
+        "We process the data you enter (account details, orders, payments, reservations and messages) only to provide the service of the restaurant you interact with.",
+        "Payment, messaging and email providers enabled by the operator process data under their own terms.",
+        "To access, correct or delete your data, write to {supportEmail}."
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "body": [
+        "By using this service you agree to use it lawfully and not to disrupt it or other users.",
+        "{legalName} provides the service as is, to the extent the law allows.",
+        "Orders, prices and payments are agreed between you and the restaurant that serves you.",
+        "Questions about these terms: {supportEmail}."
+      ]
+    },
+    "refund": {
+      "title": "Refunds",
+      "body": [
+        "Refunds for orders and payments are handled by the restaurant that charged you, under its own policy and the law that applies to it.",
+        "Contact the restaurant directly, or write to {supportEmail} if you cannot reach it."
+      ]
+    }
+  }
+}

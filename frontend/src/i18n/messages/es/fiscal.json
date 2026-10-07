@@ -1,0 +1,258 @@
+{
+  "serviceUnavailable": "La facturación electrónica está desactivada en el servidor en este momento, así que no se envió nada a la autoridad fiscal. Pide a tu contacto de Payverge que la vuelva a activar.",
+  "dashboard": {
+    "title": "Facturas",
+    "description": "Facturas oficiales y documentos fiscales para cuentas pagadas.",
+    "loading": "Actualizando",
+    "errorTitle": "No se pudieron cargar los datos de facturas.",
+    "unexpectedError": "Error inesperado de la API de facturas",
+    "tryAgain": "Reintentar"
+  },
+  "status": {
+    "titleSetup": "Configurar facturas",
+    "relativeNow": "ahora mismo",
+    "relativeMinutes": "hace {{n}}m",
+    "relativeHours": "hace {{n}}h",
+    "relativeDays": "hace {{n}}d"
+  },
+  "summary": {
+    "lastIssued": "Última factura",
+    "refresh": "Actualizar",
+    "editSetup": "Editar configuración",
+    "sandboxBanner": "Las facturas emitidas aquí son simuladas — no son válidas legalmente. Cambia a Producción desde Editar configuración después de validar las credenciales AFIP/ARCA.",
+    "sandboxBannerPrefix": "Sandbox",
+    "demoBannerPrefix": "Demo",
+    "demoBanner": "Estas facturas son solo de práctica — no son facturas fiscales válidas. Cambiar el Entorno a Producción aquí no las hace oficiales."
+  },
+  "setup": {
+    "title": "Configuración de facturas",
+    "description": "Actualiza país, perfil fiscal o modo de emisión. Los cambios aplican a nuevas cuentas pagadas.",
+    "emptyDescription": "Configúralo una vez para que Payverge pueda encolar facturas oficiales por cada cuenta pagada.",
+    "compareModes": "Comparar modos",
+    "currentMode": "Actual",
+    "comingSoon": "Próximamente",
+    "environmentDemoLocked": "Los entornos demo permanecen en Sandbox. Para salir a producción, elige Argentina y completa las credenciales AFIP/ARCA — Producción no está disponible con el proveedor demo.",
+    "fields": {
+      "country": "País",
+      "provider": "Proveedor",
+      "mode": "Modo de factura",
+      "environment": "Entorno",
+      "taxId": "ID fiscal",
+      "taxCondition": "Condición fiscal",
+      "taxConditionPlaceholder": "Selecciona la condición fiscal",
+      "pointOfSale": "Punto de venta",
+      "pointOfSaleHelp": "Número entero asignado por tu proveedor para esta ubicación."
+    },
+    "placeholders": {
+      "taxId": "ej. 30-12345678-9",
+      "pointOfSale": "ej. 1"
+    },
+    "taxConditions": {
+      "AR": {
+        "responsable_inscripto": "Responsable Inscripto",
+        "exento": "Exento",
+        "consumidor_final": "Consumidor Final",
+        "no_responsable": "No Responsable",
+        "monotributo": "Monotributo"
+      },
+      "AE": {
+        "vat_registered": "Registrado en IVA",
+        "vat_exempt": "Exento de IVA",
+        "non_resident": "No residente"
+      }
+    },
+    "actions": {
+      "save": "Guardar configuración de facturas",
+      "saving": "Guardando configuración de facturas",
+      "cancel": "Cancelar"
+    },
+    "saveSuccess": "Configuración de facturas guardada",
+    "saveError": "No se pudo guardar la configuración de facturas.",
+    "invalidPointOfSale": "El punto de venta debe ser un número entero.",
+    "validationErrorTitle": "El proveedor rechazó la última validación:",
+    "invalidTaxId": "El CUIT debe tener exactamente 11 dígitos."
+  },
+  "credentials": {
+    "title": "Credenciales de AFIP",
+    "description": "Sube el certificado digital y la clave privada emitidos por AFIP/ARCA para que Payverge pueda solicitar autorizaciones de CAE en tu nombre.",
+    "certLabel": "Certificado (.crt o .pem)",
+    "certHint": "El certificado X.509 descargado de AFIP.",
+    "keyLabel": "Clave privada (.key)",
+    "keyHint": "Tu clave privada se cifra en reposo y no se vuelve a mostrar.",
+    "keyNeverStored": "Por tu seguridad, la clave privada nunca se muestra después de subirla.",
+    "selectFile": "Elegir archivo",
+    "noFileSelected": "Ningún archivo seleccionado",
+    "upload": "Subir credenciales",
+    "uploading": "Subiendo credenciales",
+    "uploadSuccess": "Credenciales subidas.",
+    "uploadError": "No se pudieron subir las credenciales.",
+    "missingFiles": "Selecciona el certificado y la clave privada antes de subir.",
+    "validate": "Validar",
+    "validating": "Validando con AFIP",
+    "validateSuccess": "Credenciales validadas. Ya puedes emitir facturas.",
+    "validateError": "No se pudo ejecutar la validación.",
+    "validateNeedsCredentials": "Sube primero tu certificado y tu clave privada.",
+    "validationFailed": "AFIP rechazó las credenciales:",
+    "fingerprint": "Huella digital",
+    "expiresAt": "Vence",
+    "lastValidated": "Última validación",
+    "status": {
+      "label": "Estado de configuración",
+      "draft": "Faltan credenciales",
+      "draftHint": "Sube tu certificado y clave privada de AFIP para continuar.",
+      "credentials_set": "Pendiente de validación",
+      "credentialsSetHint": "Valida las credenciales subidas contra AFIP para terminar la configuración.",
+      "ready": "Listo",
+      "readyHint": "Las credenciales son válidas. Payverge puede solicitar autorizaciones de CAE.",
+      "validated": "Validado"
+    }
+  },
+  "region": {
+    "title": "Facturación electrónica",
+    "unavailableTitle": "La facturación electrónica aún no está disponible en tu región",
+    "unavailableDescription": "Payverge emite facturas electrónicas oficiales para Argentina (AFIP/ARCA). La facturación electrónica no está disponible en {country} todavía.",
+    "unavailablePathToLive": "Camino a producción: cuando tu país esté soportado, subirás credenciales del proveedor y cambiarás el Entorno a Producción desde Editar configuración.",
+    "demoTitle": "Entorno fiscal de demostración",
+    "demoDescription": "Este negocio solo emite facturas DEMO simuladas. No son documentos fiscales válidos y no se requiere subir un certificado real.",
+    "demoPathToLive": "Camino a producción: cambia el país a Argentina, sube las credenciales AFIP/ARCA, valídalas y luego cambia el Entorno a Producción. Hasta entonces, trata cada sello DEMO como práctica."
+  },
+  "modes": {
+    "off": {
+      "title": "Apagado",
+      "description": "Payverge no emitirá facturas y el botón manual queda deshabilitado."
+    },
+    "manual": {
+      "title": "Manual",
+      "description": "Emites las facturas tú mismo desde el historial cuando estés listo."
+    },
+    "automatic_non_blocking": {
+      "title": "Automático",
+      "description": "Las cuentas pagadas encolan facturas en segundo plano. Las cuentas cierran aunque el proveedor demore."
+    }
+  },
+  "history": {
+    "title": "Historial de facturas",
+    "description": "Facturas encoladas para cuentas pagadas — incluyendo pendientes, autorizadas y fallidas.",
+    "emptyTitle": "Aún no hay facturas",
+    "emptyDescription": "Las cuentas pagadas aparecerán aquí en cuanto Payverge emita una factura para ellas.",
+    "emptyDescriptionManual": "Ingresa el ID de una cuenta pagada abajo para emitir tu primera factura.",
+    "emptyDescriptionOff": "La emisión de facturas está apagada. Cambia a Manual o Automático desde Editar configuración para que Payverge encole facturas por cada cuenta pagada.",
+    "noMatch": "Ninguna factura coincide con este filtro.",
+    "unnumbered": "Sin número",
+    "pdfReady": "PDF",
+    "viewPdf": "Ver PDF de la factura",
+    "search": "Buscar cuenta #",
+    "searchPlaceholder": "ej. 1234",
+    "clearFilters": "Limpiar filtros",
+    "exportCsv": "Exportar CSV",
+    "csvFile": "facturas",
+    "filters": {
+      "all": "Todas",
+      "authorized": "Autorizadas",
+      "pending": "Pendientes",
+      "attention": "Requiere atención"
+    },
+    "issue": {
+      "billId": "ID de cuenta a emitir",
+      "placeholder": "ej. 1234",
+      "button": "Emitir factura",
+      "issuing": "Emitiendo",
+      "success": "Emisión de factura encolada",
+      "error": "No se pudo emitir la factura.",
+      "hint": "Usa el número de cuenta de la pestaña Cuentas. La cuenta debe estar pagada.",
+      "billNotFound": "No encontramos una cuenta pagada con ese ID. Revisa la pestaña Cuentas para confirmar el número.",
+      "alreadyIssued": "Esta cuenta ya tiene una factura. Ábrela desde la lista de Facturas en lugar de emitir una segunda."
+    },
+    "retry": {
+      "button": "Reintentar",
+      "retrying": "Reintentando",
+      "success": "Reintento de factura encolado",
+      "error": "No se pudo reintentar la factura."
+    },
+    "resend": {
+      "button": "Reenviar",
+      "resending": "Reenviando",
+      "success": "Reenvío de factura encolado",
+      "error": "No se pudo reenviar la factura."
+    },
+    "delivery": {
+      "label": "Canales de entrega",
+      "retry": "Reintentar",
+      "retrying": "Reintentando",
+      "retryError": "No se pudo reencolar la entrega.",
+      "retryAria": "Reintentar entrega por {{channel}}",
+      "channel": {
+        "artifact": "PDF",
+        "email": "Email",
+        "print": "Impresión"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "leased": "En curso",
+        "succeeded": "Enviado",
+        "dead": "Fallido"
+      }
+    },
+    "creditNote": {
+      "button": "Nota de crédito",
+      "crediting": "Emitiendo",
+      "success": "Nota de crédito encolada",
+      "error": "No se pudo emitir la nota de crédito.",
+      "confirmTitle": "¿Emitir una nota de crédito?",
+      "confirmDescription": "Esto encola una nota de crédito oficial que cancela la factura #{{bill}} ante AFIP. Esta acción no se puede deshacer.",
+      "reasonLabel": "Motivo (opcional)",
+      "reasonPlaceholder": "ej. Pedido cancelado por el cliente",
+      "confirm": "Emitir nota de crédito",
+      "cancel": "Cancelar"
+    },
+    "cae": "CAE",
+    "viewQr": "Ver QR de AFIP",
+    "columns": {
+      "billId": "Cuenta",
+      "receipt": "Factura",
+      "receiptNumber": "Número",
+      "amount": "Monto",
+      "currency": "Moneda",
+      "issuedAt": "Emitida el",
+      "status": "Estado",
+      "error": "Error",
+      "actions": "Acciones"
+    }
+  },
+  "common": {
+    "notSet": "No configurado",
+    "none": "—"
+  },
+  "labels": {
+    "AE": "Emiratos Árabes Unidos",
+    "AR": "Argentina",
+    "active": "Activo",
+    "afip": "AFIP",
+    "arca": "ARCA",
+    "automatic_non_blocking": "Automático",
+    "authorized": "Autorizada",
+    "cancelled": "Cancelada",
+    "credited": "Acreditada",
+    "draft": "Borrador",
+    "edicom": "EDICOM",
+    "failed_permanent": "Falla permanente",
+    "failed_retryable": "Falla reintentable",
+    "invalid": "Inválido",
+    "invoice_a": "Factura A",
+    "manual": "Manual",
+    "off": "Apagado",
+    "pending": "Pendiente",
+    "production": "Producción",
+    "rejected": "Rechazada",
+    "sandbox": "Sandbox",
+    "valid": "Válido",
+    "US": "Estados Unidos",
+    "demo": "Demo",
+    "receipt": "Receipt",
+    "invoice": "Invoice",
+    "standard_invoice": "Factura estándar",
+    "factura_a": "Factura A",
+    "factura_b": "Factura B",
+    "factura_c": "Factura C"
+  }
+}

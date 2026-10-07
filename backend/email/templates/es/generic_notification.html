@@ -1,0 +1,22 @@
+{{ define "subject" }}{{ .title }}{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    {{ .title }}
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola,
+</p>
+
+<div style="margin:0 0 22px 0;">
+    {{ .description }}
+</div>
+
+<p style="margin:0 0 18px 0;">
+    Esta es una notificación automatizada de Payverge.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

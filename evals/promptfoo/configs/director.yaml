@@ -1,0 +1,158 @@
+# Director Console — model benchmark
+# Loads backend/.../director_console/<lang>.md via the prod prompt function.
+# Faithful to director_console_service.go: system prompt carries the schema +
+# deep-link rules; the owner question + business-context JSON + a trailing
+# language anchor go in the USER turn. (The production analytics tool-loop is not
+# replayable in promptfoo; this is the first-iteration request, which is what we
+# compare models on: JSON validity + language fidelity + grounded analysis.)
+# Production model OPENROUTER_MODEL_DIRECTOR (gemini-2.5-flash); strict JSON.
+description: "Director Console — JSON schema, language fidelity & data-grounded analysis"
+
+prompts:
+  - file://../lib/prod_prompts.js:director
+
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    label: gemini-2.5-flash
+    config:
+      temperature: 0.2
+      max_tokens: 4096
+      response_format: { type: json_object }
+  - id: openrouter:openai/gpt-4o-mini
+    label: gpt-4o-mini
+    config:
+      temperature: 0.2
+      max_tokens: 4096
+      response_format: { type: json_object }
+
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+  vars:
+    ASSISTANT_NAME: "Director Copilot"
+    BUSINESS_ID: "1"
+    context_json: |
+      {
+        "business_name": "Trattoria Bella Vita",
+        "currency": "USD",
+        "weekly_metrics": {"revenue": 28450.75, "transactions": 1247, "average_ticket": 22.80, "tips": 4267.61, "active_bills": 8},
+        "order_status": {"pending": 3, "confirmed": 12, "preparing": 5, "ready": 2, "delivered": 1203},
+        "reservations": {"total_this_week": 87, "average_party_size": 3.2, "peak_times": ["19:00", "20:00", "20:30"], "no_shows": 4},
+        "top_items": [
+          {"name": "Margherita", "orders": 245, "revenue": 3430.00, "margin": "68%"},
+          {"name": "Pepperoni", "orders": 198, "revenue": 3168.00, "margin": "62%"},
+          {"name": "Caprese Salad", "orders": 156, "revenue": 1638.00, "margin": "72%"},
+          {"name": "Diavola", "orders": 142, "revenue": 2343.00, "margin": "58%"},
+          {"name": "Tiramisu", "orders": 189, "revenue": 1701.00, "margin": "75%"}
+        ],
+        "bottom_items": [
+          {"name": "Minestrone Soup", "orders": 42, "revenue": 336.00},
+          {"name": "Sorbetto al Limone", "orders": 38, "revenue": 247.00}
+        ],
+        "delivery_metrics": {"total_deliveries": 234, "avg_delivery_time_min": 28, "customer_satisfaction": "4.3/5"},
+        "staff": {"total": 12, "servers": 6, "kitchen": 4, "management": 2},
+        "crm_stats": {"total_customers": 1240, "new_this_week": 47, "returning_rate": "62%", "avg_visits_per_month": 1.8},
+        "plugins": ["Stripe", "Postmark", "MercadoPago"],
+        "available_plugins": ["Trustpilot", "Mailchimp", "QuickBooks", "OpenTable", "UberEats"],
+        "previous_week_revenue": 31200.50,
+        "marketing_spend": 1200.00
+      }
+
+# Reusable JSON-schema check: strict director response shape.
+_schema_assert: &schema_assert
+  type: javascript
+  value: |
+    let t = String(output).replace(/```json\n?|```/g, '').trim();
+    const v = JSON.parse(t);
+    const okStr = (s) => typeof s === 'string' && s.length > 0;
+    if (!okStr(v.summary) || !okStr(v.diagnosis)) return false;
+    if (!Array.isArray(v.evidence) || !Array.isArray(v.actions) || !Array.isArray(v.follow_ups)) return false;
+    if (!okStr(v.expected_impact)) return false;
+    for (const a of v.actions) {
+      if (!okStr(a.title) || !okStr(a.description)) return false;
+      if (!['high','medium','low'].includes(a.priority)) return false;
+    }
+    return true;
+
+tests:
+  # ===== English: financial / menu / ops analysis =====
+  - vars: { LANG: en, owner_question: "Why did revenue drop from $31,200 to $28,450 this week?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON whose string values are in English. The diagnosis references the actual revenue drop (~$2,750, ~8.8%) and other real numbers from the context, not generic advice."
+  - vars: { LANG: en, owner_question: "Which items give us the highest profit margin and should I push them?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English citing real high-margin items from the data (Tiramisu 75%, Caprese 72%, Margherita 68%)."
+  - vars: { LANG: en, owner_question: "Minestrone Soup and Sorbetto are barely selling. Should I remove them or reprice?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English that engages with the two bottom items by name and gives a concrete recommendation."
+  - vars: { LANG: en, owner_question: "Are we staffed correctly for our 7-8:30 PM peak?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English referencing the peak times and staff counts from the data."
+  - vars: { LANG: en, owner_question: "We had 4 no-shows this week. How can I reduce that?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English with actionable no-show-reduction steps grounded in the reservation data."
+  - vars: { LANG: en, owner_question: "What marketing would give the best ROI with our $1,200 monthly budget?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English whose summary/evidence reference the $1,200 budget and real metrics (returning rate, top items). A per-action budget breakdown is NOT required."
+  - vars: { LANG: en, owner_question: "Which plugins should I add? I already have Stripe, Postmark, MercadoPago." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English recommending from the available_plugins list (e.g. Trustpilot, Mailchimp, OpenTable) without re-suggesting installed ones."
+  # ===== Deep-link discipline =====
+  - vars: { LANG: en, owner_question: "Where can I see my menu performance?" }
+    assert:
+      - *schema_assert
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          const v = JSON.parse(t);
+          const links = (v.actions || []).map(a => a.deep_link || '').filter(Boolean);
+          if (links.length === 0) return true; // no link is acceptable
+          const allowed = /^\/business\/1\/dashboard\?tab=(overview|analytics|menu|tables|bills|kitchen|counter|crm|reservations|delivery|plugins|staff|subscriptions|settings|business-page|ai-waiter)$/;
+          return links.every(l => allowed.test(l));
+      - type: llm-rubric
+        value: "Valid JSON in English; any deep links use the /business/1/dashboard?tab=<tab> format with an allowed tab."
+  # ===== Off-topic redirect =====
+  - vars: { LANG: en, owner_question: "What's the capital of France?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English that politely redirects to business analysis instead of answering the trivia question."
+  # ===== Sparse / empty context =====
+  - vars: { LANG: en, owner_question: "How is my business doing?", context_json: '{"business_name":"Trattoria Bella Vita","currency":"USD","weekly_metrics":{}}' }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English. With almost no metrics available it does NOT fabricate numbers; it acknowledges limited data or asks for what's needed."
+
+  # ===== Spanish =====
+  - vars: { LANG: es, owner_question: "¿Por qué bajaron las ventas esta semana?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON whose string values are entirely in Spanish, referencing the real revenue decline and metrics."
+  - vars: { LANG: es, owner_question: "¿Qué plato me recomendás promocionar?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON entirely in Spanish recommending real top/high-margin items from the data."
+
+  # ===== es-AR (voseo) =====
+  - vars: { LANG: es-AR, owner_question: "¿Cómo hago para que vuelvan más clientes?" }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON whose string values are entirely in Spanish and reference the 62% returning rate. Standard Spanish passes; Argentine voseo is welcome but NOT required."

@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payverge: open-source restaurant operating system with AI built in</title>
+<meta name="description" content="Payverge is an open-source, self-hostable restaurant operating system with AI built in: QR ordering, an AI waiter, kitchen display, split bills and payments, reservations and delivery. Apache-2.0." data-gate="feature-claims licence-files">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'sha256-fkXjNwi72BN5dJGdthUI89+FkkF6es3bZX9AtbdgEVc='; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1413" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://payverge.io/">
+<link rel="icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/dm-serif-display-regular-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Payverge">
+<meta property="og:url" content="https://payverge.io/">
+<meta property="og:title" content="Payverge: the open-source restaurant operating system">
+<meta property="og:description" content="Self-host QR ordering, an AI waiter in 21 guest languages, a kitchen display, split bills and payments on your own server. Apache-2.0." data-gate="feature-claims licence-files">
+<meta property="og:image" content="https://payverge.io/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Payverge: the open-source restaurant operating system with AI built in.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Payverge: the open-source restaurant operating system">
+<meta name="twitter:description" content="Self-host QR ordering, an AI waiter in 21 guest languages, a kitchen display, split bills and payments on your own server. Apache-2.0." data-gate="feature-claims licence-files">
+<meta name="twitter:image" content="https://payverge.io/assets/og-image.png">
+<meta name="twitter:image:alt" content="Payverge: the open-source restaurant operating system with AI built in.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "Payverge",
+  "description": "An open-source, self-hostable restaurant operating system with AI built in.",
+  "url": "https://payverge.io/",
+  "codeRepository": "https://github.com/stdevMac/payverge",
+  "license": "https://www.apache.org/licenses/LICENSE-2.0",
+  "programmingLanguage": ["Go", "TypeScript"],
+  "runtimePlatform": "Docker",
+  "author": { "@type": "Person", "name": "Marcos Maceo", "url": "https://github.com/stdevMac" }
+}
+</script>
+
+<style>
+@font-face {
+  font-family: "DM Sans";
+  src: url("assets/fonts/dm-sans-latin.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("assets/fonts/dm-serif-display-regular-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Metric-matched fallbacks keep the swap from shifting layout (CLS). */
+@font-face {
+  font-family: "DM Sans Fallback";
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 106.73%;
+  ascent-override: 92.94%;
+  descent-override: 29.04%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "DM Serif Display Fallback";
+  src: local("Georgia");
+  size-adjust: 101%;
+  ascent-override: 102.58%;
+  descent-override: 33.17%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --font-sans: "DM Sans", "DM Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "DM Serif Display", "DM Serif Display Fallback", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --bg: #faf9f6;
+  --bg-alt: #f3f0ea;
+  --surface: #ffffff;
+  --surface-2: #f6f4ef;
+  --text: #1c1917;
+  --muted: #57534e;
+  --border: #e6e1d8;
+  --border-strong: #d5cdbf;
+  --primary: #1a6b6a;
+  --primary-hover: #145756;
+  --on-primary: #ffffff;
+  --primary-soft: #e3eeed;
+  --accent: #b77333;
+  --accent-soft: #f5e9dc;
+  --band-bg: #163b3a;
+  --band-text: #f3efe6;
+  --band-muted: #b8ccc9;
+  --band-border: rgba(243, 239, 230, 0.16);
+  --band-chip: rgba(243, 239, 230, 0.08);
+  --code-bg: #1c1917;
+  --code-text: #f5f1e8;
+  --code-muted: #a8a29e;
+  --focus: #1a6b6a;
+  --ill-frame: #1c1917;
+  --ill-shadow: 0.14;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 1px 2px rgba(28, 25, 23, 0.05), 0 12px 32px -16px rgba(28, 25, 23, 0.18);
+
+  --radius: 16px;
+  --container: 1120px;
+  --gutter: clamp(16px, 4vw, 32px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1413;
+    --bg-alt: #121a19;
+    --surface: #161d1c;
+    --surface-2: #1b2423;
+    --text: #f1ede4;
+    --muted: #b3ada3;
+    --border: #243130;
+    --border-strong: #34433f;
+    --primary: #6cc3bf;
+    --primary-hover: #8ad3cf;
+    --on-primary: #0b1211;
+    --primary-soft: #183332;
+    --accent: #d08b4c;
+    --accent-soft: #33261a;
+    --band-bg: #132a28;
+    --band-text: #f1ede4;
+    --band-muted: #a9c1be;
+    --band-border: rgba(241, 237, 228, 0.12);
+    --band-chip: rgba(241, 237, 228, 0.06);
+    --code-bg: #0a0e0d;
+    --code-text: #f1ede4;
+    --code-muted: #9a958d;
+    --focus: #8ad3cf;
+    --ill-frame: #050807;
+    --ill-shadow: 0.5;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -20px rgba(0, 0, 0, 0.7);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+img, svg { display: block; max-width: 100%; }
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+a { color: var(--primary); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--primary-hover); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+#main:focus { outline: none; }
+::selection { background: var(--primary-soft); color: var(--text); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: var(--gutter); top: 12px; z-index: 10;
+  padding: 10px 16px; border-radius: 10px;
+  background: var(--text); color: var(--bg); font-weight: 600; text-decoration: none;
+  transform: translateY(-160%);
+}
+.skip-link:focus { transform: none; color: var(--bg); }
+
+.container { width: 100%; max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+
+h1, h2 { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.01em; text-wrap: balance; }
+h1 { font-size: clamp(2.375rem, 1.6rem + 3.2vw, 3.75rem); line-height: 1.05; }
+h2 { font-size: clamp(1.875rem, 1.4rem + 2vw, 2.75rem); line-height: 1.1; }
+h3 { font-size: 1.0625rem; line-height: 1.35; font-weight: 600; letter-spacing: -0.005em; }
+.lead { font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.1875rem); color: var(--muted); max-width: 38rem; text-wrap: pretty; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary);
+}
+.eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 0 22px; border-radius: 999px;
+  font: 600 0.9375rem/1 var(--font-sans); text-decoration: none; white-space: nowrap;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn-primary { background: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: var(--primary-hover); color: var(--on-primary); }
+.btn-ghost { border-color: var(--border-strong); color: var(--text); background: transparent; }
+.btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 0.875rem; }
+
+/* Header */
+.site-header { border-bottom: 1px solid var(--border); }
+.site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
+.brand:hover { color: var(--text); }
+.brand img { width: 30px; height: 30px; }
+.brand span { font-family: var(--font-serif); font-size: 1.375rem; line-height: 1; letter-spacing: 0.005em; }
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav ul { display: none; gap: 28px; list-style: none; margin: 0; padding: 0; }
+.nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+.nav ul a:hover { color: var(--text); }
+@media (min-width: 760px) { .nav ul { display: flex; } }
+
+/* Hero */
+.hero { padding-block: clamp(48px, 7vw, 104px) clamp(48px, 6vw, 88px); overflow: hidden; }
+.hero .container { display: grid; gap: clamp(40px, 6vw, 64px); align-items: center; }
+@media (min-width: 980px) { .hero .container { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); } }
+.hero h1 { margin-top: 20px; }
+.hero .lead { margin-top: 22px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero-note { margin-top: 18px; font-size: 0.875rem; color: var(--muted); }
+.hero-art { position: relative; max-width: 620px; width: 100%; margin-inline: auto; }
+.hero-art::before {
+  content: ""; position: absolute; inset: 8% -6% -4% 4%; z-index: -1; border-radius: 40px;
+  background: radial-gradient(60% 60% at 60% 40%, var(--primary-soft), transparent 70%);
+}
+
+/* Product illustration (inline SVG, themed by tokens) */
+.ill { width: 100%; height: auto; overflow: visible; font-family: var(--font-sans); }
+.ill .card { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.ill .soft { fill: var(--surface-2); }
+.ill .line { stroke: var(--border); stroke-width: 1; }
+.ill .frame { fill: var(--ill-frame); }
+.ill .t { fill: var(--text); }
+.ill .m { fill: var(--muted); }
+.ill .p { fill: var(--primary); }
+.ill .ps { fill: var(--primary-soft); }
+.ill .op { fill: var(--on-primary); }
+.ill .a { fill: var(--accent); }
+.ill .as { fill: var(--accent-soft); }
+.ill .ring { fill: none; stroke: var(--primary); stroke-width: 1.25; }
+.ill .hollow { fill: none; stroke: var(--muted); stroke-width: 1.25; }
+.ill .b { font-weight: 600; }
+.ill .f10 { font-size: 10px; }
+.ill .f11 { font-size: 11px; }
+.ill .f12 { font-size: 12px; }
+.ill .f13 { font-size: 13px; }
+.ill .f15 { font-size: 15px; }
+.ill feDropShadow { flood-color: #000; flood-opacity: var(--ill-shadow); }
+@media (prefers-reduced-motion: no-preference) {
+  .ill .live { animation: pulse 2.4s ease-in-out infinite; transform-origin: 535px 49px; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+}
+
+/* Facts */
+.facts { border-block: 1px solid var(--border); background: var(--surface); }
+.facts ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.facts li { padding: 24px 0 24px 20px; border-left: 1px solid var(--border); }
+.facts li:nth-child(odd) { border-left: 0; padding-left: 0; }
+.facts li:nth-child(n+3) { border-top: 1px solid var(--border); }
+.facts strong { display: block; font-family: var(--font-serif); font-weight: 400; font-size: 2.25rem; line-height: 1.1; color: var(--primary); }
+.facts span { display: block; margin-top: 4px; font-size: 0.9375rem; color: var(--muted); line-height: 1.45; }
+@media (min-width: 760px) {
+  .facts ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .facts li { padding: 28px 24px; border-left: 1px solid var(--border); }
+  .facts li:nth-child(odd) { border-left: 1px solid var(--border); padding-left: 24px; }
+  .facts li:first-child { border-left: 0; padding-left: 0; }
+  .facts li:nth-child(n+3) { border-top: 0; }
+}
+
+/* Sections */
+section { scroll-margin-top: 16px; }
+.section { padding-block: clamp(64px, 9vw, 112px); }
+.section-alt { background: var(--bg-alt); border-block: 1px solid var(--border); }
+.section-head { max-width: 44rem; }
+.section-head .lead { margin-top: 16px; }
+.section-head h2 { margin-top: 14px; }
+
+/* Tour */
+.shots { display: grid; gap: 20px; margin-top: 48px; padding: 0; list-style: none; }
+.shots-wide { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .shots-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.shots-phone { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 20px; }
+@media (min-width: 980px) { .shots-phone { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.shot { margin: 0; }
+.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.shots-phone .shot img { border-radius: 22px; }
+.shot figcaption { margin-top: 12px; font-size: 0.9375rem; color: var(--muted); line-height: 1.5; }
+.shot figcaption strong { color: var(--text); font-weight: 600; }
+.tour-note { margin-top: 20px; font-size: 0.875rem; color: var(--muted); }
+.trial { display: grid; gap: 32px; align-items: start; margin-top: 72px; }
+@media (min-width: 980px) { .trial { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 64px; } }
+.trial h3 { font-size: 1.375rem; }
+.trial p { margin-top: 12px; color: var(--muted); }
+.terminal pre.cmds::before { content: none; }
+.terminal pre.cmds .p { color: var(--code-muted); user-select: none; -webkit-user-select: none; }
+
+/* Deploy */
+.deploy { display: grid; gap: 40px; align-items: start; }
+@media (min-width: 980px) { .deploy { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 64px; } }
+.checklist { display: grid; gap: 14px; margin-top: 28px; padding: 0; list-style: none; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; color: var(--muted); }
+.checklist li strong { color: var(--text); font-weight: 600; }
+.checklist svg { width: 22px; height: 22px; margin-top: 1px; color: var(--primary); }
+.terminal { border-radius: var(--radius); background: var(--code-bg); color: var(--code-text); box-shadow: var(--shadow-md); overflow: hidden; }
+.terminal-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  height: 48px; padding: 0 8px 0 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font: 500 0.8125rem/1 var(--font-mono); color: var(--code-muted);
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16); background: transparent; color: var(--code-text);
+  font: 500 0.8125rem/1 var(--font-sans); cursor: pointer;
+}
+.copy-btn[hidden] { display: none; }
+.copy-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.copy-btn svg { width: 15px; height: 15px; }
+.copy-btn:focus-visible { outline-color: var(--code-text); }
+.terminal pre { margin: 0; padding: 22px 20px 24px; font: 0.9375rem/1.7 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.terminal pre::before { content: "$ "; color: var(--code-muted); user-select: none; -webkit-user-select: none; }
+.terminal-foot { padding: 16px 20px 18px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.875rem; color: var(--code-muted); }
+.terminal-foot a { color: var(--code-text); }
+.terminal-foot a:hover { color: var(--code-text); text-decoration-thickness: 2px; }
+.terminal-foot code { font-family: var(--font-mono); font-size: 0.92em; color: var(--code-text); }
+.deploy-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 20px; padding: 0; list-style: none; font-size: 0.9375rem; }
+
+/* Feature cards */
+.features { display: grid; gap: 16px; margin-top: 48px; padding: 0; list-style: none; }
+@media (min-width: 640px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1080px) { .features { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.feature { padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.feature .icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 11px; background: var(--primary-soft); color: var(--primary); }
+.feature .icon svg { width: 22px; height: 22px; }
+.feature h3 { margin-top: 18px; }
+.feature p { margin-top: 8px; font-size: 0.9375rem; color: var(--muted); line-height: 1.55; }
+
+/* AI band */
+.band { background: var(--band-bg); color: var(--band-text); }
+.band .eyebrow { color: var(--band-muted); }
+.band .lead { color: var(--band-muted); }
+.band-grid { display: grid; gap: 40px; }
+@media (min-width: 980px) { .band-grid { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 64px; align-items: start; } }
+.guardrails { display: grid; gap: 1px; padding: 0; list-style: none; border-radius: var(--radius); overflow: hidden; background: var(--band-border); border: 1px solid var(--band-border); }
+@media (min-width: 640px) { .guardrails { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.guardrails li { padding: 24px; background: var(--band-bg); }
+.guardrails h3 { display: flex; align-items: center; gap: 10px; }
+.guardrails h3 svg { width: 20px; height: 20px; flex: none; color: var(--band-muted); }
+.guardrails p { margin-top: 8px; font-size: 0.9375rem; line-height: 1.55; color: var(--band-muted); }
+
+/* Steps */
+.steps { display: grid; gap: 16px; margin-top: 48px; padding: 0; list-style: none; counter-reset: step; }
+@media (min-width: 900px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; } }
+.step { position: relative; padding: 28px 24px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); }
+.step-num {
+  display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--border-strong); font-family: var(--font-serif); font-size: 1.375rem; line-height: 1; color: var(--primary);
+}
+.step h3 { margin-top: 20px; font-size: 1.1875rem; }
+.step p { margin-top: 8px; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; }
+.step code { font-family: var(--font-mono); font-size: 0.85em; padding: 1px 6px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+
+/* Closing CTA */
+.cta { text-align: center; }
+.cta h2 { max-width: 34rem; margin-inline: auto; }
+.cta .lead { margin: 16px auto 0; }
+.cta .hero-actions { justify-content: center; }
+.stack { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 40px auto 0; padding: 0; list-style: none; max-width: 44rem; }
+.stack li { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 0.8125rem; color: var(--muted); }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); padding-block: 40px 48px; font-size: 0.875rem; color: var(--muted); }
+.site-footer .container { display: grid; gap: 24px; }
+@media (min-width: 900px) { .site-footer .container { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; } }
+.site-footer p + p { margin-top: 8px; }
+.site-footer .brand { margin-bottom: 14px; }
+.site-footer .brand img { width: 24px; height: 24px; }
+.site-footer .brand span { font-size: 1.125rem; }
+.byline { padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); }
+.byline strong { color: var(--text); font-weight: 600; }
+
+@media (forced-colors: active) {
+  .btn, .feature, .step, .terminal, .byline, .guardrails li { border: 1px solid CanvasText; }
+}
+@media print {
+  .site-header .nav, .hero-art, .copy-btn { display: none; }
+  .band { background: none; color: inherit; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg width="0" height="0" class="sr-only" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-1.95c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></g></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.5"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.5"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.5"/><path stroke-linecap="round" d="M14 14h2.5v2.5M20.5 14v.01M14 20.5h.01M17.5 20.5h3V17.5"/></g></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.63L4 20.5l1.37-4.2A7.5 7.5 0 1 1 20 12.5Z"/><path d="M12.5 8.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></g></symbol>
+    <symbol id="i-kitchen" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M9 21h6M12 17v4M7 8h3M7 11h3M14 8h3M14 11h3M7 14h0"/></g></symbol>
+    <symbol id="i-split" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-2.5-1.5L13 21l-2.5-1.5L8 21l-2-1.2Z"/><path d="M9 8h6M9 12h6M12 15v0"/></g></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 14.5h4"/></g></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14.5l2 2 4-4"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-4 3 3 6-6"/><path d="M15 8h3v3"/><path d="M6.5 3.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4L4.5 5.5l1.4-.6z"/></g></symbol>
+    <symbol id="i-ledger" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 1 5 19.5Z"/><path d="M9 3v18M12 8h4M12 12h4M12 16h2"/></g></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6Z"/><path d="m9 12 2 2 4-4.5"/></g></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l4.5 4.5L20 6"/></g></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17a8.5 8.5 0 1 1 15 0"/><path d="M12 13l3.5-4"/><circle cx="12" cy="13.5" r="1"/></g></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v8"/><path d="M7 6.5a7.5 7.5 0 1 0 10 0"/></g></symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="./" aria-label="Payverge home">
+      <img src="assets/logo.svg" width="30" height="30" alt="">
+      <span>Payverge</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tour">Tour</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#deploy">Deploy</a></li>
+      </ul>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/stdevMac/payverge">
+        <svg aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+      <div>
+        <p class="eyebrow" data-gate="licence-files">Open source &middot; Apache-2.0 &middot; Self-hosted</p>
+        <h1 id="hero-title">Run your restaurant on software you own.</h1>
+        <p class="lead" data-gate="feature-claims">Payverge is an open-source, self-hostable restaurant operating system with AI built in. QR ordering, a kitchen display, bills and payments, reservations and delivery, on your own server, with no platform fees.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/stdevMac/payverge">
+            <svg aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
+            View on GitHub
+          </a>
+          <a class="btn btn-ghost" href="https://demo.payverge.io/" data-gate="live-demo">
+            Live demo
+            <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#deploy" data-gate="install">
+            Deploy in one command
+            <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
+        <p class="hero-note" data-gate="licence-files zero-accounts">Free to use, change and host. No sign-up, no account.</p>
+      </div>
+
+      <figure class="hero-art">
+        <svg class="ill" viewBox="0 0 600 470" role="img" aria-labelledby="ill-title">
+          <title id="ill-title">Sketch of Payverge: a guest's phone showing the menu and the AI waiter answering in Spanish, the kitchen display with live order tickets, and a bill split three ways across card, USDC and cash.</title>
+          <defs>
+            <filter id="ill-shadow" x="-20%" y="-20%" width="140%" height="150%">
+              <feDropShadow dx="0" dy="14" stdDeviation="16"/>
+            </filter>
+          </defs>
+
+          <!-- Kitchen display -->
+          <g filter="url(#ill-shadow)">
+            <rect class="card" x="170" y="20" width="410" height="262" rx="18"/>
+          </g>
+          <text class="t b f15" x="194" y="54">Kitchen</text>
+          <circle class="p live" cx="535" cy="49" r="4"/>
+          <text class="m b f11" x="545" y="53">Live</text>
+          <line class="line" x1="170" y1="70" x2="580" y2="70"/>
+
+          <text class="m b f11" x="246" y="92">New</text>
+          <text class="m b f11" x="358" y="92">Cooking</text>
+          <text class="m b f11" x="470" y="92">Ready</text>
+
+          <rect class="soft" x="244" y="102" width="100" height="74" rx="10"/>
+          <rect class="a" x="244" y="110" width="3" height="58" rx="1.5"/>
+          <text class="t b f12" x="256" y="122">Table 4</text>
+          <text class="m f10" x="334" y="122" text-anchor="end">1m</text>
+          <text class="t f11" x="256" y="144">1&#215; Risotto</text>
+          <text class="t f11" x="256" y="162">2&#215; Tacos</text>
+
+          <rect class="soft" x="244" y="184" width="100" height="56" rx="10"/>
+          <rect class="a" x="244" y="192" width="3" height="40" rx="1.5"/>
+          <text class="t b f12" x="256" y="204">Table 9</text>
+          <text class="m f10" x="334" y="204" text-anchor="end">3m</text>
+          <text class="t f11" x="256" y="226">2&#215; Flan</text>
+
+          <rect class="soft" x="356" y="102" width="100" height="92" rx="10"/>
+          <text class="t b f12" x="368" y="122">Table 2</text>
+          <text class="m f10" x="446" y="122" text-anchor="end">7m</text>
+          <text class="t f11" x="368" y="144">1&#215; Milanesa</text>
+          <text class="t f11" x="368" y="162">1&#215; Salad</text>
+          <text class="t f11" x="368" y="180">2&#215; Water</text>
+
+          <rect class="ps" x="468" y="102" width="100" height="74" rx="10"/>
+          <text class="t b f12" x="480" y="122">Table 7</text>
+          <text class="t f11" x="480" y="144">3&#215; Empanadas</text>
+          <rect class="p" x="480" y="152" width="48" height="16" rx="8"/>
+          <text class="op b f10" x="504" y="163.5" text-anchor="middle">Ready</text>
+
+          <!-- Bill, split three ways -->
+          <g filter="url(#ill-shadow)">
+            <rect class="card" x="262" y="300" width="298" height="140" rx="16"/>
+          </g>
+          <text class="t b f13" x="282" y="328">Table 4 &#183; split 3 ways</text>
+          <text class="m f12" x="540" y="328" text-anchor="end">$36.00</text>
+          <rect class="soft" x="282" y="340" width="258" height="6" rx="3"/>
+          <rect class="p" x="282" y="340" width="172" height="6" rx="3"/>
+          <circle class="p" cx="287" cy="370" r="4"/>
+          <text class="t f12" x="298" y="374">Card</text>
+          <text class="m f12" x="540" y="374" text-anchor="end">$12.00 paid</text>
+          <circle class="p" cx="287" cy="394" r="4"/>
+          <text class="t f12" x="298" y="398">USDC</text>
+          <text class="m f12" x="540" y="398" text-anchor="end">$12.00 paid</text>
+          <circle class="hollow" cx="287" cy="418" r="3.5"/>
+          <text class="t f12" x="298" y="422">Cash at the counter</text>
+          <text class="m f12" x="540" y="422" text-anchor="end">$12.00 due</text>
+
+          <!-- Guest phone -->
+          <g filter="url(#ill-shadow)">
+            <rect class="frame" x="20" y="104" width="214" height="356" rx="32"/>
+          </g>
+          <rect class="card" x="28" y="112" width="198" height="340" rx="25"/>
+          <rect class="frame" x="99" y="120" width="56" height="12" rx="6"/>
+          <text class="t b f13" x="44" y="160">Mesa 4</text>
+          <rect class="ps" x="182" y="147" width="28" height="18" rx="9"/>
+          <text class="p b f10" x="196" y="159.5" text-anchor="middle">ES</text>
+
+          <circle class="as" cx="56" cy="190" r="12"/>
+          <text class="t b f12" x="76" y="187">Risotto de hongos</text>
+          <text class="m f10" x="76" y="201">Arborio, parmesano</text>
+          <text class="t f12" x="210" y="187" text-anchor="end">$14</text>
+          <circle class="as" cx="56" cy="228" r="12"/>
+          <text class="t b f12" x="76" y="225">Tacos al pastor</text>
+          <text class="m f10" x="76" y="239">Pi&#241;a, cilantro</text>
+          <text class="t f12" x="210" y="225" text-anchor="end">$11</text>
+          <line class="line" x1="44" y1="256" x2="210" y2="256"/>
+
+          <path class="p" d="M48 270.5l1.2 3.1 3.1 1.2-3.1 1.2-1.2 3.1-1.2-3.1-3.1-1.2 3.1-1.2z"/>
+          <text class="p b f10" x="57" y="278">Mesero IA</text>
+          <rect class="p" x="90" y="290" width="120" height="40" rx="12"/>
+          <text class="op f11" x="102" y="306">&#191;El risotto lleva</text>
+          <text class="op f11" x="102" y="321">frutos secos?</text>
+          <rect class="soft" x="44" y="338" width="146" height="40" rx="12"/>
+          <text class="t f11" x="56" y="354">No, seg&#250;n la carta.</text>
+          <text class="t f11" x="56" y="369">&#191;Lo agrego al pedido?</text>
+          <rect class="ring" x="44" y="388" width="104" height="26" rx="13"/>
+          <text class="p b f11" x="96" y="405" text-anchor="middle">+ Agregar &#183; $14</text>
+          <rect class="soft" x="102" y="436" width="50" height="4" rx="2"/>
+        </svg>
+      </figure>
+    </div>
+  </section>
+
+  <div class="facts" role="region" aria-label="At a glance">
+    <div class="container">
+      <ul>
+        <li data-gate="feature-claims"><strong>21</strong><span>guest languages, Arabic right-to-left included</span></li>
+        <li data-gate="feature-claims"><strong>4</strong><span>online payment rails, plus cash</span></li>
+        <li data-gate="install"><strong>1</strong><span>command to deploy on your server</span></li>
+        <li data-gate="zero-accounts"><strong>0</strong><span>third-party accounts required</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section" id="features" aria-labelledby="features-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What it does</p>
+        <h2 id="features-title">One system from the table to the books</h2>
+        <p class="lead">Guest ordering, the kitchen, payments and the back office share one database, so an order placed at table 4 is on the kitchen screen, the bill and the reports at the same moment.</p>
+      </div>
+      <ul class="features" role="list" data-gate="feature-claims">
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-qr"/></svg></div>
+          <h3>QR menus and table ordering</h3>
+          <p>Each table gets its own QR code. Guests open the menu in the browser, order, call a server and pay from their phone. There is nothing to install.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-chat"/></svg></div>
+          <h3>AI waiter in the guest's language</h3>
+          <p>Answers menu questions in any of the 21 guest languages, works from the allergens listed on your menu, leaves drinks with alcohol out when a guest asks for alcohol-free, and only adds dishes that are on your menu and in stock.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-kitchen"/></svg></div>
+          <h3>Kitchen display</h3>
+          <p>Orders reach the kitchen screen live and move from new to cooking to ready. Print kitchen tickets and bills on 58 or 80&nbsp;mm thermal printers from the browser.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-split"/></svg></div>
+          <h3>Bills and split payments</h3>
+          <p>Open a bill per table, split it evenly, by amount or by item, take tips, and close the day with a cash-drawer Z report.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-card"/></svg></div>
+          <h3>Payments on your own accounts</h3>
+          <p>Connect your own Stripe, Mercado Pago or PayPal account, accept USDC on Base verified on-chain, or take cash at the counter. Payverge adds no fee of its own.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg></div>
+          <h3>Reservations and delivery</h3>
+          <p>Online bookings that confirm automatically or wait for your approval, plus delivery orders with a tracking page that refreshes as the order moves.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-spark"/></svg></div>
+          <h3>Ops assistant and Director</h3>
+          <p>The Ops assistant answers how-to questions and checks your setup. The Director reads sales, menu engineering, labor and food cost, then proposes price or availability changes for you to approve.</p>
+        </li>
+        <li class="feature">
+          <div class="icon"><svg aria-hidden="true" focusable="false"><use href="#i-ledger"/></svg></div>
+          <h3>Back office</h3>
+          <p>Inventory, staff roles, schedules, time clock and tips, CRM and loyalty, accounting and analytics, plus ARCA e-invoicing for venues in Argentina (beta).</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="tour" aria-labelledby="tour-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Product tour</p>
+        <h2 id="tour-title">See it running</h2>
+        <p class="lead">These screens come from a fresh install with the demo restaurants: one order, from the guest's phone through the kitchen to the receipt. The venues and guests are fictional.</p>
+      </div>
+      <ul class="shots shots-wide" role="list">
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/storefront-desktop.webp" width="1280" height="800" loading="lazy" decoding="async" alt="The storefront of a demo grill: the venue name over a grill illustration, with buttons to book a table, see the menu or call.">
+            <figcaption><strong>Storefront.</strong> The venue page guests land on, with booking, menu and opening hours.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/kitchen.webp" width="1280" height="800" loading="lazy" decoding="async" alt="The kitchen screen: tickets waiting for approval on the left, approved tickets with allergen tags on the right.">
+            <figcaption><strong>Kitchen display.</strong> Approve guest tickets, then cook from one live screen.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/tables.webp" width="1280" height="800" loading="lazy" decoding="async" alt="The tables screen: each table with its status, covers, server and open bill.">
+            <figcaption><strong>Floor and tables.</strong> Who is seated, who is waiting and which bills are open.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/menu-editor.webp" width="1280" height="800" loading="lazy" decoding="async" alt="The menu editor: a category of dishes with prices, descriptions and allergen tags.">
+            <figcaption><strong>Menu editor.</strong> Dishes, prices, allergens and offers in two languages.</figcaption>
+          </figure>
+        </li>
+      </ul>
+      <ul class="shots shots-phone" role="list">
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/guest-menu.webp" width="520" height="1125" loading="lazy" decoding="async" alt="A phone showing the QR menu: dishes with photos, allergen tags, an active offer and a cart bar.">
+            <figcaption><strong>QR menu.</strong> Guests order from their phone with nothing to install.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/guest-bill-split.webp" width="520" height="1125" loading="lazy" decoding="async" alt="A phone showing the bill with split options: equally, by my items, or a custom amount.">
+            <figcaption><strong>Split the bill.</strong> Equal shares, by item or a custom amount.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/guest-receipt.webp" width="520" height="1125" loading="lazy" decoding="async" alt="A phone showing the thank-you receipt after paying at the counter, with the items and the total paid.">
+            <figcaption><strong>Receipt.</strong> Shown as soon as staff record the payment.</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure class="shot">
+            <img src="assets/screenshots/ai-waiter-guest.webp" width="520" height="1125" loading="lazy" decoding="async" alt="A phone showing the menu helper chat on an install with no model: it says it is not an AI and answers from the menu.">
+            <figcaption><strong>AI waiter, no model connected.</strong> It becomes a menu helper that says it is not an AI. Connect a model for real answers.</figcaption>
+          </figure>
+        </li>
+      </ul>
+      <p class="tour-note">Nothing is mocked or retouched. With no model connected, the AI waiter says itself that it is not an AI.</p>
+
+      <div class="trial" id="try">
+        <div>
+          <h3>Try it locally in 5 minutes</h3>
+          <p>On any machine with Docker and Git, the demo flag loads two fictional restaurants with menus, tables, bookings and orders, so every screen above has something on it.</p>
+          <p>Sign in with the admin email you pass and the password the script prints.</p>
+        </div>
+        <div class="terminal" data-gate="install">
+          <div class="terminal-bar"><span>bash</span></div>
+          <pre class="cmds"><code><span class="p" aria-hidden="true">$ </span>git clone https://github.com/stdevMac/payverge.git
+<span class="p" aria-hidden="true">$ </span>cd payverge
+<span class="p" aria-hidden="true">$ </span>./deploy/install.sh --domain localhost --admin-email you@example.com --demo</code></pre>
+          <div class="terminal-foot">Then open <code>https://localhost</code>. Your browser will ask you to trust the local certificate; the <a href="https://github.com/stdevMac/payverge/blob/main/deploy/README.md#local-trial">local trial guide</a> explains how.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="ai-title">
+    <div class="container band-grid">
+      <div class="section-head">
+        <p class="eyebrow">AI built in</p>
+        <h2 id="ai-title">AI that works inside the lines you draw</h2>
+        <p class="lead" data-gate="ai-budget">The AI features are optional. When they are on, they answer from your data, ask before they change anything, and stay inside daily spend caps that are on by default.</p>
+      </div>
+      <ul class="guardrails" role="list">
+        <li>
+          <h3><svg aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>Grounded in your menu</h3>
+          <p>The waiter quotes only dishes, prices and allergens from your live menu. The server checks every cart action, so an invented dish never reaches an order.</p>
+        </li>
+        <li>
+          <h3><svg aria-hidden="true" focusable="false"><use href="#i-hand"/></svg>You approve every change</h3>
+          <p>Director suggestions for prices or availability wait for an owner to apply them. Each applied change can be undone for 24 hours, as long as the menu has not changed since.</p>
+        </li>
+        <li data-gate="ai-budget">
+          <h3><svg aria-hidden="true" focusable="false"><use href="#i-gauge"/></svg>Spend you control</h3>
+          <p>A ledger records what every AI call costs. Daily dollar caps per venue and for the whole server are on by default, and you set the amounts. The guest waiter also has a daily message limit. An evaluation harness regression-tests the prompts.</p>
+        </li>
+        <li data-gate="ai-budget">
+          <h3><svg aria-hidden="true" focusable="false"><use href="#i-power"/></svg>Off until you turn it on</h3>
+          <p>Until you connect a model, hosted or on your own server, there is no AI and no AI cost. Ordering, the kitchen, bills and payments work the same.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works" aria-labelledby="how-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-title">From an empty server to the first order</h2>
+      </div>
+      <ol class="steps" role="list">
+        <li class="step" data-gate="install">
+          <span class="step-num" aria-hidden="true">1</span>
+          <h3>Deploy</h3>
+          <p>Run the installer on a Linux server with Docker. Payverge comes up with PostgreSQL, automatic HTTPS and your admin account.</p>
+        </li>
+        <li class="step" data-gate="feature-claims">
+          <span class="step-num" aria-hidden="true">2</span>
+          <h3>Configure with the AI</h3>
+          <p>Photograph your paper menu and the importer turns it into a structured menu. The Ops assistant checks what is still missing and takes you to the right screen. Coding agents get an <code>AGENTS.md</code> guide to the codebase.</p>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">3</span>
+          <h3>Open your restaurant</h3>
+          <p>Print the table QR codes, put the kitchen display on a tablet, and take your first order.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="deploy" aria-labelledby="deploy-title">
+    <div class="container deploy">
+      <div class="section-head">
+        <p class="eyebrow">Self-host</p>
+        <h2 id="deploy-title" data-gate="install">Deploy in one command</h2>
+        <p class="lead" data-gate="install">You need a Linux server with Docker and a domain pointed at it. The installer asks for the domain and an admin email, generates the secrets and starts the stack.</p>
+        <ul class="checklist" role="list">
+          <li data-gate="install"><svg aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><strong>PostgreSQL, API, web app and Caddy</strong> from public container images, with HTTPS certificates issued automatically.</span></li>
+          <li data-gate="zero-accounts"><svg aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><strong>No outside accounts to start.</strong> Files stay on a local volume and email goes to the logs until you connect S3 or a mail provider.</span></li>
+          <li data-gate="feature-claims"><svg aria-hidden="true" focusable="false"><use href="#i-check"/></svg><span><strong>Add integrations when you want them:</strong> payment providers, a model for the AI features (an OpenRouter key, or your own Ollama or vLLM server), Telegram alerts.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="terminal" data-gate="install">
+          <div class="terminal-bar">
+            <span>bash</span>
+            <button class="copy-btn" type="button" data-copy="install-cmd" hidden>
+              <svg aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><span>Copy</span>
+            </button>
+          </div>
+          <pre><code id="install-cmd">curl -fsSL https://github.com/stdevMac/payverge/releases/latest/download/install.sh | bash</code></pre>
+          <div class="terminal-foot">Prefer to read it first? Download <code>install.sh</code> from the <a href="https://github.com/stdevMac/payverge/releases/latest">latest release</a>, read it, then run <code>bash install.sh</code>.</div>
+        </div>
+        <ul class="deploy-links" role="list">
+          <li><a href="https://github.com/stdevMac/payverge/tree/main/docs/self-hosting">Self-hosting guide</a></li>
+          <li><a href="https://github.com/stdevMac/payverge#readme">Run from source with Docker Compose</a></li>
+        </ul>
+        <p class="sr-only" role="status" aria-live="polite" id="copy-status"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta" aria-labelledby="cta-title">
+    <div class="container">
+      <h2 id="cta-title">Your restaurant, your server, your code.</h2>
+      <p class="lead">Read the source, run it, change it. Issues and pull requests are welcome.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/stdevMac/payverge">
+          <svg aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
+          View on GitHub
+        </a>
+      </div>
+      <ul class="stack" role="list" aria-label="Built with">
+        <li>Go and Gin</li>
+        <li>PostgreSQL</li>
+        <li>Next.js 15</li>
+        <li>Server-sent events</li>
+        <li>Docker Compose</li>
+        <li>Caddy</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div>
+      <a class="brand" href="./" aria-label="Payverge home">
+        <img src="assets/logo.svg" width="24" height="24" alt="">
+        <span>Payverge</span>
+      </a>
+      <p data-gate="licence-files">Open source under the <a href="https://github.com/stdevMac/payverge/blob/main/LICENSE">Apache License 2.0</a>. &copy; 2025&ndash;2026 Marcos Maceo.</p>
+      <p data-gate="licence-files">The Payverge name and logo are not covered by the code license; see <a href="https://github.com/stdevMac/payverge/blob/main/TRADEMARKS.md">TRADEMARKS.md</a>.</p>
+      <p>This page sets no cookies and runs no analytics.</p>
+    </div>
+    <div class="byline" data-gate="provenance">
+      <p><strong>Designed and built by Marcos Maceo.</strong> Payverge ran in production from 2025 and is now developed in the open.</p>
+      <p><a href="https://github.com/stdevMac">github.com/stdevMac</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var btn = document.querySelector("[data-copy]");
+  if (!btn || !navigator.clipboard || !window.isSecureContext) return;
+  var source = document.getElementById(btn.getAttribute("data-copy"));
+  var label = btn.querySelector("span");
+  var status = document.getElementById("copy-status");
+  var timer;
+  btn.hidden = false;
+  btn.addEventListener("click", function () {
+    navigator.clipboard.writeText(source.textContent.trim()).then(function () {
+      label.textContent = "Copied";
+      status.textContent = "Install command copied to the clipboard.";
+    }, function () {
+      label.textContent = "Select and copy";
+      status.textContent = "Copy failed. Select the command and copy it manually.";
+    });
+    clearTimeout(timer);
+    timer = setTimeout(function () { label.textContent = "Copy"; status.textContent = ""; }, 2400);
+  });
+})();
+</script>
+</body>
+</html>

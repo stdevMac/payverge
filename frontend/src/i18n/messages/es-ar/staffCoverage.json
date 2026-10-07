@@ -1,0 +1,17 @@
+{
+  "menu": {
+    "hint": "Tomá turnos libres y cubrí cambios"
+  },
+  "openShifts": "Turnos libres",
+  "actionError": "No pudimos completarlo. Volvé a intentarlo en un momento.",
+  "row": {
+    "claim": "Toma de turno libre"
+  },
+  "empty": {
+    "openTitle": "No hay turnos libres para tomar",
+    "openSubtitle": "Los turnos libres que publique tu encargado van a aparecer acá para que los tomes.",
+    "inboxSubtitle": "Cuando un compañero ofrezca un cambio que puedas cubrir, va a aparecer acá.",
+    "mineTitle": "Todavía no tenés solicitudes de cobertura",
+    "mineSubtitle": "Los turnos que tomes y los cambios que solicites van a aparecer acá con su estado."
+  }
+}

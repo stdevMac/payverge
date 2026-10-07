@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "개인정보를 소중히 합니다",
+    "description": "Payverge 작동에 필요한 필수 쿠키를 사용합니다. 동의하시면 사이트 이용을 이해하기 위한 분석 쿠키도 사용합니다. 푸터의 \"쿠키 설정\"에서 언제든 변경할 수 있습니다.",
+    "acceptAll": "모두 수락",
+    "declineAll": "비필수 거부",
+    "customize": "맞춤 설정",
+    "essentialLabel": "필수",
+    "essentialDescription": "사이트 기능에 필요(보안, 언어, 세션). 항상 켜짐.",
+    "analyticsLabel": "분석",
+    "analyticsDescription": "이용을 파악해 제품을 개선합니다. 동의 전까지 꺼짐.",
+    "marketingLabel": "마케팅",
+    "marketingDescription": "캠페인 측정 및 개선에 사용합니다. 동의 전까지 꺼짐.",
+    "savePreferences": "설정 저장",
+    "privacyLink": "개인정보 처리방침 읽기",
+    "closeLabel": "쿠키 배너 닫기"
+  },
+  "footer": {
+    "preferences": "쿠키 설정"
+  }
+}

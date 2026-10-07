@@ -1,0 +1,14 @@
+{
+  "suspended": {
+    "title": "Este local fue suspendido",
+    "subtitle": "Un administrador de la plataforma suspendió este local. Los clientes no pueden pedir ni pagar hasta que se reactive. Solo el administrador de la plataforma puede reactivarlo."
+  },
+  "closed": {
+    "title": "Este local fue cerrado",
+    "subtitle": "Un administrador de la plataforma cerró esta cuenta. Los clientes no pueden pedir ni pagar. Solo el administrador de la plataforma puede reabrirla."
+  },
+  "loadFailed": {
+    "title": "No se pudo confirmar el estado del local. Probá de nuevo.",
+    "retry": "Reintentar"
+  }
+}

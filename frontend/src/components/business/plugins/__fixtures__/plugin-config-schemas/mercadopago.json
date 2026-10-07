@@ -1,0 +1,84 @@
+{
+  "properties": {
+    "access_token": {
+      "description": "Your MercadoPago access token (production credentials start with APP_USR-)",
+      "format": "password",
+      "title": "Access Token",
+      "type": "string"
+    },
+    "auto_return": {
+      "default": "approved",
+      "description": "Automatic return behavior after payment",
+      "enum": [
+        "approved",
+        "all"
+      ],
+      "title": "Auto Return",
+      "type": "string"
+    },
+    "base_url": {
+      "description": "Public backend origin used for MercadoPago webhook callbacks",
+      "format": "uri",
+      "title": "Public API Base URL",
+      "type": "string"
+    },
+    "connection_mode": {
+      "description": "oauth or manual",
+      "enum": [
+        "oauth",
+        "manual"
+      ],
+      "title": "Connection Mode",
+      "type": "string"
+    },
+    "country": {
+      "default": "AR",
+      "description": "Operating country for local payment methods",
+      "enum": [
+        "AR",
+        "BR",
+        "CL",
+        "CO",
+        "MX",
+        "PE",
+        "UY"
+      ],
+      "title": "Country",
+      "type": "string"
+    },
+    "installments": {
+      "default": 12,
+      "description": "Maximum number of installments allowed",
+      "maximum": 24,
+      "minimum": 1,
+      "title": "Max Installments",
+      "type": "integer"
+    },
+    "public_key": {
+      "description": "Your MercadoPago public key (production credentials start with APP_USR-)",
+      "title": "Public Key",
+      "type": "string"
+    },
+    "refresh_token": {
+      "format": "password",
+      "title": "Refresh Token",
+      "type": "string"
+    },
+    "webhook_secret": {
+      "description": "Secret key generated in MercadoPago Webhooks configuration",
+      "format": "password",
+      "title": "Webhook Secret",
+      "type": "string"
+    },
+    "webhook_secret_previous": {
+      "description": "Temporary overlap key used while rotating webhook signing secrets",
+      "format": "password",
+      "title": "Previous Webhook Secret",
+      "type": "string"
+    }
+  },
+  "required": [
+    "access_token"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,113 @@
+{
+  "description": "Configurá tus opciones de entrega, zonas, tarifas y horarios.",
+  "coverageDescription": "Definí dónde realizás entregas",
+  "feesDescription": "Establecé tus cargos por entrega",
+  "timingDescription": "Gestioná tiempos de preparación y entrega",
+  "additionalDescription": "Información extra para tus clientes",
+  "infoBanner": "Asegurate de que tu configuración de entrega sea precisa para evitar confusiones a los clientes.",
+  "deliveryDisabled": {
+    "description": "Habilitá la entrega en la pestaña de Configuración para acceder a estos ajustes."
+  },
+  "drivers": {
+    "empty": "Sin repartidores aún. Agregá uno para comenzar a despachar.",
+    "vehicleTypes": {
+      "car": "Auto"
+    },
+    "confirm": {
+      "removeDescription": "¿Seguro que querés eliminar a {name}? Esto no se puede deshacer."
+    },
+    "validation": {
+      "emailInvalid": "Ingresá un correo electrónico válido",
+      "phoneInvalid": "Ingresá un teléfono válido (solo dígitos, al menos 7)."
+    },
+    "loadError": "No se pudieron cargar los repartidores. Comprobá tu conexión e intentá de nuevo."
+  },
+  "dispatch": {
+    "loadError": "No se pudieron cargar las entregas. Comprobá tu conexión e intentá de nuevo.",
+    "cancelPaidWarning": "Este pedido puede haber sido pagado en línea. Cancelarlo queda registrado, pero cualquier compensación al cliente es responsabilidad tuya — Payverge no gestiona reembolsos.",
+    "columns": {
+      "awaiting_payment": "Esperando pago",
+      "out_for_delivery": "En camino"
+    },
+    "card": {
+      "items": "{count} artículos",
+      "awaitingPayment": "Esperando el pago del cliente",
+      "awaitingAcceptance": "Esperando aceptación en Cuentas"
+    },
+    "filters": {
+      "awaiting_payment": "Esperando pago",
+      "out_for_delivery": "En camino"
+    },
+    "emptyBoard": {
+      "title": "Todavía no hay pedidos de entrega",
+      "subtitle": "Las entregas nuevas aparecen acá cuando los clientes terminan la compra, incluidos los pedidos que todavía esperan el pago."
+    },
+    "cancel": {
+      "description": "Esta acción no se puede deshacer. Por favor proporcioná una razón."
+    },
+    "claim": {
+      "heldByYou": "Tenés este pedido",
+      "needClaim": "Reclamá este pedido antes de hacer cambios",
+      "steal": "Tomar el control",
+      "cancel": "Cancelar"
+    },
+    "drivers": {
+      "empty": "Sin repartidores aún. Agregá uno para comenzar a despachar.",
+      "vehicleTypes": {
+        "car": "Auto"
+      },
+      "confirm": {
+        "removeDescription": "¿Seguro que querés eliminar a {name}? Esto no se puede deshacer."
+      },
+      "validation": {
+        "emailInvalid": "Ingresá un correo electrónico válido",
+        "phoneInvalid": "Ingresá un teléfono válido (solo dígitos, al menos 7)."
+      }
+    },
+    "scrollHint": "Desplazate horizontalmente para ver En camino y Entregado"
+  },
+  "performance": {
+    "empty": {
+      "subtitle": "Agregá un repartidor en la pestaña Repartidores para empezar a medir el rendimiento."
+    }
+  },
+  "focused": {
+    "headerDescription": "Configurá cómo tus clientes reciben sus pedidos — tus propias zonas y repartidores, socios externos, o ambos.",
+    "status": {
+      "addProviderHint": "Agregá al menos un proveedor para que tus clientes puedan pedir entrega."
+    },
+    "providers": {
+      "cardSubtitle": "Elegí los socios a los que tus clientes pueden pasar. Hasta cinco."
+    },
+    "note": {
+      "placeholder": "Ejemplo: La mayoría de los proveedores entregan hasta las 10 PM. Usá el socio en el que más confiás."
+    },
+    "zones": {
+      "cardSubtitle": "Cobrá por área: agregá zonas para barrios más lejanos con su propia tarifa, mínimo y tiempo.",
+      "overlapHint": "Si una dirección coincide con varias zonas, gana la tarifa más baja y se aplica el mínimo más alto.",
+      "noZones": "Todavía no hay zonas. Agregá una para comenzar a aceptar entregas propias.",
+      "activationNeedsName": "Ponele un nombre a la zona antes de activarla.",
+      "activationNeedsGeography": "Agregá códigos postales o ciudades antes de activar la zona.",
+      "invalidMoney": "Ingresá un monto válido (por ejemplo 0 o 12,50).",
+      "activateConfirmBody": "Las zonas activas habilitan la entrega propia. Confirmá que esta zona está lista para recibir pedidos."
+    },
+    "configuration": {
+      "paymentModeTitle": "Cómo pagan los clientes",
+      "paymentModeOnline": "Aceptar primero, pagar en línea después",
+      "paymentModeOnlineHelp": "Aceptás el pedido, el cliente paga en línea y recién ahí arranca la cocina. Los pedidos sin pagar vencen en 15 minutos — no se cobra nada.",
+      "paymentModeOnlineDisabled": "Conectá un método de pago para habilitar el pago en línea.",
+      "paymentModeCOD": "Efectivo contra entrega",
+      "paymentModeCODHelp": "La cocina empieza cuando aceptás; el repartidor cobra en efectivo.",
+      "paymentModeMismatch": "El pago en línea está seleccionado pero no hay método de pago conectado — los nuevos pedidos usarán efectivo contra entrega.",
+      "baseFee": "Tarifa de entrega base",
+      "freeAboveHelp": "Poné 0 para nunca eximir la tarifa",
+      "invalidMoney": "Ingresá un monto válido (por ejemplo 0 o 12,50)."
+    },
+    "save": {
+      "unsavedChanges": "Tenés cambios sin guardar."
+    },
+    "locked": {
+      "subtitle": "Conectá los proveedores de entrega que tus clientes ya conocen."
+    }
+  }
+}

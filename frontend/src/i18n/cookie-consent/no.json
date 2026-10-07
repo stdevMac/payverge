@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "Vi verdsetter personvernet ditt",
+    "description": "Vi bruker nødvendige informasjonskapsler for at Payverge skal fungere. Med din tillatelse vil vi også bruke analyseinformasjonskapsler for å forstå hvordan nettstedet brukes. Du kan endre valget når som helst fra \"Innstillinger for informasjonskapsler\" i bunnteksten.",
+    "acceptAll": "Godta alle",
+    "declineAll": "Avslå ikke-nødvendige",
+    "customize": "Tilpass",
+    "essentialLabel": "Nødvendige",
+    "essentialDescription": "Kreves for at nettstedet skal fungere (sikkerhet, språk, økt). Alltid på.",
+    "analyticsLabel": "Analyse",
+    "analyticsDescription": "Hjelper oss å forstå bruk for å forbedre produktet. Av til du godtar.",
+    "marketingLabel": "Markedsføring",
+    "marketingDescription": "Brukes til å måle og forbedre kampanjene våre. Av til du godtar.",
+    "savePreferences": "Lagre innstillinger",
+    "privacyLink": "Les personvernerklæringen vår",
+    "closeLabel": "Lukk informasjonskapselbanner"
+  },
+  "footer": {
+    "preferences": "Innstillinger for informasjonskapsler"
+  }
+}

@@ -1,0 +1,14 @@
+# Payverge public demo: reset every night at 03:00 UTC (the time the demo
+# banner announces; keep DEMO_RESET_UTC in .env equal if you change it).
+[Unit]
+Description=Payverge public demo nightly reset at 03:00 UTC
+
+[Timer]
+OnCalendar=*-*-* 03:00:00 UTC
+# A host that was down at 03:00 resets as soon as it is back.
+Persistent=true
+AccuracySec=1min
+Unit=payverge-demo-reset.service
+
+[Install]
+WantedBy=timers.target

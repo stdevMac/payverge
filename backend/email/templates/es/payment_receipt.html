@@ -1,0 +1,58 @@
+{{ define "subject" }}Recibo de pago{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Recibo de pago
+</h1>
+
+<p style="margin:0 0 18px 0;">
+    Gracias por tu pago en <strong>{{ .business_name }}</strong>.
+</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0; font-size:15px;">
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Fecha</td>
+        <td style="padding:6px 0; text-align:right;">{{ .payment_date }}</td>
+    </tr>
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Método de pago</td>
+        <td style="padding:6px 0; text-align:right;">{{ .payment_method }}</td>
+    </tr>
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">ID de transacción</td>
+        <td style="padding:6px 0; text-align:right;">{{ .transaction_id }}</td>
+    </tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0; font-size:15px;">
+    {{ if .items }}
+    {{ range .items }}
+    <tr>
+        <td style="padding:8px 0;">{{ .name }}</td>
+        <td style="padding:8px 0; text-align:center; color:#6b6b6b;">{{ .quantity }}</td>
+        <td style="padding:8px 0; text-align:right;">{{ .line_total }}</td>
+    </tr>
+    {{ end }}
+    {{ else }}
+    <tr>
+        <td style="padding:8px 0; color:#6b6b6b;" colspan="3">Sin artículos</td>
+    </tr>
+    {{ end }}
+    <tr>
+        <td style="padding:8px 0; border-top:1px solid #ece9e2; font-weight:600;">Total</td>
+        <td style="padding:8px 0; border-top:1px solid #ece9e2;"></td>
+        <td style="padding:8px 0; border-top:1px solid #ece9e2; text-align:right; font-weight:600;">{{ .total_amount }}</td>
+    </tr>
+</table>
+
+<p style="margin:0 0 18px 0;">
+    Este correo es tu recibo. No se requiere ninguna otra acción.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Si tienes preguntas sobre tu pedido o pago, contacta directamente con <strong>{{ .business_name }}</strong>.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    Pagado vía Payverge
+</p>
+{{ end }}

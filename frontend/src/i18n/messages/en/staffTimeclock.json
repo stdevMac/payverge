@@ -1,0 +1,17 @@
+{
+  "clockIn": "Clock in",
+  "clockOut": "Clock out",
+  "clockingIn": "Clocking in…",
+  "clockingOut": "Clocking out…",
+  "onTheClock": "On the clock",
+  "sinceTemplate": "Since {time}",
+  "notClockedIn": "You're not clocked in yet.",
+  "workedToday": "Worked today",
+  "breakLabel": "Add a break",
+  "breakPreset": "+{minutes}m",
+  "hoursUnit": "h",
+  "minutesUnit": "m",
+  "clockInError": "We couldn't clock you in. Try again in a moment.",
+  "clockOutError": "We couldn't clock you out. Try again in a moment.",
+  "breakError": "We couldn't add that break. Try again in a moment."
+}

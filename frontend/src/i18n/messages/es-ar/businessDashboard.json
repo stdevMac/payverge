@@ -1,0 +1,1531 @@
+{
+  "mobileNav": {
+    "label": "Hoy"
+  },
+  "recentAlerts": {
+    "acknowledge": "Tomar llamada",
+    "markHandled": "Marcar atendida",
+    "updating": "Actualizando…",
+    "updateFailed": "No se pudo actualizar la llamada. Intentá de nuevo.",
+    "serviceCallReason": {
+      "water": "Necesita agua",
+      "order": "Quiere pedir",
+      "check": "Pidió la cuenta"
+    }
+  },
+  "commandPalette": {
+    "search": "Buscar",
+    "title": "Menú de comandos",
+    "placeholder": "Buscar secciones, registros y acciones…",
+    "recent": "Recientes",
+    "navigate": "Ir a",
+    "actions": "Acciones",
+    "empty": "Sin resultados",
+    "locked": "Bloqueado",
+    "footerNavigate": "Navegar",
+    "footerOpen": "Abrir",
+    "brand": "Salto rápido",
+    "viewStorefront": "Ver tienda",
+    "viewStorefrontDesc": "Abrí tu página pública en una nueva pestaña",
+    "copyStorefrontLink": "Copiar enlace de la tienda",
+    "copyStorefrontLinkDesc": "Copiá la URL de tu página pública para compartir",
+    "startTour": "Iniciar el recorrido guiado",
+    "startTourDesc": "Volvé a ver el recorrido del panel",
+    "records": "Registros"
+  },
+  "moneyMoments": {
+    "received": "Pago recibido",
+    "via": "vía",
+    "bill": "Cuenta",
+    "dismiss": "Descartar",
+    "methodCrypto": "Cripto",
+    "methodCrossChain": "Multicadena",
+    "methodCard": "Tarjeta",
+    "methodCash": "Efectivo",
+    "methodPaypal": "PayPal",
+    "methodMercadoPago": "Mercado Pago"
+  },
+  "crm": {
+    "description": "Gestioná tus relaciones con clientes y programas de lealtad",
+    "notesPlaceholder": "Alergias, preferencias de mesa, pedido habitual…",
+    "notesHint": "Incluí alergias y preferencias de servicio para que el equipo las vea.",
+    "empty": {
+      "customers": {
+        "captureCta": "Configurá los códigos QR de tus mesas"
+      }
+    },
+    "segments": {
+      "vip": {
+        "title": "VIP",
+        "description": "5+ visitas y gasto de por vida por encima del promedio"
+      },
+      "error": {
+        "subtitle": "El desglose por segmentos no se cargó. Revisá tu conexión e intentá de nuevo."
+      }
+    },
+    "validation": {
+      "emailInvalid": "Ingresá un email válido.",
+      "phoneInvalid": "Ingresá un teléfono válido (solo dígitos, al menos 7)."
+    },
+    "loyalty": {
+      "rateRequired": "Ingresá una tasa de puntos para guardar.",
+      "rateInvalid": "Ingresá un número válido (por ejemplo 1 o 2,5)."
+    },
+    "tiers": {
+      "legendPrefix": "Niveles por gasto acumulado:",
+      "thresholdHint": "{tier} · gastado ≥ {amount}"
+    }
+  },
+  "reservations": {
+    "description": "Gestioná las reservas de mesas",
+    "empty": {
+      "todaySubtitle": "No hay reservas para hoy. Revisá las próximas o creá una."
+    },
+    "shell": {
+      "serviceLensDescription": "Filtrá el comedor por presión de llegadas, mesas pendientes y estado del cliente."
+    },
+    "board": {
+      "scrollHint": "Desplazate de costado para llegar a Lista de espera, Sentado y Completada"
+    },
+    "timeEntry": {
+      "modeLabel": "Zona horaria de la reserva",
+      "business": "Hora del negocio",
+      "device": "Hora del dispositivo",
+      "preview": "Conversión horaria antes de guardar",
+      "timezoneLoading": "La zona horaria del local todavía se está cargando. Probá de nuevo en un momento.",
+      "invalidGap": "Esa hora local no existe por el cambio de horario. Elegí otra hora."
+    },
+    "occupancy": {
+      "available": "Disponible",
+      "occupied": "Ocupada — cuenta activa",
+      "staleOccupied": "Ocupación antigua — cuenta activa sin cerrar",
+      "override": "Ignorar el conflicto de cuenta activa para esta reserva",
+      "overrideRequired": "Confirmá la cuenta activa antes de guardar",
+      "reservationConflict": "Ya está reservada para este horario",
+      "capacityConflict": "Demasiado chica para este grupo",
+      "tableClearedForPartySize": "La mesa seleccionada es demasiado pequeña para este tamaño de grupo. Elegí otra mesa."
+    },
+    "toasts": {
+      "createError": "No se pudo crear la reserva. Revisá los datos y volvé a intentar."
+    },
+    "claim": {
+      "needClaim": "Reclamá esta reserva antes de hacer cambios",
+      "conflict": "{name} está atendiendo esta reserva",
+      "stealRequired": "{name} está atendiendo esta reserva. ¿Tomar el control?",
+      "takeOver": "Tomar el control",
+      "cancel": "Cancelar",
+      "claimFailed": "No se pudo reclamar esta reserva",
+      "stolenToast": "Tomaste el control de {name}"
+    },
+    "noReservationsHelp": "Las reservas desde tu página pública aparecen acá. Compartí tu QR o página de negocio para empezar a llenar mesas.",
+    "confirmCancelMessage": "¿Estás seguro de que querés cancelar esta reserva?",
+    "disabled": {
+      "contactOwner": "Las reservas no están habilitadas para este negocio. Pedile al propietario o gerente que las active en Configuración."
+    },
+    "settings": {
+      "description": "Configurá cómo funcionan las reservas para tu negocio",
+      "approvalModeDesc": "Elegí si las reservas online se confirman al instante o esperan tu aprobación.",
+      "saveError": "Error al guardar la configuración. Por favor intentá de nuevo.",
+      "unsavedChanges": "Tenés cambios sin guardar",
+      "minPartySizeDesc": "Tamaño de grupo más pequeño que podés aceptar",
+      "maxPartySizeDesc": "Tamaño de grupo más grande que podés aceptar",
+      "maxCoversPerSlotDesc": "Poné 0 para desactivar el límite por turno.",
+      "allowWaitlistDesc": "Mantené los turnos llenos como solicitudes de lista de espera para que el personal las promueva.",
+      "partnerLinks": {
+        "imageOnlyError": "Elegí un archivo de imagen."
+      }
+    },
+    "toggle": {
+      "updateError": "No se pudieron actualizar los ajustes. Intentá de nuevo.",
+      "enableModal": {
+        "description": "Activá el sistema de reservas para comenzar a aceptar reservas de mesas de tus clientes."
+      },
+      "features": {
+        "automationDesc": "Se crean cuentas automáticamente cuando los huéspedes se sientan"
+      },
+      "activationHint": "Empezá con reservas directas y luego ajustá disponibilidad y confirmaciones."
+    },
+    "timezoneEntryHint": "Ingresá la hora en la zona horaria de tu dispositivo ({tz})",
+    "validation": {
+      "customerNameRequired": "El nombre del cliente es obligatorio.",
+      "customerPhoneRequired": "El teléfono es obligatorio.",
+      "customerPhoneInvalid": "Ingresá un teléfono válido (solo dígitos, al menos 7)."
+    }
+  },
+  "error": {
+    "accessDenied": "No tenés permiso para acceder a esta página",
+    "venueAccessDenied": "No tenés permiso para abrir {name}.",
+    "backToBusinesses": "Volvé a tus negocios",
+    "tabNotFoundBody": "No hay una pestaña del panel llamada \"{key}\". Revisá el enlace o volvé a Resumen.",
+    "subNotFoundBody": "No hay una sección llamada \"{key}\" en esta pestaña. Revisá el enlace o abrí la sección predeterminada."
+  },
+  "errors": {
+    "signIn": "Por favor iniciá sesión para continuar."
+  },
+  "authentication": {
+    "title": "Por favor iniciá sesión para continuar.",
+    "connectMessage": "Iniciá sesión con Google o tu correo electrónico para acceder al panel de negocios.",
+    "signMessage": "Completá el inicio de sesión para autenticarte."
+  },
+  "tutorial": {
+    "subtitle": "Nos enfocaremos en una pestaña clave a la vez para que veas lo que podés lograr allí.",
+    "supportTitle": "¿Necesitás ayuda? Estamos aquí",
+    "supportDescription": "Abrí Ayuda al final de la barra lateral para preguntarle al asistente, repetir este recorrido o contactar a soporte.",
+    "stepHint": "Usá esta sección para completar tareas operativas clave rápidamente."
+  },
+  "welcome": {
+    "features": {
+      "menuBuilder": {
+        "description": "Creá menús digitales con categorías y elementos"
+      },
+      "billManagement": {
+        "title": "Gestión de Cuentas",
+        "description": "Generá cuentas y rastreá pagos"
+      },
+      "analytics": {
+        "description": "Rastreá ventas e insights de clientes"
+      },
+      "staffManagement": {
+        "description": "Invitá miembros del equipo y gestioná permisos"
+      }
+    },
+    "help": {
+      "text": "¿Necesitás ayuda para empezar? Consultá nuestra"
+    }
+  },
+  "overview": {
+    "hintLiveSplit": "{tables} mesas · {delivery} delivery",
+    "hintFloorRemaining": "Restante en cuentas abiertas",
+    "hintRemainingOnFloor": "{amount} restante en cuentas abiertas",
+    "welcome": {
+      "subtitle": "Tu negocio está listo para aceptar pagos. Monitoreá el rendimiento, gestioná tu menú y rastreá ganancias todo en un lugar.",
+      "subtitleNoPaymentRail": "Monitoreá el rendimiento, gestioná tu menú y rastreá ganancias todo en un lugar. Configurá un medio de pago en Pagos y apps para empezar a aceptar pagos."
+    },
+    "roleSpecific": {
+      "kitchen": {
+        "welcome": {
+          "subtitle": "Gestioná pedidos, rastreá el estado de preparación y coordiná las operaciones de cocina."
+        }
+      },
+      "host": {
+        "welcome": {
+          "subtitle": "Gestioná la asignación de mesas, relaciones con huéspedes y operaciones de recepción."
+        }
+      },
+      "server": {
+        "welcome": {
+          "subtitle": "Manejá pedidos, gestioná mesas y brindá excelente servicio al cliente."
+        },
+        "tablesTitle": "Tocá una mesa para empezar o continuar un pedido"
+      },
+      "manager": {
+        "welcome": {
+          "subtitle": "Supervisá operaciones, gestioná personal y monitoreá el rendimiento del negocio."
+        }
+      }
+    },
+    "quickActions": {
+      "viewAnalytics": {
+        "description": "Monitoreá el rendimiento de tu negocio y rastreá métricas de ingresos"
+      },
+      "manageMenu": {
+        "description": "Actualizá tu menú digital y códigos QR para comidas sin contacto"
+      },
+      "addTables": {
+        "description": "Configurá las mesas de tu restaurante para comenzar a recibir pedidos"
+      },
+      "addMenuItems": {
+        "description": "Creá tu menú digital para que los clientes puedan ver y pedir"
+      },
+      "enableCardPayments": {
+        "title": "Habilitar pagos con tarjeta",
+        "description": "Conectá Mercado Pago para que los clientes paguen con tarjeta. Lo cripto queda opcional hasta que lo actives."
+      },
+      "enableUsdc": {
+        "description": "Aceptá pagos en USDC en Base tras la confirmación de red"
+      },
+      "enableCrossChain": {
+        "description": "Permití usar tokens y rutas compatibles que se liquidan en USDC tras la confirmación"
+      },
+      "businessPage": {
+        "title": "Compartí tu página",
+        "description": "Tu página pública en {host}/b/… — revisala y compartí el enlace."
+      },
+      "activeBills": {
+        "title": "Cerrá cuentas abiertas",
+        "description": "{count} cuentas siguen activas — revisalas y cobrá.",
+        "description_one": "{count} cuenta sigue activa — revisala y cobrá.",
+        "description_other": "{count} cuentas siguen activas — revisalas y cobrá."
+      },
+      "printQr": {
+        "description": "Descargá los códigos QR para que los comensales escaneen, pidan y paguen desde su mesa."
+      }
+    },
+    "roleSpecificActions": {
+      "server": {
+        "counterService": {
+          "description": "Configurá nombres de mostrador (solo setup — todavía no hay cola de retiro en vivo)"
+        }
+      },
+      "manager": {
+        "inventory": {
+          "descriptionDefault": "Rastreá stock, recetas y consumo."
+        }
+      }
+    },
+    "proactive": {
+      "duration": {
+        "minutes_one": "{count} minuto",
+        "minutes_other": "{count} minutos",
+        "hours_one": "{count} hora",
+        "hours_other": "{count} horas",
+        "days_one": "{count} día",
+        "days_other": "{count} días"
+      },
+      "types": {
+        "inventory_out_of_stock": {
+          "summary": "Inventario en cero: {items}. Revisá su uso y reponé existencias."
+        },
+        "inventory_low_stock": {
+          "summary": "{items} están por agotarse. Hacé un pedido a tiempo."
+        },
+        "stale_open_bills": {
+          "summary": "Revisá si los clientes se fueron o necesitan que les recuerdes cerrar la cuenta."
+        },
+        "ai_conversations_pending": {
+          "summary": "La IA está en pausa o esperándote. Respondé antes de que los clientes se vayan."
+        },
+        "food_cost_high": {
+          "summary": "{items} cuestan más del 40% de su precio. Revisá precios o porciones."
+        },
+        "waste_high": {
+          "summary": "{ingredient} es tu mayor pérdida. Revisá el desperdicio, las porciones y los conteos."
+        },
+        "labor_high": {
+          "summary": "El costo laboral es de ${amount} esta semana, por encima del objetivo. Revisá turnos y horas."
+        }
+      }
+    },
+    "additionalMetricsHide": "Ver menos",
+    "thisWeek": "Esta semana"
+  },
+  "tabs": {
+    "bills": "Cuentas",
+    "billsDesc": "Gestión de cuentas de clientes",
+    "counterDesc": "Solo configuración de nombres — no es una cola de retiro en vivo",
+    "printers": "Impresoras",
+    "printersDesc": "Impresoras de tickets y estación de impresión",
+    "scheduleDesc": "Creá y publicá los turnos semanales del equipo",
+    "aiWaiter": "Mozo IA",
+    "counter": "Mostradores",
+    "directorConsole": "Insights de IA",
+    "plugins": "Pagos y apps",
+    "businessPage": "Escaparate"
+  },
+  "sidebar": {
+    "billsAlertBadge": "{count} pedidos por aprobar",
+    "billsAlertBadge_one": "{count} pedido por aprobar",
+    "billsAlertBadge_other": "{count} pedidos por aprobar",
+    "kitchenReadyBadge": "{count} comandas por cocinar",
+    "kitchenReadyBadge_one": "{count} comanda por cocinar",
+    "kitchenReadyBadge_other": "{count} comandas por cocinar",
+    "navigation": "Menú de navegación"
+  },
+  "notifications": {
+    "pendingBills": "Cuentas Pendientes",
+    "newBill": "Nueva cuenta creada",
+    "settings": {
+      "billSound": "Sonido para nuevas cuentas"
+    }
+  },
+  "cashRegisterDashboard": {
+    "session": "Sesión",
+    "sessionNumber": "Sesión #{id}",
+    "status": "Estado",
+    "closedBy": "Cerrada por",
+    "statuses": {
+      "open": "Abierta",
+      "closed": "Cerrada"
+    },
+    "openingFloatRequired": "Ingresá el fondo inicial para abrir la caja.",
+    "suggestedFloat": "Último fondo inicial declarado: {amount}",
+    "useSuggestedFloat": "Usar sugerido",
+    "shell": {
+      "inDrawer": "En caja"
+    },
+    "buttons": {
+      "closeDrawer": "Cerrar",
+      "printZReport": "Imprimir informe Z",
+      "exportZReport": "Exportar informe Z"
+    },
+    "zReport": {
+      "title": "Informe Z",
+      "generatedAt": "Generado",
+      "exported": "Informe Z descargado",
+      "printOpened": "Informe Z abierto para imprimir",
+      "printBlocked": "Permití ventanas emergentes para imprimir el informe Z"
+    },
+    "hero": {
+      "drawerBalance": "En caja ahora",
+      "drawerHint": "Fondo inicial + ventas + ingresos − reembolsos − retiros"
+    },
+    "errors": {
+      "amountInvalid": "Ingresá un monto válido."
+    }
+  },
+  "dashboard": {
+    "subtitle": "Monitoreá el rendimiento de tu negocio, seguí los pagos y analizá el comportamiento del cliente en tiempo real.",
+    "analytics": {
+      "subtitle": "Seguí métricas de rendimiento e insights",
+      "charts": {
+        "billsFeatured": "Cuentas con el ítem"
+      }
+    },
+    "tabs": {
+      "liveBills": "Cuentas en Vivo"
+    },
+    "salesOverview": {
+      "subtitle": "Seguí el rendimiento de tu negocio y métricas de ingresos",
+      "metrics": {
+        "bills": "Cuentas"
+      },
+      "liveActivity": {
+        "activeBills": "Cuentas Activas"
+      },
+      "hourlyBreakdown": {
+        "subtitle": "Ingresos y cuentas durante el día",
+        "bills": "cuentas"
+      },
+      "exportFailed": "No se pudieron exportar los datos de ventas. Probá un período más corto."
+    },
+    "liveBills": {
+      "title": "Cuentas en Vivo",
+      "subtitle": "Monitoreá cuentas activas y el progreso de pagos en tiempo real",
+      "error": "Error cargando cuentas en vivo",
+      "noActiveBills": "No Hay Cuentas Activas",
+      "noActiveBillsDesc": "Todas las cuentas fueron pagadas o cerradas. Las nuevas cuentas aparecerán acá automáticamente.",
+      "quickStats": {
+        "activeBills": "Cuentas Activas"
+      },
+      "viewBillError": "No se pudo abrir la cuenta. Intentá de nuevo."
+    },
+    "paymentHistory": {
+      "subtitle": "Seguí y gestioná todas las transacciones de pago",
+      "searchPlaceholder": "Buscar por número de cuenta, nombre de mesa o dirección del pagador...",
+      "tableHeaders": {
+        "bill": "Cuenta"
+      },
+      "viewBillError": "No se pudo abrir la cuenta. Intentá de nuevo."
+    },
+    "itemAnalytics": {
+      "subtitle": "Seguí el rendimiento de artículos del menú y tendencias de popularidad",
+      "sortOptions": {
+        "billsFeatured": "Cuentas Incluidas"
+      },
+      "metrics": {
+        "billsFeatured": "Cuentas Incluidas"
+      },
+      "topItems": {
+        "byBillsFeatured": "Por cuentas incluidas en"
+      },
+      "bills": "Cuentas"
+    },
+    "tipReports": {
+      "subtitle": "Analizá patrones de propinas y tendencias de generosidad del cliente"
+    },
+    "todayLive": {
+      "remainingOnFloor": "Restante en cuentas abiertas",
+      "hero": {
+        "todayRevenue": "Cobrado hoy",
+        "billsClosed": "Cuentas cerradas hoy",
+        "openTables": "Mesas abiertas ahora",
+        "livePulse": "Instantánea en vivo — se actualiza con el servicio"
+      },
+      "retry": "Probá de nuevo"
+    },
+    "menuBuilder": {
+      "loadFailedTitle": "No se pudo cargar el menú",
+      "loadFailedHint": "Es un problema de conexión, no un menú vacío.",
+      "loadFailedStale": "No se pudo actualizar el menú. Se muestra el último catálogo cargado.",
+      "retryLoad": "Reintentá",
+      "subtitle": "Creá y gestioná tu menú digital",
+      "eightySix": {
+        "mark": "Marcá 86",
+        "restore": "Volver a poner",
+        "badge": "86",
+        "markAria": "Marcá {name} como 86",
+        "markInventoryOut": "Sin stock · seguir 86",
+        "markInventoryOutAria": "{name} está sin stock y ya salió del menú. Marcalo 86 para que siga afuera después de reponer.",
+        "restoreAria": "Volvé a poner {name} en el menú",
+        "markSuccess": "{name} marcado como 86",
+        "restoreSuccess": "{name} vuelve a estar en el menú",
+        "error": "No se pudo actualizar la disponibilidad: {message}"
+      },
+      "sanitization": {
+        "description": "Se eliminarán algunos valores no compatibles. Revisá cada cambio antes de guardar."
+      },
+      "print": {
+        "modalTitle": "Diseñá tu menú impreso",
+        "modalSubtitle": "Elegí un diseño creado para tu restaurante y después imprimilo.",
+        "back": "Volvé",
+        "print": "Imprimí el menú",
+        "stage": {
+          "look": "Elegí un estilo",
+          "personalize": "Hacelo tuyo"
+        },
+        "treatment": {
+          "help": "Definí el peso visual de las palabras, la fotografía y la cantidad de platos por página."
+        },
+        "format": {
+          "help": "Definí la pieza que los clientes sostendrán, doblarán o leerán en el mostrador."
+        },
+        "language": {
+          "retry": "Probá de nuevo"
+        },
+        "qr": {
+          "caption": "Escaneá para ver el menú en vivo y pedir"
+        },
+        "diagnostics": {
+          "imageFailed": "No se pudo cargar una imagen seleccionada. Elegí otra imagen o sacala.",
+          "imageUnplaced": "Una imagen seleccionada no cabe en este diseño. Elegí otra imagen o formato.",
+          "imageEffectiveDpi": "Una foto seleccionada puede imprimirse borrosa a este tamaño. Elegí una ubicación más pequeña o una imagen de origen más grande.",
+          "photographicCoverNeedsImage": "Elegí al menos una foto lista para imprimir antes de usar una portada fotográfica."
+        },
+        "printStatus": {
+          "blocked": "El navegador bloqueó la ventana de impresión. Permití las ventanas emergentes y probá de nuevo."
+        },
+        "printBlocked": {
+          "message": "Permití las ventanas emergentes para este sitio y probá de nuevo. No se perdió ningún cambio del menú.",
+          "retry": "Probá de nuevo"
+        },
+        "emptyMenu": "Todavía no hay platos para imprimir. Agregá platos o incluí otra sección.",
+        "look": {
+          "help": "Elegí el que se parezca a tu salón. Podés cambiarlo cuando quieras."
+        },
+        "guidance": {
+          "review": "Revisá cada página antes de imprimir.",
+          "savePdf": "Para guardar una copia digital, elegí Guardar como PDF en el diálogo de impresión."
+        }
+      },
+      "menuEngineering": {
+        "subtitle": "Cómo rinden los platos por margen y popularidad",
+        "quadrants": {
+          "star": {
+            "label": "Favoritos",
+            "action": "Seguí destacándolos — buen margen y ventas"
+          },
+          "plowhorse": {
+            "label": "Populares, margen fino",
+            "action": "Revisá precio o costo de receta cuando puedas"
+          },
+          "puzzle": {
+            "label": "Gemas ocultas",
+            "action": "Vale la pena promocionarlos — buen margen, menos ventas"
+          },
+          "dog": {
+            "label": "Poco movimiento",
+            "action": "Reformulalos o sacalos — bajos en margen y ventas"
+          }
+        },
+        "table": {
+          "title": "Platos por rendimiento",
+          "quadrant": "Grupo",
+          "suggestion": "Sugerencia"
+        },
+        "states": {
+          "empty": "Todavía no hay datos de costo ni ventas de platos para este período",
+          "emptyMissingCost": "Hay ventas registradas, pero tus platos no tienen costo — agregá costo por plato o de receta para ver los grupos de rendimiento",
+          "emptyNoSales": "No hay ventas reconocidas en este período — probá un período más amplio",
+          "sparse": "Solo algunos platos tienen costo y ventas suficientes — las posiciones son orientativas",
+          "needsCost": "Faltan datos de costo — agregá costo por plato o de receta para ubicarlos",
+          "loading": "Cargando rendimiento del menú…"
+        },
+        "suggest": "Considerá",
+        "propose": "Proponé nuevo precio",
+        "proposeError": "No se pudo preparar el cambio de precio — probá de nuevo"
+      },
+      "add": {
+        "label": "Agregar categoría",
+        "ariaLabel": "Agregar categoría",
+        "manually": "Agregar categoría",
+        "manuallyDescription": "Creá una categoría vacía para completarla.",
+        "withAIDescription": "Describí tu restaurante y dejá que la IA prepare un borrador.",
+        "fromPdfDescription": "Subí un PDF o foto de un menú existente."
+      },
+      "languagesPopover": {
+        "subtitle": "Elegí los idiomas que admite tu menú."
+      },
+      "aiOnboarding": {
+        "drawerSubtitle": "Elegí por dónde empezar — nosotros nos encargamos del resto."
+      },
+      "languages": {
+        "selectLanguages": "Seleccioná idiomas a soportar",
+        "selectLanguage": "Seleccioná el idioma de tu menú",
+        "hasChanges": "Tenés cambios de idioma sin guardar",
+        "chooseNewDefault": "Elegí un nuevo idioma predeterminado antes de guardar.",
+        "relabelConfirmTitle": "¿Etiquetar el menú existente?",
+        "relabelConfirm": "Esto va a marcar tu menú actual como {language} sin traducirlo. El texto existente se mantiene como está.",
+        "relabelConfirmButton": "Cambiar idioma"
+      },
+      "ai": {
+        "quickActions": {
+          "collapsedSubtitle": "Podés mostrar de nuevo las herramientas de IA cuando quieras.",
+          "actions": {
+            "wizard": {
+              "description": "Describí tu restaurante y generá un borrador de menú completo."
+            },
+            "pdf": {
+              "description": "Subí un PDF o imagen y convertilo en datos de menú editables."
+            },
+            "image": {
+              "description": "Generá imágenes de platos desde el editor de elementos individuales."
+            },
+            "translation": {
+              "description": "Andá a herramientas de idioma para traducir y gestionar idiomas del menú."
+            }
+          },
+          "imageHint": "Abrí cualquier elemento del menú y usá \"Generar Imagen de Menú\" en el editor del elemento."
+        },
+        "emptyState": {
+          "wizard": {
+            "title": "Describilo a la IA",
+            "description": "Contanos sobre tu restaurante y la IA creará tu menú."
+          },
+          "pdf": {
+            "title": "Escaneá tu menú",
+            "description": "Subí tu menú actual y la IA lo digitalizará."
+          },
+          "manual": {
+            "title": "Crealo a mano",
+            "description": "Creá tu menú desde cero con control total."
+          }
+        },
+        "imageGeneration": {
+          "error": "No se pudo generar la imagen con IA. Intentá de nuevo."
+        },
+        "imageEnhancement": {
+          "error": "No se pudo mejorar la imagen. Intentá de nuevo."
+        }
+      },
+      "offersManager": {
+        "confirmDelete": "¿Estás seguro de que querés eliminar esta oferta?",
+        "addPhoto": "Agregá foto",
+        "empty": {
+          "subtitle": "Creá tu primera oferta especial para atraer clientes."
+        },
+        "form": {
+          "descriptionPlaceholder": "Describí los detalles de la oferta...",
+          "targetPlaceholder": "Seleccioná un objetivo",
+          "imageDescription": "Subí o generá una imagen para representar esta oferta.",
+          "weekdaysLabel": "Días activos",
+          "startTimeLabel": "Inicio (hora del negocio)",
+          "endTimeLabel": "Termina a las (hora del negocio)"
+        },
+        "weekdays": {
+          "sunday": "Domingo",
+          "sundayShort": "Dom",
+          "monday": "Lunes",
+          "mondayShort": "Lun",
+          "tuesday": "Martes",
+          "tuesdayShort": "Mar",
+          "wednesday": "Miércoles",
+          "wednesdayShort": "Mié",
+          "thursday": "Jueves",
+          "thursdayShort": "Jue",
+          "friday": "Viernes",
+          "fridayShort": "Vie",
+          "saturday": "Sábado",
+          "saturdayShort": "Sáb"
+        },
+        "messages": {
+          "validationError": "Agregá un nombre, un descuento mayor que 0 y un destino antes de guardar.",
+          "weekdayRequired": "Elegí al menos un día activo.",
+          "timePairError": "Definí una hora de inicio y fin, o dejá ambas vacías.",
+          "fetchError": "No se pudieron cargar las ofertas. Actualizá la página."
+        },
+        "inventoryBlockedChip": "Pausada por inventario",
+        "inventoryBlockedTooltip": "El plato al que apunta esta oferta no se puede preparar ahora, así que los comensales no ven la oferta."
+      },
+      "bundlesManager": {
+        "subtitle": "Creá ofertas combinadas para elementos de tu menú.",
+        "confirmDelete": "¿Estás seguro de que querés eliminar este combo?",
+        "empty": {
+          "subtitle": "Combiná elementos para aumentar tus ventas."
+        },
+        "form": {
+          "descriptionPlaceholder": "Describí qué incluye...",
+          "itemSelectionPlaceholder": "Elegí elementos del menú y cantidades para crear este combo.",
+          "imageDescription": "Subí o generá una imagen para representar este combo."
+        },
+        "messages": {
+          "validationError": "Agregá un nombre, un precio mayor que 0 y al menos un elemento antes de guardar.",
+          "fetchError": "No se pudieron cargar los combos. Actualizá la página."
+        }
+      },
+      "categories": {
+        "categoryNamePlaceholder": "Ingresá nombre de categoría",
+        "categoryDescriptionPlaceholder": "Ingresá descripción de categoría (opcional)",
+        "confirmDelete": "¿Estás seguro de que querés eliminar esta categoría y todos sus elementos?",
+        "createFirstDescription": "Creá tu primera categoría de menú para comenzar a construir tu menú de restaurante."
+      },
+      "items": {
+        "aiToolsDescription": "Elegí cómo querés que la IA cree las imágenes de tus platos.",
+        "aiImageTools": {
+          "subtitle": "Olvidate de la sesión de fotos — la IA se encarga.",
+          "breakdown": {
+            "subtitleEmpty": "Agregá un nombre y descripción arriba y crearemos el desglose.",
+            "info": {
+              "ariaLabel": "Acerca del desglose de ingredientes",
+              "body": "Creá un diagrama en vista explosionada, apilado de abajo hacia arriba, a partir del nombre y la descripción. Las etiquetas se imprimen después de generar la imagen — con la ortografía de tu texto y cada línea apuntando a su propia capa — para que el modelo no deforme los nombres ni invente carne en un plato vegetariano o vegano. Una descripción clara, separada por comas, da el mejor resultado."
+            }
+          },
+          "generate": {
+            "subtitleEmpty": "Agregá un nombre y descripción arriba y generaremos una foto.",
+            "info": {
+              "ariaLabel": "Acerca de generar una foto",
+              "body": "Creá una foto de comida realista y limpia, estilo estudio, a partir del nombre y la descripción del plato. Ideal cuando todavía no tenés una foto. No usa tus fotos subidas."
+            },
+            "subtitle": "Creá una foto realista y limpia a partir del nombre y la descripción."
+          },
+          "enhance": {
+            "subtitle": "Mejorá una de tus fotos subidas — iluminación, nitidez, fondo.",
+            "subtitleDisabled": "Subí una foto primero y la mejoraremos.",
+            "info": {
+              "ariaLabel": "Acerca de mejorar una foto",
+              "body": "Toma una de tus fotos subidas y mejora la iluminación, la nitidez y el fondo manteniendo el mismo plato y emplatado. Si tenés más de una foto, vas a poder elegir cuál mejorar."
+            },
+            "picker": {
+              "subtitle": "Elegí la foto que querés mejorar.",
+              "title": "Elegí una foto para mejorar"
+            }
+          },
+          "dailyLimit": {
+            "title": "Generaste {limit} imágenes con IA hoy, el límite diario.",
+            "contact": "¿Necesitás más hoy? Escribinos y lo ampliamos."
+          }
+        },
+        "aiGenerationDescription": "Generá un diagrama profesional de 'vista explosionada' de tu plato basado en su descripción e ingredientes.",
+        "itemNamePlaceholder": "Ingresá nombre del elemento",
+        "itemDescriptionPlaceholder": "Ingresá descripción del elemento",
+        "itemPricePlaceholder": "Ingresá precio",
+        "optionNamePlaceholder": "Ingresá nombre de opción",
+        "optionPricePlaceholder": "Ingresá precio adicional",
+        "optionsHelp": "Agregá opciones que cambian el precio — tamaños, extras, adicionales (ej. Grande +$3). Omitilo si este elemento no tiene.",
+        "allergensHelp": "Marcá todos los alérgenos que contiene este plato. Los clientes ven advertencias y pueden filtrar por ellos.",
+        "dietaryTagsHelp": "Marcá las etiquetas que apliquen para que los clientes puedan filtrar el menú (ej. Vegano, Sin gluten).",
+        "confirmDelete": "¿Estás seguro de que querés eliminar este elemento?",
+        "noImageHint": "Hacé clic para agregar foto"
+      },
+      "translatedViewNotice": "Estás viendo la traducción en {viewLanguage} — solo lectura. Cambiá a {editLanguage} para editar.",
+      "translatedEditBlocked": "Cambiá a {language} para editar"
+    },
+    "counterManager": {
+      "title": "Mostradores",
+      "subtitle": "Solo configuración de nombres y cantidad — no es una cola de retiro en vivo",
+      "honesty": {
+        "title": "Solo configuración — no listo para el servicio de cena",
+        "body": "Esta pestaña define cuántos mostradores tenés y cómo se llaman. Todavía no hay cola de retiro en vivo ni llamada de tickets. Para el servicio de cena, operá la sala desde Mesas, Cuentas y Cocina."
+      },
+      "success": {
+        "prefixApplied": "Prefijo aplicado a los nombres de mostrador por defecto."
+      },
+      "settings": {
+        "subtitle": "Cuántos mostradores tenés y cómo se llaman",
+        "enableServiceDescription": "Creá mostradores con nombre a los que podés asociar cuentas de paso. No es una cola de retiro en vivo.",
+        "counterCountDescription": "¿Cuántos mostradores con nombre querés? (1-20)",
+        "counterCountInvalid": "Ingresá un número de mostradores entre 1 y 20.",
+        "counterPrefixDescription": "Se usa al crear mostradores o aumentar la cantidad (ej. '{prefix}' → {prefix}1, {prefix}2). Los nombres personalizados se conservan hasta que agregues mostradores.",
+        "counterPrefixPreview": "Los nombres nuevos se verán como {examples}",
+        "counterPrefixInvalid": "Ingresá un prefijo de 1 a 5 caracteres (sin espacios vacíos)."
+      },
+      "activeCounters": {
+        "title": "Mostradores",
+        "subtitle": "Etiquetas disponibles para cuentas de paso. Esto no es una cola de retiro en vivo.",
+        "applyPrefix": "Aplicar prefijo {prefix} ({count})",
+        "applyingPrefix": "Aplicando prefijo…",
+        "applyPrefixHint": "Estos nombres por defecto todavía no coinciden con el prefijo {prefix}: {examples}. Aplicá el prefijo para renombrarlos.",
+        "customNamesKept": "{count} nombre(s) personalizado(s) se conservan y no se renombran: {names}.",
+        "willBecome": "Pasará a {name}",
+        "customKeptBadge": "Nombre personalizado conservado"
+      },
+      "toggle": {
+        "description": "Activá mostradores con nombre para cuentas de paso. Esta pestaña sigue siendo solo configuración — todavía no hay cola de retiro en vivo.",
+        "updateError": "No se pudieron actualizar los ajustes. Probá de nuevo.",
+        "prefixRequired": "Definí un prefijo para los nombres de mostrador en la configuración antes de activar el nombrado.",
+        "footnote": "Podés desactivar los nombres de mostrador cuando quieras desde esta pestaña.",
+        "enableModal": {
+          "description": "Esto crea mostradores con nombre para cuentas de paso. No abre una cola de retiro en vivo ni un tablero de llamada de tickets."
+        },
+        "disableModal": {
+          "description": "Al desactivar se apagan los mostradores con nombre. Tu cantidad y prefijo se conservan si lo reactivás después."
+        },
+        "features": {
+          "naming": {
+            "description": "Definí cuántos mostradores tenés y el prefijo para nombres nuevos"
+          },
+          "bills": {
+            "description": "El personal puede asociar una cuenta a un mostrador con nombre desde Cuentas"
+          },
+          "honesty": {
+            "description": "Todavía no hay cola de listo para retirar ni llamada de tickets — la cena en sala sigue en Mesas"
+          },
+          "takeaway": {
+            "description": "Definí cuántos mostradores tenés y el prefijo para nombres nuevos"
+          }
+        }
+      }
+    },
+    "staffManagement": {
+      "positions": {
+        "subtitle": "Los roles sobre los que armás los turnos — cada turno necesita uno.",
+        "namePlaceholder": "Nombre del puesto (ej. Mozo)",
+        "departmentHint": "Opcional — agrupá los puestos en áreas como Salón o Cocina. Cada área tiene su propio canal de chat del equipo.",
+        "suggestionsLabel": "Roles comunes — tocá para agregar:",
+        "suggestionNames": "Mozo, Anfitrión, Cocina, Bartender, Ayudante",
+        "empty": "Aún no hay puestos. Agregá los roles que trabaja tu equipo.",
+        "retireConfirmDescription": "{name} se archivará y se ocultará de los nuevos turnos. Podés reactivarlo más tarde — no se destruye de forma permanente."
+      },
+      "invitations": {
+        "subtitle": "Seguí las invitaciones enviadas al personal"
+      },
+      "error": {
+        "retry": "Reintentar",
+        "fillAllFields": "Por favor completá todos los campos",
+        "emailInvalid": "Por favor ingresá una dirección de correo electrónico válida",
+        "roleRequired": "Por favor seleccioná un rol"
+      },
+      "confirmRemove": "¿Estás seguro de que querés remover a {name} de tu personal?",
+      "modals": {
+        "invite": {
+          "fullNamePlaceholder": "Ingresá el nombre completo del miembro del personal",
+          "emailPlaceholder": "Ingresá el email del miembro del personal",
+          "rolePlaceholder": "Seleccioná un rol",
+          "noteDescriptionNoEmail": "El envío de correos está desactivado en este servidor, así que no se manda ningún email de invitación. Después de enviar la invitación vas a tener un enlace para copiar y compartir con el miembro del personal para que cree su cuenta."
+        },
+        "updateRole": {
+          "selectRole": "Seleccioná un rol"
+        }
+      },
+      "roles": {
+        "server": {
+          "label": "Mozo"
+        }
+      },
+      "rbac": {
+        "changeRole": {
+          "placeholder": "Seleccioná un rol",
+          "reasonPlaceholder": "Ingresá la razón para cambiar el rol...",
+          "roles": {
+            "server": {
+              "title": "Mozo"
+            }
+          }
+        },
+        "staffStatus": {
+          "deactivate": {
+            "reasonPlaceholder": "Ingresá la razón para desactivar al personal...",
+            "description": "Desactivar un miembro del personal revocará su acceso al sistema mientras preserva sus datos. Podés reactivarlo más tarde.",
+            "confirmDescription": "{name} perderá el acceso de inmediato. Sus datos se conservan y podés reactivarlo más tarde — no se destruye de forma permanente."
+          },
+          "reactivate": {
+            "description": "Este miembro del personal está actualmente desactivado. Podés reactivarlo para restaurar su acceso."
+          }
+        },
+        "errors": {
+          "selectDifferentRole": "Por favor seleccioná un rol diferente",
+          "provideDeactivationReason": "Por favor proporcioná una razón para la desactivación"
+        },
+        "rbacCategories": {
+          "business": "Negocio",
+          "staff": "Personal",
+          "menu": "Menú",
+          "tables": "Mesas",
+          "bills": "Cuentas",
+          "orders": "Pedidos",
+          "analytics": "Analítica",
+          "financial": "Finanzas",
+          "plugins": "Plugins",
+          "delivery": "Delivery",
+          "settings": "Configuración",
+          "counter": "Mostrador",
+          "overview": "Resumen",
+          "crm": "CRM",
+          "inventory": "Inventario",
+          "reservations": "Reservas",
+          "director": "Director",
+          "assistant": "Asistente",
+          "ai_waiter": "Mozo IA",
+          "marketing": "Marketing",
+          "printers": "Impresoras",
+          "cash_register": "Caja",
+          "alerts": "Alertas",
+          "fiscal": "Fiscal",
+          "schedule": "Horarios",
+          "timeclock": "Fichaje",
+          "chat": "Chat",
+          "engagement": "Engagement"
+        },
+        "customPermissions": {
+          "grantNotAllowed": "Solo podés conceder permisos de tu propio rol",
+          "sensitiveConfirm": "¿Confirmás {action} para el permiso sensible \"{permission}\"? Puede afectar dinero, impuestos o acceso de propietario."
+        }
+      },
+      "search": {
+        "subtitle": "Buscá y filtrá a los miembros de tu personal"
+      },
+      "inviteFallback": {
+        "title": "Compartir el enlace de invitación",
+        "description": "La invitación se creó pero el correo a {email} no se pudo enviar. Copiá este enlace y enviáselo directamente — vence en 7 días.",
+        "linkLabel": "Enlace de invitación",
+        "copy": "Copiar enlace",
+        "copied": "Enlace de invitación copiado",
+        "copyFailed": "No se pudo copiar — seleccioná el enlace y copialo manualmente",
+        "done": "Listo"
+      },
+      "revokeModal": {
+        "description": "El enlace de invitación actual dejará de funcionar de inmediato. Podés volver a invitar a esta persona más tarde con un enlace nuevo."
+      },
+      "removeModal": {
+        "subtitle": "Se revoca el acceso; podés invitar de nuevo después",
+        "description": "Esto remueve en forma suave al miembro del personal de este negocio: pierde acceso de inmediato, pero sus datos e historial se conservan. Podés invitarlo de nuevo más tarde."
+      }
+    },
+    "kitchenManager": {
+      "subtitle": "Gestioná pedidos y seguí el progreso de cocción",
+      "shell": {
+        "live": "En vivo",
+        "off": "Desactivado"
+      },
+      "disabled": {
+        "contactOwner": "La cocina y los pedidos no están habilitados para este negocio. Pedile al propietario o gerente que los active en Configuración.",
+        "ownerBody": "La pantalla de cocina está apagada. Activala en Ajustes → Cocina."
+      },
+      "warnings": {
+        "activeBillsCapped": "Mostrando las cuentas abiertas más recientes. Actualizá si falta la cuenta de una mesa.",
+        "realtimeAccessDenied": "Las actualizaciones en tiempo real no están disponibles para este negocio: no tenés acceso al flujo de eventos en vivo."
+      },
+      "orders": {
+        "subtitle": "Seguí y gestioná todos los pedidos entrantes"
+      },
+      "kitchenOrdersToggle": {
+        "kitchenPrompt": {
+          "description": "Las funciones de gestión de cocina y pedidos están actualmente desactivadas. Activalas para empezar a gestionar pedidos y el flujo de trabajo de la cocina.",
+          "button": "Ir a Cuentas y Activar"
+        }
+      },
+      "cancelWarning": "Esto anulará los artículos asociados en la cuenta",
+      "eightySix": {
+        "confirmDescription": "Los clientes ya no podrán pedir este plato. Podés volver a ponerlo desde Cocina o el editor de menú.",
+        "restoreAction": "Volver a poner",
+        "restoreConfirmTitle": "¿Volver a poner {name}?",
+        "restoreConfirmDescription": "Los clientes van a poder pedir este plato de nuevo (salvo que el inventario siga en cero).",
+        "restoreConfirmLabel": "Volver a poner",
+        "restoreCancelLabel": "Mantener 86",
+        "restoreSuccess": "{name} vuelve a estar en el menú"
+      }
+    },
+    "tableManager": {
+      "subtitle": "Creá y gestioná las mesas de tu restaurante",
+      "preparedUnits": "{count} ítems",
+      "billItemsOne": "{count} artículo",
+      "billItemsOther": "{count} artículos",
+      "nextReservation": "Reservada {time}",
+      "openBillTitle": "Abrir cuenta",
+      "openBillAria": "Abrir cuenta de {name}",
+      "inKitchenLeftover": "En cocina · comanda pendiente",
+      "inKitchenLeftoverAria": "Abrir las comandas de cocina de {name}",
+      "search": {
+        "noResultsDescription": "Ninguna mesa coincide con tus criterios de búsqueda. Probá ajustar tus términos de búsqueda o filtros."
+      },
+      "emptyState": {
+        "description": "Creá tu primera mesa para empezar a gestionar asientos de clientes y pedidos."
+      },
+      "qrDownloadError": "No se pudo generar el QR. Probá con el panel de personalización.",
+      "qrCustomization": {
+        "logoUrlPlaceholder": "Ingresá la URL del logo o subí uno",
+        "logoHelp": "Agregá tu logo al centro del código QR (máx 2MB)",
+        "invalidFileType": "Tipo de archivo inválido. Por favor subí una imagen.",
+        "invalidHex": "Ingresá un color hex válido (p. ej. #1a6b6a).",
+        "subtitle": "Personalizá el código QR de tu mesa"
+      },
+      "confirmDelete": "¿Estás seguro de que querés eliminar esta mesa?",
+      "gridView": {
+        "noTablesFound": "No se encontraron mesas. ¡Creá tu primera mesa para empezar!"
+      },
+      "printAll": {
+        "error": "No se pudo preparar la hoja de códigos QR. Probá de nuevo.",
+        "sheetScanCaption": "Escaneá para ver el menú y pedir"
+      },
+      "noOrdersBanner": {
+        "body": "Imprimí tu hoja de códigos QR y poné un código en cada mesa. Escaneá uno vos mismo y pedí un café — miralo aparecer en Cuentas."
+      },
+      "serviceCalls": {
+        "title": "Llamadas de servicio abiertas",
+        "acknowledge": "Reconocer",
+        "assign": "Asignar",
+        "assignTo": "Asignar a un mozo",
+        "assignMe": "La tomo yo",
+        "claimedBy": "Reclamada por {name}",
+        "ackVsResolveHint": "Reconocer toma la llamada. Marcá atendida cuando el invitado ya está servido.",
+        "needsAttention": "Necesita atención",
+        "markHandled": "Marcar atendida",
+        "openTable": "Abrir mesa",
+        "updating": "Actualizando…",
+        "updateFailed": "No se pudo actualizar esta llamada. Intentá de nuevo.",
+        "justNow": "Justo ahora",
+        "minutesAgo": "Hace {count} min",
+        "hoursAgo": "Hace {count} h",
+        "status": {
+          "open": "Abierta",
+          "claimed": "Reclamada"
+        }
+      },
+      "preparedUnitsOne": "{count} ítem",
+      "preparedUnitsOther": "{count} ítems",
+      "detailModal": {
+        "confirmDeactivateDescription": "Esto la oculta del plano de mesas. Podés reactivarla más tarde — no se elimina de forma permanente.",
+        "nameRequired": "Escribí un nombre — solo espacios no se guardan.",
+        "billItemsOne": "{count} artículo",
+        "billItemsOther": "{count} artículos"
+      },
+      "hostActions": {
+        "menuTitle": "Acciones de piso",
+        "menuAria": "Acciones de piso para {name}",
+        "seat": "Sentar mesa",
+        "seatReservation": "Sentar reserva",
+        "seatConfirm": "Sentar",
+        "clear": "Liberar mesa",
+        "transfer": "Transferir",
+        "merge": "Unir",
+        "transferConfirm": "Transferir",
+        "mergeConfirm": "Unir",
+        "cancel": "Cancelar",
+        "targetLabel": "Mover a mesa",
+        "targetOccupiedSuffix": "con cuenta",
+        "targetFreeSuffix": "libre",
+        "seatModal": {
+          "title": "Sentar esta mesa",
+          "walkInHint": "Abrí una cuenta en {name} para una mesa sin reserva.",
+          "reservationHint": "Registrá a {name} · {covers} cubiertos y abrí su cuenta.",
+          "coversLabel": "Cubiertos",
+          "coversPlaceholder": "Cantidad de personas (opcional)"
+        },
+        "transferModal": {
+          "title": "Transferir cuenta",
+          "hint": "Mové la cuenta abierta de {name} a otra mesa libre."
+        },
+        "mergeModal": {
+          "title": "Unir mesas",
+          "hint": "Pasá la cuenta de {name} a otra mesa. Si el destino está libre, solo se mueve la mesa."
+        },
+        "toasts": {
+          "seated": "Mesa sentada",
+          "cleared": "Mesa liberada",
+          "transferred": "Cuenta transferida",
+          "merged": "Mesas unidas"
+        },
+        "errors": {
+          "generic": "No se pudo completar la acción de piso. Probá de nuevo.",
+          "settleRequired": "Cerrá o anulá la cuenta abierta antes de liberar esta mesa.",
+          "kitchenTicketsLive": "La cocina todavía está preparando esta mesa — cerrá o cancelá los pedidos abiertos primero.",
+          "ordersPendingApproval": "Un pedido del cliente todavía espera aprobación — aprobalo o rechazalo antes de liberar esta mesa.",
+          "tableOccupied": "Esta mesa ya tiene una cuenta abierta.",
+          "targetOccupied": "Esa mesa ya tiene una cuenta — elegí una libre o uní las mesas.",
+          "noActiveBill": "Esta mesa no tiene una cuenta abierta para liberar o mover.",
+          "mergePayments": "No se pueden unir cuentas con pagos — cerralas primero.",
+          "reservationClaimed": "Otro compañero está trabajando esta reserva.",
+          "sameTable": "Elegí otra mesa.",
+          "pickTarget": "Elegí una mesa de destino.",
+          "noTargets": "No hay otras mesas activas disponibles ahora."
+        }
+      }
+    },
+    "designCustomization": {
+      "subtitle": "Personalizá la apariencia de la página de tu negocio",
+      "saveChangesInstruction": "Hacé clic en \"Guardar cambios\" arriba a la derecha de la página",
+      "colorFormatHint": "Ingresá un color hexadecimal de 6 dígitos, p. ej. #1A6B6A",
+      "contrastFail": "El contraste {{ratio}}:1 está por debajo del mínimo WCAG AA de {{minimum}}:1",
+      "contrastPreviewPrimary": "Texto de cuerpo sobre el primario",
+      "contrastPreviewSecondary": "Texto de cuerpo como secundario"
+    },
+    "pluginManager": {
+      "subtitle": "Extendé tu negocio con integraciones y funciones poderosas",
+      "cardRailCallout": {
+        "title": "Ningún procesador de tarjetas habilitado",
+        "description": "Los clientes pueden pagar en caja cuando el cajón está abierto. Habilitá Mercado Pago para cobrar con tarjeta — no lo activamos hasta que conectes tu cuenta.",
+        "action": "Habilitar {name}"
+      },
+      "discardConfig": {
+        "description": "Tenés cambios sin guardar en la configuración del plugin. Si cerrás ahora, se van a descartar."
+      },
+      "noPluginsDescription": "Todos los plugins pueden estar ya habilitados para tu negocio, o volvé más tarde para nuevas integraciones.",
+      "noSearchResultsDescription": "Probá buscar con palabras clave diferentes, ¡o dejanos saber lo que estás buscando!",
+      "customPlugin": {
+        "title": "¿Necesitás un Plugin Personalizado?",
+        "description": "¿No ves la integración que necesitás? Nuestro equipo puede construir plugins personalizados adaptados a los requisitos de tu negocio."
+      },
+      "modal": {
+        "description": "Este plugin será habilitado para tu negocio. Podés configurarlo más tarde en la configuración de plugins."
+      },
+      "config": {
+        "orEnterManually": "O ingresá manualmente",
+        "walletRequiredDesc": "Para habilitar los pagos en cripto, primero debés configurar una dirección de billetera de liquidación.",
+        "invalidAddress": "Ingresá una dirección de billetera válida (0x seguido de 40 caracteres hexadecimales)",
+        "stripe": {
+          "connectAccountMessage": "Conectá tu cuenta de Stripe para comenzar a aceptar pagos mundialmente",
+          "getCredentials": "Obtené Credenciales de Stripe",
+          "secretKeyDescription": "Tu clave secreta de Stripe (comienza con sk_ - mantenela segura)",
+          "setupInstructions": "Obtené tus claves API desde tu Panel de Stripe",
+          "enterKeysStep": "Ingresá tu Clave Secreta y Clave Pública abajo",
+          "configureWebhookStep": "Configurá el endpoint de webhook (opcional)",
+          "testConnectionStep": "Probá la conexión",
+          "description": "Conectá tu cuenta de Stripe para aceptar pagos con tarjeta de crédito mundialmente",
+          "liveKeyWarningBeforeMode": "Activá",
+          "connectWithStripe": "Conectar con Stripe",
+          "manualAdvanced": "Configuración manual (avanzado)",
+          "manualAdvancedHint": "Pegá tus propias claves de API de Stripe si preferís no usar Connect.",
+          "oauthConnectSuccess": "Stripe conectado correctamente",
+          "oauthConnectError": "No se pudo completar la conexión con Stripe. Intentá de nuevo.",
+          "oauthStartError": "No se pudo iniciar la conexión con Stripe. Intentá de nuevo o usá la configuración manual.",
+          "businessMissing": "Falta el contexto del negocio. Recargá la página e intentá de nuevo.",
+          "connectedChip": "Conectado",
+          "reauthRequired": "Reconexión requerida",
+          "reauthBannerTitle": "Se revocó el acceso a Stripe",
+          "reauthBannerBody": "Volvé a conectar Stripe para reanudar los pagos con tarjeta de este negocio.",
+          "reconnect": "Reconectar con Stripe",
+          "accountId": "Cuenta conectada",
+          "disconnect": "Desconectar",
+          "disconnectSuccess": "Stripe desconectado",
+          "disconnectError": "No se pudo desconectar Stripe. Intentá de nuevo.",
+          "disconnectConfirm": "¿Desconectar Stripe de este negocio? Los comensales no van a poder pagar con tarjeta hasta que reconectes o ingreses las claves manualmente.",
+          "oauthConnectedHint": "Este negocio usa Stripe Connect. Los webhooks de la plataforma manejan los eventos de pago. Opcionalmente podés agregar un secreto de firma de webhook por cuenta abajo."
+        },
+        "paypal": {
+          "setupGuideToast": "Terminá los pasos de configuración y pegá tus credenciales aquí.",
+          "credentialsRequiredError": "Ingresá primero el ID y el Secreto de Cliente.",
+          "clientSecretDescription": "Tu Secreto de Cliente de aplicación PayPal (mantenelo seguro)",
+          "environmentDescription": "Elegí Sandbox para pruebas, En Vivo para producción",
+          "connectAccountMessage": "Conectá tu cuenta de PayPal para configurar y probar los pagos con PayPal",
+          "setupInstructions": "Elegí \"Conectar con PayPal\" para configuración guiada o \"Configuración Manual\" para configurar credenciales vos mismo",
+          "sandboxNote": "Usá sandbox para probar pagos",
+          "productionNote": "Usá producción para pagos reales",
+          "webhookIdDescription": "Usá el ID de Webhook alfanumérico de tu app de PayPal",
+          "credentialsHelpGoTo": "Andá a",
+          "defaultBehaviorInfo": "Dejá vacío para usar el comportamiento predeterminado de PayPal",
+          "description": "Conectá tu cuenta de PayPal para aceptar pagos mundialmente",
+          "credentialsHelpCreateApp": "Creá una nueva aplicación o seleccioná una existente",
+          "credentialsHelpCopyKeys": "Copiá tu \"Client ID\" y \"Client Secret\"",
+          "credentialsHelpSandbox": "Usá credenciales sandbox para pruebas",
+          "setupGuideDescription": "Abrí el panel de desarrolladores de PayPal en una nueva pestaña, creá una app y pegá las credenciales generadas en este formulario."
+        },
+        "mercadopago": {
+          "connectAccountMessage": "Conectá tu cuenta de Mercado Pago para comenzar a aceptar pagos en toda América Latina",
+          "connectWithMercadoPago": "Conectar con Mercado Pago",
+          "getCredentials": "Obtené Credenciales de MercadoPago",
+          "selectOperatingCountry": "Seleccioná tu país de operación de MercadoPago",
+          "goToDeveloperPanel": "Andá a tu",
+          "navigateToCredentials": "Navegá a \"Tus integraciones\" → \"Credenciales\"",
+          "copyCredentials": "Copiá tu \"Token de acceso\" y \"Clave pública\"",
+          "useTestCredentials": "Usá credenciales de producción (APP_USR-). Los tokens TEST- solo funcionan en desarrollo local y se rechazan en producción.",
+          "setupInstructions": "Obtené tus credenciales desde el Panel de Desarrollador de MercadoPago",
+          "manualAdvanced": "Configuración manual (avanzado)",
+          "manualAdvancedHint": "Preferí Conectar con Mercado Pago arriba. Usá esto solo si gestionás las credenciales de API vos mismo.",
+          "reconnect": "Volver a conectar",
+          "reauthBannerTitle": "Tu conexión de Mercado Pago necesita atención",
+          "reauthBannerBody": "No se pudieron renovar los tokens. Volvé a conectar tu cuenta para seguir aceptando pagos.",
+          "disconnectConfirm": "¿Desconectar Mercado Pago de este negocio? Los clientes no van a poder pagar con Mercado Pago hasta que vuelvas a conectar.",
+          "disconnectError": "No se pudo desconectar Mercado Pago. Intentá de nuevo.",
+          "oauthConnectError": "No se pudo completar la conexión con Mercado Pago. Intentá de nuevo.",
+          "oauthStartError": "No se pudo iniciar la conexión con Mercado Pago. Intentá de nuevo.",
+          "businessMissing": "Falta el contexto del negocio. Cerrá y volvé a abrir este panel."
+        },
+        "trustpilot": {
+          "viewYourReviewsHint": "Mirá lo que dicen tus clientes",
+          "manageBusinessProfileHint": "Actualizá la configuración de tu negocio en Trustpilot",
+          "invalidTrustpilotUrl": "Por favor ingresá una URL válida de Trustpilot",
+          "step1": "Ingresá el nombre de tu negocio",
+          "step2": "Buscá tu perfil de Trustpilot",
+          "step3": "Configurá las opciones de reseñas",
+          "viewReviewsDesc": "Mirá lo que dicen los clientes",
+          "manageProfileDesc": "Actualizá la configuración de tu negocio en Trustpilot",
+          "connectProfileMessage": "Conectá tu perfil de Trustpilot para comenzar a recolectar y mostrar reseñas de clientes",
+          "enterBusinessName": "Ingresá el nombre de tu negocio",
+          "searchTrustpilotProfile": "Buscá tu perfil de Trustpilot",
+          "configureReviewSettings": "Configurá las opciones de reseñas",
+          "goToTrustpilot": "Andá a",
+          "searchBusinessName": "Buscá el nombre de tu negocio",
+          "clickBusinessProfile": "Hacé clic en tu perfil de negocio",
+          "copyUrlFromBrowser": "Copiá la URL de tu navegador",
+          "noProfileYet": "¿Todavía no tenés un perfil de Trustpilot?",
+          "createFreeAccount": "Creá tu cuenta gratuita de negocio en Trustpilot"
+        },
+        "telegram": {
+          "testSentError": "No se pudo enviar la notificación de prueba. Probá de nuevo.",
+          "disconnectError": "No se pudo desconectar Telegram. Probá de nuevo.",
+          "setupInstructions": "Creá un bot de Telegram y obtené tus credenciales",
+          "testMessagePlaceholder": "Ingresá un mensaje de prueba...",
+          "telegramExpired": "El enlace de conexión venció. Generá un enlace nuevo para continuar.",
+          "generateLinkFailed": "No se pudo generar el enlace de conexión de Telegram. Probá de nuevo.",
+          "connectionLinkRevokeFailed": "No se pudo revocar el enlace de conexión de Telegram. Probá de nuevo.",
+          "telegramDisconnectConfirm": "¿Desconectar las notificaciones de Telegram para este negocio? Vas a dejar de recibir notificaciones.",
+          "connectTelegramAccount": "Conectá tu cuenta de Telegram para recibir notificaciones en tiempo real sobre pedidos, pagos y actualizaciones del negocio",
+          "enableBeforeConnectError": "Primero habilitá Telegram y luego conectá tu cuenta de Telegram.",
+          "enableBeforeConnectNotice": "Guardá primero esta configuración para habilitar Telegram para el negocio. Después usá el botón de conexión para vincular tu chat de Telegram.",
+          "pleaseSendMessageToBot": "Enviá el comando de inicio precompletado al bot para completar la conexión",
+          "clickConnectToTelegramBot": "Hacé clic en 'Conectar al Bot de Telegram' arriba",
+          "startConversationWithBot": "Abrí el bot de Telegram",
+          "botWillAutomaticallyLinkAccount": "Enviá el comando de inicio precompletado para que Payverge verifique este negocio",
+          "returnHereToConfigureNotificationPreferences": "Volvé aquí para configurar las preferencias de notificación",
+          "getNotifiedForLowStock": "Recibí avisos cuando el inventario llegue al umbral de reposición",
+          "getNotifiedForSchedulePublished": "Recibí avisos cuando se publica un nuevo horario del personal",
+          "getNotifiedForShiftReminders": "Recibí recordatorios antes de que empiecen los turnos del personal",
+          "getNotifiedForCoverageDecisions": "Recibí avisos cuando se aprueba o rechaza una solicitud de cobertura de turno"
+        },
+        "dayOfWeekHelp": "Elegí qué día de la semana recibir tu reporte",
+        "timeOfDayHelp": "Elegí a qué hora recibir tu reporte (formato 24 horas)",
+        "dailyTimeHelp": "Elegí a qué hora recibir tu reporte diario (formato 24 horas)",
+        "timezoneHelp": "Seleccioná la zona horaria de tu negocio para una programación precisa",
+        "crossChainPayment": {
+          "howItWorksDesc": "Cuando una ruta compatible se completa, el token de origen se transfiere y convierte a USDC en Base, y se liquida tras la confirmación de red."
+        }
+      },
+      "toasts": {
+        "telegramEnabled": "Telegram habilitado. Conectá tu cuenta de Telegram para finalizar la configuración."
+      },
+      "healthErrorBadge": "Error de webhook",
+      "healthErrorTooltip": "El último webhook de este proveedor falló. Revisá las credenciales del plugin y la configuración del webhook.",
+      "categorySubtitle": "Revisá capacidades, credenciales y preparación de lanzamiento.",
+      "test": {
+        "subtitle": "Verificá tus credenciales guardadas con una prueba en vivo.",
+        "fail": "No se pudo conectar. Revisá tus credenciales.",
+        "error": "No se pudo conectar con el proveedor de pagos. Intentá de nuevo."
+      }
+    }
+  },
+  "inventoryManager": {
+    "header": {
+      "subtitle": "Rastreá ingredientes e insumos, vinculá recetas con productos del menú y mantené sincronizado el consumo de pedidos."
+    },
+    "activationCard": {
+      "description": "Habilitá el seguimiento de inventario para monitorear niveles de stock, vincular ingredientes a platos del menú y recibir alertas antes de quedarte sin existencias. El inventario es opcional — usalo si querés control de stock, mermas y análisis de costos.",
+      "features": {
+        "recipeMapping": {
+          "description": "Vinculá ingredientes de inventario a platos del menú y deduce automáticamente al aprobar pedidos."
+        }
+      },
+      "disclaimer": "Podés desactivar el seguimiento de inventario en cualquier momento desde la configuración."
+    },
+    "enableModal": {
+      "description": "Activá el seguimiento de inventario para empezar a monitorear stock y el consumo de ingredientes del menú."
+    },
+    "disableModal": {
+      "confirmation": "¿Seguro que querés desactivar la gestión de inventario?"
+    },
+    "errors": {
+      "invalidNumber": "Ingresá valores numéricos válidos antes de guardar este artículo.",
+      "selectMenuItem": "Seleccioná un producto del menú antes de guardar una receta.",
+      "completeRecipeRows": "Completá o limpiá todas las filas de la receta antes de guardar.",
+      "selectAdjustmentItem": "Seleccioná un artículo de inventario para ajustar.",
+      "nonZeroQuantity": "Ingresá un cambio de cantidad distinto de cero."
+    },
+    "settings": {
+      "subtitle": "Controlá si el stock está activo y cómo se muestran las alertas.",
+      "enableInventory": {
+        "description": "Activá el seguimiento de stock y el consumo basado en recetas."
+      }
+    },
+    "itemForm": {
+      "subtitle": "Creá artículos de stock con unidades, umbrales y cantidad actual.",
+      "editSubtitle": "Actualizá los detalles de stock de este ingrediente."
+    },
+    "adjustment": {
+      "subtitle": "Registrá cambios manuales, compras, desperdicio o correcciones.",
+      "itemPlaceholder": "Seleccioná un artículo"
+    },
+    "items": {
+      "receiveStock": "Recibir stock",
+      "blocksDishes": "Bloquea {count}: {names}",
+      "eightySixConfirmBody": "{name} está en 0. Esto va a marcar {dishes} como 86 en el menú. Los comensales no van a poder pedirlos hasta que los restaures.",
+      "eightySixError": "No se pudo hacer 86. Intentalo de nuevo desde el menú.",
+      "eightySixMissingMenu": "No se puede hacer 86 desde acá: no se cargó el menú. Abrí el editor de menú."
+    },
+    "recipes": {
+      "subtitle": "Vinculá productos del menú con los ingredientes que consumen en cada venta.",
+      "menuItemPlaceholder": "Seleccioná un producto del menú",
+      "inventoryItemPlaceholder": "Seleccioná un artículo de inventario",
+      "confirmSwitchBody": "Tenés cambios de ingredientes sin guardar para este producto del menú. Cambiar a otro producto los descarta. Guardá la receta primero para conservar tus cambios.",
+      "mappedCount": "{mapped} de {total} mapeados",
+      "coverageWarning": "Rastreás {ingredients} ingredientes, pero ningún plato del menú tiene receta — el stock no se descuenta ni se hace 86 hasta que los mapees.",
+      "incompleteCoverage": "El stock solo refleja {ingredients} ingredientes rastreados. {mapped} de {total} platos tienen receta: los no mapeados siguen vendibles y no se descontarán ni se harán 86.",
+      "emptyGuideTitle": "Elegí un plato para mapear ingredientes",
+      "emptyGuideBody": "El mapeo de recetas indica qué stock consume cada venta. Los platos sin mapear siguen vendibles aunque los ingredientes lleguen a cero.",
+      "emptyNoMenu": "Primero agregá ítems al menú y después volvé a vincular sus ingredientes.",
+      "statusMapped": "Mapeado",
+      "statusUnmapped": "Sin mapear"
+    },
+    "valuation": {
+      "stockValue": "Valor del stock",
+      "valueColumn": "Valor",
+      "onHand": "Disponible",
+      "unitCost": "Costo unitario"
+    },
+    "needsAttention": {
+      "title": "Requiere atención",
+      "summary": "{out} sin stock · {low} bajo — revisá",
+      "review": "Revisar",
+      "dismiss": "Ocultar",
+      "dishesHint": "Platos vinculados a ingredientes agotados o bajos — abrí el Menú para marcar 86 o reponer.",
+      "blocked": "86"
+    },
+    "toolbar": {
+      "searchPlaceholder": "Buscá por nombre o SKU",
+      "allCategories": "Todas las categorías",
+      "sortLabel": "Ordenar",
+      "sort": {
+        "attention": "Requiere atención",
+        "name": "Nombre (A–Z)",
+        "value": "Valor (mayor→menor)",
+        "quantity": "Cantidad (menor→mayor)",
+        "category": "Categoría"
+      },
+      "statusFilter": "Estado del stock",
+      "statusAll": "Todos",
+      "statusHealthy": "Correcto",
+      "statusLow": "Bajo",
+      "statusOut": "Agotado",
+      "reorderOnly": "Lista de reposición",
+      "resultCount": "{shown} de {total} artículos",
+      "export": "Exportar CSV",
+      "reorderAtTooltip": "También llamado nivel par: marcamos el artículo para reponer cuando el stock baje hasta acá."
+    },
+    "quickAdjust": {
+      "title": "Ajustar stock",
+      "verbs": {
+        "receive": "Recibir",
+        "waste": "Merma",
+        "count": "Contar"
+      },
+      "hints": {
+        "receive": "Acaba de llegar mercadería.",
+        "waste": "Registrá merma o pérdida.",
+        "count": "Ingresá la cantidad real disponible."
+      },
+      "quantityLabel": "Cantidad",
+      "countedLabel": "Cantidad contada",
+      "noteLabel": "Nota (proveedor / factura — opcional)",
+      "reasonLabel": "Motivo",
+      "reasons": {
+        "spoilage": "Vencimiento",
+        "prep_waste": "Merma de preparación",
+        "server_error": "Error de servicio",
+        "quality_reject": "Rechazo por calidad",
+        "other": "Otro",
+        "physicalCount": "Recuento físico"
+      },
+      "setOnHandPreview": "Fijar existencias en {counted} {unit}",
+      "currentOnHand": "Disponible actual",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "cancel": "Cancelar",
+      "quantityRequired": "Ingresá una cantidad mayor que cero.",
+      "quantityInvalid": "Ingresá una cantidad válida (usá . o , para decimales)."
+    },
+    "detail": {
+      "title": "Detalles del artículo",
+      "recentMovements": "Actividad reciente",
+      "usedBy": "Usado en",
+      "usedByEmpty": "Todavía no está vinculado a ningún plato.",
+      "noMovements": "Sin actividad todavía.",
+      "adjust": "Ajustar",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "emptyStates": {
+      "firstRunTitle": "Empezá a controlar tu stock",
+      "firstRunBody": "Agregá tus ingredientes e insumos para ver qué se está agotando, qué reponer y cuánto vale tu stock.",
+      "firstRunParHint": "Definí un punto de reposición y marcaremos los artículos antes de que se agoten.",
+      "addFirstItem": "Agregá tu primer artículo",
+      "filteredEmptyTitle": "Ningún artículo coincide con estos filtros",
+      "filteredEmptyBody": "Probá con otra búsqueda o estado.",
+      "clearFilters": "Limpiar filtros"
+    },
+    "activityFilter": {
+      "allItems": "Todos los artículos",
+      "allTypes": "Todos los tipos",
+      "valueImpact": "Impacto en valor {amount}"
+    },
+    "categoryAutocomplete": {
+      "placeholder": "Seleccioná o escribí una categoría"
+    }
+  },
+  "accountingDashboard": {
+    "overview": {
+      "kpi": {
+        "collectionGapHint": "Saldo pendiente de cuentas creadas en este rango de fechas (abiertas, parciales, abandonadas o cerradas) — facturado menos cobrado",
+        "collectionGapScope": "Pendientes de cobro es al cierre del {end} y lista saldos pendientes, incluidas cuentas anteriores al {start}."
+      }
+    },
+    "outstanding": {
+      "asOf": "Al cierre del {end} — saldos pendientes, incluidas cuentas anteriores a este rango."
+    },
+    "discardConfirm": {
+      "entry": {
+        "description": "Tenés cambios sin guardar en esta entrada contable. Si cerrás ahora, se van a descartar."
+      },
+      "payroll": {
+        "description": "Tenés cambios sin guardar en esta liquidación de nómina. Si cerrás ahora, se van a descartar."
+      },
+      "issueInvoice": {
+        "description": "Tenés una factura en curso. Si cerrás ahora, se van a descartar los datos del receptor que cargaste."
+      }
+    },
+    "payroll": {
+      "empty": {
+        "subtitle": "Creá una nómina para tu equipo o ampliá el rango de fechas."
+      }
+    },
+    "payrollRuns": {
+      "confirmMarkPaidBody": "Confirmá que la nómina de {period} ha sido pagada. Esto actualiza el libro contable."
+    },
+    "foodCost": {
+      "coverageHint": "Solo orientativo — las recetas cubren el {coverage}% de las ventas. Completá el inventario antes de confiar en este %.",
+      "missingCostNudge": "{count} productos sin costo — agregá costos de ingredientes para mejorar la precisión",
+      "noRecipes": "Asociá ingredientes a los platos para ver el costo de insumos",
+      "states": {
+        "empty": "No hay ventas con receta y costos completos en este período. Mapeá recetas y costos de ingredientes, o ampliá el rango.",
+        "noSales": "No hay ventas reconocidas en este período. El % de costo de insumos y los márgenes por plato necesitan al menos una venta."
+      }
+    },
+    "wasteVariance": {
+      "states": {
+        "sparse": "Muestra pequeña: tomá estos números como orientativos. Ampliá el período o agregá recetas para una lectura más firme."
+      }
+    },
+    "laborCost": {
+      "states": {
+        "empty": "Registrá una nómina para ver el costo laboral.",
+        "implausible": "El costo laboral supera las ventas en este período — revisá fechas de nómina o ingresos."
+      }
+    },
+    "warnings": {
+      "title": "Avisos de conversión de moneda",
+      "fxWarnings": {
+        "fx_rate_missing": "Se omitieron {count} {scope_label} que no se pudieron convertir a {currency}{details_suffix}",
+        "fx_rate_stale": "El tipo de cambio de {currency} puede estar desactualizado.",
+        "fx_currency_unsupported": "La moneda {currency} no es compatible con la conversión."
+      },
+      "scopes": {
+        "manual_income": "asientos de ingreso manuales",
+        "manual_expense": "asientos de gasto manuales",
+        "payroll": "nóminas pagadas"
+      },
+      "detailsSuffix": ": {details}"
+    },
+    "entries": {
+      "empty": {
+        "subtitle": "Registrá un gasto o venta fuera de plataforma, o ampliá el rango de fechas."
+      }
+    },
+    "entryForm": {
+      "errors": {
+        "amountRequired": "Ingresá un monto.",
+        "descriptionRequired": "Ingresá una descripción.",
+        "categoryRequired": "Seleccioná una categoría."
+      }
+    },
+    "entryDetail": {
+      "immutableHint": "Las entradas no se pueden editar — anulá y volvé a crear para corregir."
+    },
+    "payrollForm": {
+      "prefillHint": "Las líneas se precargan con tu equipo: ajustá montos, quitá a quienes no trabajaron o agregá contratistas.",
+      "errors": {
+        "linesRequired": "Agregá al menos una línea con un monto bruto mayor que cero.",
+        "staffRequired": "Seleccioná un miembro del personal o ingresá el nombre del contratista en cada línea con pago.",
+        "grossRequired": "Ingresá un monto bruto mayor que cero."
+      }
+    },
+    "invoices": {
+      "empty": {
+        "subtitle": "Emití una factura para una cuenta pagada o ampliá el rango de fechas."
+      },
+      "loadError": {
+        "title": "No se pudieron cargar las facturas",
+        "subtitle": "La lista no cargó. Intentá de nuevo — un período vacío no es lo mismo que un fallo de red."
+      }
+    },
+    "issueInvoice": {
+      "issueByIdHint": "Usá esto si la cuenta no aparece. Ingresá el ID interno desde la pestaña Cuentas.",
+      "emptyHint": "Probá buscar por mesa o nombre del cliente, o emití por ID de cuenta abajo.",
+      "loadError": "No se pudieron cargar las cuentas pagadas. Intentá de nuevo o emití por ID de cuenta.",
+      "retryLoad": "Intentá de nuevo",
+      "alreadyIssuedError": "Esta cuenta ya tiene una factura. Usá Ver factura en esa cuenta en lugar de emitir una segunda."
+    },
+    "periodLock": {
+      "dateRequired": "Elegí una fecha de cierre. Una fecha vacía no cierra los libros."
+    }
+  },
+  "menuBuilder": {
+    "offersManager": {
+      "form": {
+        "targetPlaceholder": "Seleccioná un objetivo",
+        "imageDescription": "Subí o generá una imagen para representar esta oferta."
+      }
+    },
+    "bundlesManager": {
+      "form": {
+        "itemSelectionPlaceholder": "Elegí elementos del menú y cantidades para crear este combo.",
+        "imageDescription": "Subí o generá una imagen para representar este combo."
+      }
+    }
+  },
+  "tableGrid": {
+    "emptyTitle": "Agregá una mesa para empezar a tomar pedidos",
+    "emptyHelp": "Pedí al dueño o gerente que agregue mesas en Ajustes."
+  },
+  "setupProgress": {
+    "recovery": {
+      "loading": "Cargando tu lista de configuración",
+      "loadErrorTitle": "No pudimos cargar tu lista de configuración.",
+      "retry": "Intentar de nuevo",
+      "refreshError": "No pudimos actualizar esta lista. Seguimos mostrando tu último progreso guardado.",
+      "support": "Contactar a soporte",
+      "savingCompletion": "Guardando tu progreso de configuración…",
+      "completionError": "Tu configuración está lista, pero no pudimos guardar la finalización.",
+      "retryCompletion": "Volver a guardar la finalización"
+    },
+    "celebration": {
+      "body": "Imprimí tus códigos QR y colocalos en las mesas — es la forma más rápida de que un cliente haga su primer pedido.",
+      "previewCta": "Mirá lo que ven tus invitados",
+      "testOrderHint": "Consejo: escaneá un código vos mismo y pedí un café — miralo aparecer en Cuentas. Así comprobás todo el flujo de tus invitados."
+    },
+    "steps": {
+      "menu": "Traé tu menú"
+    },
+    "paymentChooser": {
+      "title": "¿Cómo querés cobrar?",
+      "cashTitle": "Registrá pagos en efectivo — funciona hoy",
+      "cashBody": "Sin configuración. Creá una cuenta y registrá un pago en efectivo desde la pestaña Cuentas; los totales y reportes se mantienen al día.",
+      "stripeTitle": "Cobrá con tarjeta en línea",
+      "stripeBody": "Conectá tus propias claves de Stripe en la pestaña Plugins para que los clientes paguen desde su teléfono.",
+      "walletTitle": "Recibí pagos en USDC",
+      "walletBody": "Agregá una billetera de cobro en Ajustes para aceptar pagos cripto."
+    }
+  },
+  "help": {
+    "fiscalSettings": "Configurá la generación automática de recibos fiscales para tu país. Argentina (AFIP/ARCA) es el proveedor conectado hoy; otros países todavía no están disponibles.",
+    "aiWaiterSetup": "Configurá un mozo con IA que toma pedidos por chat. Definí su nombre, personalidad e idiomas disponibles.",
+    "deliveryZones": "Definí zonas de entrega con precios y tiempos estimados personalizados según la distancia.",
+    "loyaltyProgram": "Recompensá a los clientes recurrentes con puntos que pueden acumular y canjear por descuentos.",
+    "designSettings": "Personalizá cómo se ve tu menú y página de negocio. Los cambios se aplican al menú QR de inmediato.",
+    "operatingHours": "Establecé tus horarios de apertura y cierre. Los clientes ven un indicador de abierto/cerrado basado en estos horarios.",
+    "managerPin": "Requiere un PIN para acciones sensibles como anular cuentas o emitir reembolsos. Cada gerente establece su propio PIN.",
+    "timezone": "Tu zona horaria afecta cómo se calculan las marcas de tiempo de cuentas y los rangos de fechas de análisis."
+  },
+  "unsavedChanges": {
+    "description": "Tenés cambios sin guardar en esta pestaña. Si salís ahora, se perderán tus modificaciones."
+  },
+  "footer": {
+    "helpMenu": "Ayuda",
+    "askAssistant": "Preguntale al asistente"
+  }
+}

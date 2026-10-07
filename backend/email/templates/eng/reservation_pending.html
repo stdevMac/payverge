@@ -1,0 +1,33 @@
+{{ define "subject" }}Reservation request received{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Reservation request received
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi there,
+</p>
+
+<p>
+    We received your reservation request at {{ .business_name }} for {{ .reservation_date }} at {{ .reservation_time }}.
+</p>
+
+<p>
+    Party Size: {{ .party_size }}<br>
+    Table: {{ .table_name }}
+</p>
+
+<p>
+    {{ if .respond_by }}The restaurant reviews each request — you'll hear back by {{ .respond_by }}.{{ else }}The restaurant reviews each request and will email you shortly.{{ end }}
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    {{ if .cancellation_url }}
+    <a href="{{ .cancellation_url }}">Cancel request</a>
+    {{ end }}
+</div>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

@@ -1,0 +1,9 @@
+{
+  "key": "64c6dc7a950c738c",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Es posible que los martes sean más lentos debido a que muchas personas comienzan la semana los lunes y retoman sus rutinas de gasto a mitad de semana. Podrías ofrecer promociones especiales los martes para atraer más clientes.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {"PromptTokens": 30, "CompletionTokens": 45, "TotalTokens": 75}
+  }
+}

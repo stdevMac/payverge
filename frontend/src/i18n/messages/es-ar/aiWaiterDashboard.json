@@ -1,0 +1,79 @@
+{
+  "title": "Mozo IA",
+  "subtitle": "Configurá tu conserje digital y monitoreá interacciones con clientes.",
+  "businessPageRedirect": {
+    "description": "Para usar el Mozo IA primero tenés que activar tu Página de Negocio. ¿Ir a la configuración ahora?"
+  },
+  "shell": {
+    "serviceOn": "Chat de clientes activo",
+    "serviceOnDetail": "Los clientes pueden chatear y pedir desde el menú QR; sugiere acompañamientos y nunca empuja platos 86 o sin datos de alérgenos.",
+    "serviceOnIdle": "Chat de clientes activo — todavía no hay conversaciones",
+    "serviceOnIdleDetail": "Los clientes pueden chatear y pedir desde el menú QR; sugiere acompañamientos y nunca empuja platos 86 o sin datos de alérgenos. Todavía no ocurre nada: no hay datos suficientes para mostrar.",
+    "idleBanner": "El chat de clientes está activo, pero ningún cliente habló con la IA. Usá el chat de prueba abajo para previsualizarlo antes del servicio."
+  },
+  "settings": {
+    "personalitySubtitle": "Personalizá cómo interactúa tu mozo IA con los clientes.",
+    "specialInstructionsDescription": "Dá reglas específicas o conocimiento a tu IA.",
+    "allergenGuardrail": "No escribas acá afirmaciones de sin alérgenos, sin frutos secos, sin gluten o de salud a menos que el personal las confirme siempre. La IA ya se niega a inventar seguridad de alérgenos y no recomienda platos 86 o sin stock.",
+    "upsellingGuardrail": "La venta sugestiva sigue omitiendo platos 86 y sin stock, y nunca inventa que algo es seguro para alérgenos. Usá el chat de prueba abajo antes del servicio.",
+    "upsellingConfirmTitle": "¿Cambiar a venta sugestiva?",
+    "upsellingConfirmDescription": "Este modo promociona con más agresividad los artículos de alto margen. Sigue omitiendo platos 86 y sin stock, y nunca inventa que algo es seguro para alérgenos ni afirmaciones de salud. Usá el chat de prueba abajo antes del servicio.",
+    "upsellingConfirmConfirm": "Usar venta sugestiva",
+    "upsellingConfirmCancel": "Mantener el modo actual",
+    "testChat": {
+      "title": "Chat de prueba",
+      "subtitle": "Probá una conversación sandbox con la IA en vivo antes de que la vean los clientes. No cambia tu configuración hasta que pulses Guardar.",
+      "empty": "Hacé una pregunta o usá una sonda abajo.",
+      "emptyReply": "(Sin respuesta)",
+      "error": "No se pudo contactar a la IA. Comprobá que el chat de clientes esté activo e intentalo de nuevo.",
+      "thinking": "Pensando…",
+      "you": "Vos",
+      "assistant": "IA",
+      "inputLabel": "Mensaje de prueba",
+      "placeholder": "p. ej. ¿La ensalada tiene frutos secos?",
+      "send": "Enviar",
+      "probeAllergen": "Probar alérgenos",
+      "probeAllergenText": "Tengo alergia a los frutos secos — ¿qué puedo pedir con seguridad?",
+      "probeRecommend": "Probar recomendaciones",
+      "probeRecommendText": "¿Qué me recomendás esta noche?"
+    },
+    "introTemplates": {
+      "balanced": "¡Avisame si necesitás alguna recomendación!",
+      "service": "¿Cómo puedo ayudarte a hacer tu pedido hoy?"
+    }
+  },
+  "monitor": {
+    "stealRequired": "{name} está atendiendo este chat. ¿Tomar el control?",
+    "stealConfirm": "Tomar el control",
+    "stealCancel": "Cancelar",
+    "pauseFailed": "No se pudo actualizar esta conversación. Intentá de nuevo.",
+    "emptyBody": "Los chats de los clientes con el mozo IA aparecerán acá a medida que ocurran.",
+    "servicePausedBanner": "Las respuestas de la IA están pausadas. Podés seguir revisando el historial; los clientes no recibirán nuevas respuestas de IA hasta que reactives el servicio."
+  },
+  "errors": {
+    "saveFailed": "No se pudo guardar la configuración. Intentá de nuevo.",
+    "pauseFailed": "No se pudo pausar el Mozo IA. Intentá de nuevo.",
+    "sendReplyFailed": "No se pudo enviar la respuesta. Intentá de nuevo.",
+    "saveSuccess": "Configuración guardada."
+  },
+  "transcript": {
+    "staffReplyPlaceholder": "Escribí una respuesta como personal...",
+    "claimExpired": "Tu asignación expiró. Retomá la conversación para responder.",
+    "claimExpiresIn": "La asignación vence en {time}",
+    "claimExpiredChip": "Asignación vencida",
+    "pickUpToReplyIdle": "Tomá este chat para responder.",
+    "conversationClosed": "Esta conversación está cerrada."
+  },
+  "visibility": {
+    "subtitle": "Elegí dónde está activo el Mozo IA.",
+    "publicBusinessPageDesc": "Activá el Conserje IA en tu página de aterrizaje pública",
+    "businessPageDisabled": "La página de negocio está deshabilitada. Activala en la configuración de Diseño para usar esta función.",
+    "enableAIWaiterFirst": "Activá el Mozo IA para configurar la visibilidad de canales."
+  },
+  "whatsapp": {
+    "notEnabled": "WhatsApp está instalado en este servidor pero no está activado. Pedile al administrador del servidor que configure WHATSAPP_ENABLED=true y reinicie el backend.",
+    "actionFailed": "No se pudo actualizar el canal de WhatsApp. Intentá de nuevo.",
+    "startFailed": "WhatsApp está activado en este servidor pero no pudo iniciarse. Pedile al administrador del servidor que revise los logs del backend.",
+    "scanHint": "En el teléfono del negocio, abrí WhatsApp, andá a Dispositivos vinculados, tocá Vincular un dispositivo y escaneá este código. Se actualiza solo hasta que lo escanees."
+  }
+}

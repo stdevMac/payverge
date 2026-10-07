@@ -1,0 +1,2 @@
+# Output of `node site/tools/check.mjs --launch --stage site/dist`.
+/dist/

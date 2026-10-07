@@ -1,0 +1,46 @@
+{
+    "title": "Kitchen Display System",
+    "exitDisplayAria": "Exit kitchen display",
+    "muteChimeAria": "Mute new-order chime",
+    "enableChimeAria": "Enable new-order chime",
+    "exitFullscreenAria": "Exit fullscreen",
+    "enterFullscreenAria": "Enter fullscreen",
+    "launch": "Launch KDS Mode",
+    "exit": "Exit KDS Mode",
+    "liveUpdates": "Live Updates",
+    "billPrefix": "Bill #{billId}",
+    "enterFullscreen": "Enter Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "enableSound": "Enable Sound",
+    "disableSound": "Disable Sound",
+    "noOrders": "No active orders",
+    "columns": {
+        "approved": "To Prepare",
+        "in_kitchen": "Cooking",
+        "ready": "Ready to Serve"
+    },
+    "location": {
+        "table": "Table",
+        "counter": "Counter",
+        "delivery": "Delivery"
+    },
+    "notes": {
+        "additionalItems": "Additional Items",
+        "initialOrder": "Initial Order"
+    },
+    "actions": {
+        "start": "Start",
+        "ready": "Ready",
+        "serve": "Serve"
+    },
+    "errors": {
+        "updateFailed": "Couldn't update the order: {message}",
+        "conflictRefreshed": "This order was updated by someone else — the board has been refreshed."
+    },
+    "time": {
+        "justNow": "Just now",
+        "minutesAgo": "{{minutes}}m ago",
+        "hoursAgo": "{{hours}}h ago",
+        "elapsedAgo": "{{duration}} ago"
+    }
+}

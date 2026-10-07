@@ -1,0 +1,63 @@
+{
+    "updateError": "No se pudieron actualizar los ajustes. Inténtalo de nuevo.",
+    "button": {
+        "disableAiWaiter": "Deshabilitar Camarero IA"
+    },
+    "disableModal": {
+        "title": "¿Deshabilitar Camarero IA?",
+        "description": "Esto deshabilitará el conserje digital con IA para tus clientes. No podrán:",
+        "features": {
+            "concierge": "Chatear con el conserje IA en tu menú digital",
+            "recommendations": "Obtener recomendaciones personalizadas del menú",
+            "upselling": "Recibir sugerencias inteligentes de venta adicional",
+            "multilingual": "Interactuar en su idioma preferido"
+        },
+        "confirmation": "¿Estás seguro de que quieres continuar?",
+        "buttons": {
+            "cancel": "Cancelar",
+            "confirm": "Sí, Deshabilitar"
+        }
+    },
+    "enableModal": {
+        "title": "¿Activar Camarero IA?",
+        "description": "Esto habilitará el conserje digital con IA para tu negocio.",
+        "featuresTitle": "Esto activará:",
+        "features": {
+            "concierge": "Conserje con IA en tu menú digital",
+            "recommendations": "Recomendaciones inteligentes del menú para los clientes",
+            "upselling": "Venta adicional inteligente para aumentar los ingresos",
+            "multilingual": "Soporte multilingüe para clientes internacionales"
+        },
+        "buttons": {
+            "cancel": "Cancelar",
+            "confirm": "Activar"
+        }
+    },
+    "activationCard": {
+        "title": "Activar Camarero IA",
+        "description": "Mejora la experiencia de tus clientes con un conserje IA inteligente que recomienda platos, responde preguntas y ayuda a generar más ingresos.",
+        "features": {
+            "concierge": {
+                "title": "Conserje IA",
+                "description": "Un chatbot inteligente en tu menú digital que asiste a los clientes en tiempo real"
+            },
+            "recommendations": {
+                "title": "Recomendaciones Inteligentes",
+                "description": "Sugerencias personalizadas de platos basadas en preferencias y análisis del menú"
+            },
+            "upselling": {
+                "title": "Optimización de Ingresos",
+                "description": "Venta adicional y cruzada inteligente para aumentar el valor promedio del pedido"
+            },
+            "multilingual": {
+                "title": "Soporte Multilingüe",
+                "description": "Detección automática del idioma y respuestas en el idioma preferido del cliente"
+            }
+        },
+        "disclaimer": "Puedes deshabilitar el Camarero IA en cualquier momento desde esta página.",
+        "buttons": {
+            "activate": "Activar Camarero IA",
+            "activating": "Activando..."
+        }
+    }
+}

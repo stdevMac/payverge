@@ -1,0 +1,23 @@
+{
+  "_comment": "GUEST-3 ratchet baseline: max allowed same-as-en (untranslated-leaf) count per locale. The validator (--strict / --ratchet) FAILS if any locale's current count EXCEEDS its baseline, so the backlog can only shrink, never grow. After translating keys, regenerate with `node scripts/check-guest-locales.js --write-baseline`. A locale missing here is treated as 0.",
+  "ar": 25,
+  "da": 46,
+  "de": 56,
+  "es": 46,
+  "es-AR": 41,
+  "fr": 59,
+  "hi": 38,
+  "it": 46,
+  "ja": 39,
+  "ko": 39,
+  "nl": 61,
+  "no": 42,
+  "pl": 40,
+  "pt": 56,
+  "ru": 30,
+  "sv": 33,
+  "th": 29,
+  "tr": 34,
+  "vi": 30,
+  "zh": 37
+}

@@ -1,0 +1,15 @@
+{
+  "title": "Bitácora de turno",
+  "subtitle": "Notas de traspaso del equipo de hoy",
+  "loading": "Cargando bitácora…",
+  "authorFallback": "Miembro del equipo",
+  "countOne": "1 nota",
+  "countOther": "{count} notas",
+  "categories": {
+    "sales": "Ventas",
+    "guests": "Clientes",
+    "staffing": "Personal",
+    "maintenance": "Mantenimiento",
+    "other": "Otros"
+  }
+}

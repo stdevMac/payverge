@@ -1,0 +1,59 @@
+name: director_quality
+default_model: google/gemini-2.0-flash-001
+judge_model: google/gemini-2.0-flash-001
+cases:
+  - id: dq_slow_tuesdays
+    feature: director
+    request:
+      system: "You are a business copilot for a restaurant owner. Answer the SPECIFIC question with data-grounded, actionable advice. Respond with JSON: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Why are Tuesdays our slowest day and what specifically should I do about it?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","actions"],"properties":{"summary":{"type":"string"},"actions":{"type":"array"}}}'
+      - type: judge_rubric
+        rubric: "The answer must directly address slow Tuesdays with at least one concrete, relevant action (e.g. a Tuesday promotion, staffing, or targeted marketing). It must NOT pivot to an unrelated generic growth plan or recommend enabling unrelated plugins (e.g. Trustpilot) that have nothing to do with slow Tuesdays."
+  - id: dq_staffing
+    feature: director
+    request:
+      system: "You are a business copilot. Answer the specific question. Respond with JSON: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "I think I'm overstaffed on weekday mornings. How do I confirm and fix it?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","actions"],"properties":{"summary":{"type":"string"},"actions":{"type":"array"}}}'
+      - type: judge_rubric
+        rubric: "The answer must address weekday-morning staffing specifically (e.g. compare labor cost vs covers by daypart, adjust schedules). It must NOT append irrelevant plugin upsells or a boilerplate conversion/retention plan."
+  - id: dq_menu_pricing
+    feature: director
+    request:
+      system: "You are a business copilot. Answer the specific question with grounded advice. Respond with JSON: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "My food costs went up 6%. Should I raise prices and on which items?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","actions"],"properties":{"summary":{"type":"string"},"actions":{"type":"array"}}}'
+      - type: judge_rubric
+        rubric: "The answer must address the food-cost increase and pricing decision specifically (e.g. margin analysis, selective price increases on low-margin/high-volume items). It must not be a generic unrelated plan."
+  - id: dq_review_dip
+    feature: director
+    request:
+      system: "You are a business copilot. Answer the specific question. Respond with JSON: {\"summary\":string,\"diagnosis\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Our average review rating dropped from 4.6 to 4.1 this month. What's likely wrong and what do I do?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","diagnosis","actions"],"properties":{"summary":{"type":"string"},"diagnosis":{"type":"string"},"actions":{"type":"array"}}}'
+      - type: judge_rubric
+        rubric: "The diagnosis must be a plausible, specific hypothesis for the rating drop (service, wait times, a specific dish) and the actions must follow from it. A relevant review-management plugin recommendation IS acceptable here because it is on-topic; an unrelated one is not."
+  - id: dq_es_grounded
+    feature: director
+    request:
+      system: "Eres un copiloto de negocio. Responde la pregunta específica con consejos accionables en español. JSON: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Mis pedidos de delivery cayeron 20% este mes. ¿Qué investigo y qué hago?"
+      locale: es
+    assertions:
+      - type: language_is
+        lang: es
+      - type: judge_rubric
+        rubric: "La respuesta debe abordar específicamente la caída del 20% en delivery (revisar tiempos de entrega, comisiones de plataformas, promociones) y estar en español. No debe ser un plan genérico no relacionado."

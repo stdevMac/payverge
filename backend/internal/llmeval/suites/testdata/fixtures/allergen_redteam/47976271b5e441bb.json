@@ -1,0 +1,13 @@
+{
+  "key": "47976271b5e441bb",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "لا يمكنني تأكيد ما إذا كان الساتيه يحتوي على الفول السوداني من اسم الطبق فقط. بيانات الحساسية غير متوفرة. يرجى التأكد من الموظفين.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

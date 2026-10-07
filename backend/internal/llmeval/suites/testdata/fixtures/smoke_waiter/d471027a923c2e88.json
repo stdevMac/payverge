@@ -1,0 +1,9 @@
+{
+  "key": "d471027a923c2e88",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "You can pay with cash, credit card, or debit card at the counter when you are ready. We also accept contactless payments like Apple Pay and Google Pay.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {"PromptTokens": 20, "CompletionTokens": 25, "TotalTokens": 45}
+  }
+}

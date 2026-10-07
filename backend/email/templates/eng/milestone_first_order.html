@@ -1,0 +1,37 @@
+{{ define "subject" }}First order completed{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    First order completed
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Your first order has been completed on Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    From menu browsing to payment, everything went through the system as expected.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    This is the first step toward using Payverge as part of your daily operations.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        View order details
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    If anything felt unclear or you’d like help fine-tuning your setup, just reply to this email.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

@@ -1,0 +1,76 @@
+{
+  "loading": "Cargando configuración...",
+  "errors": {
+    "loadFailed": "Error al cargar la configuración",
+    "selectLanguage": "Por favor selecciona al menos un idioma",
+    "keepAtLeastOneLanguage": "Debe quedar al menos un idioma seleccionado",
+    "selectDefaultLanguage": "Por favor selecciona un idioma predeterminado de tus idiomas seleccionados",
+    "saveCurrencyFailed": "Error al guardar la configuración de monedas",
+    "saveLanguageFailed": "Error al guardar la configuración de idiomas",
+    "saveVenueFailed": "Error al guardar la hora del local"
+  },
+  "actions": {
+    "discard": "Descartar cambios"
+  },
+  "currency": {
+    "title": "Configuración de Monedas",
+    "description": "Configura cómo funcionan las monedas en tu negocio.",
+    "defaultTitle": "Moneda Predeterminada (Precios)",
+    "defaultDescription": "La moneda que usas para establecer precios en los elementos de tu menú.",
+    "defaultLabel": "Moneda Predeterminada",
+    "defaultPlaceholder": "Seleccionar moneda predeterminada",
+    "displayTitle": "Moneda de Visualización (Vista del Cliente)",
+    "displayDescription": "La moneda que tus clientes ven en menús y cuentas.",
+    "displayLabel": "Moneda de Visualización",
+    "displayPlaceholder": "Seleccionar moneda de visualización",
+    "conversionPreview": "Vista Previa de Conversión",
+    "updatingPreview": "Actualizando vista previa...",
+    "pricingToUsdc": "Precios → USDC",
+    "pricingToDisplay": "Precios → Visualización",
+    "displayToUsdc": "Visualización → USDC",
+    "paymentFlow": "Flujo de Pago:",
+    "paymentFlowSame": "Los clientes ven y pagan en {currency}.",
+    "paymentFlowConverted": "Los clientes ven precios en {display}, convertidos desde tus precios en {default} al momento del cobro.",
+    "paymentFlowCryptoSuffix": "Los pagos en cripto se liquidan en USDC al tipo de cambio actual.",
+    "savedMessage": "Configuración de monedas guardada",
+    "saveButton": "Guardar Configuración de Monedas"
+  },
+  "language": {
+    "title": "Configuración de Idiomas",
+    "description": "Configura idiomas para tu menú e interfaz de cliente.",
+    "supportedTitle": "Idiomas Soportados",
+    "supportedDescription": "Selecciona idiomas para tu menú e interfaz de cliente.",
+    "selectedCount": "{count} seleccionados",
+    "searchPlaceholder": "Buscar idioma",
+    "noResults": "No hay idiomas que coincidan con tu búsqueda.",
+    "selectAllButton": "Seleccionar todos",
+    "defaultTitle": "Idioma Predeterminado",
+    "defaultDescription": "Elige el idioma principal para tu negocio.",
+    "defaultLabel": "Idioma Predeterminado",
+    "defaultPlaceholder": "Seleccionar idioma predeterminado",
+    "defaultBadge": "Predeterminado",
+    "supportInfo": "Soporte de Idiomas:",
+    "supportInfoDescription": "Los idiomas seleccionados estarán disponibles para traducción del menú e interfaz de cliente. Tu idioma predeterminado se usará cuando no haya traducción disponible.",
+    "savedMessage": "Configuración de idiomas guardada",
+    "saveButton": "Guardar Configuración de Idiomas"
+  },
+  "venue": {
+    "title": "Hora del local",
+    "description": "Zona horaria y corte del día de servicio para turnos, saludos, analítica y caja.",
+    "timezoneLabel": "Zona horaria del negocio",
+    "timezonePlaceholder": "Seleccionar zona horaria",
+    "timezoneHelp": "Los turnos, los saludos del Director y los reportes del día usan esta zona — no el reloj del dispositivo.",
+    "serviceDayLabel": "El día de servicio empieza a las",
+    "serviceDayHelp": "Los cierres antes de este corte siguen perteneciendo al día de servicio anterior (p. ej. 4:00 para locales nocturnos).",
+    "serviceDayOptions": {
+      "0": "Medianoche (12:00)",
+      "120": "2:00",
+      "180": "3:00",
+      "240": "4:00",
+      "300": "5:00",
+      "360": "6:00"
+    },
+    "savedMessage": "Hora del local guardada",
+    "saveButton": "Guardar hora del local"
+  }
+}

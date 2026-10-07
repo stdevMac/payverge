@@ -1,0 +1,13 @@
+{
+  "key": "9e2627ca5f05f715",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "No puedo confirmar si el satay lleva cacahuetes solo por el nombre del plato. No tenemos datos de alérgenos para este plato, así que te recomiendo confirmar con el personal antes de decidir.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "Wir schätzen Ihre Privatsphäre",
+    "description": "Wir verwenden essenzielle Cookies, damit Payverge funktioniert. Mit Ihrer Erlaubnis möchten wir auch Analyse-Cookies nutzen, um die Nutzung der Website zu verstehen. Sie können Ihre Wahl jederzeit unter „Cookie-Einstellungen“ im Footer ändern.",
+    "acceptAll": "Alle akzeptieren",
+    "declineAll": "Nicht essenzielle ablehnen",
+    "customize": "Anpassen",
+    "essentialLabel": "Essenziell",
+    "essentialDescription": "Erforderlich für die Funktion der Website (Sicherheit, Sprache, Sitzung). Immer aktiv.",
+    "analyticsLabel": "Analyse",
+    "analyticsDescription": "Hilft uns, die Nutzung zu verstehen und das Produkt zu verbessern. Aus bis Sie zustimmen.",
+    "marketingLabel": "Marketing",
+    "marketingDescription": "Zur Messung und Verbesserung unserer Kampagnen. Aus bis Sie zustimmen.",
+    "savePreferences": "Einstellungen speichern",
+    "privacyLink": "Datenschutzrichtlinie lesen",
+    "closeLabel": "Cookie-Banner schließen"
+  },
+  "footer": {
+    "preferences": "Cookie-Einstellungen"
+  }
+}

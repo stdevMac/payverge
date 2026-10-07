@@ -1,0 +1,222 @@
+{
+  "title": "Camarero IA",
+  "subtitle": "Configura tu conserje digital y monitorea interacciones con clientes.",
+  "shell": {
+    "badge": "Comando de servicio IA",
+    "activeMode": "Canal de clientes listo",
+    "service": "IA en mesa",
+    "serviceOn": "Chat de clientes activo",
+    "serviceOnDetail": "Los clientes pueden chatear y pedir desde el menú QR; sugiere acompañamientos y nunca empuja platos 86 o sin datos de alérgenos.",
+    "serviceOnIdle": "Chat de clientes activo — aún no hay conversaciones",
+    "serviceOnIdleDetail": "Los clientes pueden chatear y pedir desde el menú QR; sugiere acompañamientos y nunca empuja platos 86 o sin datos de alérgenos. Aún no ocurre nada: no hay datos suficientes para mostrar.",
+    "idleBanner": "El chat de clientes está activo, pero ningún cliente ha hablado con la IA. Usa el chat de prueba abajo para previsualizarlo antes del servicio.",
+    "serviceOff": "Servicio pausado",
+    "channel": "Página pública",
+    "channelOn": "Conserje visible",
+    "channelOff": "Solo QR de mesa",
+    "liveChats": "Chats activos",
+    "priority": "Prioridad"
+  },
+  "businessPageRedirect": {
+    "title": "Activar Página de Negocio",
+    "description": "Para usar el Camarero IA primero debes activar tu Página de Negocio. ¿Ir a la configuración ahora?",
+    "cancel": "Ahora no",
+    "confirm": "Abrir configuración"
+  },
+  "tabs": {
+    "overview": "Resumen y Configuración",
+    "monitor": "Monitor en Vivo",
+    "insights": "Estadísticas"
+  },
+  "tabsAria": "Pestañas del panel de IA",
+  "stats": {
+    "totalConversations": "Conversaciones Totales",
+    "totalConversationsHint": "Total de conversaciones con clientes.",
+    "upsellSuccessRate": "Tasa de Éxito de Venta",
+    "upsellSuccessRateHint": "Porcentaje de chats con upsell exitoso.",
+    "avgMessages": "Msj. Promedio",
+    "avgMessagesHint": "Mensajes medios por conversación.",
+    "avgMessagesSession": "Msj. Promedio",
+    "conversationsTrend7d": "Conversaciones (últimos 7 días)",
+    "busiestHours": "Horas de mayor actividad",
+    "noData": "Aún no hay datos"
+  },
+  "settings": {
+    "configuration": "Configuración",
+    "personalityTitle": "Configuración de Personalidad IA",
+    "personalitySubtitle": "Personaliza cómo interactúa tu camarero IA con los clientes.",
+    "aiName": "Nombre de IA",
+    "aiNameDescription": "Este es el nombre que la IA usará para presentarse.",
+    "aiNameTooLong": "El nombre debe tener 40 caracteres o menos.",
+    "priorityMode": "Modo de Prioridad",
+    "priorityDescription": "Determina el comportamiento y estrategia de sugerencias de la IA.",
+    "priorities": {
+      "upselling": "Venta Sugestiva (Maximizar Ingresos)",
+      "upsellingDesc": "Promueve agresivamente artículos de alto margen. Aumenta el Valor Promedio de Pedido (AOV).",
+      "balanced": "Equilibrado (Recomendado)",
+      "balancedDesc": "Una mezcla perfecta de servicio útil y sugerencias suaves. Lo mejor para la satisfacción del cliente.",
+      "service": "Enfoque en Servicio (Velocidad)",
+      "serviceDesc": "Se enfoca puramente en eficiencia y velocidad. Mínima conversación, pedidos rápidos."
+    },
+    "specialInstructions": "Instrucciones Especiales (Avanzado)",
+    "specialInstructionsPlaceholder": "ej. Siempre sugerir el especial del día. No mencionar alcohol. Ser extra educado.",
+    "specialInstructionsDescription": "Da reglas específicas o conocimiento a tu IA.",
+    "specialInstructionsWarning": "Los clientes pueden ver cualquier cosa que escribas aquí. No incluyas secretos, notas internas ni políticas solo para el personal.",
+    "allergenGuardrail": "No escribas aquí afirmaciones de sin alérgenos, sin frutos secos, sin gluten o de salud a menos que el personal las confirme siempre. La IA ya se niega a inventar seguridad de alérgenos y no recomienda platos 86 o sin stock.",
+    "upsellingGuardrail": "La venta sugestiva sigue omitiendo platos 86 y sin stock, y nunca inventa que algo es seguro para alérgenos. Usa el chat de prueba abajo antes del servicio.",
+    "upsellingConfirmTitle": "¿Cambiar a venta sugestiva?",
+    "upsellingConfirmDescription": "Este modo promociona con más agresividad los artículos de alto margen. Sigue omitiendo platos 86 y sin stock, y nunca inventa que algo es seguro para alérgenos ni afirmaciones de salud. Usa el chat de prueba abajo antes del servicio.",
+    "upsellingConfirmConfirm": "Usar venta sugestiva",
+    "upsellingConfirmCancel": "Mantener el modo actual",
+    "testChat": {
+      "title": "Chat de prueba",
+      "subtitle": "Prueba una conversación sandbox con la IA en vivo antes de que la vean los clientes. No cambia tu configuración hasta que pulses Guardar.",
+      "empty": "Haz una pregunta o usa una sonda abajo.",
+      "emptyReply": "(Sin respuesta)",
+      "error": "No se pudo contactar a la IA. Comprueba que el chat de clientes esté activo e inténtalo de nuevo.",
+      "thinking": "Pensando…",
+      "you": "Tú",
+      "assistant": "IA",
+      "inputLabel": "Mensaje de prueba",
+      "placeholder": "p. ej. ¿La ensalada tiene frutos secos?",
+      "send": "Enviar",
+      "probeAllergen": "Probar alérgenos",
+      "probeAllergenText": "Tengo alergia a los frutos secos — ¿qué puedo pedir con seguridad?",
+      "probeRecommend": "Probar recomendaciones",
+      "probeRecommendText": "¿Qué me recomiendas esta noche?"
+    },
+    "simulatedIntro": "Intro Simulada:",
+    "introTemplates": {
+      "default": "¡Hola! Soy {name}. ¡Bienvenido a {business}!",
+      "upsellingItems": "¿Puedo comenzar con nuestro {first} o {second}?",
+      "upsellingItem": "¿Puedo comenzar con nuestro {first}?",
+      "upsellingGeneric": "¿Puedo comenzar con uno de nuestros platos más populares?",
+      "balanced": "¡Avísame si necesitas alguna recomendación!",
+      "service": "¿Cómo puedo ayudarte a ordenar hoy?"
+    },
+    "saveButton": "Guardar Configuración",
+    "aiNamePlaceholder": "ej. Sage, Atlas, Jarvis"
+  },
+  "monitor": {
+    "recentConversations": "Conversaciones Recientes",
+    "refresh": "Actualizar",
+    "table": {
+      "session": "ID SESIÓN",
+      "table": "MESA",
+      "language": "IDIOMA",
+      "started": "INICIADO",
+      "lastActivity": "ÚLTIMA ACTIVIDAD",
+      "status": "ESTADO",
+      "action": "ACCIÓN",
+      "tableAria": "Tabla de conversaciones"
+    },
+    "empty": "No se encontraron conversaciones.",
+    "loading": "Cargando conversaciones...",
+    "viewChat": "Ver Chat",
+    "unknownTable": "Desconocida",
+    "status": {
+      "active": "ACTIVA",
+      "closed": "CERRADA",
+      "abandoned": "ABANDONADA",
+      "fallback": "ABIERTA"
+    },
+    "badges": {
+      "paused": "PAUSADO",
+      "upsell": "VENTA"
+    },
+    "pauseInline": "Pausar IA en esta conversación",
+    "resumeInline": "Reanudar IA en esta conversación",
+    "pauseFailed": "No se pudo actualizar esta conversación. Inténtalo de nuevo.",
+    "pickUp": "Atender",
+    "handBack": "Devolver a la IA",
+    "handledBy": "Atendido por {name}",
+    "someoneElse": "otro compañero",
+    "claimConflict": "{name} ya está atendiendo este chat",
+    "claimFailed": "No se pudo atender la conversación",
+    "releaseFailed": "No se pudo devolver la conversación",
+    "emptyTitle": "Aún no hay conversaciones",
+    "emptyBody": "Los chats de los clientes con el camarero IA aparecerán aquí a medida que ocurran.",
+    "servicePausedBanner": "Las respuestas de la IA están pausadas. Puedes seguir revisando el historial; los clientes no recibirán nuevas respuestas de IA hasta que reactives el servicio.",
+    "statusFilter": {
+      "label": "Filtrar por estado",
+      "all": "Todas",
+      "active": "En vivo",
+      "closed": "Cerradas"
+    },
+    "stealRequired": "{name} está atendiendo este chat. ¿Tomar el control?",
+    "stealConfirm": "Tomar el control",
+    "stealCancel": "Cancelar",
+    "stealSuccess": "Tomaste el control de {name}"
+  },
+  "errors": {
+    "saveFailed": "No se pudo guardar la configuración. Inténtalo de nuevo.",
+    "pauseFailed": "No se pudo pausar el Camarero IA. Inténtalo de nuevo.",
+    "sendReplyFailed": "No se pudo enviar la respuesta. Inténtalo de nuevo.",
+    "closeFailed": "No se pudo cerrar la conversación.",
+    "fetchInsightsFailed": "No se pudieron cargar las estadísticas.",
+    "fetchConversationsFailed": "No se pudieron cargar las conversaciones.",
+    "retry": "Reintentar",
+    "saveSuccess": "Configuración guardada."
+  },
+  "transcript": {
+    "title": "Transcripción de Conversación",
+    "session": "Sesión: {{id}}",
+    "roles": {
+      "guest": "Cliente",
+      "system": "Sistema"
+    },
+    "staffReplyPlaceholder": "Escribe una respuesta como personal...",
+    "sendReply": "Enviar Respuesta",
+    "pauseAi": "Pausar IA (Intervenir)",
+    "resumeAi": "Reanudar IA",
+    "closeConversation": "Cerrar Conversación",
+    "closeConfirmTitle": "¿Cerrar esta conversación?",
+    "closeConfirmDescription": "Esto finaliza el chat en vivo con el cliente. No se puede reabrir. La IA deja de responder en esta sesión.",
+    "closeConfirmConfirm": "Cerrar conversación",
+    "closeConfirmCancel": "Mantener abierta",
+    "close": "Cerrar",
+    "loadFailed": "No se pudo cargar esta conversación.",
+    "retry": "Reintentar",
+    "pickUpToReply": "Atiende esta conversación para responder",
+    "claimExpired": "Tu asignación expiró. Retoma la conversación para responder.",
+    "claimExpiresIn": "La asignación expira en {time}",
+    "claimExpiredChip": "Asignación expirada",
+    "pickUpToReplyIdle": "Toma este chat para responder.",
+    "conversationClosed": "Esta conversación está cerrada."
+  },
+  "visibility": {
+    "title": "Visibilidad de Canales",
+    "subtitle": "Elige dónde está activo el Camarero IA.",
+    "publicBusinessPage": "Página de Negocio Pública",
+    "publicBusinessPageDesc": "Activa el Conserje IA en tu página de aterrizaje pública",
+    "businessPageDisabled": "La página de negocio está deshabilitada. Actívala en la configuración de Diseño para usar esta función.",
+    "enableAIWaiterFirst": "Activa el Camarero IA para configurar la visibilidad de canales."
+  },
+  "whatsapp": {
+    "title": "Canal de WhatsApp",
+    "subtitle": "Estado de conexión del camarero de WhatsApp para huéspedes.",
+    "status": {
+      "connected": "Conectado",
+      "connecting": "Conectando",
+      "pairing": "Emparejando",
+      "degraded": "Degradado — reconectando",
+      "disconnected": "Desconectado"
+    },
+    "lastConnected": "Última conexión {time}",
+    "retryAt": "Próximo reintento {time}",
+    "errors": {
+      "device_missing": "El dispositivo guardado ya no está disponible",
+      "connect_timeout": "La conexión agotó el tiempo de espera",
+      "connect_failed": "No se pudo reconectar",
+      "fallback": "El canal necesita atención"
+    },
+    "connect": "Conectar WhatsApp",
+    "disconnect": "Desconectar",
+    "reconnect": "Reconectar",
+    "notEnabled": "WhatsApp está instalado en este servidor pero no está activado. Pide al administrador del servidor que configure WHATSAPP_ENABLED=true y reinicie el backend.",
+    "actionFailed": "No se pudo actualizar el canal de WhatsApp. Inténtalo de nuevo.",
+    "startFailed": "WhatsApp está activado en este servidor pero no pudo iniciarse. Pide al administrador del servidor que revise los logs del backend.",
+    "qrAlt": "Código QR para vincular WhatsApp",
+    "scanHint": "En el teléfono del negocio, abre WhatsApp, ve a Dispositivos vinculados, toca Vincular un dispositivo y escanea este código. Se actualiza solo hasta que lo escanees."
+  }
+}

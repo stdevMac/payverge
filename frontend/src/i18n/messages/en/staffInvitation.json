@@ -1,0 +1,73 @@
+{
+  "metaTitle": "Accept invitation — Payverge",
+  "metaDescription": "Accept your Payverge staff invitation and finish setting up your account.",
+  "title": "Join the Team",
+  "subtitle": "You've been invited to join as a staff member",
+  "loading": {
+    "validating": "Validating invitation..."
+  },
+  "form": {
+    "invitationInfo": {
+      "title": "Restaurant Invitation",
+      "description": "You've been invited to join the staff team. Complete your registration below to get started.",
+      "emailLabel": "Email"
+    },
+    "nameField": {
+      "label": "Full Name",
+      "placeholder": "Enter your full name"
+    },
+    "whatHappensNext": {
+      "title": "What happens next?",
+      "items": [
+        "Your staff account will be created",
+        "You'll be able to log in with your email address and login codes",
+        "Access will be based on your assigned role",
+        "No crypto wallet required"
+      ]
+    },
+    "buttons": {
+      "accept": "Accept Invitation",
+      "accepting": "Creating Account..."
+    }
+  },
+  "success": {
+    "title": "Welcome to the Team!",
+    "subtitle": "Your staff account has been created successfully.",
+    "businessLabel": "Business:",
+    "roleLabel": "Role:",
+    "defaultBusiness": "Restaurant",
+    "continueButton": "Open Staff Dashboard",
+    "loginInfo": "Your staff session is ready. Continue to the dashboard to start working."
+  },
+  "roles": {
+    "manager": "Manager",
+    "server": "Server",
+    "host": "Host",
+    "kitchen": "Kitchen"
+  },
+  "messages": {
+    "invalidLink": "Invalid invitation link",
+    "nameRequired": "Please enter your full name",
+    "invalidToken": "Invalid invitation token",
+    "accountCreated": "Account created successfully!",
+    "acceptFailed": "Failed to accept invitation",
+    "expiredTitle": "This invitation is no longer valid",
+    "expiredHelp": "It may have expired or already been used. Ask your manager to send a new invitation.",
+    "transientTitle": "We couldn't load this invitation",
+    "transientHelp": "Check your connection and try again — the invitation link is still good."
+  },
+  "actions": {
+    "backToLogin": "Go to Staff Login",
+    "tryAgain": "Try again"
+  },
+  "footer": {
+    "poweredBy": "Secure staff onboarding powered by Payverge"
+  },
+  "existingSession": {
+    "title": "You are already signed in",
+    "description": "Accepting this invitation will sign out the current session on this browser:",
+    "signOutCta": "Sign out and continue",
+    "cancelCta": "Keep my current session",
+    "signOutFailed": "Could not sign out the current session. Try again."
+  }
+}

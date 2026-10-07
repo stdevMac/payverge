@@ -1,0 +1,13 @@
+{
+  "key": "de74dcd11dc72b0e",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "We have a delicious Cake on the menu. Unfortunately I don't have an image to show, but it's one of our popular dessert options. Would you like to order a slice?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "clockIn": "Fichar entrada",
+  "clockOut": "Fichar salida",
+  "clockingIn": "Fichando entrada…",
+  "clockingOut": "Fichando salida…",
+  "onTheClock": "En turno",
+  "sinceTemplate": "Desde {time}",
+  "notClockedIn": "Aún no fichaste tu entrada.",
+  "workedToday": "Trabajado hoy",
+  "breakLabel": "Agregar un descanso",
+  "breakPreset": "+{minutes}m",
+  "hoursUnit": "h",
+  "minutesUnit": "m",
+  "clockInError": "No pudimos fichar tu entrada. Vuelve a intentarlo en un momento.",
+  "clockOutError": "No pudimos fichar tu salida. Vuelve a intentarlo en un momento.",
+  "breakError": "No pudimos agregar ese descanso. Vuelve a intentarlo en un momento."
+}

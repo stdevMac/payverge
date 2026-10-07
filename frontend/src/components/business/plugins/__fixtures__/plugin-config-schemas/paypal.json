@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "required": ["client_id", "client_secret", "webhook_id", "base_url"],
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "title": "Client ID",
+      "description": "Your PayPal application Client ID"
+    },
+    "client_secret": {
+      "type": "string",
+      "title": "Client Secret",
+      "description": "Your PayPal application Client Secret",
+      "format": "password"
+    },
+    "environment": {
+      "type": "string",
+      "title": "Environment",
+      "description": "PayPal environment (sandbox or live)",
+      "enum": ["sandbox", "live"],
+      "default": "sandbox"
+    },
+    "webhook_id": {
+      "type": "string",
+      "title": "Webhook ID",
+      "description": "PayPal webhook ID for payment notification verification"
+    },
+    "webhook_id_previous": {
+      "type": "string",
+      "title": "Previous Webhook ID",
+      "description": "Temporary overlap ID used while rotating PayPal webhooks"
+    },
+    "base_url": {
+      "type": "string",
+      "title": "Public API Base URL",
+      "description": "Public backend origin used for PayPal return and cancel callbacks",
+      "format": "uri"
+    },
+    "brand_name": {
+      "type": "string",
+      "title": "Brand Name (Optional)",
+      "description": "Your brand name displayed on PayPal checkout"
+    },
+    "return_url": {
+      "type": "string",
+      "title": "Return URL",
+      "description": "URL to redirect after successful payment",
+      "format": "uri"
+    },
+    "cancel_url": {
+      "type": "string",
+      "title": "Cancel URL",
+      "description": "URL to redirect after cancelled payment",
+      "format": "uri"
+    }
+  }
+}

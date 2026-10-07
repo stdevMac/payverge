@@ -1,0 +1,246 @@
+# Dependabot version updates.
+#
+# Every ecosystem is checked weekly. Minor and patch bumps are grouped into one
+# PR per ecosystem and directory; major bumps open individually so they can be
+# reviewed (and reverted) on their own.
+#
+# Commit messages follow Conventional Commits: "chore(deps): …" for runtime
+# dependencies and "chore(deps-dev): …" for development dependencies.
+#
+# Dependabot alerts, security updates, secret scanning and push protection are
+# repository settings, not part of this file. Enable them under
+# Settings > Code security.
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - go
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      go-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:30"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      frontend-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
+    directory: /tools/payverge-admin-mcp
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      admin-mcp-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  # backend/Dockerfile, and backend/scripts/backup.Dockerfile (PostgreSQL,
+  # the same digest as deploy/docker-compose.yml).
+  - package-ecosystem: docker
+    directories:
+      - /backend
+      - /backend/scripts
+    schedule:
+      interval: weekly
+      day: wednesday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      backend-images-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: docker
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: wednesday
+      time: "06:30"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      frontend-images-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  # Third-party images of the self-host stack (Postgres, Caddy, rclone), pinned
+  # by tag and digest in deploy/docker-compose.yml, and of the source-build
+  # compose files at the root (Postgres, Go). One group spans both
+  # directories, so a Postgres bump lands in both in one pull request.
+  - package-ecosystem: docker-compose
+    directories:
+      - /deploy
+      - /
+    schedule:
+      interval: weekly
+      day: wednesday
+      time: "07:00"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      caddy-images-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
+    directory: /tools/screenshot-extension
+    schedule:
+      interval: weekly
+      day: thursday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 2
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      screenshot-extension-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: gomod
+    directory: /scripts/ci/workflowcontract
+    schedule:
+      interval: weekly
+      day: thursday
+      time: "06:30"
+      timezone: UTC
+    open-pull-requests-limit: 2
+    labels:
+      - dependencies
+      - go
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      workflowcontract-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: gomod
+    directory: /tools/route-coverage
+    schedule:
+      interval: weekly
+      day: thursday
+      time: "07:00"
+      timezone: UTC
+    open-pull-requests-limit: 2
+    labels:
+      - dependencies
+      - go
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      route-coverage-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

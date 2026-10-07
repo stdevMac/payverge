@@ -1,0 +1,13 @@
+{
+  "key": "8d8c0b6515132459",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "D'après le menu que vous m'avez montré, je vous recommande le Steak Frites à dix-huit euros. C'est un classique qui est toujours très apprécié. Nous avons aussi d'autres excellentes options si vous préférez quelque chose de différent.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

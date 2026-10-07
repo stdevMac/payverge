@@ -1,0 +1,30 @@
+{{ define "subject" }}Your role was updated{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Your role was updated
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .staff_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Your role at <strong>{{ .business_name }}</strong> has been updated on Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Your current role is now set to <strong>{{ .role }}</strong>.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    This change affects which parts of the system you can access.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    If you have questions about this update, please check with your manager.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

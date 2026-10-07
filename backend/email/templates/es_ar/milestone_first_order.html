@@ -1,0 +1,37 @@
+{{ define "subject" }}Primer pedido completado{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Primer pedido completado
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Tu primer pedido quedó completado en Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Desde la consulta del menú hasta el pago, todo pasó por el sistema como esperábamos.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Es el primer paso para incorporar Payverge a la operación diaria del local.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Ver detalles del pedido
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si algo no quedó claro o querés ayuda para ajustar la configuración, respondé este mail.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

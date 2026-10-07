@@ -1,0 +1,13 @@
+{
+  "key": "4d0abc387151bd11",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "We have Soda available — it's a refreshing choice. Would you like to order one?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

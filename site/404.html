@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | Payverge</title>
+<meta name="description" content="Payverge is now an open-source, self-hostable restaurant operating system. The page you were looking for has moved or no longer exists.">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1413" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("/assets/fonts/dm-serif-display-regular-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/assets/fonts/dm-sans-latin.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans Fallback";
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 106.73%; ascent-override: 92.94%; descent-override: 29.04%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "DM Serif Display Fallback";
+  src: local("Georgia");
+  size-adjust: 101%; ascent-override: 102.58%; descent-override: 33.17%; line-gap-override: 0%;
+}
+:root {
+  --bg: #faf9f6; --surface: #ffffff; --text: #1c1917; --muted: #57534e; --border: #e6e1d8;
+  --primary: #1a6b6a; --primary-hover: #145756; --on-primary: #ffffff; --focus: #1a6b6a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1413; --surface: #161d1c; --text: #f1ede4; --muted: #b3ada3; --border: #243130;
+    --primary: #6cc3bf; --primary-hover: #8ad3cf; --on-primary: #0b1211; --focus: #8ad3cf;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; display: grid; place-items: center; padding: 32px 16px;
+  background: var(--bg); color: var(--text);
+  font: 1rem/1.6 "DM Sans", "DM Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { width: 100%; max-width: 30rem; text-align: center; }
+img { display: block; margin: 0 auto 28px; }
+.code { margin: 0; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--primary); }
+h1 { margin: 12px 0 0; font: 400 clamp(2rem, 1.5rem + 2.5vw, 2.75rem)/1.1 "DM Serif Display", "DM Serif Display Fallback", Georgia, serif; text-wrap: balance; }
+p { margin: 16px 0 0; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
+a.btn {
+  display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: 999px;
+  font-weight: 600; font-size: 0.9375rem; text-decoration: none; border: 1px solid var(--border);
+  color: var(--text);
+}
+a.btn:hover { border-color: var(--primary); color: var(--primary); }
+a.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+a.btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: var(--on-primary); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <img src="/assets/logo.svg" width="40" height="40" alt="Payverge">
+  <p class="code">404</p>
+  <h1>Payverge is now open source</h1>
+  <p>The page you were looking for has moved or no longer exists. Payverge is now a self-hostable restaurant operating system you can run on your own server.</p>
+  <div class="actions">
+    <a class="btn primary" href="/">Go to the home page</a>
+    <a class="btn" href="https://github.com/stdevMac/payverge">View on GitHub</a>
+  </div>
+</main>
+</body>
+</html>

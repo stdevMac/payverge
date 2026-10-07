@@ -1,0 +1,48 @@
+{
+  "billAmount": "Monto de la Cuenta",
+  "tip": "Propina",
+  "total": "Total",
+  "totalAmount": "Monto total",
+  "totalPaid": "Total pagado",
+  "to": "Para",
+  "txHash": "Hash de transacción",
+  "chooseHowToConnect": "Elige cómo conectar:",
+  "optional": "Opcional",
+  "connectWallet": "Conecta tu Billetera",
+  "paymentSuccessMessage": "Tu pago de {{amount}} ha sido procesado exitosamente.",
+  "billId": "ID de Cuenta",
+  "amountPaid": "Monto Pagado",
+  "status": "Estado",
+  "confirmed": "Confirmado",
+  "transaction": "Transacción",
+  "view": "Ver",
+  "paymentFailed": "Pago Fallido",
+  "cancel": "Cancelar",
+  "tryAgain": "Intentar de Nuevo",
+  "steps": {
+    "approval": {
+      "title": "Aprobando USDC",
+      "description": "Por favor confirma la transacción de aprobación en tu billetera"
+    },
+    "waitingApproval": {
+      "title": "Esperando Aprobación",
+      "description": "Esperando que la transacción de aprobación sea confirmada en la blockchain"
+    },
+    "creatingBill": {
+      "title": "Creando Cuenta",
+      "description": "Creando tu cuenta en la blockchain"
+    },
+    "payment": {
+      "title": "Procesando Pago",
+      "description": "Por favor confirma la transacción de pago en tu billetera"
+    },
+    "waitingPayment": {
+      "title": "Confirmando Pago",
+      "description": "Esperando que la transacción de pago sea confirmada en la blockchain"
+    },
+    "finalizing": {
+      "title": "Finalizando",
+      "description": "Finalizando tu pago y actualizando el estado de la cuenta"
+    }
+  }
+}

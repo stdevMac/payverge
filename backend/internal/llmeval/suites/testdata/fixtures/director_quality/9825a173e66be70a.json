@@ -1,0 +1,13 @@
+{
+  "key": "9825a173e66be70a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"The review rating drop from 4.6 to 4.1 signals a systemic issue rather than isolated incidents, likely related to a recent operational change.\",\"diagnosis\":\"The magnitude of the drop (0.5 points in one month) most likely indicates a change in service quality, possibly due to new staff, a menu change, or extended wait times during peak hours.\",\"actions\":[{\"title\":\"Audit the most recent 20 negative reviews to identify recurring themes\",\"priority\":\"high\"},{\"title\":\"Mystery-shop your own restaurant during peak hours to assess service quality\",\"priority\":\"high\"},{\"title\":\"Enable a review-response management tool to address negative reviews promptly and publicly\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

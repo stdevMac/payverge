@@ -1,0 +1,13 @@
+{
+  "key": "1a11a5a4c509504a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "I can't determine from the dish name alone whether the Chicken Satay contains peanuts — allergen data isn't listed for this item. I'd suggest you confirm with our staff before deciding whether to order it.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

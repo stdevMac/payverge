@@ -1,0 +1,41 @@
+{
+  "subtitle": "Creá y publicá los turnos semanales del equipo",
+  "coverage": {
+    "lunch": "Almuerzo {hours}",
+    "dinner": "Cena {hours}",
+    "none": "0 h"
+  },
+  "error": "No pudimos cargar el horario. Volvé a intentarlo en un momento.",
+  "errorRetry": "Reintentar",
+  "noPositionsTitle": "Primero configurá los puestos",
+  "noPositionsSubtitle": "Agregá puestos en la pestaña Equipo y volvé para armar la semana.",
+  "emptyWeekHint": "Tocá + Agregar turno en cualquier celda para empezar a armar la semana.",
+  "weekStartsOn": "La semana empieza el {day}",
+  "shell": {
+    "inbox": "por aprobar",
+    "inboxHint": "Ir a las solicitudes que te esperan"
+  },
+  "copyWeek": {
+    "successBody": "{count} turnos copiados — ajustá lo que necesites antes de publicar.",
+    "sourceHint": "Copiá turnos de la semana anterior a los días vacíos de esta semana"
+  },
+  "editor": {
+    "positionRequired": "Elegí un puesto para este turno.",
+    "discardConfirmDescription": "Tenés ediciones sin guardar en este turno. Si cerrás ahora se van a descartar."
+  },
+  "labor": {
+    "salesTargetPlaceholder": "Ej: 12.000",
+    "salesTargetHint": "Por defecto usa las ventas de la semana pasada — editálo cuando quieras"
+  },
+  "conflicts": {
+    "overrideHint": "Podés guardar de todos modos — esto anula su disponibilidad."
+  },
+  "warnings": {
+    "postedLate": "Publicado tarde — el equipo tuvo menos de {days} días de aviso. Tocá para ajustar el aviso en Ajustes de horario.",
+    "postedLateDraft": "Si publicás ahora, el equipo tendrá menos de {days} días de aviso. Tocá para ajustar el aviso en Ajustes de horario.",
+    "postedLateAction": "Abrir Ajustes de horario para cambiar el aviso previo"
+  },
+  "positions": {
+    "server": "Mozo"
+  }
+}

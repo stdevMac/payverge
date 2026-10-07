@@ -1,0 +1,7 @@
+{
+  "migration_head": 0,
+  "schema_sha256": "023d7fafefeb106b37b119f0e33fa8de69a961d5a4b2f71094a0643245b6a83c",
+  "fingerprint_sha256": "64c40f26c9f478ad3beece8263cec52761da3806bd92599a98349c7b8185b71a",
+  "postgres_major": 15,
+  "generator": "backend/scripts/generate-genesis-schema.sh"
+}

@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "Gizliliğinize önem veriyoruz",
+    "description": "Payverge'in çalışması için zorunlu çerezler kullanıyoruz. İzninizle, sitenin nasıl kullanıldığını anlamak için analitik çerezler de kullanmak isteriz. Seçiminizi alt bilgideki \"Çerez tercihleri\"nden istediğiniz zaman değiştirebilirsiniz.",
+    "acceptAll": "Tümünü kabul et",
+    "declineAll": "Zorunlu olmayanları reddet",
+    "customize": "Özelleştir",
+    "essentialLabel": "Zorunlu",
+    "essentialDescription": "Sitenin çalışması için gerekli (güvenlik, dil, oturum). Her zaman açık.",
+    "analyticsLabel": "Analitik",
+    "analyticsDescription": "Kullanımı anlayıp ürünü geliştirmemize yardımcı olur. Kabul edene kadar kapalı.",
+    "marketingLabel": "Pazarlama",
+    "marketingDescription": "Kampanyalarımızı ölçmek ve iyileştirmek için kullanılır. Kabul edene kadar kapalı.",
+    "savePreferences": "Tercihleri kaydet",
+    "privacyLink": "Gizlilik Politikasını oku",
+    "closeLabel": "Çerez bildirimini kapat"
+  },
+  "footer": {
+    "preferences": "Çerez tercihleri"
+  }
+}

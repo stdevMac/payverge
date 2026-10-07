@@ -1,0 +1,25 @@
+{
+  "chat": {
+    "subtitle": "Enviá mensajes a cada rol o área directamente",
+    "error": "No pudimos cargar los canales. Volvé a intentarlo en un momento.",
+    "emptySubtitle": "Invitá a tu equipo — cada rol y cada área tiene su propio canal automáticamente.",
+    "selectPrompt": "Seleccioná un canal para leer sus mensajes.",
+    "threadEmptySubtitle": "Los mensajes que tu equipo publique en este canal aparecen acá.",
+    "deleteError": "No pudimos eliminarlo. Volvé a intentarlo en un momento.",
+    "roles": {
+      "server": "Mozos"
+    }
+  },
+  "announce": {
+    "subtitle": "Enviá un aviso a tu equipo",
+    "noDeptsHint": "Agregá áreas a tus puestos (Equipo → Puestos) para dirigirte a zonas como Salón o Cocina.",
+    "contentPlaceholder": "Compartí los detalles…",
+    "requireAckHint": "Pedí a cada persona que confirme que lo leyó",
+    "titleRequired": "Agregá un título primero.",
+    "postError": "No pudimos publicarlo. Volvé a intentarlo en un momento.",
+    "ackSummaryError": "No pudimos cargar las confirmaciones. Volvé a intentarlo en un momento.",
+    "roles": {
+      "server": "Mozos"
+    }
+  }
+}

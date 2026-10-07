@@ -1,0 +1,26 @@
+{
+  "canonical": "en",
+  "pathSegment": "en",
+  "state": "publishable",
+  "publishable": true,
+  "reviewOwner": "Marcos Maceo",
+  "reviewDate": "2026-05-23",
+  "aiDraft": {
+    "frontend": "approved",
+    "apiErrors": "approved",
+    "emails": "approved",
+    "prompts": "approved",
+    "guest": "approved",
+    "guestStorefront": "approved"
+  },
+  "review": {
+    "frontend": "approved",
+    "apiErrors": "approved",
+    "emails": "approved",
+    "prompts": "approved",
+    "backendValidation": "approved",
+    "guest": "approved",
+    "guestStorefront": "approved"
+  },
+  "unresolvedQuestions": []
+}

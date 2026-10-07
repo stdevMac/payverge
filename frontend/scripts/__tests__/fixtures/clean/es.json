@@ -1,0 +1,7 @@
+{
+  "greeting": "Hola {name}",
+  "menu": {
+    "title": "Menú",
+    "loading": "Cargando..."
+  }
+}
