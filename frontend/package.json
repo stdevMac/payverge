@@ -61,7 +61,7 @@
     "jspdf": "^4.2.1",
     "jsqr": "^1.4.0",
     "lodash": "^4.17.23",
-    "lucide-react": "^0.564.0",
+    "lucide-react": "^1.52.0",
     "mp4-muxer": "5.2.2",
     "next": "15.5.27",
     "pdfjs-dist": "^4.10.38",
