@@ -173,6 +173,8 @@ written to the backend log.
 | Variable | Default | Req. | Compose | Effect |
 |---|---|---|---|---|
 | `EMAIL_PROVIDER` | `log` (unset) | | yes | `smtp`, `resend`, `postmark` or `log`. |
+| `EMAIL_LOG_CONTENT` | `false` | | yes | With the `log` provider, also log recipients, subject, a body preview and links (including password-reset and verification links). |
+| `EMAIL_PROVIDER_LOG_ALLOW_PRODUCTION` | `false` | | yes | `true` accepts `EMAIL_LOG_CONTENT=true` in production; without it the production preflight refuses to start. |
 | `SMTP_HOST` | none | smtp | yes | SMTP server. |
 | `SMTP_PORT` | `587` | | yes | SMTP port. |
 | `SMTP_USERNAME` | none | | yes | SMTP login. |

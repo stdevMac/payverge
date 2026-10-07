@@ -525,7 +525,7 @@ func TestRequiredSecurityWorkflowScansRepositoryHistoryForSecrets(t *testing.T) 
 	}
 
 	ignore := readRepoFile(t, ".gitignore")
-	for _, required := range []string{".env.bak*", "*.dump", "*.sql.gz", "credential-exports/"} {
+	for _, required := range []string{".env.*", "*.dump", "*.sql.gz", "credential-exports/"} {
 		if !strings.Contains(ignore, required) {
 			t.Errorf("secret/artifact ignore policy is missing %q", required)
 		}

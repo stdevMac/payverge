@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-// DemoModeEnv turns an install into a PUBLIC demo (demo.payverge.io): anyone
+// DemoModeEnv turns an install into a PUBLIC demo (the hosted showroom): anyone
 // can enter the seeded showroom with one click, so every action that reaches
 // outside the box or changes who controls it is refused, outbound email is
 // forced to the log provider and signup is closed. See

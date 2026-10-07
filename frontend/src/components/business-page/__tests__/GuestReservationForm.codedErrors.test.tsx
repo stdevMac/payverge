@@ -64,11 +64,17 @@ const settings = {
   external_partner_links: [],
 };
 
+// The form renders slots in the venue's timezone, so the slot is built there
+// (Buenos Aires is UTC-03:00 all year), not in the runner's zone: CI runs in
+// UTC, where a local 19:00 would render as 16:00.
+const VENUE_TZ = "America/Argentina/Buenos_Aires";
+
 function isoTomorrowAt(hours: number): string {
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
-  date.setHours(hours, 0, 0, 0);
-  return date.toISOString();
+  const tomorrow = new Intl.DateTimeFormat("en-CA", { timeZone: VENUE_TZ }).format(
+    new Date(Date.now() + 24 * 60 * 60 * 1000),
+  );
+  const hh = String(hours).padStart(2, "0");
+  return new Date(`${tomorrow}T${hh}:00:00-03:00`).toISOString();
 }
 
 // The shape axiosInstance rejects with (sanitized plain Error carrying the
@@ -88,7 +94,7 @@ async function renderAndSubmit() {
     <GuestReservationForm
       customUrl="parrilla-quebracho-azul"
       businessName="Parrilla Quebracho Azul"
-      timezone="America/Argentina/Buenos_Aires"
+      timezone={VENUE_TZ}
     />,
   );
 

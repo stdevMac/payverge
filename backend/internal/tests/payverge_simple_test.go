@@ -81,12 +81,14 @@ func (suite *PayvergeSimpleTestSuite) TearDownSuite() {
 }
 
 func (suite *PayvergeSimpleTestSuite) SetupTest() {
-	// Clean up data before each test
-	suite.db.Exec("DELETE FROM payments")
-	suite.db.Exec("DELETE FROM bills")
-	suite.db.Exec("DELETE FROM tables")
-	suite.db.Exec("DELETE FROM menus")
-	suite.db.Exec("DELETE FROM businesses")
+	// Clean up data before each test, children first. bill_items references
+	// bills: without deleting it, the bill TestBillOperations creates blocks
+	// every later delete on PostgreSQL, the businesses survive and each
+	// following test fails on a duplicate business_id. A failed delete stops
+	// the test here instead of surfacing as an unrelated assertion later.
+	for _, table := range []string{"bill_items", "payments", "bills", "tables", "menus", "businesses"} {
+		suite.Require().NoError(suite.db.Exec("DELETE FROM "+table).Error, "clean %s", table)
+	}
 }
 
 func TestPayvergeSimpleTestSuite(t *testing.T) {

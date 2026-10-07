@@ -33,3 +33,18 @@ GET /api/v1/admin/runtime-controls/audit  # docs/runbooks/runtime-launch-control
 # Product gaps: the backend half exists, the client half does not yet.
 POST /api/v1/inside/staff/:staff_id/pin  # manager PIN setter; withManagerPin verifies PINs but no UI sets one yet
 DELETE /api/v1/inside/push-subscriptions/:subscriptionId  # push unsubscribe; usePushSubscription only subscribes
+
+# Uncovered since the dead-client cleanup (4bea88fe9, 112e0fe76) deleted
+# frontend wrappers nothing imported. The routes are part of the 1.0 API and
+# stay for the release; whether each one goes is a post-release decision.
+GET /api/v1/auth/session  # SIWE session check for wallet API clients; the web app reads /auth/me and /auth/session-info
+GET /api/v1/guest/bill/:bill_token/alternative-payments  # public bill-token read of confirmed cash/card-terminal payments for API clients; the guest UI reads the bill payload
+GET /api/v1/guest/bill/:bill_token/payment-breakdown  # public bill-token payment breakdown for API clients; operators use /inside/bills/:id/payment-breakdown
+GET /api/v1/inside/businesses/:id/print/jobs/pending-count  # print-agent queue depth per station; exercised by frontend/tests/release/advertised-operator-capabilities.spec.ts
+POST /api/v1/inside/businesses/:id/print/jobs/:jobId/mark-printed  # pre-lease print-agent completion callback (printing -> printed); the browser agent now confirms through /confirm
+GET /api/v1/inside/translations  # read one stored translation of an entity, for API clients that manage translations
+PUT /api/v1/inside/translations  # manual translation override, for API clients that manage translations
+GET /api/v1/inside/menu-translations  # operator read of a menu's translations by language; guests use /guest/table/:code/menu-translations
+POST /api/v1/inside/businesses/:id/menu/translate  # synchronous menu translation, documented in docs/product/advertised-feature-contract.json and exercised by the release spec; the UI uses the async language job
+POST /api/v1/inside/businesses/:id/ai/director/actions/propose-price-change  # non-AI price proposal onto the director apply/undo rail, documented in docs/ai/director-console.md
+POST /api/v1/inside/businesses/:id/uploads/protected  # protected-bucket upload (contracts), documented in docs/self-hosting/storage.md and guarded by internal/demomode

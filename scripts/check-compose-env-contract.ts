@@ -320,21 +320,6 @@ export function forwardsEnvFile(envFile: unknown): boolean {
   });
 }
 
-function computeForwardedVars(backend: {
-  environment?: unknown;
-  command?: unknown;
-  entrypoint?: unknown;
-  args?: unknown;
-}): Set<string> {
-  const fromEnv = collectEnvKeysFromEnvironment(backend.environment);
-  const fromCmd = collectVarsFromStringBlocks([
-    backend.command,
-    backend.entrypoint,
-    backend.args,
-  ]);
-  return new Set([...fromEnv, ...fromCmd]);
-}
-
 function requiredForService(forwarded: Set<string>): string[] {
   const required: string[] = [];
   for (const v of PRODUCTION_REQUIRED_ENV_VARS) {
@@ -348,67 +333,112 @@ function isSatisfied(varName: string, forwarded: Set<string>): boolean {
   return forwarded.has(varName);
 }
 
-/** docker-compose.<variant>.yml under deploy/ is an overlay merged with -f. */
-function isOverlayFile(composePath: string): boolean {
-  const rel = path.relative(REPO_ROOT, composePath).split(path.sep).join("/");
-  return /^deploy\/(?:.+\/)?docker-compose\.[^/.]+\.ya?ml$/.test(rel);
+type BackendService = {
+  environment?: unknown;
+  command?: unknown;
+  entrypoint?: unknown;
+  args?: unknown;
+  env_file?: unknown;
+};
+
+/**
+ * A deploy/ file named docker-compose.<variant>.yml is an overlay: it is only ever used
+ * as a later -f file on top of a base docker-compose.yml (deploy/README.md,
+ * the COMPOSE_FILE examples in each overlay's header). Returns the base it is
+ * merged onto: the nearest docker-compose.yml from the overlay's directory up
+ * to deploy/. Returns null for a base file, or for an overlay-named file with
+ * no base, which is then checked on its own.
+ */
+export function overlayBase(root: string, rel: string): string | null {
+  if (!/^deploy\/(?:.+\/)?docker-compose\.[^/.]+\.ya?ml$/.test(rel)) return null;
+  let dir = path.posix.dirname(rel);
+  for (;;) {
+    for (const name of ["docker-compose.yml", "docker-compose.yaml"]) {
+      const candidate = path.posix.join(dir, name);
+      if (fs.existsSync(path.join(root, candidate))) return candidate;
+    }
+    if (dir === "deploy" || dir === "." || dir === "") return null;
+    dir = path.posix.dirname(dir);
+  }
+}
+
+function loadBackendService(composePath: string, yamlLoad: YamlLoadFn | null): BackendService | null {
+  const content = fs.readFileSync(composePath, "utf8");
+  if (!yamlLoad) return minimalParseBackendService(content);
+  try {
+    return extractBackendService(yamlLoad(content));
+  } catch (err) {
+    console.error(
+      `WARN: YAML parse failed for ${composePath}, using minimal parser:`,
+      err instanceof Error ? err.message : err,
+    );
+    return minimalParseBackendService(content);
+  }
+}
+
+/**
+ * What compose forwards to the backend once the overlay is merged onto its
+ * base: environment merges key by key and env_file lists append, so either
+ * file can forward a variable; command, entrypoint and args are replaced by
+ * the overlay when it sets them.
+ */
+function mergedForwarding(base: BackendService | null, overlay: BackendService): {
+  forwarded: Set<string>;
+  envFile: boolean;
+} {
+  const pick = (key: "command" | "entrypoint" | "args"): unknown =>
+    overlay[key] !== undefined ? overlay[key] : base?.[key];
+  const forwarded = new Set([
+    ...collectEnvKeysFromEnvironment(base?.environment),
+    ...collectEnvKeysFromEnvironment(overlay.environment),
+    ...collectVarsFromStringBlocks([pick("command"), pick("entrypoint"), pick("args")]),
+  ]);
+  return {
+    forwarded,
+    envFile: forwardsEnvFile(base?.env_file) || forwardsEnvFile(overlay.env_file),
+  };
 }
 
 function checkComposeFile(
-  composePath: string,
+  root: string,
+  rel: string,
   yamlLoad: YamlLoadFn | null,
-): { missing: string[]; ok: boolean; skipped: boolean } {
+): { missing: string[]; ok: boolean; skipped: boolean; mergedWith?: string } {
+  const composePath = path.join(root, rel);
   if (!fs.existsSync(composePath)) {
     return { missing: [], ok: true, skipped: true };
   }
 
-  const content = fs.readFileSync(composePath, "utf8");
-  let backend: {
-    environment?: unknown;
-    command?: unknown;
-    entrypoint?: unknown;
-    args?: unknown;
-    env_file?: unknown;
-  } | null = null;
-
-  if (yamlLoad) {
-    try {
-      const doc = yamlLoad(content);
-      backend = extractBackendService(doc);
-    } catch (err) {
-      console.error(
-        `WARN: YAML parse failed for ${composePath}, using minimal parser:`,
-        err instanceof Error ? err.message : err,
-      );
-      backend = minimalParseBackendService(content);
-    }
-  } else {
-    backend = minimalParseBackendService(content);
-  }
-
+  const backend = loadBackendService(composePath, yamlLoad);
   if (!backend) {
     // No backend service — nothing to check for this file.
     return { missing: [], ok: true, skipped: true };
   }
 
-  if (forwardsEnvFile(backend.env_file)) {
-    return { missing: [], ok: true, skipped: false };
+  // An overlay (deploy/docker-compose.build.yml, deploy/demo/docker-compose.demo.yml)
+  // never runs alone, so it is checked as compose sees it: merged onto its base.
+  // Overriding a forwarded variable with an empty value still forwards it.
+  const baseRel = overlayBase(root, rel);
+  const base = baseRel ? loadBackendService(path.join(root, baseRel), yamlLoad) : null;
+  const { forwarded, envFile } = mergedForwarding(base, backend);
+  const mergedWith = baseRel ? { mergedWith: baseRel } : {};
+
+  if (envFile) {
+    return { missing: [], ok: true, skipped: false, ...mergedWith };
   }
 
-  // An overlay such as deploy/docker-compose.build.yml only swaps the image
-  // for a local build; the environment comes from the base file it is merged
-  // onto, which is checked on its own.
-  if (isOverlayFile(composePath) && backend.environment === undefined) {
-    return { missing: [], ok: true, skipped: true };
-  }
-
-  const forwarded = computeForwardedVars(backend);
   const required = requiredForService(forwarded);
   const missing = required.filter((v) => !isSatisfied(v, forwarded));
-  return { missing, ok: missing.length === 0, skipped: false };
+  return { missing, ok: missing.length === 0, skipped: false, ...mergedWith };
 }
 
-export type ComposeResult = { file: string; missing: string[]; skipped: boolean };
+export type ComposeResult = {
+  file: string;
+  missing: string[];
+  skipped: boolean;
+  /** Set for an overlay: the base compose file it was merged onto. */
+  mergedWith?: string;
+};
 
 /**
  * Once deploy/ exists it is the self-host production surface, so at least one
@@ -435,8 +465,8 @@ export function checkComposeContract(
 ): { results: ComposeResult[]; deployError: string | null } {
   const results: ComposeResult[] = [];
   for (const rel of composeFiles(root)) {
-    const { missing, skipped } = checkComposeFile(path.join(root, rel), yamlLoad);
-    results.push({ file: rel, missing, skipped });
+    const { missing, skipped, mergedWith } = checkComposeFile(root, rel, yamlLoad);
+    results.push(mergedWith ? { file: rel, missing, skipped, mergedWith } : { file: rel, missing, skipped });
   }
   return { results, deployError: deployCoverageError(root, results) };
 }
@@ -466,7 +496,7 @@ function main(): void {
     console.error("");
     for (const r of results) {
       if (r.skipped || r.missing.length === 0) continue;
-      console.error(`${r.file}:`);
+      console.error(r.mergedWith ? `${r.file} (merged onto ${r.mergedWith}):` : `${r.file}:`);
       for (const v of r.missing) {
         console.error(`  - ${v}`);
       }

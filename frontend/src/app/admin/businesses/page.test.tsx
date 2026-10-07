@@ -150,7 +150,8 @@ describe("AdminBusinessesPage — admin lifecycle", () => {
     fireEvent.click(await screen.findByText("Test Cafe"));
     const dialog = await screen.findByRole("dialog");
 
-    expect(within(dialog).getByText("Email domain")).toBeInTheDocument();
+    // NextUI Tabs mount the selected panel a render after the tab list.
+    expect(await within(dialog).findByText("Email domain")).toBeInTheDocument();
     expect(within(dialog).getByText("x.com")).toBeInTheDocument();
     expect(within(dialog).getByText("42")).toBeInTheDocument();
     expect(within(dialog).getByText("Settlement wallet")).toBeInTheDocument();

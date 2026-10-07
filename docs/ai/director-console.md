@@ -29,7 +29,7 @@ Route registration is in [main.go](../../backend/cmd/app/main.go); search for
 | `GET /director-console/briefing`, `GET /director-console/proactive-insights` | `director:read` | No |
 | `POST /ai/director/actions/apply`, `POST /ai/director/actions/undo` | `director:write` **and** `menu:write` | No |
 | `GET /ai/director/actions/applied` | `director:read` | No |
-| `POST /ai/director/actions/propose-price-change` | `director:write` **and** `menu:write` | No; the menu-engineering screen calls it directly |
+| `POST /ai/director/actions/propose-price-change` | `director:write` **and** `menu:write` | No; no screen calls it today (API clients only) |
 
 ## Asking a question
 
