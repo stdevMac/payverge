@@ -86,8 +86,20 @@ func (suite *PayvergeSimpleTestSuite) SetupTest() {
 	// every later delete on PostgreSQL, the businesses survive and each
 	// following test fails on a duplicate business_id. A failed delete stops
 	// the test here instead of surfacing as an unrelated assertion later.
-	for _, table := range []string{"bill_items", "payments", "bills", "tables", "menus", "businesses"} {
-		suite.Require().NoError(suite.db.Exec("DELETE FROM "+table).Error, "clean %s", table)
+	// Unscoped hard-deletes soft-deletable rows; AllowGlobalUpdate permits a
+	// DELETE without a WHERE clause. Session must come last: it makes wipe a
+	// reusable base, so each Delete starts from a fresh statement instead of
+	// inheriting the previous model's table.
+	wipe := suite.db.Unscoped().Session(&gorm.Session{AllowGlobalUpdate: true})
+	for _, model := range []interface{}{
+		&database.BillItem{},
+		&database.Payment{},
+		&database.Bill{},
+		&database.Table{},
+		&database.Menu{},
+		&database.Business{},
+	} {
+		suite.Require().NoError(wipe.Delete(model).Error, "clean %T", model)
 	}
 }
 

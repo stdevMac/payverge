@@ -282,12 +282,32 @@ func TestReservationCoversConcurrentPartySizeEdits(t *testing.T) {
 		covers += row.PartySize
 	}
 	require.Equal(t, 9, covers)
+
+	// A racer that reads after both winners committed is refused by the
+	// pre-transaction check, not by the locked recheck, and that path words
+	// the refusal differently. Replay it deterministically: the slot is full,
+	// so one more edit must be refused as a capacity refusal and change nothing.
+	var loser database.TableReservation
+	require.NoError(t, pg.DB.Where("business_id = ? AND party_size = 1", business.ID).First(&loser).Error)
+	party := 3
+	_, _, err = service.UpdateReservation(business.ID, loser.ID, UpdateReservationInput{PartySize: &party}, "staff")
+	require.Error(t, err)
+	require.Truef(t, reservationCreateRefusedForCapacity(err), "late edit: %v", err)
+	require.NoError(t, pg.DB.First(&loser, loser.ID).Error)
+	require.Equal(t, 1, loser.PartySize)
 }
 
+// reservationCreateRefusedForCapacity matches every wording the service uses
+// to refuse a booking or edit for lack of room: the locked recheck ("no longer
+// available"), the create pre-check ("no availability") and the update
+// pre-check ("no tables are available"). The HTTP layer turns them into the
+// reservation_slot_unavailable and reservation_no_tables codes.
 func reservationCreateRefusedForCapacity(err error) bool {
 	if err == nil {
 		return false
 	}
 	msg := err.Error()
-	return strings.Contains(msg, "no longer available") || strings.Contains(msg, "no availability")
+	return strings.Contains(msg, "no longer available") ||
+		strings.Contains(msg, "no availability") ||
+		strings.Contains(msg, "no tables are available")
 }

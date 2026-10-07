@@ -861,7 +861,7 @@ the lockfile, then the installed `package.json`, then
 | [simple-swizzle](https://www.npmjs.com/package/simple-swizzle/v/0.2.2) | 0.2.2 | MIT |
 | [sonic-boom](https://www.npmjs.com/package/sonic-boom/v/4.2.0) | 4.2.0 | MIT |
 | [source-map](https://www.npmjs.com/package/source-map/v/0.6.1) | 0.6.1 | BSD-3-Clause |
-| [source-map-js](https://www.npmjs.com/package/source-map-js/v/1.2.1) | 1.2.1 | BSD-3-Clause |
+| [source-map-js](https://www.npmjs.com/package/source-map-js/v/1.2.2) | 1.2.2 | BSD-3-Clause |
 | [source-map-support](https://www.npmjs.com/package/source-map-support/v/0.5.21) | 0.5.21 | MIT |
 | [space-separated-tokens](https://www.npmjs.com/package/space-separated-tokens/v/2.0.2) | 2.0.2 | MIT |
 | [split2](https://www.npmjs.com/package/split2/v/4.2.0) | 4.2.0 | ISC |
