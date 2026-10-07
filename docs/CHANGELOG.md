@@ -6,6 +6,16 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1](https://github.com/stdevMac/payverge/compare/v1.0.0...v1.0.1) (2026-10-07)
+
+
+### Fixes
+
+* **ci:** drop links to unpublished docs and settle a mutation-state race ([5d9b54a](https://github.com/stdevMac/payverge/commit/5d9b54a7ed0e75a1ff281f5d5a14407d6919dc65))
+* **ci:** emit the frontend build timestamp as UTC with a literal Z ([b557f92](https://github.com/stdevMac/payverge/commit/b557f9293ec9e47dc89b034ea76edddf7b72e056))
+* **ci:** make the public CI green after first publish ([c2e1b6a](https://github.com/stdevMac/payverge/commit/c2e1b6aea7f0f2650901524e6a69afde4d4b745f))
+* **ci:** settle the remaining post-publish CI failures ([a2f739e](https://github.com/stdevMac/payverge/commit/a2f739ec2719d17043f7c8b0366432dab99808fc))
+
 ## [Unreleased] - Wave 7: security and fiscal hardening
 
 ### Security

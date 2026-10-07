@@ -30,7 +30,7 @@ services:
     # newer release (and schema) than the frontend. release-please bumps it.
     image:
       # x-release-please-start-version
-      url: ghcr.io/stdevmac/payverge-backend:1.0.0
+      url: ghcr.io/stdevmac/payverge-backend:1.0.1
       # x-release-please-end
     plan: starter
     numInstances: 1
@@ -114,7 +114,7 @@ services:
     runtime: image
     image:
       # x-release-please-start-version
-      url: ghcr.io/stdevmac/payverge-frontend:1.0.0
+      url: ghcr.io/stdevmac/payverge-frontend:1.0.1
       # x-release-please-end
     plan: starter
     numInstances: 1
