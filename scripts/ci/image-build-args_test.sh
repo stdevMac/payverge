@@ -18,7 +18,7 @@ mkdir -p "$repo"
 git -C "$repo" init -q
 printf 'fixture\n' >"$repo/README"
 git -C "$repo" add README
-GIT_COMMITTER_DATE="2026-01-02T03:04:05+00:00" \
+GIT_COMMITTER_DATE="2026-01-02T00:04:05-03:00" \
   git -C "$repo" -c user.name=test -c user.email=test@example.invalid -c commit.gpgsign=false \
   commit -q -m fixture
 sha="$(git -C "$repo" rev-parse HEAD)"
@@ -31,7 +31,7 @@ run() {
 out="$(run frontend 1.2.3)"
 want="NEXT_PUBLIC_RELEASE_SHA=$sha
 NEXT_PUBLIC_VERSION=1.2.3
-NEXT_PUBLIC_BUILD_TIMESTAMP=2026-01-02T03:04:05+00:00
+NEXT_PUBLIC_BUILD_TIMESTAMP=2026-01-02T03:04:05Z
 NEXT_PUBLIC_SENTRY_RELEASE=1.2.3"
 [[ "$out" == "$want" ]] || fail "frontend args:
 $out

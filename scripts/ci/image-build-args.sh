@@ -39,7 +39,8 @@ case "$image" in
   backend) ;;
   frontend)
     sha="$(git rev-parse --verify HEAD)"
-    committed="$(git log -1 --format=%cI HEAD)"
+    # UTC with a literal Z: %cI renders UTC as +00:00 or Z depending on the git version.
+    committed="$(TZ=UTC git log -1 --date=format-local:%Y-%m-%dT%H:%M:%SZ --format=%cd HEAD)"
     printf 'NEXT_PUBLIC_RELEASE_SHA=%s\n' "$sha"
     printf 'NEXT_PUBLIC_VERSION=%s\n' "$version"
     printf 'NEXT_PUBLIC_BUILD_TIMESTAMP=%s\n' "$committed"
