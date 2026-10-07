@@ -507,7 +507,11 @@ if run_health "$ROOT7"; then
 else
 	check "health: an unreadable status fails" contains "$WORK/out" "unreadable backup status"
 fi
-# A later good run replaces failed with ok.
+# A later good run replaces failed with ok. Sets are named by the UTC second,
+# so wait for a second that no earlier ROOT3 set used; on a fast runner the
+# failing run above can land in the same second and the backup rightly refuses
+# to overwrite an existing set.
+while [[ -e "$ROOT3/daily/$(date -u +%Y%m%dT%H%M%SZ)" ]]; do sleep 0.2; done
 if run_backup "$ROOT3"; then
 	check "status: a good run after a failure records ok" within_a_minute "$ROOT3" ok
 else
