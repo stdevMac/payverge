@@ -374,7 +374,9 @@ it("retries authoritative reconciliation without reposting a confirmed restore",
 
   expect(api.restoreMarketingActivity).toHaveBeenCalledTimes(1);
   expect(result.current.locallyHidden.has("same-mount")).toBe(true);
-  expect(result.current.restore.isError).toBe(true);
+  // React Query hands mutation state to observers on a setTimeout(0)
+  // (notifyManager), so it can land after act() has returned: wait for it.
+  await waitFor(() => expect(result.current.restore.isError).toBe(true));
   expect(result.current.restore.variables).toBe("same-mount");
   expect(invalidateQueries).not.toHaveBeenCalled();
 
@@ -385,7 +387,7 @@ it("retries authoritative reconciliation without reposting a confirmed restore",
   expect(api.restoreMarketingActivity).toHaveBeenCalledTimes(1);
   expect(refreshSuggestions).toHaveBeenCalledTimes(2);
   expect(result.current.locallyHidden.has("same-mount")).toBe(false);
-  expect(result.current.restore.isError).toBe(false);
+  await waitFor(() => expect(result.current.restore.isError).toBe(false));
   // Restore patches activity caches in place — does not invalidate the family.
   expect(invalidateQueries).not.toHaveBeenCalledWith({
     queryKey: ["business", "42", "marketing", "activity"],
@@ -424,5 +426,5 @@ it("unhides a genuine restore only after authoritative suggestions return it", a
     await restorePromise;
   });
   expect(result.current.locallyHidden.has("same-mount")).toBe(false);
-  expect(result.current.restore.isPending).toBe(false);
+  await waitFor(() => expect(result.current.restore.isPending).toBe(false));
 });

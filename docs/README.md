@@ -101,7 +101,7 @@ disagree, the code is right.
 | Performance evidence | [performance/](performance/) |
 | Design | [design/](design/) |
 | Product | [product/](product/) |
-| Improvement backlog | [improvements/README.md](improvements/README.md), [BACKLOG.md](BACKLOG.md) |
+| Improvement backlog | [BACKLOG.md](BACKLOG.md) |
 
 ## Directory map
 
@@ -117,10 +117,8 @@ disagree, the code is right.
 | [fiscal/](fiscal/) | ARCA/AFIP fiscal receipts |
 | [governance/](governance/GOVERNANCE.md) | Governance and release process |
 | [i18n/](i18n/) | Translation and locale notes |
-| [improvements/](improvements/README.md) | Numbered improvement backlog |
 | [licensing/](licensing/THIRD_PARTY_LICENSES.md) | Third-party licences and credits |
 | [performance/](performance/) | Benchmark evidence for scoped performance work |
-| [plans/](plans/) | Historical implementation plans |
 | [policies/](policies/) | Data policies, such as AI data retention |
 | [product/](product/) | Product and feature notes |
 | [runbooks/](runbooks/) | Operational procedures |
