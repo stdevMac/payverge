@@ -42,7 +42,7 @@ x-public-url: &public-url ${PUBLIC_URL:-https://${DOMAIN:?DOMAIN must be set in 
 
 services:
   postgres:
-    image: postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-payverge}
@@ -555,7 +555,7 @@ services:
   # Runs backup/backup.sh daily at BACKUP_TIME (container time zone, UTC by
   # default). One-off backup: docker compose run --rm backup once
   backup:
-    image: postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
     profiles: ["backup"]
     restart: unless-stopped
     entrypoint: ["/bin/sh", "/scripts/backup.sh"]
@@ -646,7 +646,7 @@ services:
   # docker compose --profile restore run --rm restore latest --yes
   # docker compose up -d
   restore:
-    image: postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
     profiles: ["restore"]
     restart: "no"
     entrypoint: ["/bin/sh", "/scripts/restore.sh"]
