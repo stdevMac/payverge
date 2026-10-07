@@ -38,7 +38,7 @@ RUN mkdir -p /out/storage && chmod 0700 /out/storage
 
 # Runtime: distroless static, runs as user nonroot (uid/gid 65532) by default.
 # Eliminates the entire Debian/glibc/openssl/etc. attack surface from the image.
-FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+FROM gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 
 # OCI metadata (D-8). LICENSE and NOTICE in this directory are byte-identical
 # copies of the repository root files (scripts/ci/d10_hygiene_contract.test.mjs
