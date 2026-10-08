@@ -12,8 +12,8 @@ func TestClassifyEmptyLedger(t *testing.T) {
 }
 
 func TestCheckPostgresMajor(t *testing.T) {
-	require.NoError(t, checkPostgresMajor(150008, 15))
-	require.ErrorContains(t, checkPostgresMajor(160004, 15), "postgres major version 16")
+	require.NoError(t, checkPostgresMajor(180001, 18))
+	require.ErrorContains(t, checkPostgresMajor(150008, 18), "postgres major version 15")
 	require.ErrorContains(t, checkPostgresMajor(150008, 0), "postgres_major is required")
 }
 
@@ -27,5 +27,5 @@ func TestEmbeddedGenesisRecordsFingerprintAndMajor(t *testing.T) {
 	meta, err := loadGenesisMeta()
 	require.NoError(t, err)
 	require.Len(t, meta.FingerprintSHA256, 64)
-	require.Equal(t, 15, meta.PostgresMajor)
+	require.Equal(t, 18, meta.PostgresMajor)
 }

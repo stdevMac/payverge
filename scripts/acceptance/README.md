@@ -35,7 +35,7 @@ the backend log is printed first. Images are left tagged `:oss-accept` for
 ## Target mode (PR CI job `boot-zero-accounts` in `ci.yml`)
 
 ```bash
-export ACCEPTANCE_STATE=/tmp/payverge-acceptance DB_PASSWORD="$PGPASSWORD"  # empty PG15 db "payverge"
+export ACCEPTANCE_STATE=/tmp/payverge-acceptance DB_PASSWORD="$PGPASSWORD"  # empty PG18 db "payverge"
 (cd backend && go build -o /tmp/payverge-backend ./cmd/app)
 PAYVERGE_BIN=/tmp/payverge-backend scripts/acceptance/boot-native.sh start
 set -a; source "$ACCEPTANCE_STATE/boot.env"; set +a

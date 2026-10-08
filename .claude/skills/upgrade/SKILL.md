@@ -123,6 +123,28 @@ git checkout vX.Y.Z           # or: git pull --ff-only, to follow main
 docker compose --env-file .env up -d --build
 ```
 
+### Crossing PostgreSQL 15 to 18
+
+Releases from the PostgreSQL 18 one on keep the database in the `pgdata`
+volume; older ones kept PostgreSQL 15 data in `db`. When the operator moves
+across that line (`docker compose logs postgres` shows "this install's
+database is PostgreSQL 15", or `install.sh` stopped naming
+`./upgrade-postgres.sh`), the data has to be moved once. In the install
+directory, with the operator's go-ahead (Payverge is offline while it runs):
+
+```bash
+./upgrade-postgres.sh --dry-run
+./upgrade-postgres.sh --yes
+```
+
+It dumps with PostgreSQL 15, restores into 18 on a fresh `pgdata` volume,
+compares the row count of every table and starts the stack. Tell the
+operator where the dump went (`backups/pg18-upgrade-<time>/`). It never
+touches the `db` volume: that is the rollback (`bash install.sh --version
+<previous>`). Never remove `db` unless the operator asks, after the instance
+has run well on 18. Full procedure: `docs/self-hosting/upgrades.md`,
+"PostgreSQL 18".
+
 ## 4. Watch it start
 
 ```bash
@@ -137,6 +159,7 @@ instead, match the log line:
 | `PRODUCTION PREFLIGHT — <code> [<component>]: <message>` | A required setting is missing or unsafe, usually a new one from the release notes | Set it in `.env`, then run `up -d` again |
 | `database is in dirty state at migration version N` | A migration stopped halfway | Follow `docs/runbooks/migration-dirty-recovery.md`, or roll back (step 6) |
 | `Database migration failed: ...` | A migration statement failed, or the database is at a version this binary does not ship (an older binary on a newer database) | Do not restart in a loop. If the error names a version above the release's newest file in `backend/migrations/`, run the newer release or roll back. Otherwise use the runbook or roll back. |
+| `postgres major version 15 does not match the genesis baseline's 18` | The database is still PostgreSQL 15 | Move it: "Crossing PostgreSQL 15 to 18" above |
 | `Schema verification failed: VerifySchemaAtVersion: ...` | After migrating, the schema is not exactly at the newest version this binary ships | Run the release that matches the database, or roll back |
 
 ## 5. Verify

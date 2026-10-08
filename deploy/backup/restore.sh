@@ -1,5 +1,5 @@
 #!/bin/sh
-# Payverge restore job. Runs inside the postgres:15-alpine image as the
+# Payverge restore job. Runs inside the postgres:18-alpine image as the
 # `restore` service of deploy/docker-compose.yml (profile: restore):
 #
 #   docker compose stop backend frontend          # (and minio, if you use it)

@@ -11,7 +11,7 @@ proposes changes they preview and apply. Payments go through Stripe, PayPal,
 MercadoPago or USDC on-chain, and Argentine venues can issue ARCA (AFIP)
 fiscal receipts.
 
-It is a Go/Gin + PostgreSQL 15 backend and a Next.js 15 frontend, shipped as
+It is a Go/Gin + PostgreSQL 18 backend and a Next.js 15 frontend, shipped as
 Docker images with a one-command installer.
 
 ## Screenshots
@@ -113,7 +113,7 @@ or any OpenAI-compatible endpoint).
 
 ```
 browser ──> Caddy (TLS, one origin)
-              ├── /api/v1/*, /media/*  ──> backend  (Go, Gin, GORM) ──> PostgreSQL 15
+              ├── /api/v1/*, /media/*  ──> backend  (Go, Gin, GORM) ──> PostgreSQL 18
               └── everything else      ──> frontend (Next.js 15)  ──(server-side)──> backend
 ```
 

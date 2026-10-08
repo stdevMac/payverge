@@ -30,7 +30,12 @@ services:
       POSTGRES_USER: ${DB_USER:-payverge}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-payverge_password}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # PostgreSQL 18 layout (PGDATA /var/lib/postgresql/18/docker). A
+      # postgres_data volume from before PostgreSQL 18 holds 15 data at its
+      # root, which the image refuses to start on: recreate a throwaway dev
+      # database (docker compose down -v) or dump and restore it as
+      # docs/self-hosting/upgrades.md "PostgreSQL 18" describes.
+      - postgres_data:/var/lib/postgresql
     networks:
       - server
     healthcheck:

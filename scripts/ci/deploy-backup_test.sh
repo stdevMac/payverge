@@ -27,7 +27,7 @@
 #     pending status younger than BACKUP_MAX_AGE_HOURS (default 26).
 #
 # The scripts run with this host's sh, tar and PostgreSQL client instead of the
-# container's busybox and postgres:15 client. `sha256sum` (busybox's -s flag),
+# container's busybox and postgres:18 client. `sha256sum` (busybox's -s flag),
 # `chown` (recorded, not applied: the test is not root), `sleep` (no wait
 # between retries) and a `tar` that can fail on purpose are shims on PATH.
 #

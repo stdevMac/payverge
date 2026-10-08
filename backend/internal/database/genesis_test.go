@@ -65,7 +65,7 @@ func craftVersionJSON(t *testing.T, head int64, schemaSHA string) []byte {
 	b, err := json.Marshal(map[string]interface{}{
 		"migration_head": head,
 		"schema_sha256":  schemaSHA,
-		"postgres_major": 15,
+		"postgres_major": 18,
 		"generator":      "test",
 	})
 	require.NoError(t, err)

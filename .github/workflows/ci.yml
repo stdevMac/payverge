@@ -100,6 +100,7 @@ jobs:
           bash scripts/ci/check-gpl-free_test.sh
           bash scripts/ci/deploy-backup_test.sh
           bash scripts/ci/deploy-install_test.sh
+          bash scripts/ci/deploy-upgrade-postgres_test.sh
 
       - name: Backup script contracts
         run: |
@@ -126,6 +127,12 @@ jobs:
       # role and the postgres superuser has no password (no TCP login).
       - name: Self-host Postgres app role
         run: bash scripts/ci/deploy-postgres-role_test.sh
+
+      # deploy/upgrade-postgres.sh against the real images: a PostgreSQL 15
+      # db volume is guarded (no empty 18 database over it), moved to 18 on
+      # pgdata with every row and role password, and kept for rollback.
+      - name: Self-host PostgreSQL 15 to 18 upgrade
+        run: bash scripts/ci/deploy-upgrade-postgres-docker_test.sh
 
       # deploy/monitoring/alerts.yml: syntax plus promtool unit tests.
       - name: Self-host alert rules
@@ -258,7 +265,7 @@ jobs:
         shard: [1, 2]
     services:
       postgres:
-        image: postgres:15@sha256:724292da1f2e50bdccfc3302ce75bbba7f4a6076701b588cc795fcac65683550 # postgres:15
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 # postgres:18
         env:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
@@ -308,7 +315,7 @@ jobs:
     timeout-minutes: 20
     services:
       postgres:
-        image: postgres:15@sha256:724292da1f2e50bdccfc3302ce75bbba7f4a6076701b588cc795fcac65683550 # postgres:15
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 # postgres:18
         env:
           POSTGRES_USER: payverge
           # Throwaway service database; a per-run value keeps the literal out of

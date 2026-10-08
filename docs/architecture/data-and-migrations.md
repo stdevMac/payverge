@@ -1,6 +1,6 @@
 # Data and migrations
 
-All durable state lives in one Postgres 15 database. The schema has exactly
+All durable state lives in one Postgres 18 database. The schema has exactly
 two sources: a **genesis baseline** for empty databases and **numbered SQL
 migrations** for every change after it. The application never alters the
 schema any other way. The decision is recorded in
@@ -60,7 +60,7 @@ current head is `0`, so no numbered migration exists yet (`migration_head` in
 migration up to the new head, plus `version.json` (head, hash, Postgres major) and a
 [README](../../backend/schema/genesis/README.md) on how to regenerate it.
 [generate-genesis-schema.sh](../../backend/scripts/generate-genesis-schema.sh)
-starts a throwaway Postgres 15 container, builds the reference schema with
+starts a throwaway Postgres 18 container, builds the reference schema with
 [cmd/genesisgen](../../backend/cmd/genesisgen/), dumps it and normalizes the
 output so the result is byte-for-byte reproducible. A companion test script
 checks that determinism.
@@ -109,7 +109,7 @@ Gates that keep this the only path:
 
 Most tests use SQLite through GORM for speed. Anything that depends on
 Postgres behaviour (row locks, `SKIP LOCKED`, advisory locks, partial
-indexes, the genesis bootstrap) runs on a real Postgres 15 container through
+indexes, the genesis bootstrap) runs on a real Postgres 18 container through
 Testcontainers, behind a build tag. Code that relies on Postgres-only
 features needs a Postgres test.
 

@@ -19,7 +19,8 @@ databases:
     databaseName: payverge
     user: payverge
     plan: basic-256mb
-    postgresMajorVersion: "15"
+    # The backend refuses any other major than its genesis baseline (18).
+    postgresMajorVersion: "18"
     ipAllowList: []   # private network only
 
 services:

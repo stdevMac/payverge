@@ -15,7 +15,7 @@ umask 077
 #
 # Requires bash (process substitution below). In the production compose
 # `backup` service this runs inside the payverge-backup image (alpine +
-# bash + postgresql15-client + aws-cli).
+# bash + postgresql18-client + aws-cli).
 
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"

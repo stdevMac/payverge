@@ -281,7 +281,7 @@ run_drill() {
     SCRATCH_DIR="${SCRATCH_DIR}" \
     CONTAINER_NAME="${FIXED_CONTAINER}" \
     MIN_TABLES=100 \
-    PG_IMAGE=postgres:15-alpine \
+    PG_IMAGE=postgres:18-alpine \
     BACKEND_IMAGE="ghcr.io/payverge/backend@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" \
     SOURCE_SHA="$(git rev-parse HEAD)" \
     PROOF_WORKFLOW_RUN_ID=30693253679 \

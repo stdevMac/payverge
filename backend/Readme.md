@@ -1,7 +1,7 @@
 # Payverge backend
 
 This directory is the Go API of Payverge: Gin for HTTP, GORM on
-PostgreSQL 15. The entry point is [`cmd/app/main.go`](cmd/app/main.go).
+PostgreSQL 18. The entry point is [`cmd/app/main.go`](cmd/app/main.go).
 Handlers live in `internal/server/` and `internal/handlers/`, services in
 `internal/services/`, and data access in `internal/database/`.
 

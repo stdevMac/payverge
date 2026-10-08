@@ -117,7 +117,7 @@ docker run -d --name "${DET_NAME}" \
   -e POSTGRES_PASSWORD=genesis \
   -e POSTGRES_DB=payverge \
   -p "127.0.0.1:${PORT}:5432" \
-  postgres:15-alpine >/dev/null
+  postgres:18-alpine >/dev/null
 
 wait_for_target_db "${DET_NAME}"
 
@@ -149,7 +149,7 @@ cp "${VERSION_OUT}" "${COMMITTED_VERSION_BAK}"
 
 MARKER="DIRTY_REJECT_MARKER_$$_SHOULD_NOT_BE_OVERWRITTEN"
 printf '%s\n' "${MARKER}" > "${SCHEMA_OUT}"
-printf '%s\n' '{"migration_head":0,"schema_sha256":"deadbeef","postgres_major":15,"generator":"test"}' > "${VERSION_OUT}"
+printf '%s\n' '{"migration_head":0,"schema_sha256":"deadbeef","postgres_major":18,"generator":"test"}' > "${VERSION_OUT}"
 
 PORT_D="$(pick_free_port)"
 DIRTY_NAME="payverge-genesis-dirty-$$-${PORT_D}"
@@ -162,7 +162,7 @@ docker run -d --name "${DIRTY_NAME}" \
   -e POSTGRES_PASSWORD=genesis \
   -e POSTGRES_DB=payverge \
   -p "127.0.0.1:${PORT_D}:5432" \
-  postgres:15-alpine >/dev/null
+  postgres:18-alpine >/dev/null
 
 wait_for_target_db "${DIRTY_NAME}"
 

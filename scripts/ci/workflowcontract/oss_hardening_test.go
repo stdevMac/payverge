@@ -12,7 +12,7 @@ import (
 // trusted-proxy subnet, Postgres app role, hosted-admin env, alert rules).
 
 const (
-	postgresImage = "postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81"
+	postgresImage = "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873"
 	releaseSigner = "https://github.com/stdevMac/payverge/.github/workflows/release.yml@refs/heads/main"
 	githubIssuer  = "https://token.actions.githubusercontent.com"
 )

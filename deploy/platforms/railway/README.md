@@ -33,6 +33,11 @@ both together to upgrade.
 Use Railway's database as is. The backend's `DB_*` variables reference its
 user, database and password, so changing them needs no other edit.
 
+It must be PostgreSQL 18: the backend refuses to start on any other major
+version (the schema baseline is taken on 18). Check with `SHOW
+server_version;`; an older database moves with a dump and restore
+(docs/self-hosting/upgrades.md, "PostgreSQL 18").
+
 ## backend
 
 No custom start command: the image's entrypoint is the server, which takes

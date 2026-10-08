@@ -11,7 +11,7 @@ flowchart LR
   E[Reverse proxy, optional: TLS, one public origin]
   F[frontend: Next.js 15 on :3000]
   A[backend: Go + Gin on :8080]
-  D[(Postgres 15)]
+  D[(Postgres 18)]
   S[(storage: local volume or S3)]
   X[External services: payment providers, LLM endpoint, email, Telegram, Base RPC]
   B --> E
@@ -29,7 +29,7 @@ flowchart LR
 |---|---|---|
 | Backend | [backend/](../../backend/) | REST API under `/api/v1`, server-sent events, webhooks, background jobs, schema migrations. Entry point: [cmd/app/main.go](../../backend/cmd/app/main.go). |
 | Frontend | [frontend/](../../frontend/) | Next.js 15 App Router. Guest pages (menu, ordering, bill splitting), the operator dashboard and the platform admin. |
-| Database | Postgres 15 | Every business record, the AI spend ledger, sessions, webhook idempotency rows, runtime switches. |
+| Database | Postgres 18 | Every business record, the AI spend ledger, sessions, webhook idempotency rows, runtime switches. |
 | Storage | Local directory or an S3-compatible bucket | Menu photos and logos (public); contracts, fiscal PDFs and attachments (protected). See [self-hosting/storage.md](../self-hosting/storage.md). |
 | Reverse proxy | Your choice | Terminates TLS and publishes one origin. The self-hosting stack in [deploy/](../../deploy/README.md) runs Caddy with automatic HTTPS. |
 

@@ -1,4 +1,4 @@
-# Toolchain image for a source-built backup sidecar: pg_dump 15 + aws-cli for
+# Toolchain image for a source-built backup sidecar: pg_dump 18 + aws-cli for
 # off-host upload.
 #
 # The backup script itself (backup-db.sh) is bind-mounted read-only by the

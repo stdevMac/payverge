@@ -14,7 +14,7 @@ slow.
 
 ## Decision
 
-Postgres 15 is the only supported database, and exactly two things may
+Postgres 18 is the only supported database, and exactly two things may
 change its schema:
 
 1. **A genesis baseline**

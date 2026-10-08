@@ -50,7 +50,7 @@ readonly DIE_STATUS=3
 
 # Files a release (or a checkout) provides. .env, backups/ and rclone/ are the
 # operator's and are never touched by an upgrade.
-readonly DEPLOY_FILES="docker-compose.yml docker-compose.build.yml Caddyfile Caddyfile.cloudflare payverge.caddy cloudflare-cidrs.caddy .env.example README.md install.sh backup/backup.sh backup/restore.sh postgres/init-app-role.sql monitoring/alerts.yml monitoring/alerts.test.yml"
+readonly DEPLOY_FILES="docker-compose.yml docker-compose.build.yml Caddyfile Caddyfile.cloudflare payverge.caddy cloudflare-cidrs.caddy .env.example README.md install.sh upgrade-postgres.sh backup/backup.sh backup/restore.sh postgres/init-app-role.sql postgres/pg18-guard.sh monitoring/alerts.yml monitoring/alerts.test.yml"
 
 domain=${PAYVERGE_DOMAIN:-}
 admin_email=${PAYVERGE_ADMIN_EMAIL:-}
@@ -481,9 +481,32 @@ project_name() {
 	printf '%s' "${name:-payverge}"
 }
 
-db_volume_exists() {
+# compose_volume_exists KEY: the project has the named volume KEY.
+compose_volume_exists() {
 	[[ $docker_up == 1 ]] || return 1
-	[[ -n $(docker volume ls -q --filter "label=com.docker.compose.project=$(project_name)" --filter "label=com.docker.compose.volume=db" 2>/dev/null) ]]
+	[[ -n $(docker volume ls -q --filter "label=com.docker.compose.project=$(project_name)" --filter "label=com.docker.compose.volume=$1" 2>/dev/null) ]]
+}
+
+# db_volume_exists: a database from an earlier install, in pgdata
+# (PostgreSQL 18) or in db (PostgreSQL 15, from releases before 18).
+db_volume_exists() {
+	compose_volume_exists pgdata || compose_volume_exists db
+}
+
+# refuse_legacy_postgres: the release files now in place run PostgreSQL 18 on
+# the pgdata volume, while this install's data is still PostgreSQL 15 in the
+# db volume. Starting would only park postgres behind postgres/pg18-guard.sh,
+# so stop here and say what to run. Release files from before PostgreSQL 18
+# (a rollback) still run 15 on db and are left alone.
+refuse_legacy_postgres() {
+	grep -q 'pg18-guard.sh' "$install_dir/docker-compose.yml" 2>/dev/null || return 0
+	compose_volume_exists db || return 0
+	local status=0
+	compose run --rm --no-deps -T --entrypoint /bin/sh postgres /payverge/pg18-guard.sh check >/dev/null 2>&1 || status=$?
+	((status == 3)) || return 0
+	die "this install's database is PostgreSQL 15 (the db volume) and this release runs PostgreSQL 18. Nothing was started and your data is unchanged. Move it with:
+    cd $install_dir && ./upgrade-postgres.sh
+which dumps it with PostgreSQL 15, restores it into PostgreSQL 18, checks every table's row count, keeps the old volume for rollback and starts Payverge. See docs/self-hosting/upgrades.md, \"PostgreSQL 18\"."
 }
 
 # --- sources -----------------------------------------------------------------
@@ -1177,6 +1200,7 @@ main() {
 		say "Dry run complete. Run again without --dry-run to install."
 		exit 0
 	fi
+	refuse_legacy_postgres
 	start_stack
 	wait_ready || die "$ready_error"
 

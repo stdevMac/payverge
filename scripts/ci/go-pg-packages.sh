@@ -18,7 +18,7 @@
 # through TEST_DATABASE_URL instead.
 #
 # Those tests skip under `go test -short`, so CI runs them in a separate job
-# with a postgres:15 service and TEST_DATABASE_URL. Matching is deliberately
+# with a postgres:18 service and TEST_DATABASE_URL. Matching is deliberately
 # broad: an extra package only costs a few seconds in that job, while a missed
 # one would silently drop coverage. scripts/ci/go-pg-packages_test.sh checks
 # the detection.

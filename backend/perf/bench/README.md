@@ -12,7 +12,7 @@ make bench                                # count=6 for stable benchstat stats
 ```
 
 Requirements:
-- Docker daemon running (testcontainers spins up a Postgres 15 container per
+- Docker daemon running (testcontainers spins up a Postgres 18 container per
   bench package that needs a DB).
 - `JWT_SECRET_KEY` env var set (`internal/structs.GetSecretKey()` panics if it
   is missing, and `BenchmarkAuthMiddleware` calls it during setup).

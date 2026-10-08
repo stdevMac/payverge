@@ -1,5 +1,5 @@
 #!/bin/sh
-# Payverge backup job. Runs inside the postgres:15-alpine image as the
+# Payverge backup job. Runs inside the postgres:18-alpine image as the
 # `backup` service of deploy/docker-compose.yml (profile: backup).
 #
 #   backup.sh daemon   take a set now if none exists, then one every day at

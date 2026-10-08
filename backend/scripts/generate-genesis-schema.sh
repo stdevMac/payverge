@@ -33,11 +33,11 @@ else
   HEAD_PADDED="$(printf '%06d' "${MIGRATION_HEAD}")"
   MIGRATION_HEAD_LABEL="${HEAD_PADDED} ("'`'"backend/migrations/${HEAD_PADDED}_*.up.sql"'`'")"
 fi
-POSTGRES_MAJOR=15
+POSTGRES_MAJOR=18
 # The PostgreSQL build deploy/docker-compose.yml runs, pinned by digest so the
 # baseline is dumped by a known server. scripts/ci/workflowcontract fails when
 # the two differ: bump this line with the deploy compose pin.
-GENESIS_POSTGRES_IMAGE="${GENESIS_POSTGRES_IMAGE:-postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81}"
+GENESIS_POSTGRES_IMAGE="${GENESIS_POSTGRES_IMAGE:-postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873}"
 GENERATOR_PATH="backend/scripts/generate-genesis-schema.sh"
 
 # --- free port on 127.0.0.1 ---
@@ -152,7 +152,7 @@ cat > "${README_OUT}" <<EOF
 # Genesis schema baseline
 
 This directory holds a **schema-only** SQL baseline equal to what a **fresh
-Postgres 15** database looks like after Payverge's production startup
+Postgres 18** database looks like after Payverge's production startup
 reconciliation — the same sequence as \`cmd/app/main.go\` and
 \`database.ReconcileReferenceSchema\`.
 
@@ -188,7 +188,7 @@ bash backend/scripts/generate-genesis-schema.sh
 
 That script:
 
-1. Starts an isolated \`postgres:15-alpine\` container on \`127.0.0.1\` + a free port.
+1. Starts an isolated \`postgres:18-alpine\` container on \`127.0.0.1\` + a free port.
 2. Runs \`go run ./cmd/genesisgen\` which calls \`database.ReconcileReferenceSchema\`
    (embedded genesis → pending numbered migrations → read-only verification)
    and refuses to continue if \`schema_migrations.dirty\` is true.

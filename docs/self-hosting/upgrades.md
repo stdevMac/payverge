@@ -59,6 +59,86 @@ the upgrade is lost. The exact commands are in
 [deploy/README.md](../../deploy/README.md#upgrades); name the set explicitly
 (`daily/<time>`), because `latest` may already be a post-upgrade set.
 
+## PostgreSQL 18
+
+Releases from this one on run PostgreSQL 18; earlier ones ran PostgreSQL 15.
+A major version cannot read the other's data files, and the backend refuses
+to start on any major other than the one its schema baseline was taken on
+(`postgres major version 15 does not match the genesis baseline's 18`).
+Moving the data is a one-time step.
+
+PostgreSQL 18 also keeps its data in a different place: the `pgdata` volume,
+mounted at `/var/lib/postgresql` (the server's data directory is
+`/var/lib/postgresql/18/docker`). Your PostgreSQL 15 data stays in the old
+`db` volume, which the new release mounts read-only and never changes.
+
+**What happens if you just upgrade.** `install.sh` takes its usual
+pre-upgrade backup, puts the new release files in place, sees the
+PostgreSQL 15 data and stops before starting anything, naming
+`./upgrade-postgres.sh`. A plain `docker compose up -d` with the new files
+does not create an empty database either: the postgres service
+(`postgres/pg18-guard.sh`) logs what to do and waits, its healthcheck stays
+red, and the backend never starts.
+
+**Upgrading the data.** Outside service hours, in the install directory:
+
+```sh
+./upgrade-postgres.sh --dry-run   # what it will do; changes nothing
+./upgrade-postgres.sh             # asks before stopping Payverge
+```
+
+It:
+
+1. stops the stack (`docker compose down`; every volume is kept);
+2. starts PostgreSQL 15 on the `db` volume, records the row count of every
+   table in every database, and dumps the whole cluster with `pg_dumpall`
+   (roles with their passwords, databases, owners and grants) into
+   `backups/pg18-upgrade-<time>/`;
+3. starts PostgreSQL 18 on a new `pgdata` volume, restores the dump, runs
+   `ANALYZE`, and compares the row counts with step 2. Any difference, or
+   any restore error other than the expected "role already exists" for the
+   superuser, stops it: the new volume is removed and the stack is left
+   stopped with the `db` volume as it was;
+4. starts Payverge (`--no-start` skips this).
+
+Expect a few minutes per GB of database. The dump needs free disk space
+in `backups/` of roughly the size of the data, compressed. Custom edits to
+`pg_hba.conf` or `postgresql.conf` inside the old volume are not carried
+over; put settings in `docker-compose.override.yml` (`command: postgres -c
+...`) instead.
+
+**Rolling back.** The PostgreSQL 15 data is still in the `db` volume, and
+the dump is in `backups/pg18-upgrade-<time>/`. To go back:
+
+```sh
+docker compose down
+bash install.sh --version <previous release>   # runs PostgreSQL 15 on db again
+```
+
+Anything written after the upgrade is lost. Before trying the upgrade again,
+remove the stale copy: `docker volume rm <project>_pgdata` (the project is
+`payverge` unless `COMPOSE_PROJECT_NAME` says otherwise).
+
+**Afterwards.** Once the instance has run well on PostgreSQL 18 for a while,
+free the space the old data takes: `docker volume rm <project>_db`. Backup
+sets taken on PostgreSQL 15 still restore into 18 (`pg_restore` reads older
+dumps).
+
+**Other setups.**
+
+- *Coolify / Dokploy* (`deploy/platforms/coolify`): the volume keeps its name
+  and moves to `/var/lib/postgresql`. PostgreSQL 18 refuses to start on the
+  15 data at its root (nothing is overwritten). Dump with the old release
+  first (`pg_dumpall`), then empty the volume, deploy, and restore the dump
+  with `psql`.
+- *Managed databases* (Render, Railway, your own server): upgrade the
+  database to PostgreSQL 18 with the provider's tool (Render:
+  `postgresMajorVersion: "18"` in `render.yaml`) before deploying this
+  release.
+- *Development* (root `docker-compose.yml`): the `postgres_data` volume moves
+  to `/var/lib/postgresql`; a throwaway dev database is simplest to
+  recreate.
+
 ## Keeping your changes across upgrades
 
 - Settings belong in `.env`.

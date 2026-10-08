@@ -17,6 +17,9 @@
 #   - an upgrade of an existing database takes a backup set first, with the
 #     installed version, and changes nothing when that backup fails; it then
 #     prints that exact set and the commands that restore it;
+#   - an install whose data is still PostgreSQL 15 (the db volume, checked
+#     with postgres/pg18-guard.sh) stops before `up -d` and names
+#     ./upgrade-postgres.sh;
 #   - a re-run recreates caddy after `up -d` so a replaced Caddyfile is
 #     loaded (a fresh install does not need to);
 #   - BACKUP_UID/BACKUP_GID are written for a non-root installer;
@@ -83,6 +86,11 @@ case "$*" in
 	exit "${STUB_UP_STATUS:-0}"
 	;;
 "up -d backend") exit 0 ;;
+"run --rm --no-deps -T --entrypoint /bin/sh postgres /payverge/pg18-guard.sh check")
+	# STUB_PG15=1: the db volume still holds PostgreSQL 15 data, pgdata none.
+	[[ ${STUB_PG15:-0} == 1 ]] && exit 3
+	exit 0
+	;;
 "up -d --force-recreate --no-deps caddy") exit "${STUB_CADDY_STATUS:-0}" ;;
 "ps -a") echo "NAME STATE"; echo "payverge-caddy-1 created"; exit 0 ;;
 "ps -a --format {{.State}} backend") echo "running"; exit 0 ;;
@@ -369,6 +377,22 @@ expect_absent "re-run at the same version: no backup" "$calls" "backup once"
 upgrade_checkout fresh-volume
 STUB_DB_VOLUME=0 install "$dir" --yes --version 1.1.0
 expect_absent "no database yet: no backup" "$calls" "backup once"
+
+# PostgreSQL 15 data in the db volume and none in pgdata: the release files
+# are in place, but nothing starts and upgrade-postgres.sh is named.
+upgrade_checkout pg15-volume
+STUB_DB_VOLUME=1 STUB_PG15=1 install "$dir" --yes --version 1.1.0
+[[ $status -ne 0 ]] && pass "PostgreSQL 15 volume: non-zero exit" || fail "PostgreSQL 15 volume: exit 0"
+expect_contains "PostgreSQL 15 volume: asks for the guard's check" "$calls" "pg18-guard.sh check"
+expect_contains "PostgreSQL 15 volume: points at upgrade-postgres.sh" "$out" "./upgrade-postgres.sh"
+expect_contains "PostgreSQL 15 volume: points at the docs" "$out" "docs/self-hosting/upgrades.md"
+expect_absent "PostgreSQL 15 volume: nothing started" "$calls" "compose up"
+expect_absent "PostgreSQL 15 volume: no ERR-trap noise" "$out" "install.sh stopped at line"
+expect_contains "PostgreSQL 15 volume: backup still taken first" "$calls" "compose run --rm -T backup once"
+
+upgrade_checkout pg18-volume
+STUB_DB_VOLUME=1 STUB_PG15=0 install "$dir" --yes --version 1.1.0
+[[ $status -eq 0 ]] && pass "PostgreSQL 18 data in place: upgrade proceeds" || fail "PostgreSQL 18 data in place: exit $status"
 
 # --- 4. TLS_TERMINATION=proxy ---------------------------------------------------
 

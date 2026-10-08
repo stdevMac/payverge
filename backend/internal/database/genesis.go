@@ -191,7 +191,7 @@ func countPublicBaseTables(db *gorm.DB) (int64, error) {
 
 // genesisSessionResetSQL undoes the session-level SETs at the top of the
 // embedded pg_dump baseline. Applied on the commit path only; see bootstrapGenesis.
-const genesisSessionResetSQL = "RESET statement_timeout; RESET lock_timeout; RESET idle_in_transaction_session_timeout; RESET row_security; RESET check_function_bodies; RESET client_min_messages; RESET xmloption"
+const genesisSessionResetSQL = "RESET statement_timeout; RESET lock_timeout; RESET idle_in_transaction_session_timeout; RESET transaction_timeout; RESET row_security; RESET check_function_bodies; RESET client_min_messages; RESET xmloption"
 
 // BootstrapGenesisSchema applies the embedded genesis baseline to an empty database.
 // Non-empty databases are a no-op (idempotent; does not mutate established/legacy state).
@@ -434,7 +434,7 @@ func checkPostgresMajor(serverVersionNum, want int) error {
 		return fmt.Errorf("genesis version.json: postgres_major is required")
 	}
 	if got := serverVersionNum / 10000; got != want {
-		return fmt.Errorf("postgres major version %d does not match the genesis baseline's %d", got, want)
+		return fmt.Errorf("postgres major version %d does not match the genesis baseline's %d; move the database to PostgreSQL %d first (self-host: deploy/upgrade-postgres.sh, docs/self-hosting/upgrades.md \"PostgreSQL 18\")", got, want, want)
 	}
 	return nil
 }

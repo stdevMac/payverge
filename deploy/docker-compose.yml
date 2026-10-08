@@ -10,7 +10,7 @@
 #   frontend  Next.js, configured at runtime (one image serves any origin).
 #   backend   Go API. Runs migrations on boot; refuses a schema newer than
 #             its own (restore a backup to roll back).
-#   postgres  PostgreSQL 15 on an internal-only network.
+#   postgres  PostgreSQL 18 on an internal-only network.
 #
 # Optional profiles (COMPOSE_PROFILES in .env, comma-separated):
 #   backup          nightly pg_dump + uploads tarball into ./backups,
@@ -53,8 +53,19 @@ services:
       # The role every other service logs in as: it owns DB_NAME, is not a
       # superuser, and gets DB_PASSWORD (postgres/init-app-role.sql).
       PAYVERGE_DB_USER: ${DB_USER:-payverge}
+    # pg18-guard.sh wraps the image's entrypoint: when the legacy db volume
+    # still holds PostgreSQL 15 data and pgdata holds none, it refuses to
+    # initialise an empty database and points at ./upgrade-postgres.sh.
+    entrypoint: ["/bin/sh", "/payverge/pg18-guard.sh"]
+    command: ["postgres"]
     volumes:
-      - db:/var/lib/postgresql/data
+      # PostgreSQL 18 layout: PGDATA is /var/lib/postgresql/18/docker, so a
+      # future major can be laid out next to it in the same volume.
+      - pgdata:/var/lib/postgresql
+      # PostgreSQL 15 data from installs before PostgreSQL 18, read-only and
+      # only looked at by the guard. Kept for rollback; see upgrade-postgres.sh.
+      - db:/payverge-legacy-db:ro
+      - ./postgres/pg18-guard.sh:/payverge/pg18-guard.sh:ro
       - ./postgres/init-app-role.sql:/docker-entrypoint-initdb.d/10-app-role.sql:ro
     networks:
       - db
@@ -692,6 +703,11 @@ networks:
     internal: true
 
 volumes:
+  # PostgreSQL 18 data.
+  pgdata: {}
+  # PostgreSQL 15 data from installs before PostgreSQL 18 (read-only above).
+  # upgrade-postgres.sh copies it into pgdata and never changes it; remove it
+  # once the upgrade is settled: docker volume rm <project>_db
   db: {}
   storage: {}
   backend_data: {}

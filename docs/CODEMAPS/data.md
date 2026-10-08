@@ -3,7 +3,7 @@
 # Data Layer
 
 ## Database
-**PostgreSQL 18** (postgres:15-alpine). Internal to compose, not host-exposed. GORM v2 + `lib/pq` driver.
+**PostgreSQL 18** (postgres:18-alpine). Internal to compose, not host-exposed. GORM v2 + `lib/pq` driver.
 
 ## Migrations
 Schema = genesis baseline (`backend/schema/genesis/current_schema.sql`, version 0) + numbered pairs in `backend/migrations/` (`NNNNNN_name.up.sql` + `.down.sql`).

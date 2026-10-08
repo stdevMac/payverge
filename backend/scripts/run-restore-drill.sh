@@ -12,7 +12,7 @@
 #   S3_BACKUP_BUCKET     (required) backup bucket name
 #   S3_BACKUP_PREFIX     (default: db)
 #   S3_BACKUP_ENDPOINT   (optional; --endpoint-url for R2/etc.)
-#   PG_IMAGE             (default: postgres:15-alpine)
+#   PG_IMAGE             (default: postgres:18-alpine)
 #   BACKEND_IMAGE        (required) immutable candidate image@sha256:<digest>
 #   SOURCE_SHA           (required) exact candidate Git SHA
 #   PROOF_WORKFLOW_RUN_ID / PROOF_WORKFLOW_RUN_URL (required)
@@ -32,7 +32,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 S3_BACKUP_BUCKET="${S3_BACKUP_BUCKET:-}"
 S3_BACKUP_PREFIX="${S3_BACKUP_PREFIX:-db}"
 S3_BACKUP_ENDPOINT="${S3_BACKUP_ENDPOINT:-}"
-PG_IMAGE="${PG_IMAGE:-postgres:15-alpine}"
+PG_IMAGE="${PG_IMAGE:-postgres:18-alpine}"
 BACKEND_IMAGE="${BACKEND_IMAGE:-}"
 SOURCE_SHA="${SOURCE_SHA:-}"
 PROOF_WORKFLOW_RUN_ID="${PROOF_WORKFLOW_RUN_ID:-}"

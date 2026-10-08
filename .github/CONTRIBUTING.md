@@ -28,7 +28,7 @@ on the approach before you write the code. It saves everyone a rewrite.
 - **Go**: the version in `backend/go.mod` (`toolchain` line). Go downloads it
   for you when `GOTOOLCHAIN=auto`, which is the default.
 - **Node.js**: the version in `.nvmrc` (`nvm use` picks it up).
-- **Docker** with Compose v2, for PostgreSQL 15 and the full stack.
+- **Docker** with Compose v2, for PostgreSQL 18 and the full stack.
 - **Git**, with your name and email configured (they appear in your sign-off).
 
 ### First run

@@ -36,7 +36,7 @@ type contextPinger interface {
 	PingContext(context.Context) error
 }
 
-// StartPostgres spins a postgres:15-alpine container and returns a *gorm.DB
+// StartPostgres spins a postgres:18-alpine container and returns a *gorm.DB
 // ready for benchmarks. Caller is responsible for applying migrations and
 // loading fixtures.
 //
@@ -54,7 +54,7 @@ func StartPostgres(ctx context.Context) (*Pg, error) {
 		return StartIsolatedPostgres(ctx)
 	}
 	c, err := tcpostgres.Run(ctx,
-		"postgres:15-alpine",
+		"postgres:18-alpine",
 		tcpostgres.WithDatabase("bench"),
 		tcpostgres.WithUsername("bench"),
 		tcpostgres.WithPassword("bench"),
@@ -130,7 +130,7 @@ func randomDatabaseName() (string, error) {
 // StartIsolatedPostgres returns a database that the caller may migrate, lock,
 // truncate, or drop without affecting another test. When TEST_DATABASE_URL is
 // set, it creates a child database on that server. Otherwise it starts a
-// dedicated PostgreSQL 15 Testcontainers instance.
+// dedicated PostgreSQL 18 Testcontainers instance.
 func StartIsolatedPostgres(ctx context.Context) (*Pg, error) {
 	parentDSN := postgresHarnessURL()
 	if parentDSN == "" {

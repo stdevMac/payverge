@@ -9,7 +9,7 @@
 
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME:-payverge}
@@ -30,7 +30,7 @@ services:
       - -c
       - log_min_duration_statement=100
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - server
     healthcheck:

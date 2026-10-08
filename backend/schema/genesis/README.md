@@ -1,7 +1,7 @@
 # Genesis schema baseline
 
 This directory holds a **schema-only** SQL baseline equal to what a **fresh
-Postgres 15** database looks like after Payverge's production startup
+Postgres 18** database looks like after Payverge's production startup
 reconciliation — the same sequence as `cmd/app/main.go` and
 `database.ReconcileReferenceSchema`.
 
@@ -16,10 +16,10 @@ reconciliation — the same sequence as `cmd/app/main.go` and
 **Current baseline**
 
 - Migration HEAD: **0 (no numbered migrations; the baseline is the whole schema)**
-- Schema SHA-256: `023d7fafefeb106b37b119f0e33fa8de69a961d5a4b2f71094a0643245b6a83c`
-- Schema fingerprint SHA-256: `64c40f26c9f478ad3beece8263cec52761da3806bd92599a98349c7b8185b71a` (startup refuses a live schema
+- Schema SHA-256: `a2e17ae00f64727e77e327c0ff70777c3138797ca1bc17fc96fa962057e1d13c`
+- Schema fingerprint SHA-256: `ebd9e06196f7b276ac872dcb678c67c14175626742557f82be44654af5708a3d` (startup refuses a live schema
   whose `database.SchemaFingerprintSHA` differs, or a different Postgres major)
-- Postgres major: **15**
+- Postgres major: **18**
 - Generator: `backend/scripts/generate-genesis-schema.sh`
 
 The dump is **schema-only** (no `INSERT` rows). Runtime-owned schemas such as
@@ -37,7 +37,7 @@ bash backend/scripts/generate-genesis-schema.sh
 
 That script:
 
-1. Starts an isolated `postgres:15-alpine` container on `127.0.0.1` + a free port.
+1. Starts an isolated `postgres:18-alpine` container on `127.0.0.1` + a free port.
 2. Runs `go run ./cmd/genesisgen` which calls `database.ReconcileReferenceSchema`
    (embedded genesis → pending numbered migrations → read-only verification)
    and refuses to continue if `schema_migrations.dirty` is true.

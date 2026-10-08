@@ -450,13 +450,13 @@ func TestCIBackendLaneCompilesEveryTagGatedTest(t *testing.T) {
 }
 
 // TestReusablePostgresJobRunsDurableLLMBudgetTests keeps the Postgres lane on
-// a real postgres:15 service and keeps the package discovery from dropping
+// a real postgres:18 service and keeps the package discovery from dropping
 // the suites that only run against it.
 func TestReusablePostgresJobRunsDurableLLMBudgetTests(t *testing.T) {
 	wf := loadPublicWorkflow(t, "ci.yml")
 	pg := requirePublicJob(t, "ci.yml", wf, "backend-pg")
-	if img := pg.Services["postgres"].Image; !regexp.MustCompile(`^postgres:15@sha256:[0-9a-f]{64}$`).MatchString(img) {
-		t.Errorf("backend-pg postgres service image = %q, want postgres:15 pinned by digest", img)
+	if img := pg.Services["postgres"].Image; !regexp.MustCompile(`^postgres:18@sha256:[0-9a-f]{64}$`).MatchString(img) {
+		t.Errorf("backend-pg postgres service image = %q, want postgres:18 pinned by digest", img)
 	}
 	if got := pg.Env["TEST_DATABASE_URL"]; got != "postgres://test:test@localhost:5432/test?sslmode=disable" {
 		t.Errorf("backend-pg TEST_DATABASE_URL = %q", got)

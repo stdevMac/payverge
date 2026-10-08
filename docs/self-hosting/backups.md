@@ -72,7 +72,7 @@ restores only the database. The backend must be the version in the set's
   that restore refuses a set with bad checksums and refuses while another
   client is connected. It ended with `all checks passed (PostgreSQL 14.22)`.
 - **Not run:** the full Compose drill (backup service, `restore` service and
-  the real `postgres:15` image in containers). Docker was not available when
+  the real `postgres:18` image in containers). Docker was not available when
   these docs were written. A script that runs it end to end against a
   throwaway project (marker row and uploaded file, backup, delete, restore,
   compare) is kept with the release work and is to be run before the docs are

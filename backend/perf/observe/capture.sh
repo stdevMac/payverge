@@ -45,7 +45,7 @@ while (( SECONDS < deadline )); do
   # engine does not expose the v2 path inside this container.
   memory_bytes="$(docker compose "${compose_args[@]}" exec -T backend sh -c 'cat /sys/fs/cgroup/memory.current 2>/dev/null || echo 0')"
   backend_disk_percent="$(docker compose "${compose_args[@]}" exec -T backend sh -c "df -P /app/data | awk 'NR==2 {gsub(/%/, \"\", \\$5); print \\$5}'")"
-  postgres_disk_percent="$(docker compose "${compose_args[@]}" exec -T postgres sh -c "df -P /var/lib/postgresql/data | awk 'NR==2 {gsub(/%/, \"\", \\$5); print \\$5}'")"
+  postgres_disk_percent="$(docker compose "${compose_args[@]}" exec -T postgres sh -c "df -P /var/lib/postgresql | awk 'NR==2 {gsub(/%/, \"\", \\$5); print \\$5}'")"
   disk_percent="$(awk -v app="${backend_disk_percent}" -v db="${postgres_disk_percent}" 'BEGIN { print (app > db ? app : db) }')"
 
   read -r postgres_open_connections postgres_waiting_locks postgres_lock_wait_ms < <(

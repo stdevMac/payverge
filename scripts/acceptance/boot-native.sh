@@ -2,7 +2,7 @@
 # Run a natively built backend in production mode with zero third-party
 # configuration: only generated secrets, PUBLIC_URL, the bootstrap admin and a
 # PostgreSQL connection. Used by the CI "boot-zero-accounts" job and handy
-# locally against any empty PostgreSQL 15 database.
+# locally against any empty PostgreSQL 18 database.
 #
 #   scripts/acceptance/boot-native.sh start|stop|restart
 #

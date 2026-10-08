@@ -11,7 +11,7 @@ until you point them at a model endpoint.
 | `caddy` | The only service with published ports (80, 443, 443/udp). Gets and renews the certificate, sends `/api/v1/*` and `/media/*` to the backend and everything else to the frontend. |
 | `frontend` | Next.js. It reads its settings when it starts, so one image works for any domain. |
 | `backend` | Go API. Applies database migrations when it starts. |
-| `postgres` | PostgreSQL 15 on an internal network with no route out and no published port. |
+| `postgres` | PostgreSQL 18 on an internal network with no route out and no published port. |
 | `backup` | Profile `backup`, on by default. Nightly database dump plus an archive of the uploads. |
 
 Optional profiles: `backup-offsite` (copies backups to any rclone remote),
@@ -285,6 +285,23 @@ docker compose up -d
 ```
 
 Anything written to the database after the upgrade is lost in a rollback.
+
+### PostgreSQL 15 to 18
+
+Releases before PostgreSQL 18 kept the database in the `db` volume; this one
+keeps it in `pgdata`. When `db` still holds PostgreSQL 15 data, `install.sh`
+stops before starting the stack and the postgres service waits with a
+message instead of creating an empty database. Move the data once:
+
+```sh
+./upgrade-postgres.sh --dry-run   # the plan; changes nothing
+./upgrade-postgres.sh             # dump with 15, restore into 18, compare row counts, start
+```
+
+The `db` volume is never removed (it is the rollback: `bash install.sh
+--version <previous>`), and the dump and row counts stay in
+`backups/pg18-upgrade-<time>/`. Details:
+[docs/self-hosting/upgrades.md](../docs/self-hosting/upgrades.md#postgresql-18).
 
 ### Verifying images
 

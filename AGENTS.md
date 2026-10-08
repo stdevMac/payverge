@@ -312,7 +312,7 @@ npx jest --watchman=false --runInBand   # CI mode (used in GitHub Actions)
 docker compose --env-file .env up -d --build
 
 # The compose file defines:
-# - postgres:15-alpine (internal only; no host port)
+# - postgres:18-alpine (internal only; no host port)
 # - backend on 127.0.0.1:8080
 # - frontend on 127.0.0.1:3000
 ```

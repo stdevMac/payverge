@@ -18,7 +18,7 @@ import (
 	"github.com/stdevmac/payverge/backend/internal/testperf"
 )
 
-// startRollbackRehearsalDB returns an isolated PostgreSQL 15 handle + DSN. With
+// startRollbackRehearsalDB returns an isolated PostgreSQL 18 handle + DSN. With
 // TEST_DATABASE_URL it creates a disposable child database; otherwise it starts
 // a throwaway Testcontainers server. The supplied parent database is never the
 // target of destructive down migrations.
