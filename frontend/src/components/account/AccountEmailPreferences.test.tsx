@@ -55,7 +55,9 @@ describe("AccountEmailPreferences", () => {
     render(<AccountEmailPreferences copy={copy} />);
 
     expect(await screen.findByText("Email preferences")).toBeInTheDocument();
-    const reports = screen.getByRole("switch", { name: "Reports" });
+    // The heading renders while preferences are still loading; wait for the
+    // loaded switches themselves.
+    const reports = await screen.findByRole("switch", { name: "Reports" });
     const transactional = screen.getByRole("switch", {
       name: "Account & transactional",
     });

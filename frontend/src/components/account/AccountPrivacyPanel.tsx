@@ -160,6 +160,7 @@ export function AccountPrivacyPanel({
       }
       if (typeof window !== "undefined") {
         setTimeout(() => {
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload after account deletion drops all client state
           window.location.href = "/";
         }, 1200);
       }

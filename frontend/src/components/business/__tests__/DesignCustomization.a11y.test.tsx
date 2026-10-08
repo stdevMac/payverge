@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { computeAccessibleName } from "dom-accessibility-api";
 import {
   announcedSwitchName,
@@ -110,7 +110,7 @@ describe("DesignCustomization — a11y + i18n polish (Track P / Task P1)", () =>
     expect(container.querySelector(".text-brand")).not.toBeNull();
   });
 
-  it("names content switches and style selects by purpose plus value (#446)", () => {
+  it("names content switches and style selects by purpose plus value (#446)", async () => {
     mockLocale = "en";
     renderDC();
     const images = screen.getByRole("switch", { name: "Show Item Images" });
@@ -120,7 +120,12 @@ describe("DesignCustomization — a11y + i18n polish (Track P / Task P1)", () =>
     expect(announcedSwitchName(images)).toBe("Show Item Images, on");
     expect(announcedSwitchName(descriptions)).toBe("Show Descriptions, on");
     expect(labelledByTargetsHaveText(images)).toBe(true);
-    expect(images.getAttribute("aria-describedby")).toBeTruthy();
+    // react-aria re-renders the input once its description slot resolves and
+    // drops the stamped describedby; NamedSwitch's observer restores it on the
+    // next microtask.
+    await waitFor(() =>
+      expect(images.getAttribute("aria-describedby")).toBeTruthy(),
+    );
 
     const font = screen.getByRole("button", {
       name: "Font Family, Sans (DM Sans)",

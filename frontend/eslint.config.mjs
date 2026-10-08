@@ -1,4 +1,8 @@
 // eslint-config-next >= 16 ships native flat configs (ESLint 10 dropped eslintrc).
+// The app runs Next 15 (package.json "next"), so this is a version skew taken
+// on purpose: eslint-config-next 15 only ships eslintrc configs. Its rules
+// target Next 16, so one may flag a pattern that is fine on 15. Bump "next" to
+// 16 to close the skew, and recheck the rules turned off below when doing so.
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 
 const OFF_PALETTE =
@@ -65,9 +69,6 @@ const eslintConfig = [
       "react-hooks/immutability": "off",
       "react-hooks/static-components": "off",
       "react-hooks/globals": "off",
-      // New in @next/eslint-plugin-next 16. The flagged sites are deliberate
-      // full-document navigations (logout, account deletion, auth handoffs).
-      "@next/next/no-location-assign-relative-destination": "off",
       "no-console": ["error", { allow: ["warn", "error"] }],
       // Audit guards — enforced post-campaign (T17). The clickable-div / alt-text /
       // anchor a11y issues the lanes targeted are all resolved; `npm run lint` is

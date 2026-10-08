@@ -150,6 +150,7 @@ export default function CustomerProfile() {
     // Only redirect after a confirmed deletion; on failure the modal stays
     // open with a visible error toast instead of silently doing nothing.
     if (result) {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload after account deletion drops all client state
       window.location.href = "/";
     }
   };

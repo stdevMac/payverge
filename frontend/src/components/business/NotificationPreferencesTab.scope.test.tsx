@@ -39,9 +39,12 @@ jest.mock("@/i18n/SimpleTranslationProvider", () => ({
   getTranslation: (key: string) => key,
 }));
 
-jest.mock("@/contexts/ToastContext", () => ({
-  useToast: () => ({ showSuccess: jest.fn(), showError: jest.fn() }),
-}));
+// The real useToast returns stable callbacks. A fresh jest.fn() per render
+// re-runs the settings effects every render, so they never finish loading.
+jest.mock("@/contexts/ToastContext", () => {
+  const toast = { showSuccess: jest.fn(), showError: jest.fn() };
+  return { useToast: () => toast };
+});
 
 jest.mock("@/utils/chatSoundPrefs", () => ({
   getChatSoundPrefs: () => ({ announcementSound: true, messageSound: false }),
@@ -78,7 +81,9 @@ describe("NotificationPreferencesTab storage scopes (L6-40)", () => {
     expect(screen.getByTestId("notif-scope-legend")).toBeInTheDocument();
     expect(screen.getByTestId("notif-save-model-hint")).toBeInTheDocument();
     expect(screen.getByTestId("notif-scope-device")).toBeInTheDocument();
-    expect(screen.getByTestId("notif-scope-browser")).toBeInTheDocument();
+    // The browser row belongs to the operational settings section, which
+    // loads independently of the account email preferences above.
+    expect(await screen.findByTestId("notif-scope-browser")).toBeInTheDocument();
     expect(screen.getAllByTestId("notif-scope-business").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByTestId("notif-scope-badge-account")).toBeInTheDocument();
     expect(screen.getByTestId("notif-scope-badge-browser")).toBeInTheDocument();

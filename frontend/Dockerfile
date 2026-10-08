@@ -2,6 +2,10 @@
 # Use an official Node runtime as the base image.
 # node:20.18.0-alpine pinned the (now-EOL) 20.18.0 patch, leaving 23 HIGH/CRITICAL
 # CVEs in the Alpine base. node:26-alpine is the current release line with a clean base.
+# Node 26 is the Current line, not LTS, until it enters Active LTS in late October
+# 2026. That is accepted deliberately: it is the line with a clean Alpine base,
+# and it becomes LTS within weeks. .nvmrc (and so CI) uses the same 26.x, so
+# builds and tests run on what ships.
 FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS deps
 
 # Install dependencies only when needed

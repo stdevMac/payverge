@@ -243,15 +243,17 @@ describe("ReservationManager — server pagination default path (Fix 1)", () => 
     // Header intentionally shows both ("12 reservations · 37 covers"); the
     // insight KPI labeled "Covers today" must use the seats aggregate, not
     // the booking count that happens to be 12.
+    // The KPI label renders before the stats query resolves, so wait for the
+    // aggregate value itself, not just the label.
     await waitFor(() => {
-      expect(screen.getByText("Covers today")).toBeInTheDocument();
+      const insight = screen.getByText("Covers today").closest("div");
+      expect(insight).not.toBeNull();
+      expect(
+        within(insight as HTMLElement).getByText("37"),
+      ).toBeInTheDocument();
     });
 
     const coversInsight = screen.getByText("Covers today").closest("div");
-    expect(coversInsight).not.toBeNull();
-    expect(
-      within(coversInsight as HTMLElement).getByText("37"),
-    ).toBeInTheDocument();
     expect(within(coversInsight as HTMLElement).queryByText("12")).toBeNull();
 
     const needsInsight = screen.getByText("Needs table").closest("div");

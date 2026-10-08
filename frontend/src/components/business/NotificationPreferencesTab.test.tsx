@@ -283,6 +283,9 @@ describe("handleTelegramToggle — concurrent revert correctness (F9)", () => {
     const lowStockInput = switchFor(
       "businessSettings.notifications.inventoryLowStock",
     );
+    // The switches render before the plugin config arrives and stay disabled
+    // until it does; flipping earlier would have nowhere to save.
+    await waitFor(() => expect(lowStockInput.disabled).toBe(false));
 
     expect(resvInput.checked).toBe(false);
     expect(lowStockInput.checked).toBe(false);
@@ -324,6 +327,11 @@ describe("handleTelegramToggle — concurrent revert correctness (F9)", () => {
 
     const lowStock = await screen.findByLabelText(
       "businessSettings.notifications.inventoryLowStock",
+    );
+    await waitFor(() =>
+      expect(
+        switchFor("businessSettings.notifications.inventoryLowStock").disabled,
+      ).toBe(false),
     );
     await act(async () => {
       fireEvent.click(lowStock);

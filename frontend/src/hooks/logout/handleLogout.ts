@@ -44,6 +44,7 @@ export const useLogout = () => {
             closeMenu();
 
             // Force reload to ensure clean state
+            // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on logout drops wallet and client state
             window.location.href = '/';
         } catch (error) {
             void logError(error instanceof Error ? error : String(error), 'useLogout', 'logout');
@@ -52,6 +53,7 @@ export const useLogout = () => {
             disconnect();
             await clearAllState();
             closeMenu();
+            // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on logout drops wallet and client state
             window.location.href = '/';
         }
     }, [disconnect, closeMenu, clearUser]);

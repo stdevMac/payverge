@@ -1025,7 +1025,10 @@ export default function NotificationPreferencesTab({
                 <p className="text-sm font-medium text-ink-800">{label}</p>
                 <Switch
                   isSelected={telegramToggles[field]}
-                  isDisabled={telegramSaving}
+                  // Until the plugin config loads a flip has nowhere to be
+                  // saved, so keep the switches inert instead of letting them
+                  // change state that is silently never persisted.
+                  isDisabled={telegramSaving || telegramConfig === null}
                   onValueChange={(val) => handleTelegramToggle(field, val)}
                   size="sm"
                   aria-label={label}

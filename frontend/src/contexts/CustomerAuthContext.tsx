@@ -345,6 +345,7 @@ export function CustomerAuthProvider({
     clearCustomerState();
     setLoading(false);
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on customer logout drops all client state
       window.location.href = "/";
     }
   }, [beginAuthTransition, clearCustomerState, isAuthEpochCurrent, stopRefreshTimer]);

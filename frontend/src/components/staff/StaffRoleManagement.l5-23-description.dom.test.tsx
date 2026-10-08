@@ -124,7 +124,7 @@ describe("StaffRoleManagement L5-23 permission description DOM (D1)", () => {
       expect(mockGetStaffPermissions).toHaveBeenCalledWith("42", "7"),
     );
 
-    fireEvent.click(screen.getByText("Crm"));
+    fireEvent.click(await screen.findByText("Crm"));
 
     // Label may be humanized; description must appear as real product copy.
     expect(await screen.findByText(expectedDesc!)).toBeInTheDocument();

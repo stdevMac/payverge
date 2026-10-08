@@ -149,10 +149,10 @@ describe("DriverPerformance", () => {
 
     render(<DriverPerformance businessId={1} />);
 
-    await waitFor(() => {
-      expect(screen.queryByTestId("performance-table")).toBeNull();
-    });
-    expect(screen.getByText("No drivers yet")).toBeTruthy();
+    // The table is also absent while loading, so wait for the empty state
+    // itself rather than for the table to be missing.
+    expect(await screen.findByText("No drivers yet")).toBeTruthy();
+    expect(screen.queryByTestId("performance-table")).toBeNull();
   });
 
   it("opens the scorecard modal when the View action is pressed", async () => {

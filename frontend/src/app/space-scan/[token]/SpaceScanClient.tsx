@@ -823,6 +823,7 @@ export default function SpaceScanClient({ token }: SpaceScanClientProps) {
             }}
             onOpenEditor={() => {
               // Operator hub: pick business → Tables → Spaces & Tables editor.
+              // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload into the operator dashboard from the guest scan surface
               window.location.href = "/dashboard";
             }}
           />

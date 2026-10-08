@@ -28,12 +28,12 @@ jest.mock("@/hooks/useBusinessAccess", () => ({
   useBusinessAccess: jest.fn(),
 }));
 
-jest.mock("@/contexts/ToastContext", () => ({
-  useToast: () => ({
-    showSuccess: jest.fn(),
-    showError: jest.fn(),
-  }),
-}));
+// The real useToast returns stable callbacks. A fresh jest.fn() per render
+// changes loadData's identity every render and reloads the page in a loop.
+jest.mock("@/contexts/ToastContext", () => {
+  const toast = { showSuccess: jest.fn(), showError: jest.fn() };
+  return { useToast: () => toast };
+});
 
 jest.mock("@/i18n/SimpleTranslationProvider", () => {
   const actual = jest.requireActual("@/i18n/getTranslation");

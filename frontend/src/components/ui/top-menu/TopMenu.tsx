@@ -182,6 +182,7 @@ export const TopMenu = ({ onReady }: { onReady?: () => void }) => {
       console.warn("Server-side logout failed:", error);
     } finally {
       clearStaffSession();
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on staff logout drops all client state
       window.location.href = "/staff/login";
     }
   };

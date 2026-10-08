@@ -109,6 +109,14 @@ function renderModal(
   );
 }
 
+// The permissions request resolving and the modal committing the loaded
+// grants are separate turns, so wait for fixture data (the custom grant), not
+// just for the request to have been sent.
+async function waitForPermissionsLoaded() {
+  await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+  await screen.findByTestId("revoke-perm-analytics:sales");
+}
+
 describe("StaffRoleManagement custom permissions", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -145,7 +153,7 @@ describe("StaffRoleManagement custom permissions", () => {
     );
 
     // Expand CRM category and grant crm:read (not held)
-    fireEvent.click(screen.getByText("Crm"));
+    fireEvent.click(await screen.findByText("Crm"));
     const grantBtn = await screen.findByTestId("grant-perm-crm:read");
     fireEvent.click(grantBtn);
 
@@ -159,14 +167,14 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("sends optional reason when granting", async () => {
     renderModal();
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
     const reasonField = screen.getByPlaceholderText(
       "customPermissions.reasonPlaceholder",
     );
     fireEvent.change(reasonField, { target: { value: "needs CRM access" } });
 
-    fireEvent.click(screen.getByText("Crm"));
+    fireEvent.click(await screen.findByText("Crm"));
     fireEvent.click(await screen.findByTestId("grant-perm-crm:read"));
 
     await waitFor(() =>
@@ -179,7 +187,7 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("shows revoke only for custom grants; role defaults get deny not revoke", async () => {
     renderModal();
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
     // Custom grant appears in the grants list with a revoke control
     const grantsSection = screen
@@ -193,7 +201,7 @@ describe("StaffRoleManagement custom permissions", () => {
     ).toBeInTheDocument();
 
     // Expand bills category — bills:read is role-default + effective → Deny
-    fireEvent.click(screen.getByText("Bills"));
+    fireEvent.click(await screen.findByText("Bills"));
     expect(
       await screen.findByTestId("deny-perm-bills:read"),
     ).toBeInTheDocument();
@@ -210,14 +218,14 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("shows denied state and clears deny via API", async () => {
     renderModal();
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
     expect(
-      screen.getByText("customPermissions.deniesTitle"),
+      await screen.findByText("customPermissions.deniesTitle"),
     ).toBeInTheDocument();
     expect(screen.getByTestId("clear-deny-menu:read")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Menu"));
+    fireEvent.click(await screen.findByText("Menu"));
     expect(
       await screen.findByTestId("denied-chip-menu:read"),
     ).toBeInTheDocument();
@@ -234,9 +242,9 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("denies an effective role permission via API", async () => {
     renderModal();
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
-    fireEvent.click(screen.getByText("Bills"));
+    fireEvent.click(await screen.findByText("Bills"));
     fireEvent.click(await screen.findByTestId("deny-perm-bills:read"));
 
     await waitFor(() =>
@@ -249,9 +257,9 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("gates sensitive grant changes behind the confirmation modal and cancels safely", async () => {
     renderModal({ isOwner: true });
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
-    fireEvent.click(screen.getByText("Director"));
+    fireEvent.click(await screen.findByText("Director"));
     fireEvent.click(await screen.findByTestId("grant-perm-director:read"));
 
     // A styled confirmation modal appears; the grant has not fired yet.
@@ -275,9 +283,9 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("performs the sensitive grant only after confirming in the modal", async () => {
     renderModal({ isOwner: true });
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
-    fireEvent.click(screen.getByText("Director"));
+    fireEvent.click(await screen.findByText("Director"));
     fireEvent.click(await screen.findByTestId("grant-perm-director:read"));
 
     fireEvent.click(
@@ -294,7 +302,7 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("revokes a custom grant via the API", async () => {
     renderModal();
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
     fireEvent.click(screen.getByTestId("revoke-perm-analytics:sales"));
 
@@ -350,10 +358,10 @@ describe("StaffRoleManagement custom permissions", () => {
     renderModal({
       grantablePermissions: ["crm:read", "bills:read", "menu:read"],
     });
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
+    await waitForPermissionsLoaded();
 
     // CRM is grantable
-    fireEvent.click(screen.getByText("Crm"));
+    fireEvent.click(await screen.findByText("Crm"));
     expect(
       await screen.findByTestId("grant-perm-crm:read"),
     ).toBeInTheDocument();
@@ -367,8 +375,8 @@ describe("StaffRoleManagement custom permissions", () => {
 
   it("shows full catalog for owners even without grantablePermissions", async () => {
     renderModal({ isOwner: true, grantablePermissions: null });
-    await waitFor(() => expect(mockGetStaffPermissions).toHaveBeenCalled());
-    fireEvent.click(screen.getByText("Director"));
+    await waitForPermissionsLoaded();
+    fireEvent.click(await screen.findByText("Director"));
     expect(
       await screen.findByTestId("grant-perm-director:read"),
     ).toBeInTheDocument();

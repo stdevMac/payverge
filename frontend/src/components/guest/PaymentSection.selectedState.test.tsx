@@ -103,7 +103,11 @@ describe("PaymentSection selected state", () => {
     const paypal = await screen.findByRole("radio", { name: /PayPal/i });
     const cashier = screen.getByRole("radio", { name: /bill\.cashier/i });
 
-    expect(paypal).toHaveAttribute("aria-checked", "true");
+    // The first enabled plugin is preselected by an effect that runs after
+    // the plugin list renders, so wait for it rather than racing it.
+    await waitFor(() =>
+      expect(paypal).toHaveAttribute("aria-checked", "true"),
+    );
     expect(cashier).toHaveAttribute("aria-checked", "false");
 
     fireEvent.click(cashier);

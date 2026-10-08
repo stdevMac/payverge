@@ -383,7 +383,9 @@ it("renders null when hidden_until is in the future", async () => {
   await waitFor(() =>
     expect((getSetupStatus as jest.Mock).mock.calls.length).toBe(1),
   );
-  expect(container.firstChild).toBeNull();
+  // The status fetch resolving and the hub committing its hidden state are two
+  // separate turns; wait for the commit instead of racing it.
+  await waitFor(() => expect(container.firstChild).toBeNull());
 });
 
 it("renders State A when hidden_until has expired", async () => {
@@ -573,7 +575,9 @@ it("renders null when celebration window has elapsed (>24h)", async () => {
   await waitFor(() =>
     expect((getSetupStatus as jest.Mock).mock.calls.length).toBe(1),
   );
-  expect(container.firstChild).toBeNull();
+  // The status fetch resolving and the hub committing its hidden state are two
+  // separate turns; wait for the commit instead of racing it.
+  await waitFor(() => expect(container.firstChild).toBeNull());
   expect(completeOnboarding).not.toHaveBeenCalled();
 });
 
@@ -775,8 +779,8 @@ it("does not show the celebration when the dismissed flag is already set", async
   await waitFor(() =>
     expect((getSetupStatus as jest.Mock).mock.calls.length).toBe(1),
   );
+  await waitFor(() => expect(container.firstChild).toBeNull());
   expect(screen.queryByText(/setupProgress\.celebration\.title/)).toBeNull();
-  expect(container.firstChild).toBeNull();
 });
 
 it("reports onVisibilityChange(false) after the celebration is dismissed", async () => {

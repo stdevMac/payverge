@@ -19,6 +19,7 @@ export const VENUES_OVERVIEW_PATH = "/dashboard?venues=all";
 
 /** Full-page navigation to the cross-venue overview. */
 export function navigateToVenuesOverview(): void {
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate full-page navigation (see doc comment)
   window.location.href = VENUES_OVERVIEW_PATH;
 }
 

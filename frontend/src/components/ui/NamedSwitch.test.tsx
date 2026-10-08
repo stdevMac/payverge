@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { computeAccessibleName } from "dom-accessibility-api";
 import { NamedSwitch } from "./NamedSwitch";
 import { announcedSwitchName, labelledByTargetsHaveText } from "./namedControl";
@@ -20,7 +20,7 @@ describe("NamedSwitch (#446)", () => {
     expect(announcedSwitchName(sw)).toBe("Show Item Images, off");
   });
 
-  it("associates the visible title and description", () => {
+  it("associates the visible title and description", async () => {
     render(
       <div>
         <p id="low-stock-label">Low stock warnings</p>
@@ -35,7 +35,11 @@ describe("NamedSwitch (#446)", () => {
     );
     const sw = screen.getByRole("switch", { name: "Low stock warnings" });
     expect(sw.getAttribute("aria-labelledby")).toBe("low-stock-label");
-    expect(sw.getAttribute("aria-describedby")).toBe("low-stock-desc");
+    // react-aria re-renders the input once its description slot resolves and
+    // drops the stamped describedby; the observer restores it a microtask later.
+    await waitFor(() =>
+      expect(sw.getAttribute("aria-describedby")).toBe("low-stock-desc"),
+    );
     expect(labelledByTargetsHaveText(sw)).toBe(true);
     expect(announcedSwitchName(sw)).toBe("Low stock warnings, on");
   });
