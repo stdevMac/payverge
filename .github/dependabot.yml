@@ -26,6 +26,16 @@ updates:
     commit-message:
       prefix: chore
       include: scope
+    ignore:
+      # gorm 1.31 resolves a foreignKey tag through the namer, so every
+      # `Business Business gorm:"foreignKey:BusinessID"` field binds to
+      # Business.BusinessId and turns into a has-one. Projected Business
+      # loads come back empty and guest QR lookups 404. Hold the 1.30 line
+      # (and the postgres driver that still accepts it) until that is fixed.
+      - dependency-name: gorm.io/gorm
+        versions: [">= 1.31.0"]
+      - dependency-name: gorm.io/driver/postgres
+        versions: [">= 1.6.2"]
     groups:
       go-minor-patch:
         patterns:

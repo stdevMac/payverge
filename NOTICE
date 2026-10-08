@@ -66,6 +66,10 @@ reproduced verbatim in LICENSES/go-subpackages.txt.
   github.com/prometheus/client_golang/internal/github.com/golang/gddo
   Copyright (c) 2013 The Go Authors. All rights reserved. BSD-3-Clause.
 
+  github.com/hashicorp/golang-lru/v2/simplelru
+  Copyright (c) 2009 The Go Authors. All rights reserved. BSD-3-Clause.
+  (Applies to simplelru/list.go; the rest of the module is MPL-2.0.)
+
 Notices reproduced from Apache-2.0 dependencies (Apache License 2.0, 4(d)):
 
   AWS SDK for Go (github.com/aws/aws-sdk-go-v2)

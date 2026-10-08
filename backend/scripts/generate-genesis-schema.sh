@@ -192,7 +192,7 @@ That script:
 2. Runs \`go run ./cmd/genesisgen\` which calls \`database.ReconcileReferenceSchema\`
    (embedded genesis → pending numbered migrations → read-only verification)
    and refuses to continue if \`schema_migrations.dirty\` is true.
-3. Dumps with **in-container** \`pg_dump\` 15 (\`--schema-only --no-owner --no-privileges\`).
+3. Dumps with **in-container** \`pg_dump\` 18 (\`--schema-only --no-owner --no-privileges\`).
 4. Normalizes volatile dump headers and trailing whitespace for determinism.
 5. Writes \`current_schema.sql\`, \`version.json\`, and this README.
 
