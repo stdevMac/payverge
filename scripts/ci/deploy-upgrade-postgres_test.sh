@@ -16,7 +16,9 @@
 #   - a row-count mismatch or an unexpected restore error fails, removes the
 #     new pgdata volume and never removes the legacy db volume;
 #   - the guard: `check` exits 3 only when legacy data exists and PostgreSQL
-#     18 data does not; otherwise it hands over to docker-entrypoint.sh.
+#     18 data does not, and 4 when 15 has run on the legacy volume since the
+#     upgrade recorded its pg_control checksum (a rollback: pgdata is stale);
+#     otherwise it hands over to docker-entrypoint.sh.
 #
 # Usage: scripts/ci/deploy-upgrade-postgres_test.sh
 set -Eeuo pipefail
@@ -51,6 +53,13 @@ case $1 in
 stop | rm | logs) exit 0 ;;
 run)
 	if [[ $args == *" --rm "* ]]; then
+		# The stale-pgdata check (pgdata already holds 18) and the pg_control
+		# checksum taken after the dump.
+		if [[ $args == *"echo stale"* ]]; then
+			[[ ${STUB_STALE:-0} == 1 ]] && echo stale
+			exit 0
+		fi
+		[[ $args == *"cksum </old/global/pg_control"* ]] && { echo "${STUB_CONTROL_CKSUM:-1234567 8192}"; exit 0; }
 		[[ $args == *":/old:ro "* ]] && printf '%s\n' "${STUB_LEGACY_VERSION:-}"
 		[[ $args == *":/new:ro "* ]] && printf '%s\n' "${STUB_NEW_VERSION:-}"
 		exit 0
@@ -79,6 +88,10 @@ exec)
 		cat >/dev/null
 		echo "psql:<stdin>:20: ERROR:  role \"${STUB_SUPERUSER:-postgres}\" already exists" >&2
 		[[ ${STUB_RESTORE_ERROR:-0} == 1 ]] && echo 'psql:<stdin>:99: ERROR:  relation "bills" does not exist' >&2
+		if [[ ${STUB_RESTORE_ERROR:-0} == fatal ]]; then
+			echo 'psql:<stdin>:99: FATAL:  terminating connection due to administrator command' >&2
+			exit 2
+		fi
 		exit 0
 	fi
 	if [[ $args == *" ON_ERROR_STOP=1 "* ]]; then
@@ -142,6 +155,13 @@ STUB_VOLUMES="payverge_db payverge_pgdata" STUB_LEGACY_VERSION=15 STUB_NEW_VERSI
 	pass "pgdata already holds PostgreSQL 18: nothing to upgrade, rollback copy named" ||
 	fail "already upgraded: status $status, $(cat "$d/out.txt")"
 
+d=$(new_install stale)
+status=0
+STUB_VOLUMES="payverge_db payverge_pgdata" STUB_LEGACY_VERSION=15 STUB_NEW_VERSION=18 STUB_STALE=1 run_upgrade "$d" --yes || status=$?
+[[ $status != 0 ]] && grep -q 'rollback' "$d/out.txt" && grep -q 'docker volume rm payverge_pgdata' "$d/out.txt" && ! stopped "$d" &&
+	pass "pgdata older than a rollback is refused as stale, with the volume to remove" ||
+	fail "stale pgdata: status $status, $(cat "$d/out.txt")"
+
 d=$(new_install pg16)
 status=0
 STUB_VOLUMES="payverge_db" STUB_LEGACY_VERSION=16 run_upgrade "$d" --yes || status=$?
@@ -202,6 +222,10 @@ dumps=("$d"/backups/pg18-upgrade-*/pg15-dumpall.sql.gz)
 	grep -q '^payverge|public.users|2$' "$(dirname "${dumps[0]}")/row-counts-pg15.txt" &&
 	pass "dump and per-database row counts are kept in backups/pg18-upgrade-*/" || fail "dump dir: $(ls -R "$d/backups" 2>&1)"
 ! grep -q '^volume rm payverge_db' "$log" && pass "the legacy db volume is never removed" || fail "legacy volume removed"
+grep -q 'payverge-pg15-control.cksum.* sh 1234567 8192$' "$log" &&
+	grep -q -- '-v payverge_pgdata:/new ' "$log" &&
+	pass "the PostgreSQL 15 pg_control checksum is recorded in pgdata for the guard" ||
+	fail "control checksum marker: $(grep 'cksum' "$log")"
 
 d=$(new_install no-start)
 status=0
@@ -226,6 +250,14 @@ STUB_VOLUMES="payverge_db" STUB_LEGACY_VERSION=15 STUB_RESTORE_ERROR=1 run_upgra
 	grep -q '^volume rm payverge_pgdata' "$d/docker.log" && ! grep -q '^volume rm payverge_db' "$d/docker.log" &&
 	pass "an unexpected restore error fails and names it; the expected 'role exists' does not" ||
 	fail "restore error: status $status, $(cat "$d/out.txt")"
+
+d=$(new_install restore-fatal)
+status=0
+STUB_VOLUMES="payverge_db" STUB_LEGACY_VERSION=15 STUB_RESTORE_ERROR=fatal run_upgrade "$d" --yes || status=$?
+[[ $status != 0 ]] && grep -q 'restore reported errors' "$d/out.txt" && grep -q 'FATAL:  terminating connection' "$d/out.txt" &&
+	grep -q 'exited with status 2' "$d/out.txt" && grep -q '^volume rm payverge_pgdata' "$d/docker.log" &&
+	pass "a FATAL restore (lost connection, non-zero psql) fails" ||
+	fail "restore fatal: status $status, $(cat "$d/out.txt")"
 
 d=$(new_install old-style-superuser)
 status=0
@@ -259,6 +291,28 @@ guard_run check >/dev/null || status=$?
 out=$(guard_run postgres)
 [[ $status == 0 && $out == "entrypoint postgres" ]] &&
 	pass "guard: once pgdata holds 18 data it hands over to docker-entrypoint.sh" || fail "guard upgraded: $status $out"
+
+# The upgrade's marker: the checksum of 15's pg_control when it was dumped.
+mkdir -p "$g/legacy/global"
+printf 'control-at-upgrade' >"$g/legacy/global/pg_control"
+cksum <"$g/legacy/global/pg_control" | awk '{print $1, $2}' >"$g/new/payverge-pg15-control.cksum"
+guard_run_m() { PAYVERGE_UPGRADE_MARKER=$g/new/payverge-pg15-control.cksum guard_run "$@"; }
+status=0
+guard_run_m check >/dev/null || status=$?
+out=$(guard_run_m postgres)
+[[ $status == 0 && $out == "entrypoint postgres" ]] &&
+	pass "guard: pg_control unchanged since the upgrade -> starts 18" || fail "guard marker match: $status $out"
+printf 'control-after-rollback' >"$g/legacy/global/pg_control"
+status=0
+out=$(guard_run_m check) || status=$?
+[[ $status == 4 && $out == *"stale-pgdata"* ]] && pass "guard check: 15 ran after the upgrade (rollback) -> 4" || fail "guard stale: $status $out"
+out=$(timeout 2 sh -c 'PATH="$1/bin:$PATH" PAYVERGE_PGDATA_DIR=$1/new/18/docker PAYVERGE_LEGACY_PGDATA_DIR=$1/legacy PAYVERGE_UPGRADE_MARKER=$1/new/payverge-pg15-control.cksum sh "$2" postgres 2>&1' _ "$g" "$guard" || true)
+[[ $out == *"stale"* && $out == *"_pgdata"* && $out != *"entrypoint"* ]] &&
+	pass "guard: with stale pgdata it explains, idles and never starts postgres" || fail "guard stale idle: $out"
+rm "$g/new/payverge-pg15-control.cksum"
+status=0
+guard_run_m check >/dev/null || status=$?
+[[ $status == 0 ]] && pass "guard: no marker (pgdata not made by the upgrade script) -> 0" || fail "guard no marker: $status"
 
 if ((failures)); then
 	printf '\n%d check(s) failed\n' "$failures" >&2

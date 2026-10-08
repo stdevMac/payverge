@@ -88,6 +88,8 @@ case "$*" in
 "up -d backend") exit 0 ;;
 "run --rm --no-deps -T --entrypoint /bin/sh postgres /payverge/pg18-guard.sh check")
 	# STUB_PG15=1: the db volume still holds PostgreSQL 15 data, pgdata none.
+	# STUB_GUARD_STATUS: any other exit (4 = stale pgdata after a rollback).
+	[[ -n ${STUB_GUARD_STATUS:-} ]] && { echo "stub guard: status $STUB_GUARD_STATUS" >&2; exit "$STUB_GUARD_STATUS"; }
 	[[ ${STUB_PG15:-0} == 1 ]] && exit 3
 	exit 0
 	;;
@@ -389,6 +391,22 @@ expect_contains "PostgreSQL 15 volume: points at the docs" "$out" "docs/self-hos
 expect_absent "PostgreSQL 15 volume: nothing started" "$calls" "compose up"
 expect_absent "PostgreSQL 15 volume: no ERR-trap noise" "$out" "install.sh stopped at line"
 expect_contains "PostgreSQL 15 volume: backup still taken first" "$calls" "compose run --rm -T backup once"
+
+# PostgreSQL 15 ran on db after the upgrade (a rollback): pgdata is stale.
+upgrade_checkout stale-pgdata
+STUB_DB_VOLUME=1 STUB_GUARD_STATUS=4 install "$dir" --yes --version 1.1.0
+[[ $status -ne 0 ]] && pass "stale pgdata: non-zero exit" || fail "stale pgdata: exit 0"
+expect_contains "stale pgdata: names the stale volume" "$out" "_pgdata"
+expect_contains "stale pgdata: says a rollback happened" "$out" "rollback"
+expect_absent "stale pgdata: nothing started" "$calls" "compose up"
+
+# The guard check itself failing (no image, broken daemon) is not "no upgrade".
+upgrade_checkout guard-error
+STUB_DB_VOLUME=1 STUB_GUARD_STATUS=125 install "$dir" --yes --version 1.1.0
+[[ $status -ne 0 ]] && pass "guard check error: non-zero exit" || fail "guard check error: exit 0"
+expect_contains "guard check error: says the check failed" "$out" "could not check which PostgreSQL version"
+expect_contains "guard check error: shows the error" "$out" "stub guard: status 125"
+expect_absent "guard check error: nothing started" "$calls" "compose up"
 
 upgrade_checkout pg18-volume
 STUB_DB_VOLUME=1 STUB_PG15=0 install "$dir" --yes --version 1.1.0

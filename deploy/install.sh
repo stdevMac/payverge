@@ -501,9 +501,18 @@ db_volume_exists() {
 refuse_legacy_postgres() {
 	grep -q 'pg18-guard.sh' "$install_dir/docker-compose.yml" 2>/dev/null || return 0
 	compose_volume_exists db || return 0
-	local status=0
-	compose run --rm --no-deps -T --entrypoint /bin/sh postgres /payverge/pg18-guard.sh check >/dev/null 2>&1 || status=$?
-	((status == 3)) || return 0
+	local status=0 output
+	output=$(compose run --rm --no-deps -T --entrypoint /bin/sh postgres /payverge/pg18-guard.sh check 2>&1) || status=$?
+	((status == 0)) && return 0
+	if ((status == 4)); then
+		die "PostgreSQL 15 has run on this install's db volume since its data was copied to PostgreSQL 18 (a rollback), so the PostgreSQL 18 copy in the pgdata volume is missing the writes made since. Nothing was started and neither volume was changed. To upgrade again from the current data:
+    cd $install_dir && docker compose down && docker volume rm $(project_name)_pgdata && ./upgrade-postgres.sh
+See docs/self-hosting/upgrades.md, \"PostgreSQL 18\"."
+	fi
+	if ((status != 3)); then
+		printf '%s\n' "$output" | tail -n 20 >&2
+		die "could not check which PostgreSQL version holds this install's data (postgres/pg18-guard.sh check exited $status). Nothing was started; fix the error above and re-run."
+	fi
 	die "this install's database is PostgreSQL 15 (the db volume) and this release runs PostgreSQL 18. Nothing was started and your data is unchanged. Move it with:
     cd $install_dir && ./upgrade-postgres.sh
 which dumps it with PostgreSQL 15, restores it into PostgreSQL 18, checks every table's row count, keeps the old volume for rollback and starts Payverge. See docs/self-hosting/upgrades.md, \"PostgreSQL 18\"."

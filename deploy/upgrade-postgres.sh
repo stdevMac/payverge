@@ -139,6 +139,15 @@ if docker volume inspect "$new_vol" >/dev/null 2>&1; then
 	new_version=$(printf '%s' "$new_version" | tr -d '[:space:]')
 fi
 if [[ -n $new_version ]]; then
+	# A rollback since the upgrade (PostgreSQL 15 run on the db volume again)
+	# leaves pgdata stale; see postgres/pg18-guard.sh.
+	pgdata_state=$(docker run --rm --network none -v "$legacy_vol:/old:ro" -v "$new_vol:/new:ro" \
+		--entrypoint /bin/sh "$new_image" -c 'm=/new/payverge-pg15-control.cksum
+if [ -s "$m" ] && [ -s /old/global/pg_control ] &&
+	[ "$(cksum </old/global/pg_control | awk "{print \$1, \$2}")" != "$(cat "$m")" ]; then echo stale; fi')
+	if [[ $pgdata_state == *stale* ]]; then
+		die "$new_vol holds a PostgreSQL 18 copy taken before PostgreSQL 15 ran on $legacy_vol again (a rollback), so it is missing the writes made since. To upgrade again from the current data: docker compose down; docker volume rm $new_vol; then re-run this script. To keep the PostgreSQL 18 copy instead, remove $legacy_vol."
+	fi
 	note "$new_vol already holds a PostgreSQL $new_version database. Nothing to upgrade."
 	[[ -z $legacy_version ]] || note "$legacy_vol (PostgreSQL $legacy_version) is the pre-upgrade copy; remove it once you no longer need a rollback: docker volume rm $legacy_vol"
 	exit 0
@@ -254,6 +263,13 @@ docker exec "$old_ctr" pg_dumpall -U "$superuser" | gzip >"$dump_dir/pg15-dumpal
 chmod 600 "$dump_dir/pg15-dumpall.sql.gz"
 docker stop -t 60 "$old_ctr" >/dev/null
 docker rm -v "$old_ctr" >/dev/null
+# PostgreSQL 15 rewrites global/pg_control whenever it starts or stops. Its
+# checksum now, stored in pgdata below, lets postgres/pg18-guard.sh tell when
+# 15 has run on the db volume again after this upgrade (a rollback), which
+# makes the PostgreSQL 18 copy stale.
+legacy_control=$(docker run --rm --network none -v "$legacy_vol:/old:ro" --entrypoint /bin/sh "$OLD_IMAGE" \
+	-c 'cksum </old/global/pg_control | awk "{print \$1, \$2}"')
+[[ -n $legacy_control ]] || die "could not read global/pg_control in $legacy_vol"
 
 # --- 3. PostgreSQL 18: restore and verify -------------------------------------
 
@@ -278,11 +294,17 @@ wait_ready "$new_ctr"
 
 step "Restoring the dump"
 restore_log=$dump_dir/restore.log
-gzip -dc "$dump_dir/pg15-dumpall.sql.gz" | psql_in "$new_ctr" "$superuser" postgres -v ON_ERROR_STOP=0 >/dev/null 2>"$restore_log" || true
+restore_status=0
+# ON_ERROR_STOP=0: psql exits 0 through SQL errors (checked below), and
+# non-zero only on a lost connection or a fatal error; with pipefail a
+# failed gzip (a corrupt dump) also makes the status non-zero.
+gzip -dc "$dump_dir/pg15-dumpall.sql.gz" | psql_in "$new_ctr" "$superuser" postgres -v ON_ERROR_STOP=0 >/dev/null 2>"$restore_log" ||
+	restore_status=$?
 # pg_dumpall recreates the superuser it was taken with; on a fresh cluster
 # that role exists already, which is the one expected error.
-unexpected=$(grep 'ERROR:' "$restore_log" | grep -v "role \"$superuser\" already exists" || true)
-if [[ -n $unexpected ]]; then
+unexpected=$(grep -E 'ERROR:|FATAL:|PANIC:|psql: error|gzip:' "$restore_log" | grep -v "ERROR:  role \"$superuser\" already exists" || true)
+if [[ $restore_status != 0 || -n $unexpected ]]; then
+	[[ $restore_status == 0 ]] || printf 'the restore pipeline exited with status %s\n' "$restore_status" >&2
 	printf '%s\n' "$unexpected" | head -n 20 >&2
 	die "the restore reported errors (full log: $restore_log)"
 fi
@@ -300,6 +322,9 @@ fi
 note "$(wc -l <"$dump_dir/row-counts-pg18.txt" | tr -d ' ') tables, every row count matches"
 docker stop -t 60 "$new_ctr" >/dev/null
 docker rm -v "$new_ctr" >/dev/null
+docker run --rm --network none -v "$new_vol:/new" --entrypoint /bin/sh "$new_image" \
+	-c 'printf "%s\n" "$1" >/new/payverge-pg15-control.cksum && chmod 644 /new/payverge-pg15-control.cksum' \
+	sh "$legacy_control" >/dev/null
 finished=1
 
 # --- 4. start -----------------------------------------------------------------
@@ -309,7 +334,8 @@ say "PostgreSQL 18 now holds the data ($new_vol). Kept for rollback:"
 say "  $legacy_vol             the PostgreSQL 15 data, unchanged"
 say "  $dump_dir/   the dump, the row counts and the restore log"
 say "To roll back: docker compose down, then bash install.sh --version <previous release>."
-say "(Before upgrading again after a rollback, remove the stale copy: docker volume rm $new_vol)"
+say "A rollback loses everything written on PostgreSQL 18. Before upgrading again after one,"
+say "remove the stale copy (Payverge refuses to start on it): docker volume rm $new_vol"
 say "Once you are sure, free the space: docker volume rm $legacy_vol"
 if [[ $no_start == 1 ]]; then
 	say "Start Payverge with: docker compose up -d"

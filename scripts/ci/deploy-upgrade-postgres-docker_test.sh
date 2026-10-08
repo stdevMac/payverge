@@ -9,7 +9,9 @@
 #   4. through the guard, PostgreSQL 18 now serves it from
 #      /var/lib/postgresql/18/docker: the app role logs in over TCP with its
 #      old password, the rows are there, the superuser still has no password,
-#      and the db volume still holds the PostgreSQL 15 data (rollback).
+#      and the db volume still holds the PostgreSQL 15 data (rollback);
+#   5. after a rollback (15 run on the db volume again) the guard refuses to
+#      serve the now stale pgdata copy.
 #
 # Needs docker. Publishes no ports. Volumes and containers are prefixed with
 # PG_UPGRADE_TEST_PREFIX (default pvpgup) and removed on exit.
@@ -129,6 +131,30 @@ got=$(docker run --rm --network "$net" -e PGPASSWORD="$password" --entrypoint ps
 	pass "the app role is still not a superuser" || fail "app role attributes changed"
 [[ $(docker exec "$prefix-18" cat /payverge-legacy-db/PG_VERSION) == 15 ]] &&
 	pass "the db volume still holds the PostgreSQL 15 data (rollback)" || fail "legacy volume changed"
+docker rm -f "$prefix-18" >/dev/null
+
+# 5. A rollback: PostgreSQL 15 runs on the db volume again. The pgdata copy is
+# now stale, and the guard refuses to start 18 on it.
+docker run -d --name "$prefix-seed" --network "$net" \
+	-v "${prefix}_db:/var/lib/postgresql/data" "$old_image" >/dev/null
+wait_tcp "$prefix-seed" || fail "PostgreSQL 15 did not start again on the db volume"
+docker exec "$prefix-seed" psql -X -q -U payverge -d payverge -v ON_ERROR_STOP=1 -c \
+	"INSERT INTO upgrade_probe (note) VALUES ('written after the rollback')"
+docker stop -t 30 "$prefix-seed" >/dev/null
+docker rm -v "$prefix-seed" >/dev/null
+guarded "$prefix-guard"
+sleep 5
+logs=$(docker logs "$prefix-guard" 2>&1 || true)
+if [[ $logs == *"stale"* ]] && ! docker exec "$prefix-guard" pg_isready -q >/dev/null 2>&1 &&
+	[[ $(docker inspect -f '{{.State.Running}}' "$prefix-guard") == true ]]; then
+	pass "guard: after a rollback the stale pgdata copy is not served"
+else
+	fail "guard served stale pgdata after a rollback: $logs"
+fi
+status=0
+docker exec "$prefix-guard" sh /payverge/pg18-guard.sh check >/dev/null 2>&1 || status=$?
+[[ $status == 4 ]] && pass "guard check: stale pgdata -> 4" || fail "guard check after rollback: $status"
+docker rm -f "$prefix-guard" >/dev/null
 
 if ((failures)); then
 	printf '%d check(s) failed\n' "$failures" >&2

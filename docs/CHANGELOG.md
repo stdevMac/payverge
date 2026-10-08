@@ -42,6 +42,24 @@ follows [Semantic Versioning](https://semver.org/).
   attempted-voucher reconcile fails closed on AFIP errors, and credit notes of
   credit notes are refused.
 
+### Upgrade notes
+
+- **PostgreSQL 18.** This release runs PostgreSQL 18 (earlier releases ran 15)
+  and the backend refuses to start on any other major. Moving the data is a
+  one-time step; see
+  [docs/self-hosting/upgrades.md](self-hosting/upgrades.md#postgresql-18).
+  - *`install.sh` installs:* `install.sh` stops before starting anything and
+    names `./upgrade-postgres.sh`, which dumps with 15, restores into 18 in a
+    new `pgdata` volume and checks every table's row count. The 15 data stays
+    in the `db` volume for rollback. Rolling back loses what was written on
+    18, and the 18 copy is refused afterwards until it is removed.
+  - *Coolify / Dokploy:* there is no automatic guard. PostgreSQL 18 refuses to
+    start on the old data (nothing is overwritten), so dump with the previous
+    release first and restore after deploying.
+  - *Render and other managed databases:* upgrade the database to 18 with the
+    provider's tool before deploying. Render does not upgrade an existing
+    database when `render.yaml` changes.
+
 ### Fixed
 
 - Genesis schema metadata again records the schema fingerprint checked at

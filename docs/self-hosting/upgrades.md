@@ -115,9 +115,16 @@ docker compose down
 bash install.sh --version <previous release>   # runs PostgreSQL 15 on db again
 ```
 
-Anything written after the upgrade is lost. Before trying the upgrade again,
-remove the stale copy: `docker volume rm <project>_pgdata` (the project is
-`payverge` unless `COMPOSE_PROJECT_NAME` says otherwise).
+Anything written on PostgreSQL 18 after the upgrade is lost: the rollback
+runs on the `db` volume as it was when the upgrade dumped it. From then on
+the `pgdata` copy is stale in turn, since it misses what is written on 15.
+The upgrade records a checksum of the 15 cluster's `global/pg_control` in
+`pgdata`, so once 15 has run again, the PostgreSQL 18 release refuses to
+start on that copy (`install.sh` stops, and the postgres service logs why
+and waits) instead of silently serving older data. Before trying the upgrade
+again, remove the stale copy: `docker volume rm <project>_pgdata` (the
+project is `payverge` unless `COMPOSE_PROJECT_NAME` says otherwise), then
+run `./upgrade-postgres.sh`.
 
 **Afterwards.** Once the instance has run well on PostgreSQL 18 for a while,
 free the space the old data takes: `docker volume rm <project>_db`. Backup
@@ -132,9 +139,13 @@ dumps).
   first (`pg_dumpall`), then empty the volume, deploy, and restore the dump
   with `psql`.
 - *Managed databases* (Render, Railway, your own server): upgrade the
-  database to PostgreSQL 18 with the provider's tool (Render:
-  `postgresMajorVersion: "18"` in `render.yaml`) before deploying this
-  release.
+  database to PostgreSQL 18 with the provider's tool before deploying this
+  release. On Render, `postgresMajorVersion: "18"` in `render.yaml` only
+  applies when the Blueprint creates the database; an existing database
+  keeps its version until you upgrade it from the Render dashboard (or
+  dump, create a new 18 database and restore). Until then the backend
+  refuses to start (`postgres major version 15 does not match the genesis
+  baseline's 18`).
 - *Development* (root `docker-compose.yml`): the `postgres_data` volume moves
   to `/var/lib/postgresql`; a throwaway dev database is simplest to
   recreate.
