@@ -27,6 +27,7 @@ import (
 // Operating hours are wall-clock relative (open 4h ago, close 2h from now) so
 // the eligibility precondition holds at any UTC time of day — a fixed all-day
 // window with a 30-min buffer fails near midnight (effective cutoff already past).
+// Today's and yesterday's rows both carry it, for windows that cross midnight.
 func TestQuoteDelivery_ZoneCutoffBufferShiftsCutoffAt(t *testing.T) {
 	db := setupHospitalityServiceTestDB(t)
 	svc := NewDeliveryService(db, nil)
@@ -39,14 +40,18 @@ func TestQuoteDelivery_ZoneCutoffBufferShiftsCutoffAt(t *testing.T) {
 	openStr := now.Add(-4 * time.Hour).Format("15:04")
 	closeAt := now.Add(2 * time.Hour)
 	closeStr := closeAt.Format("15:04")
-	today := int(now.Weekday())
-	require.NoError(t, db.Model(&database.BusinessOperatingHours{}).
-		Where("business_id = ? AND day_of_week = ?", business.ID, today).
-		UpdateColumns(map[string]interface{}{
-			"open_time":  openStr,
-			"close_time": closeStr,
-			"is_closed":  false,
-		}).Error)
+	// Yesterday gets the same window: between 00:00 and 04:00 UTC the window
+	// crosses midnight, and the after-midnight tail of an overnight window is
+	// read from yesterday's row, not today's.
+	for _, day := range []int{int(now.Weekday()), int(now.AddDate(0, 0, -1).Weekday())} {
+		require.NoError(t, db.Model(&database.BusinessOperatingHours{}).
+			Where("business_id = ? AND day_of_week = ?", business.ID, day).
+			UpdateColumns(map[string]interface{}{
+				"open_time":  openStr,
+				"close_time": closeStr,
+				"is_closed":  false,
+			}).Error)
+	}
 
 	createDeliverySettings(t, db, business.ID, func(s *database.DeliverySettings) {
 		s.DeliveryHoursSameAsBusiness = true
