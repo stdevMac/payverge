@@ -1,0 +1,77 @@
+{
+  "menu": {
+    "checklistsEntry": "Listas",
+    "checklistsHint": "Tareas de apertura, cierre e incorporación",
+    "onboardingEntry": "Incorporación",
+    "onboardingHint": "Tus pasos para empezar",
+    "documentsEntry": "Documentos",
+    "documentsHint": "Políticas y manuales para revisar",
+    "recognitionEntry": "Reconocimientos",
+    "recognitionHint": "Reconocimientos de tu equipo",
+    "pollsEntry": "Encuestas",
+    "pollsHint": "Encuestas del equipo para votar"
+  },
+  "checklists": {
+    "title": "Listas de tareas",
+    "empty": "No tienes listas asignadas",
+    "emptyHint": "Las tareas de apertura, cierre e incorporación aparecen aquí.",
+    "loading": "Cargando listas",
+    "statusPending": "Sin empezar",
+    "statusInProgress": "En curso",
+    "statusComplete": "Completada",
+    "back": "Volver",
+    "required": "Obligatorio",
+    "itemsEmpty": "Esta lista no tiene tareas",
+    "openRun": "Abrir lista",
+    "tickError": "No se pudo actualizar la tarea"
+  },
+  "onboarding": {
+    "title": "Tu incorporación",
+    "empty": "Nada por configurar por ahora",
+    "emptyHint": "Tu encargado asignará aquí los pasos de incorporación.",
+    "loading": "Cargando incorporación"
+  },
+  "documents": {
+    "title": "Documentos",
+    "empty": "Aún no hay documentos",
+    "emptyHint": "Las políticas y manuales que comparte tu encargado aparecen aquí.",
+    "loading": "Cargando documentos",
+    "open": "Abrir",
+    "version": "Versión {n}",
+    "ackRequired": "Requiere confirmación de lectura",
+    "acknowledge": "He leído esto",
+    "acknowledged": "Confirmado",
+    "ackError": "No se pudo registrar tu confirmación"
+  },
+  "recognition": {
+    "title": "Reconocimientos",
+    "empty": "Aún no hay reconocimientos",
+    "emptyHint": "Los reconocimientos de tu equipo aparecerán aquí.",
+    "loading": "Cargando reconocimientos",
+    "send": "Envía un reconocimiento",
+    "recipient": "Para",
+    "recipientPlaceholder": "Elige a un compañero",
+    "message": "Mensaje",
+    "messagePlaceholder": "¿Qué hizo bien?",
+    "emoji": "Emoji",
+    "visibility": "Visibilidad",
+    "team": "Todo el equipo",
+    "private": "Privado",
+    "submit": "Enviar",
+    "sending": "Enviando…",
+    "sent": "Reconocimiento enviado",
+    "sendError": "No se pudo enviar tu reconocimiento"
+  },
+  "polls": {
+    "title": "Encuestas",
+    "empty": "No hay encuestas abiertas",
+    "emptyHint": "Las encuestas del equipo aparecen aquí cuando tu encargado abre una.",
+    "loading": "Cargando encuestas",
+    "vote": "Votar",
+    "voted": "Voto registrado",
+    "closed": "Cerrada",
+    "anonymous": "Anónima",
+    "votesCount": "{n} votos",
+    "voteError": "No se pudo registrar tu voto"
+  }
+}

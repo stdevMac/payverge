@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "selectImageFile": "Por favor seleccioná un archivo de imagen"
+  },
+  "labels": {
+    "dragOrClick": "Arrastrá y soltá o hacé clic para subir. PNG, JPG, WebP hasta 5MB.",
+    "orDrop": "o soltá aquí"
+  },
+  "gallery": {
+    "maxCountBody": "Podés subir hasta {max} imágenes."
+  }
+}

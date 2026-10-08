@@ -1,0 +1,13 @@
+{
+  "key": "ac0fbfc59a60aec4",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "The Salad is $9 — it's a fresh mix of greens. It's a light and healthy option. Would you like to order one?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

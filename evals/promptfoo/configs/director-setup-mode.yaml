@@ -1,0 +1,89 @@
+# Director cold-start / setup-mode probe.
+# Proves the Pillar-1 grounding work: when data_readiness.state == "setup"
+# (a brand-new business with no orders/revenue), the model must be HONEST —
+# acknowledge there is not enough data, give onboarding actions, and invent
+# NO revenue/growth/percent/comparison figures (the "imagines things" bug).
+# Source prompt: backend/internal/services/prompts/director_console/. Model gemini-2.5-flash (temp 0.2 / JSON).
+description: "Director — cold-start setup-mode honesty (no fabricated metrics)"
+
+prompts:
+  - file://../lib/prod_prompts.js:director
+
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    label: gemini-2.5-flash
+    config:
+      temperature: 0.2
+      max_tokens: 4096
+      response_format: { type: json_object }
+
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+  vars:
+    ASSISTANT_NAME: "Director Copilot"
+    BUSINESS_ID: "1"
+
+tests:
+  - description: "[setup-mode EN] brand-new business, no data → honest onboarding, no invented metrics"
+    vars:
+      LANG: "en"
+      owner_question: "How do I grow my revenue?"
+      context_json: '{"business_name":"Fresh Start Cafe","currency":"USD","data_readiness":{"state":"setup","menu_item_count":0,"lifetime_orders":0,"has_recognized_revenue":false,"customer_count":0,"payments_enabled":false},"weekly_metrics":{"revenue":0,"transactions":0,"average_ticket":0,"tips":0,"active_bills":0},"order_status":{"pending":0,"confirmed":0,"preparing":0,"ready":0,"delivered":0},"top_items":[],"bottom_items":[],"crm_stats":{"total_customers":0},"plugins":[],"available_plugins":["Stripe","Postmark","MercadoPago"]}'
+    assert:
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          let v;
+          try { v = JSON.parse(t); } catch (e) { return false; }
+          const okStr = s => typeof s === 'string' && s.length > 0;
+          if (!okStr(v.summary) || !okStr(v.diagnosis) || !okStr(v.expected_impact)) return false;
+          if (!Array.isArray(v.evidence) || !Array.isArray(v.actions) || !Array.isArray(v.follow_ups)) return false;
+          if (v.actions.length < 1) return false;
+          for (const a of v.actions) {
+            if (!okStr(a.title) || !okStr(a.description)) return false;
+            if (!['high', 'medium', 'low'].includes(a.priority)) return false;
+          }
+          return true;
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          let v;
+          try { v = JSON.parse(t); } catch (e) { return false; }
+          const blob = JSON.stringify(v);
+          if (/\$\s?[1-9]/.test(blob)) return false;
+          if (/[1-9]\d*(\.\d+)?\s?%/.test(blob)) return false;
+          return true;
+      - type: llm-rubric
+        value: "Valid director-schema JSON in English. The business is in SETUP state (data_readiness.state='setup', zero revenue, zero orders, no menu). The model is HONEST: it plainly says there is not enough activity/data yet for a data-driven analysis, and gives concrete onboarding/setup actions (e.g. build the menu, connect payments, create tables & print QR codes, set hours/profile). It invents NO revenue, growth %, trend, or comparison figures and does NOT pretend the business already has sales or customers."
+  - description: "[setup-mode ES-AR voseo] negocio nuevo sin datos → honesto, sin métricas inventadas"
+    vars:
+      LANG: "es_ar"
+      owner_question: "¿Cómo hago crecer mis ingresos?"
+      context_json: '{"business_name":"Fresh Start Cafe","currency":"USD","data_readiness":{"state":"setup","menu_item_count":0,"lifetime_orders":0,"has_recognized_revenue":false,"customer_count":0,"payments_enabled":false},"weekly_metrics":{"revenue":0,"transactions":0,"average_ticket":0,"tips":0,"active_bills":0},"order_status":{"pending":0,"confirmed":0,"preparing":0,"ready":0,"delivered":0},"top_items":[],"bottom_items":[],"crm_stats":{"total_customers":0},"plugins":[],"available_plugins":["Stripe","Postmark","MercadoPago"]}'
+    assert:
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          let v;
+          try { v = JSON.parse(t); } catch (e) { return false; }
+          const okStr = s => typeof s === 'string' && s.length > 0;
+          if (!okStr(v.summary) || !okStr(v.diagnosis) || !okStr(v.expected_impact)) return false;
+          if (!Array.isArray(v.evidence) || !Array.isArray(v.actions) || !Array.isArray(v.follow_ups)) return false;
+          if (v.actions.length < 1) return false;
+          for (const a of v.actions) {
+            if (!okStr(a.title) || !okStr(a.description)) return false;
+            if (!['high', 'medium', 'low'].includes(a.priority)) return false;
+          }
+          return true;
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          let v;
+          try { v = JSON.parse(t); } catch (e) { return false; }
+          const blob = JSON.stringify(v);
+          if (/\$\s?[1-9]/.test(blob)) return false;
+          if (/[1-9]\d*(\.\d+)?\s?%/.test(blob)) return false;
+          return true;
+      - type: llm-rubric
+        value: "JSON válido del esquema director con TODOS los valores de texto en español rioplatense (voseo). El negocio está en estado SETUP (data_readiness.state='setup', sin ingresos, sin pedidos, sin menú). El modelo es HONESTO: dice claramente que todavía no hay suficiente actividad/datos para un análisis basado en datos, y ofrece acciones concretas de puesta en marcha (armar el menú, conectar pagos, crear mesas e imprimir códigos QR, definir horarios). NO inventa cifras de ingresos, crecimiento, porcentajes ni comparaciones, y NO finge que el negocio ya tiene ventas o clientes."

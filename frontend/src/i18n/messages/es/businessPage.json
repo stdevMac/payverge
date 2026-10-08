@@ -1,0 +1,18 @@
+{
+  "loadingAria": "Cargando la página del negocio",
+  "errors": {
+    "pageNotAvailable": "La página del negocio no está disponible",
+    "notFound": "Negocio no encontrado",
+    "loadFailed": "No se pudo cargar el negocio"
+  },
+  "error": {
+    "notFoundEyebrow": "No encontrado",
+    "notFoundTitle": "No pudimos encontrar esa página",
+    "notFoundBody": "No pudimos encontrar un negocio con esa URL personalizada. Es posible que haya sido eliminado o que la URL esté mal escrita.",
+    "notFoundCta": "Ir a la página principal",
+    "unavailableEyebrow": "No disponible",
+    "unavailableTitle": "Negocio temporalmente no disponible",
+    "unavailableBody": "Estamos teniendo problemas para cargar esta página. Por favor, inténtalo de nuevo.",
+    "retry": "Intentar de nuevo"
+  }
+}

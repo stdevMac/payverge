@@ -1,0 +1,47 @@
+# Payverge edge, EDGE=none (default): Caddy is the internet-facing server.
+#
+# Certificates are automatic:
+#   - a public domain gets a Let's Encrypt (or ZeroSSL) certificate over ACME;
+#     ports 80 and 443 must reach this host and DNS must point at it.
+#   - DOMAIN=localhost (or *.localhost, *.local, *.internal, an IP address)
+#     gets a certificate from Caddy's internal CA. Browsers warn until you
+#     trust it; see deploy/README.md.
+#
+# Behind Cloudflare (orange cloud), use Caddyfile.cloudflare instead by
+# setting EDGE=cloudflare in .env.
+#
+# Client IP: by default {client_ip} is the TCP peer and any X-Forwarded-For a
+# client sends is replaced (payverge.caddy). Only when another proxy or load
+# balancer sits in front of this Caddy, list its addresses in
+# TRUSTED_PROXY_CIDRS (.env) so Caddy reads the client IP it forwards. Such a
+# proxy usually APPENDS the address it saw to the X-Forwarded-For the client
+# sent, so Caddy then reads the list right to left and takes the first address
+# that is not a trusted proxy (trusted_proxies_strict); a value the client
+# put in front is never used.
+#
+# Environment (set by docker-compose.yml from .env):
+#   DOMAIN                               the public host name, no scheme or path
+#   CADDY_ACME_EMAIL_OPTION              "email <ACME_EMAIL>" or empty (no ACME contact)
+#   CADDY_TRUSTED_PROXIES_OPTION         "trusted_proxies static <TRUSTED_PROXY_CIDRS>"
+#                                        or empty (trust no upstream proxy)
+#   CADDY_TRUSTED_PROXIES_STRICT_OPTION  "trusted_proxies_strict" whenever
+#                                        TRUSTED_PROXY_CIDRS is set, else empty
+#   CADDY_HSTS                           the Strict-Transport-Security value
+#                                        (HSTS_POLICY; payverge.caddy)
+#   CADDY_SITE_SCHEME                    "http://" with TLS_TERMINATION=proxy
+#                                        (another server terminates TLS), else
+#                                        unset (payverge.caddy)
+{
+	{$CADDY_ACME_EMAIL_OPTION}
+
+	servers {
+		timeouts {
+			read_header 15s
+			idle 2m
+		}
+		{$CADDY_TRUSTED_PROXIES_OPTION}
+		{$CADDY_TRUSTED_PROXIES_STRICT_OPTION}
+	}
+}
+
+import payverge.caddy

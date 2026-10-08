@@ -1,0 +1,39 @@
+{
+  "header": {
+    "subtitle": "Elegí una ubicación de servicio, agregá artículos y revisá la cuenta antes de enviarla a cocina."
+  },
+  "billSummary": {
+    "tax": "Impuestos",
+    "serviceFee": "Cargo por servicio",
+    "tip": "Propina",
+    "finalTotal": "Total",
+    "description": "Revisá el borrador antes de crear la cuenta activa.",
+    "locationPlaceholder": "Elegí una mesa o mostrador para continuar",
+    "locationHint": "Elegí una mesa o mostrador para que el pedido vaya al lugar correcto.",
+    "noItemsDescription": "Buscá en el menú o tocá un artículo a la izquierda para empezar a armar esta cuenta."
+  },
+  "menu": {
+    "description": "Buscá en el menú o saltá a una categoría para agregar artículos más rápido.",
+    "noItemsMatch": "Ningún elemento coincide con \"{query}\". Intentá un término de búsqueda diferente."
+  },
+  "form": {
+    "chooseTable": "Elegí una mesa",
+    "allTablesHaveBills": "Todas las mesas activas actualmente tienen cuentas abiertas. Por favor cerrá las cuentas existentes o agregá más mesas.",
+    "allTablesOccupied": "Todas las mesas están ocupadas. Usá un mostrador abajo para pedidos para llevar.",
+    "activeBillsCapped": "Mostrando las cuentas abiertas más recientes — en un servicio ajetreado algunas mesas ocupadas pueden ocultarse hasta actualizar.",
+    "chooseCounter": "Elegí un mostrador para servicio para llevar/rápido",
+    "enableCountersMessage": "Habilitá mostradores en la configuración del negocio para servicio para llevar",
+    "orderNotesPlaceholder": "Agregá instrucciones especiales, nombre del cliente o notas para cocina/personal..."
+  },
+  "messages": {
+    "locationOccupied": "Ese lugar ya tiene una cuenta abierta. Abriéndola ahora.",
+    "loadingQuote": "Actualizando total",
+    "quoteFailed": "Los precios en vivo no están disponibles temporalmente. Se muestra el subtotal sin descuentos.",
+    "quoteBlocked": "Un artículo de este pedido ya no está disponible. Eliminalo antes de crear la cuenta."
+  },
+  "discardOrderDescription": "Tenés artículos en este pedido. Si lo cerrás ahora, se eliminarán junto con sus personalizaciones. Esta acción no se puede deshacer.",
+  "validation": {
+    "selectLocation": "Seleccioná una mesa o mostrador primero",
+    "addItems": "Agregá al menos un ítem"
+  }
+}

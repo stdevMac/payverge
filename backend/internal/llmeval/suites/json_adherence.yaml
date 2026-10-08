@@ -1,0 +1,74 @@
+name: json_adherence
+default_model: google/gemini-2.0-flash-001
+judge_model: google/gemini-2.0-flash-001
+cases:
+  - id: json_director_schema_en
+    feature: director
+    request:
+      system: "You are a business copilot. Respond with STRICT JSON only, no prose, matching: {\"summary\":string,\"diagnosis\":string,\"evidence\":[string],\"actions\":[{\"title\":string,\"description\":string,\"deep_link\":string,\"priority\":\"high|medium|low\"}],\"expected_impact\":string,\"follow_ups\":[string]}."
+      user: "Revenue from 2026-05-30 to 2026-06-06 grew 12%. Order #100234567 was delayed. What should I do?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","diagnosis","evidence","actions","expected_impact","follow_ups"],"properties":{"summary":{"type":"string"},"diagnosis":{"type":"string"},"evidence":{"type":"array","items":{"type":"string"}},"actions":{"type":"array","items":{"type":"object","required":["title","priority"],"properties":{"priority":{"type":"string","enum":["high","medium","low"]}}}},"expected_impact":{"type":"string"},"follow_ups":{"type":"array","items":{"type":"string"}}}}'
+      - type: regex_match
+        pattern: "2026-05-30"
+      - type: regex_match
+        pattern: "100234567"
+      - type: regex_absent
+        pattern: "redacted-phone"
+  - id: json_director_priority_enum
+    feature: director
+    request:
+      system: "You are a business copilot. Respond with STRICT JSON. actions[].priority MUST be one of high, medium, low. Schema: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Tuesdays are our slowest day. Give me one high-priority action."
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","actions"],"properties":{"summary":{"type":"string"},"actions":{"type":"array","items":{"type":"object","required":["title","priority"],"properties":{"priority":{"type":"string","enum":["high","medium","low"]}}}}}}'
+      - type: json_field_equals
+        field: "actions.0.priority"
+        equals: "high"
+  - id: json_director_schema_es
+    feature: director
+    request:
+      system: "Eres un copiloto de negocio. Responde SOLO con JSON estricto en español: {\"summary\":string,\"diagnosis\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Las ventas del 2026-05-01 al 2026-05-31 bajaron 8%. ¿Qué hago?"
+      locale: es
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","diagnosis","actions"],"properties":{"summary":{"type":"string"},"diagnosis":{"type":"string"},"actions":{"type":"array","items":{"type":"object","required":["title","priority"],"properties":{"priority":{"type":"string","enum":["high","medium","low"]}}}}}}'
+      - type: regex_match
+        pattern: "2026-05-01"
+  - id: json_wizard_schema_en
+    feature: wizard
+    request:
+      system: "You are a menu-building assistant. Respond with STRICT JSON only matching: {\"message\":string,\"is_complete\":boolean,\"extracted_config\":object,\"suggested_options\":[string]}. extracted_config values must be strings."
+      user: "I run a Mexican food truck and want 3 burritos, 5 tacos, and 2 drinks."
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["message","is_complete","extracted_config","suggested_options"],"properties":{"message":{"type":"string"},"is_complete":{"type":"boolean"},"extracted_config":{"type":"object"},"suggested_options":{"type":"array","items":{"type":"string"}}}}'
+  - id: json_wizard_is_complete_bool
+    feature: wizard
+    request:
+      system: "You are a menu-building assistant. Respond with STRICT JSON. is_complete MUST be a JSON boolean (true/false), never a string. Schema: {\"message\":string,\"is_complete\":boolean,\"extracted_config\":object,\"suggested_options\":[string]}."
+      user: "That's everything, generate my menu now."
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["message","is_complete"],"properties":{"is_complete":{"type":"boolean"}}}'
+      - type: json_field_equals
+        field: "is_complete"
+        equals: "true"
+  - id: json_director_grouped_number
+    feature: director
+    request:
+      system: "You are a business copilot. Respond with STRICT JSON: {\"summary\":string}. Preserve all numbers exactly."
+      user: "We sold 1 234 567 units last quarter. Summarize."
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary"],"properties":{"summary":{"type":"string"}}}'
+      - type: regex_absent
+        pattern: "redacted-phone"

@@ -1,0 +1,26 @@
+{
+  "getStarted": "Comenzá",
+  "inviteCode": "Código de invitación",
+  "enterInviteCode": "Ingresá tu código de invitación",
+  "inviteCodeHint": "Pedí un código de invitación al administrador de esta instancia.",
+  "registrationClosedBody": "Esta instancia no acepta cuentas nuevas. Si ya tenés una, iniciá sesión. ¿Necesitás acceso? Pedíselo al administrador de esta instancia.",
+  "inviteOnlyBody": "Las cuentas nuevas de esta instancia necesitan una invitación. Pedile un enlace de invitación al administrador de esta instancia.",
+  "inviteOnlySignInHint": "¿Sos nuevo? Pedile una invitación al administrador de esta instancia.",
+  "signInSubtitle": "Iniciá sesión para acceder a tu cuenta",
+  "signUpSubtitle": "Creá una cuenta para comenzar",
+  "enterName": "Ingresá tu nombre",
+  "enterEmail": "Ingresá tu correo",
+  "enterPassword": "Ingresá tu contraseña",
+  "createPasswordPlaceholder": "Creá una contraseña (mínimo 8 caracteres)",
+  "passwordRequirement": "Usá al menos 8 caracteres",
+  "accountCreatedVerify": "Cuenta creada. Revisá tu correo para verificarla.",
+  "emailNotVerified": "Tu correo todavía no está verificado. Revisá tu bandeja de entrada y usá el enlace de verificación antes de iniciar sesión.",
+  "verificationResent": "Correo de verificación enviado. Revisá tu bandeja de entrada.",
+  "verificationResendError": "No pudimos reenviar el correo. Intentá de nuevo en un momento.",
+  "verificationSentKeepGoing": "Enviamos un enlace de verificación a {{email}} — podés continuar y verificar más tarde.",
+  "verifyBannerText": "Verificá tu correo para proteger tu cuenta.",
+  "sessionExpired": {
+    "body": "Por seguridad cerramos la sesión tras un periodo de inactividad. Iniciá sesión de nuevo para continuar."
+  },
+  "networkError": "No pudimos contactar al servidor. Revisá tu conexión e intentá de nuevo."
+}

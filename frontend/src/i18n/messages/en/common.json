@@ -1,0 +1,89 @@
+{
+  "yes": "Yes",
+  "no": "No",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "skipToMainContent": "Skip to main content",
+  "loading": "Loading…",
+  "retry": "Retry",
+  "loadingSession": "Loading session",
+  "sessionCheckFailed": "We couldn't verify your session",
+  "sessionCheckFailedHint": "Check your connection and try again. You may still be signed in.",
+  "invalidBusinessId": "Invalid business ID",
+  "poweredBy": "Powered by",
+  "help": "Help",
+  "learnMore": "Learn more",
+  "close": "Close",
+  "dismiss": "Dismiss",
+  "copy": "Copy",
+  "edit": "Edit",
+  "delete": "Delete",
+  "businessPageLoading": {
+    "title": "Loading Business Page",
+    "message": "We're preparing your business experience..."
+  },
+  "comingSoonBadge": "Coming soon",
+  "aiProviderNotice": {
+    "title": "AI text generation isn't set up on this server",
+    "body": "Menu, marketing and assistant drafts need an LLM provider. Your data views still work. The server administrator can enable it by setting OPENROUTER_API_KEY, or LLM_BASE_URL (plus LLM_API_KEY when the endpoint needs one)."
+  },
+  "maintenance": {
+    "title": "Under Maintenance",
+    "message": "We're improving {productName} to serve you better. We'll be back shortly.",
+    "visitWebsite": "Visit our Website",
+    "checkDocs": "Check our Documentation",
+    "exploreLinks": "Contact Us"
+  },
+  "errors": {
+    "network": "Unable to connect. Check your internet connection and try again.",
+    "server": "Something went wrong on our end. Please try again later.",
+    "timeout": "The request took too long. Please try again.",
+    "rateLimited": "Too many requests. Please wait a moment and try again.",
+    "validation": "Please check your input and try again.",
+    "authentication": "Please sign in to continue.",
+    "authorization": "You do not have permission to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "conflict": "This action conflicts with a newer change. Please refresh and try again.",
+    "default": "An unexpected error occurred. Please try again.",
+    "rangeTooLarge": "This range is too large to export. Choose a period of 31 days or less."
+  },
+  "metric": {
+    "empty": "—",
+    "noData": "No data yet",
+    "chartEmpty": "No data to chart"
+  },
+  "pagination": {
+    "range": "{start}–{end} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "previousPageAria": "Previous page",
+    "nextPageAria": "Next page"
+  },
+  "featureUnavailable": {
+    "docsLink": "How to enable it (self-hosting docs)",
+    "ai": {
+      "title": "AI isn't set up on this server",
+      "body": "The AI waiter, the director, the operations assistant and the menu wizard need an LLM provider. The server administrator can enable them by setting OPENROUTER_API_KEY, or LLM_BASE_URL (plus LLM_API_KEY when the endpoint needs one)."
+    },
+    "fiscal_ar": {
+      "title": "Fiscal invoicing isn't available on this server",
+      "body": "ARCA electronic invoicing is not enabled for this install."
+    },
+    "whatsapp": {
+      "title": "WhatsApp isn't set up on this server",
+      "body": "The server administrator needs to enable the WhatsApp integration first."
+    },
+    "telegram": {
+      "title": "Telegram isn't set up on this server",
+      "body": "The server administrator needs to configure the Telegram bot first."
+    },
+    "crypto": {
+      "title": "Crypto payments aren't set up on this server",
+      "body": "USDC and cross-chain payments need a blockchain RPC endpoint. The server administrator can enable them in the backend configuration."
+    },
+    "email": {
+      "title": "Email isn't set up on this server",
+      "body": "The server administrator needs to configure an email provider first."
+    }
+  }
+}

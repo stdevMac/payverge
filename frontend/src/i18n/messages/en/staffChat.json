@@ -1,0 +1,58 @@
+{
+  "tab": {
+    "title": "Team chat",
+    "subtitle": "Message your team and keep up with announcements"
+  },
+  "list": {
+    "title": "Channels",
+    "loading": "Loading channels…",
+    "error": "We couldn't load your channels. Try again in a moment.",
+    "emptyTitle": "No channels yet",
+    "emptySubtitle": "Your role and department channels show up here once your manager sets things up.",
+    "unread": "Unread messages",
+    "kind": {
+      "role": "Role channel",
+      "dept": "Department",
+      "direct": "Direct message",
+      "group": "Group"
+    },
+    "fallback": {
+      "direct": "Direct message",
+      "group": "Group",
+      "channel": "Channel"
+    },
+    "roles": {
+      "manager": "Managers",
+      "server": "Servers",
+      "host": "Hosts",
+      "kitchen": "Kitchen"
+    }
+  },
+  "thread": {
+    "back": "Channels",
+    "loading": "Loading messages…",
+    "error": "We couldn't load this conversation. Try again in a moment.",
+    "emptyTitle": "No messages yet",
+    "emptySubtitle": "Be the first to say something to your team.",
+    "loadOlder": "Load older messages",
+    "you": "You",
+    "composerPlaceholder": "Write a message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "sendError": "We couldn't send that. Try again in a moment."
+  },
+  "announcements": {
+    "menuEntry": "Announcements",
+    "menuHint": "Read team announcements and confirm you've seen them",
+    "title": "Announcements",
+    "loading": "Loading announcements…",
+    "error": "We couldn't load announcements. Try again in a moment.",
+    "emptyTitle": "No announcements",
+    "emptySubtitle": "Notices from your manager show up here.",
+    "requireAck": "Confirmation requested",
+    "acknowledge": "Confirm",
+    "acknowledging": "Confirming…",
+    "acknowledged": "Confirmed",
+    "ackError": "We couldn't record that. Try again in a moment."
+  }
+}

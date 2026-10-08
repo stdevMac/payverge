@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "availabilityHint": "Cuándo podés trabajar cada semana",
+    "timeOffEntry": "Franco",
+    "timeOffHint": "Pedí tu franco y seguí tus solicitudes"
+  },
+  "availability": {
+    "subtitle": "Avisale a tu encargado cuándo podés trabajar",
+    "error": "No pudimos cargar tu disponibilidad. Actualizá o volvé a intentarlo en un momento.",
+    "emptySubtitle": "Agregá las franjas en las que preferís trabajar, o marcá los horarios en que no podés. Tu encargado lo ve al armar el horario."
+  },
+  "timeOff": {
+    "title": "Franco",
+    "subtitle": "Pedí tu franco y seguí tus solicitudes",
+    "error": "No pudimos cargar tus solicitudes de franco. Volvé a intentarlo en un momento.",
+    "emptySubtitle": "Cuando pidas tu franco, va a aparecer acá para que sigas su estado.",
+    "formTitle": "Pedir franco",
+    "reasonPlaceholder": "Agregá una nota breve (opcional)"
+  }
+}

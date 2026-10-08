@@ -1,0 +1,118 @@
+# Prometheus alerting rules for a Payverge instance.
+#
+# Load this file from your own Prometheus (rule_files:), which scrapes the
+# backend's /metrics with the bearer token from METRICS_TOKEN
+# (docs/self-hosting/configuration.md). The rules expect two jobs:
+#
+#   payverge-backend  scrapes http(s)://<backend>/metrics
+#   payverge-ready    a blackbox_exporter http_2xx probe of
+#                     https://<DOMAIN>/api/v1/health/ready (optional; the
+#                     PayvergeNotReady alert stays silent without it)
+#
+# Rename the job matchers below if your scrape config uses other names.
+# Each alert names the metric it reads; the metrics are defined in
+# backend/internal/metrics/metrics.go, and scripts/ci/workflowcontract fails
+# when a rule reads a payverge_ metric the backend no longer exports.
+# Unit tests: deploy/monitoring/alerts.test.yml (promtool test rules).
+groups:
+  - name: payverge-availability
+    rules:
+      - alert: PayvergeBackendDown
+        expr: up{job="payverge-backend"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Prometheus cannot scrape the Payverge backend
+          description: >-
+            {{ $labels.instance }} has not answered /metrics for 5 minutes.
+            Check `docker compose ps backend` and `docker compose logs backend`.
+
+      - alert: PayvergeNotReady
+        expr: probe_success{job="payverge-ready"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Payverge readiness check is failing
+          description: >-
+            The readiness probe {{ $labels.instance }} has failed for 5
+            minutes: the backend is up but cannot serve (database, migrations
+            or a required dependency). Guests cannot order or pay.
+
+  - name: payverge-payments
+    rules:
+      - alert: PayvergePaymentWebhookFailures
+        # reason="capture_pending" is a refund/dispute that arrived before its
+        # payment and is being retried on purpose (bounded at 48h); it is
+        # covered by PayvergePaymentWebhookCapturePendingExpired instead.
+        expr: sum by (plugin, reason) (increase(payverge_payment_webhook_processing_failures_total{reason!="capture_pending"}[15m])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.plugin }} payment webhooks are failing ({{ $labels.reason }})"
+          description: >-
+            {{ $value | humanize }} {{ $labels.plugin }} webhook event(s) failed
+            to process in the last 15 minutes (reason {{ $labels.reason }}).
+            Payments may be captured by the provider but not settled on the
+            bill. Check the backend logs and the provider's webhook dashboard.
+
+      - alert: PayvergePaymentWebhookCapturePendingExpired
+        expr: sum by (plugin) (increase(payverge_payment_webhook_unsupported_actions_total{action="capture_pending.expired"}[1h])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.plugin }} refund or dispute acknowledged without its payment"
+          description: >-
+            {{ $value | humanize }} {{ $labels.plugin }} refund, dispute or
+            reversal event(s) waited 48 hours for their payment and were
+            acknowledged without touching the ledger. A payment-review alert is
+            in the restaurant's dashboard; reconcile it against the provider's
+            dashboard.
+
+  - name: payverge-fiscal
+    rules:
+      - alert: PayvergeFiscalOrphanedCAE
+        expr: increase(payverge_fiscal_orphaned_cae_total[1h]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: An AFIP CAE was issued but its receipt was not saved
+          description: >-
+            {{ $value | humanize }} authorised invoice number(s) in the last
+            hour have no local receipt row. Each one must be reconciled by
+            hand; do not re-issue the invoice.
+
+      - alert: PayvergeFiscalDeliveryDeadLetters
+        expr: sum by (channel) (increase(payverge_fiscal_delivery_dead_letters_total[1h])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Fiscal receipts dead-lettered on {{ $labels.channel }}"
+          description: >-
+            {{ $value | humanize }} fiscal delivery task(s) on {{ $labels.channel }}
+            gave up in the last hour; those guests did not get their receipt.
+
+      - alert: PayvergeFiscalDeliveryBacklog
+        expr: payverge_fiscal_delivery_oldest_age_seconds > 3600
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Fiscal deliveries are stuck
+          description: >-
+            The oldest pending fiscal delivery task is {{ $value | humanizeDuration }}
+            old. The delivery worker is stalled or every attempt is failing.
+
+  - name: payverge-email
+    rules:
+      - alert: PayvergeEmailDeadLetters
+        expr: sum by (template, reason) (increase(payverge_email_outbox_failed_total[1h])) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Emails dead-lettered ({{ $labels.template }}: {{ $labels.reason }})"
+          description: >-
+            {{ $value | humanize }} {{ $labels.template }} email(s) reached the
+            terminal failed state in the last hour (reason {{ $labels.reason }}).
+            Check EMAIL_PROVIDER, its API key and the sending domain.

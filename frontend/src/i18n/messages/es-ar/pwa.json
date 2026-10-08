@@ -1,0 +1,22 @@
+{
+  "card": {
+    "title": "Abrí Payverge como una app",
+    "body": "Accedé más rápido desde la pantalla de inicio. No necesitás una tienda de aplicaciones."
+  },
+  "actions": {
+    "install": "Instalá Payverge"
+  },
+  "manual": {
+    "title": "Agregá Payverge a la pantalla de inicio",
+    "stepShare": "En Safari, tocá Compartir.",
+    "stepAdd": "Elegí Agregar a pantalla de inicio.",
+    "stepConfirm": "Tocá Agregar para confirmar.",
+    "done": "Ya la agregué"
+  },
+  "unsupported": {
+    "body": "Abrí Payverge en Safari desde un iPhone o en un navegador compatible desde otro dispositivo."
+  },
+  "account": {
+    "hint": "Agregá Payverge a este dispositivo"
+  }
+}

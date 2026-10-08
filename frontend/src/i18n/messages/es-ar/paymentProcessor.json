@@ -1,0 +1,13 @@
+{
+  "chooseHowToConnect": "Elegí cómo conectar:",
+  "connectWallet": "Conectá tu Billetera",
+  "paymentSuccessMessage": "Tu pago de {{amount}} se procesó exitosamente.",
+  "steps": {
+    "approval": {
+      "description": "Por favor confirmá la transacción de aprobación en tu billetera"
+    },
+    "payment": {
+      "description": "Por favor confirmá la transacción de pago en tu billetera"
+    }
+  }
+}

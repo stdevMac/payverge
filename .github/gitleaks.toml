@@ -1,0 +1,81 @@
+# gitleaks configuration for the `audit` job in .github/workflows/ci.yml.
+#
+# It extends the upstream default rule set and adds narrow allowlists for
+# material that is synthetic by construction. Kept under .github/ on purpose:
+# the repository root is a closed set (scripts/ci/d10_hygiene_contract.test.mjs)
+# and a root .gitleaksignore would also be honoured by unrelated tooling.
+#
+# Test files are NOT blanket-exempt. Only the broad `generic-api-key`
+# heuristic is silenced there (it fires on every `key := "..."` a test
+# asserts against). Provider-shaped rules (Stripe, AWS, private keys, GitHub
+# tokens, ...) still run on tests and fixtures; a provider-shaped fixture
+# passes only when its value also carries an obvious fake marker.
+# scripts/scan-secrets.mjs enforces the same high-confidence shapes with
+# per-fixture fingerprints as a second layer.
+#
+# Requires gitleaks >= 8.25 (`[[allowlists]]`, `targetRules`, `condition`).
+title = "Payverge gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Tests and recorded fixtures: the generic-api-key heuristic only"
+targetRules = ["generic-api-key"]
+paths = [
+  '''(^|/)[^/]+_test\.go$''',
+  '''(^|/)[^/]+\.test\.(?:[cm]?js|jsx|tsx?)$''',
+  '''(^|/)__tests__/''',
+  '''(^|/)testdata/''',
+]
+
+[[allowlists]]
+description = "Tests and fixtures: provider-shaped values that are visibly fake"
+condition = "AND"
+paths = [
+  '''(^|/)[^/]+_test\.go$''',
+  '''(^|/)[^/]+\.test\.(?:[cm]?js|jsx|tsx?)$''',
+  '''(^|/)__tests__/''',
+  '''(^|/)testdata/''',
+]
+# Matched against the secret itself (any one suffices). The bare word "test"
+# is deliberately absent: it would excuse every real Stripe sk_test_ key.
+regexes = [
+  # An obvious placeholder word or run.
+  '''(?i)(?:fake|dummy|example|placeholder|mock|sample|invalid|redacted|notreal|hermetic|x{6,}|0{8,}|1234567|abcdef)''',
+  # A Stripe-shaped key shorter than any Stripe issues (24+ characters
+  # after the prefix), e.g. sk_live_platformkey.
+  '''^(?:sk|rk)_(?:test|live|prod)_[A-Za-z0-9]{10,19}$''',
+]
+
+[[allowlists]]
+description = "The hermetic backend test key (scripts/ci/backend-env.sh, scripts/verify-backend.sh, perf runbooks)"
+regexes = [
+  '''^payverge-hermetic-test-key-0+$''',
+]
+
+[[allowlists]]
+description = "Production preflight denylist: SHA-256 digests of known-leaked development secrets, not the secrets"
+condition = "AND"
+paths = [
+  '''^backend/internal/config/secret_denylist\.go$''',
+]
+regexes = [
+  '''^[0-9a-f]{64}$''',
+]
+
+[[allowlists]]
+description = "Documented CI-only values: committed e2e env (rotated per run by scripts/ci/rotate-ci-secrets.sh) and the scanner's own patterns"
+targetRules = ["generic-api-key"]
+paths = [
+  '''^\.github/e2e/ci\.env\.fixture$''',
+  '''^scripts/scan-secrets\.mjs$''',
+]
+
+[[allowlists]]
+description = "Reviewed false positives: identifiers that look like keys (object-key prefix, analytics funnel name)"
+targetRules = ["generic-api-key"]
+paths = [
+  '''^backend/cmd/ai-image-backfill/backfill\.go$''',
+  '''^frontend/src/lib/analytics/activationEvents\.ts$''',
+]

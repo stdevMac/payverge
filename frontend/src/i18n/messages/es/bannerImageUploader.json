@@ -1,0 +1,23 @@
+{
+  "errors": {
+    "selectImageFile": "Por favor selecciona un archivo de imagen",
+    "imageSizeLimit": "El tamaño de la imagen del banner debe ser menor a {maxSize}MB",
+    "uploadFailed": "Error al subir la imagen del banner",
+    "uploadFailedTitle": "Error al Subir Banner"
+  },
+  "success": {
+    "uploaded": "¡Banner Subido!",
+    "uploadedDescription": "El banner {index} se ha subido exitosamente."
+  },
+  "status": {
+    "uploading": "Subiendo…"
+  },
+  "bannerInfo": "{index} · {maxSize}MB máx · 3:1",
+  "addBanner": "Agregar banner {index}",
+  "hint": "1200×400 · PNG, JPG, WebP",
+  "buttons": {
+    "dismiss": "Descartar",
+    "remove": "Quitar",
+    "replace": "Reemplazar"
+  }
+}

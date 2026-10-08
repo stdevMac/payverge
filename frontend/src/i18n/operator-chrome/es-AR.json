@@ -1,0 +1,66 @@
+{
+  "common": {
+    "maintenance": {
+      "title": "En Mantenimiento",
+      "message": "Estamos mejorando {productName} para servirte mejor. Volveremos pronto.",
+      "visitWebsite": "Visitá nuestro sitio web",
+      "checkDocs": "Consultá nuestra documentación",
+      "exploreLinks": "Contactanos"
+    },
+    "skipToMainContent": "Saltar al contenido principal",
+    "loadingSession": "Cargando sesión",
+    "sessionCheckFailed": "No pudimos verificar tu sesión",
+    "sessionCheckFailedHint": "Revisá tu conexión e intentá de nuevo. Es posible que sigas autenticado.",
+    "retry": "Reintentar",
+    "dismissToast": "Descartar {title}",
+    "close": "Cerrar"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "metaTitle": "Página no encontrada — Payverge",
+    "body": "La página que buscás no existe o se ha movido.",
+    "backToHome": "Volver al inicio",
+    "contactSupport": "Contactar soporte"
+  },
+  "pwa": {
+    "card": {
+      "title": "Abrí Payverge como una app",
+      "body": "Accedé más rápido desde la pantalla de inicio. No necesitás una tienda de aplicaciones."
+    },
+    "actions": {
+      "install": "Instalá Payverge",
+      "dismiss": "Ahora no",
+      "close": "Cerrar"
+    },
+    "manual": {
+      "title": "Agregá Payverge a la pantalla de inicio",
+      "stepShare": "En Safari, tocá Compartir.",
+      "stepAdd": "Elegí Agregar a pantalla de inicio.",
+      "stepConfirm": "Tocá Agregar para confirmar.",
+      "done": "Ya la agregué"
+    },
+    "unsupported": {
+      "title": "La instalación no está disponible",
+      "body": "Abrí Payverge en Safari desde un iPhone o en un navegador compatible desde otro dispositivo."
+    },
+    "account": {
+      "label": "Instalar Payverge",
+      "hint": "Agregá Payverge a este dispositivo"
+    },
+    "launch": {
+      "opening": "Abriendo Payverge"
+    }
+  },
+  "authModal": {
+    "sessionExpired": {
+      "title": "Sesión expirada",
+      "body": "Por seguridad cerramos la sesión tras un periodo de inactividad. Iniciá sesión de nuevo para continuar.",
+      "loginCta": "Iniciar sesión otra vez"
+    },
+    "verifyBannerResent": "Enlace de verificación enviado — revisa tu bandeja de entrada.",
+    "verifyBannerResendFailed": "No se pudo enviar el enlace. Inténtalo de nuevo.",
+    "verifyBannerText": "Verificá tu correo para proteger tu cuenta.",
+    "verifyBannerResend": "Reenviar enlace",
+    "verifyBannerDismiss": "Descartar"
+  }
+}

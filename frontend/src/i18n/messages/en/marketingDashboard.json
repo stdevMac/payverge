@@ -1,0 +1,890 @@
+{
+  "title": "Marketing",
+  "subtitle": "Ready-to-post content, built from your menu and offers.",
+  "loading": "Loading marketing studio",
+  "hero": {
+    "eyebrow": "AI marketing studio",
+    "ideas": "Post ideas",
+    "ready": "Ready",
+    "handledRecently": "Handled recently",
+    "download": "Download-ready",
+    "cta": "Open studio",
+    "preview": "Creative queue",
+    "live": "Live",
+    "signal": "Menu signal",
+    "stepPhoto": "Photo",
+    "stepCaption": "Caption",
+    "stepPost": "Post"
+  },
+  "feed": {
+    "heading": "Post ideas",
+    "subtitle": "Fresh concepts ranked from your menu, offers, and customer signals — image and caption included.",
+    "exampleBadge": "Demo gallery",
+    "liveBadge": "Live queue",
+    "count": "{count} concepts",
+    "countOne": "{count} concept",
+    "refresh": "Refresh ideas",
+    "retry": "Try again",
+    "allDismissed": "You've hidden all current ideas. Restore them or refresh for a new batch.",
+    "allHandled": "You've handled every current idea. New opportunities will appear here when your restaurant data changes.",
+    "noEnabledPlays": "No suggestion types are enabled. Choose at least one in Creative settings to rebuild this queue.",
+    "readOnly": "View-only access: you can inspect prepared posts, but only a marketing editor can change their status.",
+    "readyCount": "{count} ready to post",
+    "readyCountOne": "{count} ready to post",
+    "readyGroup": "Ready to post",
+    "needsWorkGroup": "Still needs work",
+    "allDismissedTitle": "All ideas hidden",
+    "allHandledTitle": "All caught up",
+    "noEnabledPlaysTitle": "No plays enabled",
+    "inventoryBlockedTitle": "Blocked by inventory",
+    "inventoryBlocked": "Hidden — {names} {reason}.",
+    "inventoryBlockedReason": "can't be made right now",
+    "inventoryBlockedOne": "Hidden — {name} {reason}."
+  },
+  "example": {
+    "heading": "See what your posts could look like",
+    "subtitle": "Sample posts in your brand colors. Add your dishes and offers, and posts like these come from your own menu.",
+    "badge": "Example",
+    "cta": "Make it yours",
+    "cards": {
+      "featured": {
+        "title": "Spotlight your bestseller",
+        "name": "Your signature dish",
+        "why": "Example post — your top dish, styled and ready to share.",
+        "factorQty": "48 orders",
+        "factorMargin": "High margin per plate"
+      },
+      "offer": {
+        "title": "Turn an offer into a post",
+        "name": "Your weekend offer",
+        "why": "Example post — a live offer, ready to publish."
+      }
+    }
+  },
+  "why": {
+    "heading": "Why this post",
+    "expand": "Show all reasons",
+    "collapse": "Show less",
+    "factors": {
+      "qty_sold": "Orders",
+      "margin_per_unit": "Margin per unit",
+      "quadrant": "Menu role",
+      "velocity_gap": "Below median popularity",
+      "weakest_window": "Slowest window",
+      "pct_below_mean": "Sales vs average",
+      "pct_below_mean_value": "{pct}% below average sales",
+      "count_value": "{count}",
+      "velocity_gap_value": "{count} below median popularity",
+      "photo_ready_value": "Has a photo ready to post",
+      "ending_soon_value": "Ends within {count} days",
+      "discount_pct_value": "{pct}% off",
+      "discount_fixed_value": "{amount} off",
+      "marketable_lapsed": "Opted-in regulars",
+      "total_lapsed": "All lapsed regulars",
+      "opt_in_share": "Opt-in share",
+      "suggested_offer": "Suggested offer",
+      "bundle_price": "Bundle price",
+      "discount": "Discount",
+      "ending_soon": "Ending soon",
+      "photo_ready": "Photo ready to post",
+      "weak_signal": "Weak signal",
+      "weak_signal_value": "Only {count} orders — treat this as a hint, not a trend",
+      "quadrant_star": "Star",
+      "quadrant_plowhorse": "Plowhorse",
+      "quadrant_puzzle": "Puzzle",
+      "quadrant_dog": "Dog"
+    }
+  },
+  "card": {
+    "styleLabel": "Visual style",
+    "formatLabel": "Post format",
+    "expandCaption": "Show full caption",
+    "collapseCaption": "Show less",
+    "moreActions": "More actions",
+    "reviewExport": "Review and export",
+    "download": "Download",
+    "downloadPack": "Download post",
+    "copyCaption": "Copy caption",
+    "copyCaptionSuccess": "Caption copied — paste it when you post.",
+    "downloadPackSuccess": "Post downloaded — image and caption file are ready.",
+    "captionLabel": "Caption",
+    "captionLoading": "Writing your caption…",
+    "retryCaption": "Try again",
+    "dismiss": "Hide this idea",
+    "tweak": "Tweak",
+    "addPhoto": "Add a photo",
+    "addPhotoHint": "Add a photo to finish this post",
+    "photoLoadFailed": "This photo wouldn't load — retry the preview or open the editor to regenerate.",
+    "fixPhoto": "Fix photo",
+    "photoBrokenBadge": "Photo failed",
+    "readyBadge": "Ready to post",
+    "markPosted": "Mark posted",
+    "winBackCrm": "View lapsed segment in CRM",
+    "winBackOutreach": "Copy outreach message",
+    "winBackOutreachSuccess": "Outreach message copied — paste into email or SMS.",
+    "winBackOutreachTemplate": "Hi from {business}! We miss you. {caption}",
+    "sharePost": "Share post",
+    "shareSuccess": "Shared — paste the caption if your app didn't include it.",
+    "shareFallbackSuccess": "Downloaded and caption copied — paste when you post.",
+    "openInstagram": "Open Instagram",
+    "blocked": {
+      "needs_photo": "Add a photo before sharing or downloading.",
+      "photo_broken": "This photo failed to load — fix it before exporting.",
+      "photo_too_dark": "This photo is too dark — retake brighter or enhance it before posting.",
+      "photo_weak": "This photo needs a reshoot — fix it before posting.",
+      "preview_rendering": "Preview is still rendering — try again in a moment.",
+      "caption_loading": "Caption is still being written — wait before exporting.",
+      "caption_failed": "Caption failed — retry it before exporting.",
+      "needs_caption": "Add a caption before sharing or downloading."
+    },
+    "tips": {
+      "happyHour": "Best posted ahead of {window} — your slowest service window.",
+      "happyHourWithPct": "Best posted ahead of {window} — {pct}% below your average sales.",
+      "happyHourOffer": "Pair with your \"{offer}\" offer ({discount}) during {window}.",
+      "winBack": "{count} opted-in guests haven't visited in 30+ days — pair this post with a CRM message.",
+      "winBackOne": "1 opted-in guest hasn't visited in 30+ days — pair this post with a CRM message.",
+      "moveItem": "Only {qty} orders in the last period — a spotlight can lift discovery.",
+      "moveItemOne": "Only 1 order in the last period — a spotlight can lift discovery."
+    },
+    "localExportHint": "Exports and share stay on this device — Payverge does not post for you."
+  },
+  "outcome": {
+    "title": "Was this post published?",
+    "shared": "Your device completed the share handoff. Confirm only if the post was actually published.",
+    "downloaded": "Your post files were downloaded. Confirm only after you publish them on a social channel.",
+    "copied": "The caption was copied. Confirm only after the full post is actually published.",
+    "downloadedWithDestination": "Downloaded — now post in {destination} yourself when you're ready. Payverge does not publish for you.",
+    "sharedWithDestination": "Shared to your device — finish posting in {destination} yourself. Confirm only after it is live.",
+    "copiedWithDestination": "Caption copied — paste it when you post in {destination}. Confirm only after the full post is published.",
+    "notYet": "Not yet",
+    "confirmPublished": "Yes, it was published",
+    "error": "We couldn't mark this post as published. It remains in your queue.",
+    "retry": "Try marking it again",
+    "channelLabel": "Where did you post? (optional)",
+    "channelPlaceholder": "e.g. Instagram, WhatsApp group",
+    "channelHint": "Freeform note only — Payverge never schedules or publishes for you."
+  },
+  "preview": {
+    "aspects": {
+      "1:1": "Square",
+      "4:5": "Feed",
+      "9:16": "Story"
+    },
+    "platform": {
+      "feed": "Instagram / Facebook feed",
+      "story": "Instagram / TikTok story",
+      "reel": "Reels / TikTok",
+      "square": "Square post",
+      "wide": "Wide / website hero",
+      "strip": "Email strip / banner",
+      "tent": "Table tent print"
+    },
+    "renderError": "We couldn't render this preview.",
+    "retry": "Try preview again",
+    "rendering": "Rendering preview…",
+    "generating": "Generating photo…",
+    "safeZoneHint": "Dashed bands on Story preview show where platform UI may cover your post."
+  },
+  "manualStudio": {
+    "eyebrow": "Blank canvas",
+    "title": "Create your own post",
+    "subtitle": "Start from a blank canvas — pick a photo, add your text.",
+    "cta": "Start from scratch"
+  },
+  "plays": {
+    "happy_hour": "Happy hour",
+    "featured_dish": "Featured dish",
+    "move_item": "Move an item",
+    "win_back": "Win back",
+    "combo_deal": "Combo deal",
+    "offer": "Offer"
+  },
+  "sourceTag": {
+    "menu": "Your photo",
+    "offer": "Your offer",
+    "bundle": "Your combo",
+    "generated": "AI-generated photo",
+    "none": "Add a photo"
+  },
+  "discount": {
+    "off": "OFF"
+  },
+  "defaults": {
+    "cta": {
+      "default": "VISIT US",
+      "featured_dish": "TRY IT",
+      "happy_hour": "JOIN US",
+      "move_item": "DISCOVER",
+      "win_back": "WE MISS YOU",
+      "combo_deal": "GET THE DEAL",
+      "offer": "CLAIM OFFER"
+    },
+    "ctaStyle": {
+      "soft": "COME BY",
+      "direct": "ORDER NOW",
+      "urgent": "TODAY ONLY"
+    },
+    "badge": {
+      "featured_dish": "CHEF'S PICK",
+      "move_item": "TRY THIS",
+      "happy_hour": "HAPPY HOUR",
+      "win_back": "WE MISS YOU",
+      "combo_deal": "COMBO DEAL"
+    }
+  },
+  "brand": {
+    "logoLoadFailed": "Your logo could not be loaded, so it will not appear on this post. Check the logo URL in business design settings.",
+    "logoMissing": "No business logo is set — posts will export without a watermark. Add one in design settings."
+  },
+  "starterCaption": {
+    "featured_dish": "{name} is calling your name. Come taste why it's a favorite. {handle}",
+    "move_item": "Have you tried our {name} yet? You're missing out. {handle}",
+    "happy_hour": "Happy hour is on — swing by and treat yourself. {handle}",
+    "win_back": "We miss you! Come back for your favorites. {handle}",
+    "combo_deal": "Our {name} combo is the easy win tonight. {handle}",
+    "offer": "{discount} — {name} is on now. Don't miss it! {handle}",
+    "default": "Fresh from our kitchen. Come see us! {handle}"
+  },
+  "photoSource": {
+    "heading": "Photo",
+    "thisPhoto": "This photo",
+    "useThis": "Use this photo",
+    "gallery": "Gallery",
+    "galleryLoading": "Loading gallery photos…",
+    "galleryFailed": "We couldn't load your gallery.",
+    "galleryRetry": "Try gallery again",
+    "galleryEmpty": "No gallery photos yet.",
+    "upload": "Upload",
+    "ai": "AI",
+    "noneSelected": "Pick a photo above, or generate one with AI."
+  },
+  "photoReadiness": {
+    "heading": "Your photo library",
+    "subheading": "Which of your dish photos are ready to post.",
+    "loading": "Checking your photos…",
+    "failed": "We couldn't check your photos.",
+    "retry": "Try again",
+    "empty": "Add photos to your menu items and we'll check them here.",
+    "summary": "{ready} of {total} photos are post-ready",
+    "verdicts": {
+      "ready": "Ready",
+      "weak": "Usable",
+      "reshoot": "Reshoot"
+    },
+    "reasons": {
+      "verySoft": "Out of focus",
+      "soft": "A little soft",
+      "underexposed": "Too dark",
+      "overexposed": "Too bright",
+      "blownHighlights": "Blown highlights",
+      "crushedShadows": "Lost shadow detail",
+      "noQuietArea": "No quiet space for text",
+      "unreadable": "We couldn't read this photo",
+      "extremeAspect": "Very wide or tall — crop will cut a lot of the frame"
+    },
+    "openInMenu": "Open in Menu Builder",
+    "replacePhoto": "Replace with a brighter photo",
+    "explain": {
+      "ready": "Clear enough to post.",
+      "weak": "Usable means the file can fill a post, but the grade is why we would not mark it Ready.",
+      "reshoot": "Replace this photo before using it in a campaign.",
+      "underexposed": "Too dark — guests will see a muddy or black plate.",
+      "crushedShadows": "Lost shadow detail — the dish reads as a silhouette."
+    }
+  },
+  "provenance": {
+    "free": "{source} · Free",
+    "ai": "AI-generated photo",
+    "none": "No photo selected",
+    "sources": {
+      "menu": "Menu photo",
+      "offer": "Offer photo",
+      "bundle": "Bundle photo",
+      "gallery": "Gallery photo",
+      "upload": "Uploaded photo"
+    }
+  },
+  "sections": {
+    "image": "Image",
+    "destination": "Where you'll post",
+    "layout": "Layout",
+    "copy": "Copy",
+    "export": "Export"
+  },
+  "destinations": {
+    "subtitle": "Pick a destination to get the right crop, caption length, and export pack. You always post manually — nothing is scheduled.",
+    "formatHint": "Hero format for this destination: {format}. Export downloads the full pack.",
+    "motionNotNeeded": "This destination is image-first. Motion export stays available under craft controls only for video destinations.",
+    "motionOptional": "Image is enough for this destination. Video export is still available if you want motion.",
+    "captionBudget": "{count} / {soft} recommended ({hard} max)",
+    "captionSoftWarn": "Longer than recommended — still ok, but may get cut off in the app.",
+    "captionHardWarn": "Over the platform limit — shorten before you paste.",
+    "captionHouseVoiceHint": "Regenerate uses your house voice, tone, language, CTA style, and banned phrases from Creative settings.",
+    "captionLength": {
+      "short": "Short caption",
+      "medium": "Medium caption",
+      "long": "Feed-length caption"
+    },
+    "hashtagsOff": "This destination works better without hashtags — they are turned off for this pack.",
+    "exportChecklist": "Export checklist",
+    "packContents": "Pack: {formats}. {caption}",
+    "packWithCaption": "Includes caption.txt for clipboard paste.",
+    "packWithoutCaption": "Add a caption to include caption.txt in the pack.",
+    "exporting": "Building your pack…",
+    "exportSuccess": "Pack downloaded — files are ready on your device.",
+    "exportFailed": "Couldn't export the pack. The photo may be blocked by your browser — try another image.",
+    "exportPartial": "Downloaded, but {count} format could not be rendered.",
+    "checklist": {
+      "crop": "Check crop and safe zones in the preview",
+      "caption": "Copy or download the caption with the pack",
+      "download": "Download the pack files to your device",
+      "motion": "Optional: download a short video if you want motion",
+      "post_manual": "Open the app and post when you're ready — nothing is scheduled here",
+      "print_file": "Open the HTML print file in your browser",
+      "print_shop": "Print from the browser or send the file to a print shop"
+    },
+    "ig_feed": {
+      "name": "Instagram Feed",
+      "hint": "Portrait 4:5 (plus square). Caption ready to paste.",
+      "export": "Export Instagram Feed pack"
+    },
+    "ig_stories": {
+      "name": "Instagram Stories",
+      "hint": "Full-screen 9:16 with story safe zones. Keep captions short.",
+      "export": "Export Stories pack"
+    },
+    "ig_reels": {
+      "name": "Instagram Reels",
+      "hint": "9:16 with motion preferred. Still image works too.",
+      "export": "Export Reels pack"
+    },
+    "tiktok": {
+      "name": "TikTok",
+      "hint": "9:16 vertical. Export video or still, then post in TikTok.",
+      "export": "Export TikTok pack"
+    },
+    "whatsapp": {
+      "name": "WhatsApp",
+      "hint": "Square or feed share. Short caption, no hashtags.",
+      "export": "Export WhatsApp pack"
+    },
+    "google_business": {
+      "name": "Google Business",
+      "hint": "Square or feed photo for your profile. No hashtags.",
+      "export": "Export Google Business pack"
+    },
+    "print_tent": {
+      "name": "Table tent",
+      "hint": "5×7 print with bleed and crop marks (not a thermal receipt).",
+      "export": "Export table tent pack"
+    },
+    "print_window": {
+      "name": "Window cling",
+      "hint": "High-dpi square PNG for glass clings and window posters.",
+      "export": "Export window cling pack"
+    },
+    "print_strip": {
+      "name": "Email strip",
+      "hint": "Wide banner strip for email footers and web bands.",
+      "export": "Export strip pack"
+    }
+  },
+  "attribution": {
+    "promoCodeLabel": "Promo / tracking code: {code}",
+    "limitations": "Guest pages do not log these codes yet — use for manual or future first-party correlation only. Not ads multi-touch attribution."
+  },
+  "printShop": {
+    "title": "Print shop pack",
+    "subtitle": "Files ready for an external print shop — HTML with crop marks or high-dpi PNG.",
+    "presets": {
+      "table_tent_5x7": {
+        "name": "Table tent 5×7",
+        "hint": "300 dpi HTML with bleed and crop marks. Print or Save as PDF from the browser.",
+        "instructions": "Print shop instructions — table tent (5 × 7 in)\n============================================\n\nFile: HTML with @page size, bleed, and crop marks.\nOpen the HTML in Chrome/Safari/Edge and use Print → Save as PDF,\nor send the HTML/PDF to your print shop.\n\nTrim size: 127 mm × 177.8 mm (5 × 7 in).\nBleed: 3.175 mm (1/8 in) on every side.\nCrop marks: outside the bleed; do not crop marks into live art.\nResolution: authored at 300 dpi.\n\nNot a thermal receipt. Kitchen/POS receipt branding is separate.\nYou place the tent when ready — Payverge does not own a publish clock.\n"
+      },
+      "window_clings_square": {
+        "name": "Window cling (square)",
+        "hint": "2160×2160 PNG for vinyl clings. Shop sizes to your glass panel.",
+        "instructions": "Print shop instructions — window cling (square)\n===============================================\n\nFile: high-resolution PNG (2× social square = 2160 × 2160 px).\nAsk the shop to size to your glass panel; common clings are 20–40 cm square.\nProvide a white underbase if printing on clear vinyl.\n\nSource aspect: 1:1. Do not stretch — letterbox or crop only if the panel is not square.\nColour: sRGB PNG. Request CMYK conversion at the shop if needed.\n\nNot a thermal receipt.\nYou apply the cling when ready — Payverge does not own a publish clock.\n"
+      },
+      "flyer_half_letter": {
+        "name": "Flyer (wide base)",
+        "hint": "High-dpi wide PNG — shop scales to half-letter or A5.",
+        "instructions": "Print shop instructions — flyer (half-letter landscape base)\n============================================================\n\nFile: high-resolution wide PNG (2× 1920×1080 = 3840 × 2160 px).\nScale to half-letter (5.5 × 8.5 in) or A5 as needed; keep margins ≥ 5 mm.\nBleed: add 3 mm at the shop if full-bleed is required (this PNG is trim-safe).\n\nSource aspect: 16:9 wide. Letterbox or crop carefully for portrait half-letter.\nColour: sRGB PNG.\n\nNot a thermal receipt.\nYou distribute flyers when ready — Payverge does not own a publish clock.\n"
+      }
+    }
+  },
+  "crop": {
+    "focalX": "Horizontal focus",
+    "focalY": "Vertical focus",
+    "zoom": "Zoom",
+    "reset": "Reset crop"
+  },
+  "generationConfirm": {
+    "title": "Generate this photo?",
+    "direction": "Creative direction: a polished, realistic photo of {name} with clear space for your copy.",
+    "ratio": "Output format: {ratio}.",
+    "freeAlternative": "Menu, offer, bundle, gallery, and uploaded photos are free to use.",
+    "paidRetryWarning": "This generates a new paid photo and replaces the one already saved. Preview retry does not spend another credit.",
+    "failedDeliveryWarning": "The last generated photo could not be shown. Generating again spends another credit.",
+    "confirm": "Generate",
+    "cancel": "Keep editing"
+  },
+  "templates": {
+    "editorial": "Editorial",
+    "bold": "Bold",
+    "minimal": "Minimal"
+  },
+  "kits": {
+    "editorial": "Editorial",
+    "bold": "Bold",
+    "minimal": "Minimal",
+    "chalkboard": "Chalkboard",
+    "linen": "Linen",
+    "ticket": "Ticket"
+  },
+  "campaignKit": {
+    "title": "Campaign kit",
+    "subtitle": "One idea, sized for every place it runs. Same photo, same type, same colours.",
+    "formatsLabel": "Formats in this kit",
+    "download": "Download kit",
+    "downloading": "Building your kit…",
+    "progress": "Rendering {current} ({done} of {total})",
+    "success": "Your campaign kit downloaded as one zip file.",
+    "partial": "Downloaded, but {count} format could not be rendered.",
+    "partialPlural": "Downloaded, but {count} formats could not be rendered.",
+    "failed": "Couldn't build the kit. Your photo may be blocked by your browser — try generating a new one.",
+    "empty": "Pick at least one format.",
+    "printHint": "The table tent prints at 300 dpi with bleed and crop marks. Open the HTML file and use your browser's print dialog, or send it to a print shop.",
+    "selectAll": "All formats",
+    "heroNote": "{format} is the format you approved above."
+  },
+  "narrativeKit": {
+    "title": "Narrative campaign pack",
+    "subtitle": "One concept as a full story set — teaser, hero, story, table tent, and email strip — downloaded together now.",
+    "readyNow": "Assets ready now — you post when you want. This is not a schedule.",
+    "rolesLabel": "Roles in this pack",
+    "download": "Export narrative pack",
+    "downloading": "Building your narrative pack…",
+    "progress": "Rendering {current} ({done} of {total})",
+    "success": "Your narrative pack downloaded as one zip file.",
+    "partial": "Downloaded, but {count} asset could not be rendered.",
+    "partialPlural": "Downloaded, but {count} assets could not be rendered.",
+    "failed": "Couldn't build the narrative pack. Your photo may be blocked by your browser — try generating a new one.",
+    "readme": "Assets ready now — you post when you want.\nThis zip is not a schedule. There is no due date and no post queue.\nUse each file on the channel that matches its role (hero, story, tent, …).",
+    "manifestNote": "Assets ready now — you post when you want.",
+    "captionAnglesNote": "Caption files are text only.",
+    "roles": {
+      "teaser": {
+        "name": "Teaser",
+        "use": "Square cut for profile grids, WhatsApp, and Google"
+      },
+      "hero": {
+        "name": "Hero",
+        "use": "Main feed post — the canvas you approved"
+      },
+      "story": {
+        "name": "Story",
+        "use": "Vertical still for Stories and Reels"
+      },
+      "tent": {
+        "name": "Table tent",
+        "use": "Printable 5×7 in with bleed and crop marks"
+      },
+      "email_strip": {
+        "name": "Email strip",
+        "use": "Wide banner for email footers and web"
+      }
+    }
+  },
+  "formats": {
+    "1:1": {
+      "name": "Square",
+      "use": "Square feed post and profile grid"
+    },
+    "4:5": {
+      "name": "Feed",
+      "use": "Instagram and Facebook feed"
+    },
+    "9:16": {
+      "name": "Story",
+      "use": "Stories and Reels"
+    },
+    "wide": {
+      "name": "Wide",
+      "use": "Storefront and website hero"
+    },
+    "strip": {
+      "name": "Strip",
+      "use": "Email footer and web banner"
+    },
+    "5:7": {
+      "name": "Table tent",
+      "use": "Printed 5 x 7 in, with bleed and crop marks"
+    }
+  },
+  "compositions": {
+    "photoBottomStack": "Text at the bottom",
+    "photoTopStack": "Text at the top",
+    "splitPanel": "Photo and panel",
+    "badgeHero": "Badge spotlight",
+    "cornerCard": "Text in the corner",
+    "posterStack": "Poster",
+    "legacyEditorial": "Classic editorial",
+    "legacyBold": "Classic bold",
+    "legacyMinimal": "Classic minimal"
+  },
+  "motion": {
+    "label": "Motion",
+    "still": "Still image",
+    "hint": "Six seconds, no sound. Add music in Instagram or TikTok after you upload.",
+    "download": "Download video",
+    "rendering": "Rendering video… {percent}%",
+    "cancel": "Cancel",
+    "cancelled": "Video export cancelled.",
+    "unsupported": "Video export needs a newer browser. Your still image is ready now.",
+    "failed": "Video export failed. Try again, or download the still image.",
+    "reducedMotion": "Preview paused — your device asks for reduced motion. The exported video still moves.",
+    "libraryBadge": "Video",
+    "presets": {
+      "pushIn": "Slow push in",
+      "slowPan": "Drift across",
+      "editorialReveal": "Line by line",
+      "badgePop": "Badge first",
+      "grainDrift": "Grain wash",
+      "ticketSlide": "Ticket print"
+    }
+  },
+  "tones": {
+    "warm": "Warm",
+    "playful": "Playful",
+    "elegant": "Elegant",
+    "punchy": "Punchy"
+  },
+  "slots": {
+    "badge": "Badge",
+    "dishName": "Headline",
+    "price": "Price",
+    "cta": "Call to action",
+    "handle": "Handle"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "es-AR": "Spanish (Argentina)",
+    "pt": "Portuguese",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "ja": "Japanese",
+    "zh": "Chinese"
+  },
+  "editor": {
+    "subtitle": "Generate a photo, edit the text, download your post.",
+    "noPhoto": "Generate a photo to preview your post",
+    "generatePhoto": "Generate photo",
+    "newPhoto": "New photo",
+    "cleanupPhoto": "Clean up this photo",
+    "cleanupHint": "Relights and declutters your own photo. It stays your dish.",
+    "dailyLimit": {
+      "title": "You've generated {limit} AI images today, which is the daily limit.",
+      "resets": "It resets in about {hours} hours.",
+      "resetsHour": "It resets in about an hour.",
+      "resetsSoon": "It resets in less than an hour.",
+      "contact": "Need more today? Get in touch and we'll raise it."
+    },
+    "promptRejected": "That text can't be used for an image. Try describing the dish itself.",
+    "styleLabel": "Style",
+    "reshuffle": "Reshuffle layout",
+    "captionLanguage": "Caption language",
+    "caption": "Caption",
+    "captionPlaceholder": "Generate a caption or write your own.",
+    "regenerateCaption": "Regenerate",
+    "copyCaption": "Copy caption",
+    "close": "Close",
+    "generationBusy": "Keep this editor open while your paid image is being generated.",
+    "download": "Download image",
+    "downloadPack": "Download post",
+    "sharePost": "Share post",
+    "downloading": "Preparing your download…",
+    "exportReady": "Your post is ready to download.",
+    "exportNotReady": "Finish every readiness step before downloading.",
+    "exportPreviewBroken": "Fix the preview before downloading — export stays locked while it is broken.",
+    "previewBrokenHint": "Preview failed — the photo may be blocked or broken. Retry above, regenerate with AI, or clean up your own photo.",
+    "previewBrokenNoGenerate": "Retry the preview, or pick another photo from gallery or upload.",
+    "mode": {
+      "label": "Editor mode",
+      "simple": "Simple",
+      "craft": "Craft",
+      "simpleHint": "Photo, caption, destination, and export. Brand style stays locked.",
+      "craftHint": "Full kit, layout reshuffle, motion, and multi-format campaign kit."
+    },
+    "checklist": {
+      "photo": "Photo",
+      "caption": "Caption",
+      "preview": "Preview",
+      "previewBroken": "Preview broken",
+      "ready": "Ready to download"
+    }
+  },
+  "discard": {
+    "title": "Discard this post?",
+    "body": "You have changes that will be lost if you close this post.",
+    "confirm": "Discard post",
+    "cancel": "Keep editing"
+  },
+  "errors": {
+    "caption_item_required": "Add a dish or offer name before generating a caption.",
+    "caption_failed": "Couldn't generate a caption. Try again.",
+    "caption_unavailable": "That dish or combo isn't sellable right now, so we didn't write a caption for it.",
+    "image_failed": "Couldn't generate the photo. Try again.",
+    "image_decode_failed": "The generated photo could not be decoded. Nothing was saved — try again.",
+    "image_not_hosted": "This photo isn't hosted in your gallery, so it can't be enhanced. Upload it or pick a gallery image first.",
+    "no_photo": "Generate a photo first.",
+    "no_caption": "Generate a caption first.",
+    "suggestions_failed": "Couldn't load post ideas. Try refreshing.",
+    "download_failed": "Couldn't download the post. The photo may be blocked by your browser — try another image or generate a new one.",
+    "copy_failed": "Couldn't copy the caption.",
+    "dismiss_failed": "Couldn't hide that idea. It's back in your feed — try again.",
+    "mark_posted_failed": "Couldn't mark that as posted. It's back in your feed — try again.",
+    "mark_ready_failed": "Couldn't mark this creative as ready for review. Try again.",
+    "approve_failed": "Couldn't approve this creative. Try again."
+  },
+  "handoff": {
+    "markReady": "Mark ready for owner",
+    "markReadySuccess": "Marked ready — waiting for owner approval. No due date.",
+    "approve": "Approve to post",
+    "approveSuccess": "Approved — post when you're ready.",
+    "status": {
+      "draft": "Draft",
+      "ready": "Ready for owner",
+      "approved": "Approved to post",
+      "posted": "Posted",
+      "dismissed": "Hidden"
+    }
+  },
+  "guestLink": {
+    "copy": "Copy guest link",
+    "copySuccess": "Guest link copied — share it or add it to print materials.",
+    "kind": {
+      "business": "Business page",
+      "menu": "Menu",
+      "reservations": "Reservations"
+    }
+  },
+  "posted": {
+    "heading": "Recently posted",
+    "justNow": "Just now",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
+  },
+  "library": {
+    "heading": "Post history",
+    "subtitle": "Everything you've posted or hidden, with the ability to bring hidden ideas back.",
+    "filterAll": "All",
+    "filterReady": "Ready",
+    "filterApproved": "Approved",
+    "filterPosted": "Posted",
+    "filterDismissed": "Hidden",
+    "filterPlay": "Play type",
+    "filterFrom": "From",
+    "filterTo": "To",
+    "allPlays": "All plays",
+    "unknownPlay": "Other campaign",
+    "loadMore": "Load more",
+    "loadingMore": "Loading more",
+    "loading": "Loading post history…",
+    "loadFailed": "We couldn't load post history.",
+    "retry": "Try again",
+    "empty": "No activity yet. Posts you share or hide will show up here.",
+    "filteredEmpty": "No activity matches these filters.",
+    "capturedPreview": "Captured creative",
+    "reconstructedPreview": "Reconstructed preview · layout defaults, not historical",
+    "reuse": "Reuse",
+    "restore": "Restore",
+    "restoreFailed": "We couldn't restore this idea.",
+    "retryRestore": "Retry restore",
+    "statusPosted": "Posted",
+    "statusReady": "Ready for owner",
+    "statusApproved": "Approved to post",
+    "statusDismissed": "Hidden",
+    "count": "{count} entries",
+    "countOne": "{count} entry",
+    "viewDetail": "View",
+    "detailTitle": "Post detail",
+    "detailCaption": "Caption",
+    "detailMeta": "Details",
+    "detailCreated": "Created",
+    "detailProvenance": "Preview",
+    "detailBy": "By",
+    "detailClose": "Close",
+    "exportNarrative": "Export narrative pack",
+    "exportNarrativeHint": "Download teaser, hero, story, tent, and email strip as one zip — post when ready.",
+    "emptyTitle": "No activity yet",
+    "filteredEmptyTitle": "No matches"
+  },
+  "automation": {
+    "button": "Creative settings",
+    "heading": "Auto-suggestions",
+    "subtitle": "Choose which ideas Payverge builds for you.",
+    "master": "Auto-suggestions",
+    "masterHint": "Turn off to stop generating new post ideas entirely.",
+    "playsHeading": "Play types",
+    "descriptions": {
+      "happy_hour": "Fill your slowest service windows with a timed offer.",
+      "featured_dish": "Spotlight your highest-margin, best-selling dishes.",
+      "move_item": "Give underselling but profitable items a push.",
+      "win_back": "Reach lapsed regulars who opted in to hear from you.",
+      "combo_deal": "Promote your active bundles as easy higher-value orders.",
+      "offer": "Put your live offers in front of guests while they last."
+    },
+    "saved": "Saved",
+    "saveError": "Couldn't save your settings. Try again."
+  },
+  "settings": {
+    "title": "Creative settings",
+    "subtitle": "Guide the ideas, captions, and images Payverge prepares for your approval.",
+    "close": "Done",
+    "automatic": "Automatic",
+    "readOnly": "You can inspect these settings, but your role cannot change them.",
+    "autonomy": {
+      "title": "Autonomy",
+      "body": "Choose which ideas Payverge can prepare. Nothing is published without your approval.",
+      "master": "Prepare suggestions",
+      "masterHint": "Pause all new suggestions while keeping your creative profile.",
+      "plays": "Suggestion types"
+    },
+    "brandLock": {
+      "title": "Brand lock",
+      "body": "Logo and brand colours come from your business design. Visual mood biases the default art kit; typefaces still follow each kit.",
+      "noLogo": "No logo",
+      "primary": "Primary colour",
+      "secondary": "Secondary colour",
+      "defaultKit": "Default kit",
+      "kitFromPlay": "Follows each suggestion",
+      "fontNote": "Post fonts follow the chosen art kit (not the public-site font family)."
+    },
+    "brandVoice": {
+      "title": "Brand voice",
+      "body": "Describe who you serve and how your restaurant should sound. Leave blanks for automatic choices."
+    },
+    "visualDirection": {
+      "title": "Visual direction",
+      "body": "Set a default atmosphere for generated images and the opening art kit, or leave blank for play-based defaults."
+    },
+    "copyDefaults": {
+      "title": "Copy defaults",
+      "body": "Set your usual caption choices. Blank fields adapt automatically to each suggestion."
+    },
+    "fields": {
+      "audience": {
+        "label": "Audience",
+        "placeholder": "For example: neighborhood regulars and date-night diners",
+        "helper": "Who should the message feel written for?"
+      },
+      "voice": {
+        "label": "Voice",
+        "placeholder": "For example: warm, concise, and specific",
+        "helper": "Describe the personality and wording that feel like your restaurant."
+      },
+      "visualMood": {
+        "label": "Visual mood",
+        "helper": "The default look for generated food and venue images."
+      },
+      "ctaStyle": {
+        "label": "Call-to-action style",
+        "helper": "How directly captions should invite guests to act."
+      },
+      "hashtags": {
+        "label": "Hashtags",
+        "helper": "How many relevant hashtags captions should usually include."
+      },
+      "avoidPhrases": {
+        "label": "Phrases to avoid",
+        "placeholder": "best ever, guaranteed",
+        "helper": "Separate up to 10 phrases with commas.",
+        "tooMany": "Use no more than {max} phrases.",
+        "tooLong": "Each phrase must be {max} characters or fewer."
+      },
+      "language": {
+        "label": "Default language",
+        "helper": "The first language used when Payverge writes a caption."
+      },
+      "tone": {
+        "label": "Default tone",
+        "helper": "The starting tone for new caption options."
+      }
+    },
+    "options": {
+      "visualMood": {
+        "natural": "Natural",
+        "bright": "Bright",
+        "moody": "Moody",
+        "editorial": "Editorial",
+        "rustic": "Rustic"
+      },
+      "ctaStyle": {
+        "soft": "Soft invitation",
+        "direct": "Direct",
+        "urgent": "Time-sensitive"
+      },
+      "hashtags": {
+        "none": "None",
+        "light": "A few",
+        "standard": "Standard set"
+      },
+      "languages": {
+        "en": "English",
+        "es": "Spanish",
+        "es-AR": "Spanish (Argentina)",
+        "pt": "Portuguese",
+        "fr": "French",
+        "de": "German",
+        "it": "Italian",
+        "ja": "Japanese",
+        "zh": "Chinese",
+        "ar": "Arabic",
+        "da": "Danish",
+        "hi": "Hindi",
+        "ko": "Korean",
+        "nl": "Dutch",
+        "no": "Norwegian",
+        "pl": "Polish",
+        "ru": "Russian",
+        "sv": "Swedish",
+        "th": "Thai",
+        "tr": "Turkish",
+        "vi": "Vietnamese"
+      }
+    },
+    "loadError": {
+      "title": "Couldn't load creative settings",
+      "body": "Your saved settings are still safe. Try again before making changes.",
+      "retry": "Retry loading"
+    },
+    "status": {
+      "autoSave": "Changes save automatically.",
+      "readOnly": "View only. Changes are disabled for your role.",
+      "saving": "Saving changes...",
+      "saved": "Saved",
+      "error": "Couldn't save your changes. Your previous settings were restored.",
+      "errorGeneric": "Couldn't save your changes. Try again.",
+      "retry": "Try again"
+    }
+  },
+  "paused": {
+    "heading": "Suggestions are paused",
+    "body": "Auto-suggestions are turned off. Turn them back on to get fresh, ready-to-post ideas from your menu and offers.",
+    "resume": "Turn on auto-suggestions"
+  },
+  "playTitles": {
+    "featured_dish": "Feature your star: {name}",
+    "move_item": "Give {name} a push",
+    "happy_hour": "Fill {daypart} with a happy hour",
+    "happy_hour_generic": "Fill your slowest window",
+    "win_back": "Win back {count} opted-in regulars",
+    "combo_deal": "Promote your \"{name}\" deal",
+    "offer": "Promote your \"{name}\" offer"
+  }
+}

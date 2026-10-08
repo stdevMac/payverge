@@ -1,0 +1,38 @@
+{{ define "subject" }}Billetera de cobro actualizada{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Billetera de cobro actualizada
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    La billetera usada para recibir fondos de tu negocio fue actualizada.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    De ahora en adelante, las liquidaciones y pagos se envían a la nueva billetera que seleccionaste.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Si hiciste este cambio, no necesitás hacer nada.
+    Si no lo reconocés, revisá la configuración de tu negocio lo antes posible.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Revisar configuración de cobro
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si creés que este cambio se hizo por error o necesitás ayuda, respondé este mail y te asistimos.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

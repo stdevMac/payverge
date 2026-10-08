@@ -1,0 +1,17 @@
+{
+  "Rules": [
+    {
+      "ID": "db-backup-retention",
+      "Filter": {
+        "Prefix": "db/"
+      },
+      "Status": "Enabled",
+      "Expiration": {
+        "Days": 30
+      },
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 7
+      }
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "pageTitle": "Register your business",
+  "metaTitle": "Register your restaurant — Payverge",
+  "metaDescription": "Sign up your restaurant on Payverge to start accepting QR orders, payments, reservations, and AI-powered automations.",
+  "trustMessages": [
+    "Guided setup with review before launch",
+    "Payverge charges no per-order commission — processor or network fees may apply",
+    "Join restaurants consolidating POS, kitchen, and payments"
+  ],
+  "header": {
+    "badge": "Business Registration",
+    "title": "Register Your",
+    "titleEmphasis": "Business",
+    "subtitle": "Menu, orders, kitchen, payments, and AI under one login for the floor and the office"
+  },
+  "steps": {
+    "business": {
+      "title": "Business Info",
+      "description": "Name, logo & contact details"
+    },
+    "auth": {
+      "title": "Create Your Account",
+      "description": "Sign in or create an account to continue"
+    }
+  },
+  "authStep": {
+    "title": "Create Your Account",
+    "description": "Sign in or create an account to continue with registration.",
+    "cta": "Continue to Sign In"
+  },
+  "progressAria": "Business registration progress",
+  "businessInfo": {
+    "title": "Business Information",
+    "description": "Tell us about your business",
+    "sections": {
+      "identity": "Business Identity"
+    },
+    "fields": {
+      "name": {
+        "label": "Business Name",
+        "placeholder": "Enter your business name",
+        "required": "Business name is required"
+      },
+      "ownerName": {
+        "label": "Business Owner Name",
+        "placeholder": "Enter business owner's full name"
+      },
+      "description": {
+        "label": "Business Description",
+        "placeholder": "Describe your business (optional)"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Enter phone number (optional)"
+      },
+      "email": {
+        "label": "Business Email",
+        "placeholder": "business@example.com"
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "Enter website URL (optional)"
+      },
+      "customUrl": {
+        "label": "Custom URL",
+        "placeholder": "Enter custom URL slug (optional)"
+      },
+      "country": {
+        "label": "Country",
+        "placeholder": "Select your country",
+        "required": "Select your country — it sets your currency and timezone."
+      },
+      "city": {
+        "label": "City (optional)",
+        "placeholder": "e.g. Buenos Aires — completes your business profile"
+      },
+      "businessType": {
+        "label": "Business type",
+        "placeholder": "Select a type"
+      }
+    },
+    "logo": {
+      "title": "Business Logo",
+      "description": "Upload your business logo for better brand recognition",
+      "upload": "Upload Logo",
+      "uploading": "Uploading...",
+      "change": "Change Logo",
+      "guidelines": "Recommended: Square image, PNG or JPG, max 5MB"
+    },
+    "localeHint": "We'll set you up in {currency}, {timezone} time — change anytime in Settings.",
+    "businessTypes": {
+      "restaurant": "Restaurant",
+      "cafe": "Café",
+      "bar": "Bar",
+      "quick_service": "Quick service",
+      "food_truck": "Food truck",
+      "bakery": "Bakery",
+      "fine_dining": "Fine dining",
+      "other": "Other"
+    }
+  },
+  "location": {
+    "title": "Location & Payment Setup",
+    "description": "Configure your business address and payout details",
+    "address": {
+      "title": "Business Address",
+      "street": {
+        "label": "Street Address",
+        "placeholder": "123 Main Street"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "New York"
+      },
+      "state": {
+        "label": "State/Province",
+        "placeholder": "NY"
+      },
+      "postalCode": {
+        "label": "Postal Code",
+        "placeholder": "10001"
+      },
+      "country": {
+        "label": "Country",
+        "placeholder": "United States"
+      }
+    },
+    "wallets": {
+      "title": "Payout Details",
+      "settlement": {
+        "label": "Payout Account",
+        "placeholder": "Enter your payout account",
+        "description": "Where payments will be sent",
+        "useConnected": "Use This Address"
+      },
+      "tipping": {
+        "label": "Tips Payout",
+        "placeholder": "Enter tips payout account (optional)",
+        "description": "Where tips will be sent"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings & Features",
+    "description": "Configure fees and enable features",
+    "fees": {
+      "title": "Fee Configuration",
+      "taxRate": {
+        "label": "Tax Rate (%)",
+        "placeholder": "8.25"
+      },
+      "serviceFee": {
+        "label": "Service Fee (%)",
+        "placeholder": "18.0"
+      },
+      "taxInclusive": "Tax inclusive pricing",
+      "serviceInclusive": "Service fee inclusive pricing"
+    },
+    "features": {
+      "title": "Business Features",
+      "businessPage": "Business Page",
+      "businessPageDescription": "Create a public page for your business",
+      "showReviews": "Customer Reviews",
+      "showReviewsDescription": "Display customer reviews on your page",
+      "googleReviews": "Google Reviews",
+      "googleReviewsDescription": "Integrate with Google Reviews",
+      "counter": "Order Counter",
+      "counterDescription": "Display order numbers for pickup"
+    }
+  },
+  "navigation": {
+    "back": "Back",
+    "next": "Next Step",
+    "submit": "Create Business",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "connectWalletOrSignIn": "Please connect your wallet or sign in to register a business",
+    "registrationFailed": "Business registration failed",
+    "uploadFailed": "File upload failed",
+    "invalidEmail": "Please enter a valid email"
+  },
+  "validation": {},
+  "messages": {
+    "authenticationRequired": "Authentication Required",
+    "authenticationMessage": "Please sign in to register your business on Payverge.",
+    "loading": "Loading...",
+    "backToDashboard": "Back to Home",
+    "stepProgress": "Step {current} of {total}",
+    "complete": "Complete",
+    "tryAgain": "Try Again"
+  }
+}

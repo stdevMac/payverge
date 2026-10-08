@@ -1,0 +1,9 @@
+{
+  "key": "dd62c0440bfadc59",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "¡Bienvenido! Claro que sí, estaré encantado de ayudarte con el menú. Tenemos una gran variedad de platos hoy, ¿qué tipo de comida te apetece?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {"PromptTokens": 30, "CompletionTokens": 30, "TotalTokens": 60}
+  }
+}

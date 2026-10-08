@@ -1,0 +1,19 @@
+{
+  "name": "@payverge/admin-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "payverge-admin-mcp": "./bin/payverge-admin-mcp.mjs",
+    "payverge-admin-webhooks": "./bin/payverge-admin-webhooks.mjs"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "node --check ./bin/payverge-admin-mcp.mjs && node --check ./bin/payverge-admin-webhooks.mjs && node --check ./src/backendClient.mjs && node --check ./src/config.mjs && node --check ./src/configTools.mjs && node --check ./src/mcpProtocol.mjs && node --check ./src/ownerSession.mjs && node --check ./src/stdioServer.mjs && node --check ./src/tools.mjs && node --check ./src/webhookServer.mjs && node --check ./scripts/smoke.mjs",
+    "smoke": "node ./scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  }
+}

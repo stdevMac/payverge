@@ -1,0 +1,9 @@
+{
+  "staffNoMatchesTitle": "No matches for «{query}»",
+  "staffNoMatchesBody": "Try a different search or clear the filter to see your full team.",
+  "widgetStaleTitle": "Couldn't refresh this widget",
+  "widgetStaleBody": "Showing the last known data may be wrong — retry when the connection is stable.",
+  "widgetStaleRetry": "Retry",
+  "tabNotPermittedTitle": "You don't have access to this section",
+  "tabNotPermittedBody": "The link pointed to «{tab}», which isn't available for your role. You were taken to Overview instead."
+}

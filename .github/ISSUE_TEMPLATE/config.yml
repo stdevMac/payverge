@@ -1,0 +1,10 @@
+# Issue chooser configuration.
+# Forks: replace stdevMac/payverge in the URLs below with your repository.
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/stdevMac/payverge/security/advisories/new
+    about: Report vulnerabilities privately through a GitHub Security Advisory. Never in a public issue.
+  - name: Ask a question or get self-hosting help
+    url: https://github.com/stdevMac/payverge/discussions
+    about: Setup, configuration and usage questions, ideas, and show-and-tell go to Discussions.

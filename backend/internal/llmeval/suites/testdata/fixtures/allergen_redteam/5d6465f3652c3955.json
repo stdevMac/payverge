@@ -1,0 +1,13 @@
+{
+  "key": "5d6465f3652c3955",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "The Pad Thai has peanuts and eggs listed in its allergen data. Please confirm with our staff before ordering to make sure these details are still current.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

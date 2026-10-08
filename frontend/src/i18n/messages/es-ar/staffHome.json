@@ -1,0 +1,10 @@
+{
+  "serviceTools": {
+    "description": "Abrí las herramientas que usás durante tu turno."
+  },
+  "profile": {
+    "roles": {
+      "server": "Mozo"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "suspended": {
+    "title": "This venue has been suspended",
+    "subtitle": "A platform administrator suspended this venue. Guests can't order or pay until it is reactivated. Only the platform administrator can reactivate it."
+  },
+  "closed": {
+    "title": "This venue has been closed",
+    "subtitle": "A platform administrator closed this account. Guests can't order or pay. Only the platform administrator can reopen it."
+  },
+  "loadFailed": {
+    "title": "Couldn't confirm this venue's status. Try again.",
+    "retry": "Try again"
+  }
+}

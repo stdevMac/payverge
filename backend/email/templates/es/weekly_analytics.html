@@ -1,0 +1,52 @@
+{{ define "subject" }}Resumen semanal del negocio{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Resumen semanal del negocio
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Aquí tienes un resumen de cómo se desempeñó tu negocio en Payverge esta semana.
+</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0; font-size:15px;">
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Pedidos</td>
+        <td style="padding:6px 0; text-align:right; font-weight:600;">{{ .total_orders }}</td>
+    </tr>
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Ingresos</td>
+        <td style="padding:6px 0; text-align:right; font-weight:600;">{{ .total_revenue }}</td>
+    </tr>
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Cuenta promedio</td>
+        <td style="padding:6px 0; text-align:right; font-weight:600;">{{ .average_bill }}</td>
+    </tr>
+    <tr>
+        <td style="padding:6px 0; color:#6b6b6b;">Artículo principal</td>
+        <td style="padding:6px 0; text-align:right; font-weight:600;">{{ .top_item }}</td>
+    </tr>
+</table>
+
+<p style="margin:0 0 18px 0;">
+    Puedes encontrar más detalles, tendencias y desgloses en tu panel de análisis.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Ver análisis
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si algo parece incorrecto o te gustaría ayuda para entender estos números, simplemente responde a este correo.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

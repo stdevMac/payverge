@@ -1,0 +1,66 @@
+{
+  "common": {
+    "maintenance": {
+      "title": "Under Maintenance",
+      "message": "We're improving {productName} to serve you better. We'll be back shortly.",
+      "visitWebsite": "Visit our Website",
+      "checkDocs": "Check our Documentation",
+      "exploreLinks": "Contact Us"
+    },
+    "skipToMainContent": "Skip to main content",
+    "loadingSession": "Loading session",
+    "sessionCheckFailed": "We couldn't verify your session",
+    "sessionCheckFailedHint": "Check your connection and try again. You may still be signed in.",
+    "retry": "Retry",
+    "dismissToast": "Dismiss {title}",
+    "close": "Close"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "metaTitle": "Page not found — Payverge",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "backToHome": "Back to home",
+    "contactSupport": "Contact support"
+  },
+  "pwa": {
+    "card": {
+      "title": "Open Payverge like an app",
+      "body": "Faster access from your home screen. No app store needed."
+    },
+    "actions": {
+      "install": "Install Payverge",
+      "dismiss": "Not now",
+      "close": "Close"
+    },
+    "manual": {
+      "title": "Add Payverge to your Home Screen",
+      "stepShare": "In Safari, tap Share.",
+      "stepAdd": "Choose Add to Home Screen.",
+      "stepConfirm": "Tap Add to confirm.",
+      "done": "I've added it"
+    },
+    "unsupported": {
+      "title": "Installation unavailable",
+      "body": "Open Payverge in Safari on iPhone or a compatible browser on another device."
+    },
+    "account": {
+      "label": "Install Payverge",
+      "hint": "Add Payverge to this device"
+    },
+    "launch": {
+      "opening": "Opening Payverge"
+    }
+  },
+  "authModal": {
+    "sessionExpired": {
+      "title": "Session expired",
+      "body": "For your security we ended this session after a long period of inactivity. Please sign in again to continue.",
+      "loginCta": "Log in again"
+    },
+    "verifyBannerResent": "Verification link sent — check your inbox.",
+    "verifyBannerResendFailed": "Couldn't send the link. Please try again.",
+    "verifyBannerText": "Verify your email to secure your account.",
+    "verifyBannerResend": "Resend link",
+    "verifyBannerDismiss": "Dismiss"
+  }
+}

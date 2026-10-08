@@ -1,0 +1,48 @@
+{
+  "billAmount": "Bill Amount",
+  "tip": "Tip",
+  "total": "Total",
+  "totalAmount": "Total Amount",
+  "totalPaid": "Total Paid",
+  "to": "To",
+  "txHash": "Transaction Hash",
+  "chooseHowToConnect": "Choose how to connect:",
+  "optional": "Optional",
+  "connectWallet": "Connect Your Wallet",
+  "paymentSuccessMessage": "Your payment of {{amount}} has been processed successfully.",
+  "billId": "Bill ID",
+  "amountPaid": "Amount Paid",
+  "status": "Status",
+  "confirmed": "Confirmed",
+  "transaction": "Transaction",
+  "view": "View",
+  "paymentFailed": "Payment Failed",
+  "cancel": "Cancel",
+  "tryAgain": "Try Again",
+  "steps": {
+    "approval": {
+      "title": "Approving USDC",
+      "description": "Please confirm the approval transaction in your wallet"
+    },
+    "waitingApproval": {
+      "title": "Waiting for Approval",
+      "description": "Waiting for approval transaction to be confirmed on the blockchain"
+    },
+    "creatingBill": {
+      "title": "Creating Bill",
+      "description": "Creating your bill on the blockchain"
+    },
+    "payment": {
+      "title": "Processing Payment",
+      "description": "Please confirm the payment transaction in your wallet"
+    },
+    "waitingPayment": {
+      "title": "Confirming Payment",
+      "description": "Waiting for payment transaction to be confirmed on the blockchain"
+    },
+    "finalizing": {
+      "title": "Finalizing",
+      "description": "Finalizing your payment and updating the bill status"
+    }
+  }
+}

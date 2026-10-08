@@ -1,0 +1,32 @@
+{{ define "subject" }}Reservation Confirmed{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Reservation Confirmed
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi there,
+</p>
+
+<p>
+    Your reservation at {{ .business_name }} is confirmed for {{ .reservation_date }} at {{ .reservation_time }}.
+</p>
+
+<p>
+    Party Size: {{ .party_size }}<br>
+    Table: {{ .table_name }}
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    {{ if .confirmation_url }}
+    <a href="{{ .confirmation_url }}" style="margin-right: 10px;">View reservation</a>
+    {{ end }}
+    {{ if .cancellation_url }}
+    <a href="{{ .cancellation_url }}">Cancel reservation</a>
+    {{ end }}
+</div>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

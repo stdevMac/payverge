@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "Chúng tôi trân trọng quyền riêng tư của bạn",
+    "description": "Chúng tôi dùng cookie thiết yếu để Payverge hoạt động. Với sự cho phép của bạn, chúng tôi cũng muốn dùng cookie phân tích để hiểu cách trang được sử dụng. Bạn có thể đổi lựa chọn bất cứ lúc nào từ \"Tùy chọn cookie\" ở chân trang.",
+    "acceptAll": "Chấp nhận tất cả",
+    "declineAll": "Từ chối không thiết yếu",
+    "customize": "Tùy chỉnh",
+    "essentialLabel": "Thiết yếu",
+    "essentialDescription": "Cần để trang hoạt động (bảo mật, ngôn ngữ, phiên). Luôn bật.",
+    "analyticsLabel": "Phân tích",
+    "analyticsDescription": "Giúp chúng tôi hiểu mức sử dụng để cải thiện sản phẩm. Tắt cho đến khi bạn đồng ý.",
+    "marketingLabel": "Marketing",
+    "marketingDescription": "Dùng để đo và cải thiện chiến dịch. Tắt cho đến khi bạn đồng ý.",
+    "savePreferences": "Lưu tùy chọn",
+    "privacyLink": "Đọc Chính sách quyền riêng tư",
+    "closeLabel": "Đóng banner cookie"
+  },
+  "footer": {
+    "preferences": "Tùy chọn cookie"
+  }
+}

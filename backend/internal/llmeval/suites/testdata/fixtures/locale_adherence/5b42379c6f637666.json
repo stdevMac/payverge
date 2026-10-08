@@ -1,0 +1,13 @@
+{
+  "key": "5b42379c6f637666",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Basado en los datos que me compartiste, te recomiendo probar la Cheeseburger, que parece ser el plato más destacado del menú. También tenemos otras opciones excelentes si preferís algo diferente. ¿Qué tipo de comida te gustaría probar?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

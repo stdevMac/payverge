@@ -1,0 +1,29 @@
+/* Tailwind entry compiled into ds/styles.css for the design-sync bundle.
+ *
+ * Intentionally does NOT declare @font-face — brand faces are wired through
+ * cfg.extraFonts -> ds/fonts.css so the converter copies the woff2s and
+ * rewrites their urls into the bundle's fonts/ directory.
+ */
+
+@import "../src/styles/theme.css";
+@import "./asset-shim.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The app binds these two variables in app/layout.tsx via next/font. The
+ * bundle has no Next runtime, so bind them to the families ds/fonts.css
+ * ships. --font-inter is a legacy variable name that resolves to DM Sans;
+ * see the note in tailwind.config.ts. */
+:root {
+  --font-inter: "DM Sans";
+  --font-poppins: "DM Sans";
+  --font-title: "DM Serif Display";
+}
+
+body {
+  font-family: var(--font-inter), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  background-color: #faf9f6;
+  color: #1c1917;
+}

@@ -1,0 +1,114 @@
+# Public demo overlay (demo.payverge.io). Layer it on the self-host stack:
+#
+#   # deploy/.env
+#   COMPOSE_PROJECT_NAME=payverge-demo
+#   COMPOSE_FILE=docker-compose.yml:demo/docker-compose.demo.yml
+#   (keep docker-compose.build.yml after docker-compose.yml when building)
+#
+#   docker compose up -d
+#
+# What it changes (docs/self-hosting/public-demo.md has the full list):
+#   - DEMO_MODE=true: one-click "Enter demo" sign-in, the public-demo banner,
+#     and the backend refuses every action that reaches outside the box or
+#     changes who controls it (internal/demomode).
+#   - DEMO_DATA=true: the seeded showroom the demo exposes (DEMO_MODE refuses
+#     to start without it).
+#   - Signup closed, email to the log, no outbound channels, no card provider,
+#     AI off unless DEMO_AI_API_KEY is set, smaller resource limits.
+#   - Caddy adds X-Robots-Tag: noindex (demo/caddy/*.caddy).
+#
+# The nightly reset (demo/reset-demo.sh, run by demo/systemd/) puts the
+# database and the uploads back to the pristine snapshot every night.
+#
+# Relative paths below resolve against deploy/ (the first compose file's
+# directory), not against this file.
+services:
+  backend:
+    environment:
+      - DEMO_MODE=true
+      - DEMO_DATA=true
+      # "/" serves the core showroom venue's storefront. Its slug comes from
+      # the seeded name and DEMO_MODE freezes custom_url, so it is stable.
+      - PRIMARY_VENUE=${DEMO_PRIMARY_VENUE:-bodegon-mesa-larga}
+      # Shown in the banner and /api/v1/instance; the timer owns the schedule.
+      - DEMO_RESET_UTC=${DEMO_RESET_UTC:-03:00}
+      # State-changing requests per client IP per minute (429 beyond).
+      - DEMO_WRITE_RATE_PER_MIN=${DEMO_WRITE_RATE_PER_MIN:-30}
+      # The backend forces these too while DEMO_MODE is on; set here so the
+      # effective config says what runs.
+      - REGISTRATION_MODE=closed
+      - EMAIL_PROVIDER=log
+      # Stricter edge-wide limits than a private install.
+      - GLOBAL_RATE_LIMIT_REQUESTS_PER_MINUTE=${DEMO_GLOBAL_RATE_LIMIT_PER_MIN:-240}
+      - AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE=${DEMO_AUTH_RATE_LIMIT_PER_MIN:-6}
+      - REGISTRATION_RATE_LIMIT_PER_HOUR=1
+      # Uploads stay on the local volume, which the reset restores.
+      - STORAGE_DRIVER=local
+      # --- Outbound side effects: all off -----------------------------------
+      - RESEND_API_KEY=
+      - EMAIL_API_KEY=
+      - SMTP_HOST=
+      - SMTP_PASSWORD=
+      - TELEGRAM_TOKEN=
+      - TELEGRAM_ESCALATION_BOT_TOKEN=
+      - WHATSAPP_ENABLED=false
+      - VAPID_PUBLIC_KEY=
+      - VAPID_PRIVATE_KEY=
+      - GOOGLE_TRANSLATE_API_KEY=
+      - GOOGLE_PLACES_API_KEY=
+      - GOOGLE_CLIENT_ID=
+      - GOOGLE_CLIENT_SECRET=
+      - PAYVERGE_ADMIN_MCP_TOKEN=
+      - PAYVERGE_ADMIN_MCP_TOKEN_SHA256=
+      # Empty on purpose: the hourly demo-day append then follows DEMO_DATA,
+      # so the showroom's "today" keeps moving between resets, and no other
+      # admin gets a showroom. "false" would freeze it at the snapshot's day.
+      - ADMIN_DEMO_AUTOMATION_ENABLED=
+      # --- Payments: pay at the counter only (owner confirms; no money moves) -
+      - PAYMENT_PROVIDER_STRIPE_ENABLED=false
+      - PAYMENT_PROVIDER_PAYPAL_ENABLED=false
+      - PAYMENT_PROVIDER_MERCADOPAGO_ENABLED=false
+      - STRIPE_SECRET_KEY=
+      - STRIPE_CONNECT_CLIENT_ID=
+      - MERCADOPAGO_CLIENT_ID=
+      - MERCADOPAGO_CLIENT_SECRET=
+      # --- AI: off unless the owner opts in with a budgeted key -------------
+      # Empty key = every AI surface shows its honest "AI is not configured"
+      # fallback. To turn it on, set DEMO_AI_API_KEY (and DEMO_AI_BASE_URL for
+      # a non-OpenRouter endpoint) in .env; the daily ceilings below cap spend.
+      # The private install's LLM_API_KEY / OPENROUTER_API_KEY never leak in.
+      - LLM_BASE_URL=${DEMO_AI_BASE_URL:-}
+      - LLM_API_KEY=${DEMO_AI_API_KEY:-}
+      - OPENROUTER_API_KEY=
+      - AI_DAILY_BUDGET_USD=${DEMO_AI_DAILY_BUDGET_USD:-1}
+      - AI_BUDGET_GLOBAL_USD_DAY=${DEMO_AI_DAILY_BUDGET_USD:-1}
+      - AI_BUDGET_GUEST_POOL_USD_DAY=${DEMO_AI_GUEST_BUDGET_USD:-0.5}
+      - AI_WAITER_DAILY_MESSAGES_PER_IP=${DEMO_AI_MESSAGES_PER_IP:-20}
+    cpus: ${DEMO_BACKEND_CPUS:-1.0}
+    mem_limit: ${DEMO_BACKEND_MEM:-1g}
+    pids_limit: 512
+
+  frontend:
+    environment:
+      SEO_INDEXING: "false"
+      POSTHOG_KEY: ""
+    cpus: ${DEMO_FRONTEND_CPUS:-1.0}
+    mem_limit: ${DEMO_FRONTEND_MEM:-768m}
+    pids_limit: 512
+
+  postgres:
+    cpus: ${DEMO_POSTGRES_CPUS:-1.0}
+    mem_limit: ${DEMO_POSTGRES_MEM:-768m}
+
+  caddy:
+    volumes:
+      # payverge.caddy imports /etc/caddy/site.d/*.caddy inside the site.
+      - ./demo/caddy:/etc/caddy/site.d:ro
+
+  # The reset (demo/reset-demo.sh) also snapshots and restores the space-scan
+  # artifacts in the backend data volume (DATA_DIR=/app/data), so nothing a
+  # visitor could leave there outlives the night. The generated plugin key in
+  # the same volume is left alone.
+  restore:
+    volumes:
+      - backend_data:/data/app

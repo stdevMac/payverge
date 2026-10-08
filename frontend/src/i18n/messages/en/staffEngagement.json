@@ -1,0 +1,77 @@
+{
+  "menu": {
+    "checklistsEntry": "Checklists",
+    "checklistsHint": "Opening, closing & onboarding tasks",
+    "onboardingEntry": "Onboarding",
+    "onboardingHint": "Your getting-started steps",
+    "documentsEntry": "Documents",
+    "documentsHint": "Policies & handbooks to review",
+    "recognitionEntry": "Recognition",
+    "recognitionHint": "Shout-outs from your team",
+    "pollsEntry": "Polls",
+    "pollsHint": "Team polls to vote in"
+  },
+  "checklists": {
+    "title": "Checklists",
+    "empty": "No checklists assigned",
+    "emptyHint": "Opening, closing, and onboarding tasks show up here.",
+    "loading": "Loading checklists",
+    "statusPending": "Not started",
+    "statusInProgress": "In progress",
+    "statusComplete": "Complete",
+    "back": "Back",
+    "required": "Required",
+    "itemsEmpty": "No tasks on this checklist",
+    "openRun": "Open checklist",
+    "tickError": "Couldn't update the task"
+  },
+  "onboarding": {
+    "title": "Your onboarding",
+    "empty": "Nothing to set up right now",
+    "emptyHint": "Your manager will assign onboarding steps here.",
+    "loading": "Loading onboarding"
+  },
+  "documents": {
+    "title": "Documents",
+    "empty": "No documents yet",
+    "emptyHint": "Policies and handbooks your manager shares appear here.",
+    "loading": "Loading documents",
+    "open": "Open",
+    "version": "Version {n}",
+    "ackRequired": "Acknowledgement required",
+    "acknowledge": "I have read this",
+    "acknowledged": "Acknowledged",
+    "ackError": "Couldn't record your acknowledgement"
+  },
+  "recognition": {
+    "title": "Recognition",
+    "empty": "No shout-outs yet",
+    "emptyHint": "Kudos from your team will show up here.",
+    "loading": "Loading recognition",
+    "send": "Send a shout-out",
+    "recipient": "To",
+    "recipientPlaceholder": "Choose a teammate",
+    "message": "Message",
+    "messagePlaceholder": "What did they do well?",
+    "emoji": "Emoji",
+    "visibility": "Visibility",
+    "team": "Whole team",
+    "private": "Private",
+    "submit": "Send",
+    "sending": "Sending…",
+    "sent": "Shout-out sent",
+    "sendError": "Couldn't send your shout-out"
+  },
+  "polls": {
+    "title": "Polls",
+    "empty": "No open polls",
+    "emptyHint": "Team polls appear here when your manager opens one.",
+    "loading": "Loading polls",
+    "vote": "Vote",
+    "voted": "Vote recorded",
+    "closed": "Closed",
+    "anonymous": "Anonymous",
+    "votesCount": "{n} votes",
+    "voteError": "Couldn't record your vote"
+  }
+}

@@ -1,0 +1,21 @@
+description: Helpfulness — Ops Assistant procedural answers
+prompts:
+  - file://../lib/prod_prompts.js:opsAssistant
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    config: { temperature: 0.2, max_tokens: 2048, response_format: { type: json_object } }
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+  vars:
+    business_id: "1"
+    active_tab: overview
+tests:
+  - vars: { LANG: en, user_message: "My guests can't see the menu — what should I check?" }
+    assert:
+      - type: llm-rubric
+        value: JSON answer mentions setup steps (menu items, business page) with actionable deep links or steps.
+  - vars: { LANG: en, user_message: "Why did revenue drop last week?" }
+    assert:
+      - type: llm-rubric
+        value: Suggests Director Console or analytics handoff rather than inventing revenue numbers without data.

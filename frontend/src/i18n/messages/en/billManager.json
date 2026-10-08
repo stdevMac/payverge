@@ -1,0 +1,608 @@
+{
+  "title": "Bills",
+  "subtitle": "Manage and track all your bills",
+  "loading": "Loading bills...",
+  "billLabel": "bill",
+  "preparedUnits": "{count} items",
+  "tabs": {
+    "active": "Active Bills",
+    "history": "Bill History"
+  },
+  "header": {
+    "eyebrow": "Revenue command",
+    "results": "Results",
+    "visibleValue": "Listed total",
+    "pendingOrders": "Pending orders",
+    "pendingOrder": "Pending order",
+    "currency": "Currency",
+    "visualTitle": "Settlement rail",
+    "visualSubtitle": "Bill-to-payment flow",
+    "handoff": "Track open tables, partial payments, and completed bills from one revenue surface."
+  },
+  "buttons": {
+    "createBill": "Create Bill",
+    "resetFilters": "Reset Filters",
+    "closeBill": "Close Bill",
+    "closeWithoutPayment": "Close without payment",
+    "close": "Close",
+    "editItems": "Edit Items",
+    "addItem": "Add Item",
+    "launchDisplay": "Bill Display",
+    "viewDetails": "View Details",
+    "doneEditing": "Done",
+    "printBill": "Print bill",
+    "print": "Print",
+    "moreActions": "More actions",
+    "moreActionsAria": "More actions for bill {number}"
+  },
+  "print": {
+    "noPrinter": "No bill printer registered — add one in Settings → Printers",
+    "failed": "Print failed: {message}",
+    "queued": "Bill queued for the selected print station"
+  },
+  "voidRefund": {
+    "reasonLabel": "Reason",
+    "minChars": "Minimum 3 characters.",
+    "cancel": "Cancel",
+    "actions": {
+      "voidBill": "Void bill",
+      "refundPayment": "Refund payment"
+    },
+    "paymentMethods": {
+      "unknown": "Unknown",
+      "crypto": "Crypto",
+      "crossChain": "Cross-chain",
+      "plugin": "Card / plugin"
+    },
+    "pin": {
+      "confirmVoidTitle": "Confirm void",
+      "voidDescription": "Void bill #{billNumber}",
+      "confirmRefundTitle": "Confirm refund",
+      "refundDescription": "Refund payment for bill #{billNumber}"
+    },
+    "toasts": {
+      "voided": "Bill voided",
+      "refunded": "Payment refunded"
+    },
+    "errors": {
+      "reasonTooShort": "Reason must be at least 3 characters",
+      "selectPayment": "Select a payment to refund",
+      "voidFailed": "Failed to void bill",
+      "kitchenTicketsLive": "The kitchen is still working this check — bump or cancel the open tickets before voiding.",
+      "refundFailed": "Failed to refund payment"
+    },
+    "audit": {
+      "title": "Voids & refunds",
+      "subtitle": "Manager-approved actions on this bill.",
+      "loading": "Loading…",
+      "empty": "No void or refund actions yet.",
+      "noPin": "No PIN",
+      "refund": "Refund",
+      "void": "Void",
+      "action": "Action"
+    },
+    "voidModal": {
+      "title": "Void bill #{billNumber}",
+      "warning": "Voiding cancels the bill and releases the table. This action is audited and cannot be undone.",
+      "reasonPlaceholder": "Why is this bill being voided?"
+    },
+    "refundModal": {
+      "explanation": "Refunds the selected payment in full. The bill total stays the same; only the payment row is reversed and the bill paid amount is decremented. External provider refunds (Stripe / on-chain) are operator-initiated and tracked separately.",
+      "noPayments": "No confirmed payments to refund.",
+      "choosePayment": "Choose a payment",
+      "inclTip": "(incl. tip {amount})",
+      "reasonPlaceholder": "Why is this payment being refunded?"
+    }
+  },
+  "recordPayment": {
+    "title": "Payments",
+    "subtitlePayable": "{remaining} remaining — record cash, card, or other tender.",
+    "subtitleReadOnly": "Guest payments waiting for server or manager confirmation.",
+    "subtitleSettled": "Payment history for this bill.",
+    "empty": "No payments recorded yet. Use Record payment when the guest pays at the counter.",
+    "actions": {
+      "record": "Record payment",
+      "openDrawer": "Open drawer"
+    },
+    "pending": {
+      "title": "Awaiting confirmation",
+      "confirm": "Confirm received",
+      "reject": "Reject",
+      "guest": "Guest at counter",
+      "awaitingStaff": "Awaiting staff",
+      "requestedAt": "Requested {time}",
+      "expired": "Expired — cannot confirm"
+    },
+    "ledger": {
+      "title": "Recorded payments",
+      "tip": "tip"
+    },
+    "status": {
+      "paid": "Fully paid"
+    },
+    "methods": {
+      "crypto": "Crypto",
+      "cash": "Cash",
+      "card": "Card",
+      "mercadopago": "Mercado Pago",
+      "venmo": "Venmo",
+      "other": "Other",
+      "unknown": "Payment"
+    },
+    "modal": {
+      "title": "Record payment",
+      "description": "Enter the amount received. Remaining balance: {remaining}.",
+      "amount": "Amount received",
+      "tip": "Tip (optional)",
+      "tipHint": "Recorded separately from the bill balance.",
+      "method": "Payment method",
+      "note": "Note (optional)",
+      "notePlaceholder": "Table 4, walk-in, etc.",
+      "noteHint": "For your records — not shown to the guest.",
+      "cancel": "Cancel",
+      "submit": "Mark as received"
+    },
+    "toasts": {
+      "recorded": "Payment recorded",
+      "confirmed": "Payment confirmed",
+      "rejected": "Payment request rejected",
+      "drawerOpened": "Cash drawer opened"
+    },
+    "errors": {
+      "amountInvalid": "Enter a valid amount greater than zero.",
+      "amountTooHigh": "Amount exceeds the remaining balance.",
+      "tipInvalid": "Enter a valid tip amount.",
+      "failed": "Could not record payment. Try again or ask a manager.",
+      "rejectFailed": "Could not reject the payment request. Try again or ask a manager.",
+      "cashSessionRequired": "Open a cash register session before recording cash.",
+      "cashSessionLookupFailed": "Could not check the cash register session. Open a drawer and try again.",
+      "openDrawerFailed": "Could not open the cash drawer. Try the Cash Register tab.",
+      "requestExpired": "This payment request expired and cannot be confirmed."
+    },
+    "settled": {
+      "title": "Payment recorded — bill settled",
+      "print": "Print receipt",
+      "closeBill": "Close bill",
+      "done": "Done"
+    },
+    "warnings": {
+      "cashSessionRequired": "Open the cash register drawer before recording cash.",
+      "cashSessionChecking": "Checking the cash register session…"
+    }
+  },
+  "confirmation": {
+    "closeBillTitle": "Close this bill?",
+    "closeBillDescription": "This will permanently close the bill. Any unpaid balance will be written off. This action cannot be undone.",
+    "closeBillConfirm": "Yes, Close Bill",
+    "closeWithoutPaymentTitle": "Close without recording payment?",
+    "closeWithoutPaymentDescription": "This closes the tab but does not mark it paid. The unpaid balance will be written off. To settle cash or card, use Record payment instead.",
+    "closeWithoutPaymentConfirm": "Yes, close without payment",
+    "closeBillCancel": "Cancel",
+    "cancelOrderTitle": "Cancel this order?",
+    "cancelOrderDescription": "Order #{orderNumber} will be marked as cancelled. It will not be added to the bill, and it will remain visible below for staff reference.",
+    "cancelOrderConfirm": "Yes, Cancel Order",
+    "cancelOrderCancel": "Keep Order",
+    "cancelOrderReasonLabel": "Reason for cancellation",
+    "cancelOrderReasonPlaceholder": "Optional note for staff, kitchen, or service record",
+    "cancelOrderReasonHint": "This reason will be saved in the order record and shown in the bill history."
+  },
+  "display": {
+    "title": "Bill Display",
+    "subtitle": "A live workspace for spotting attention bills and resolving them fast.",
+    "liveBadge": "Live workspace",
+    "searchPlaceholder": "Search by bill, table, counter, note, or total...",
+    "attentionBills": "Needs Attention",
+    "attentionSubtitle": "Bills waiting on approval or running longer than usual.",
+    "openBills": "Open Bills",
+    "openSubtitle": "Active bills that are moving normally.",
+    "completedBills": "Completed Bills",
+    "latestCount": "Latest {count}",
+    "completedSubtitle": "Most recently paid or closed bills.",
+    "noBills": "No bills",
+    "itemCount": "{count} items",
+    "itemCountCompact": "{count} items",
+    "preparedUnits": "{count} items",
+    "pendingTicketsCount": "{count} pending",
+    "activeTicketsCount": "{count} active",
+    "inspectBill": "Inspect",
+    "cardTotal": "Total",
+    "cardTickets": "Tickets",
+    "emptyAttention": "Nothing urgent right now.",
+    "emptyActive": "No active open bills match this view.",
+    "emptyCompleted": "No recent completed bills match this view.",
+    "notesTitle": "Bill notes",
+    "noNotes": "No notes on this bill.",
+    "ticketSummaryTitle": "Ticket summary",
+    "ticketSummarySubtitle": "Current order activity tied to this bill.",
+    "ticketMetrics": {
+      "pending": "Pending",
+      "active": "Active",
+      "cancelled": "Cancelled"
+    },
+    "itemsTitle": "Bill items",
+    "itemsSubtitle": "Review the live bill, then edit only when needed.",
+    "historySubtitle": "Recent changes to this bill and its orders.",
+    "billTotalsTitle": "Bill totals",
+    "counterLabel": "Counter {counter}",
+    "justNow": "Just now",
+    "minutesAgo": "{minutes}m ago",
+    "hoursMinutesAgo": "{hours}h {minutes}m ago",
+    "elapsedAgo": "{duration} ago",
+    "metrics": {
+      "items": "Items",
+      "total": "Total",
+      "pendingTickets": "Pending tickets",
+      "remaining": "Remaining"
+    },
+    "stats": {
+      "open": "Open",
+      "attention": "Attention",
+      "pending": "Pending",
+      "completed": "Completed"
+    },
+    "shortcuts": {
+      "search": "Search",
+      "navigate": "Navigate",
+      "edit": "Edit",
+      "closeBill": "Close bill",
+      "fullscreen": "Fullscreen",
+      "newBill": "New bill",
+      "back": "Back"
+    },
+    "exitDisplayAria": "Exit bill display",
+    "backToBillsAria": "Back to bills",
+    "closeDetailPanelAria": "Close detail panel",
+    "preparedUnitsOne": "{count} item",
+    "preparedUnitsOther": "{count} items"
+  },
+  "editItems": {
+    "title": "Edit Items",
+    "decreaseQuantityAria": "Decrease quantity",
+    "increaseQuantityAria": "Increase quantity",
+    "quantityAria": "Quantity: {quantity}",
+    "voidPinTitle": "Confirm void",
+    "voidPinDescription": "Void {name}",
+    "searchPlaceholder": "Search menu items...",
+    "noMenuItems": "No menu items found",
+    "currentItemsTitle": "Current bill items",
+    "currentItemsSubtitle": "Review the live bill before making manual changes.",
+    "removalWarning": "Removing an item here updates the live bill immediately. Use order cancellation for kitchen tickets.",
+    "itemAdded": "{item} added to the bill",
+    "itemAddedWithQuantity": "{quantity}x {item} added to the bill",
+    "itemAddFailed": "Failed to add item to the bill",
+    "itemRemoved": "{item} removed from the bill",
+    "itemRemoveFailed": "Failed to remove item from the bill",
+    "itemVoided": "{item} voided from the bill",
+    "itemVoidFailed": "Failed to void the item from the bill",
+    "manualChangesTitle": "Live bill changes",
+    "manualChangesDescription": "Manual changes update totals immediately and remain visible in bill history. Cancel orders instead when kitchen or service tickets should stay intact.",
+    "removeItem": "Remove",
+    "removeItemHelper": "Removes this line from the live bill immediately.",
+    "voidItem": "Void item",
+    "voidItemTitle": "Void this bill item?",
+    "voidItemDescription": "{item} will be removed from the live bill, but the reason will remain in the bill timeline for staff reference.",
+    "voidItemConfirm": "Void item",
+    "voidItemCancel": "Keep item",
+    "voidReasonLabel": "Reason for void",
+    "voidReasonPlaceholder": "Explain why this item is being voided",
+    "voidReasonHint": "A reason is required and will be stored in the bill history.",
+    "removeItemTitle": "Remove this item from the bill?",
+    "removeItemDescription": "{item} will be permanently removed from the open bill and totals will be recalculated.",
+    "removeItemConfirm": "Remove Item",
+    "removeItemCancel": "Keep Item",
+    "quantityUpdated": "{item} quantity changed from {from} to {to}",
+    "quantityUpdateFailed": "Failed to update item quantity",
+    "quantityHelper": "Use quantity changes for count edits. Void requires a reason.",
+    "allCategories": "All",
+    "addFromMenu": "Add more items",
+    "menuSubtitle": "Search, filter, and add menu items without leaving bill context.",
+    "menuResultsCount": "{count} results",
+    "availableNow": "{count} available now",
+    "browseHint": "Use quick add for the common path, or choose quantity and options when needed.",
+    "alreadyOnBill": "On bill: {count}",
+    "hasOptions": "{count} options",
+    "noDescription": "No description available.",
+    "quickAdd": "Add 1",
+    "chooseQuantity": "Qty",
+    "customizeItem": "Customize",
+    "addToBill": "Add to bill",
+    "results": "results",
+    "noCurrentItems": "No bill items yet",
+    "noCurrentItemsDescription": "Add items from the menu below to keep building this bill.",
+    "menuEmptyDescription": "Try another search or category.",
+    "autoDiscounts": "Auto discounts",
+    "autoDiscountsHint": "Offers apply per order. Identical names with different amounts are separate discounts — void one if it should not apply.",
+    "unavailable": "Unavailable",
+    "summary": {
+      "lines": "Lines",
+      "units": "Units",
+      "subtotal": "Live subtotal",
+      "discounts": "Discounts"
+    }
+  },
+  "inventoryWarnings": {
+    "outBadge": "Inventory out",
+    "lowBadge": "Low stock",
+    "outDescription": "Inventory warning: recipe requirements are not fully stocked.",
+    "lowDescription": "Low stock: linked ingredients are near their threshold."
+  },
+  "billStatuses": {
+    "open": "Open",
+    "partial": "Partial",
+    "paid": "Paid",
+    "closed": "Closed",
+    "voided": "Voided"
+  },
+  "bills": {
+    "awaitingConfirmation": "Awaiting confirmation",
+    "copyBillNumber": "Copy bill number for support",
+    "copiedBillNumber": "Copied"
+  },
+  "pagination": {
+    "totalBills": "{count} bills"
+  },
+  "tableAria": "Bills table",
+  "tableColumns": {
+    "billNumber": "Bill Number",
+    "table": "Table",
+    "total": "Total",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions",
+    "items": "Items"
+  },
+  "emptyState": {
+    "noActiveBills": "No Active Bills",
+    "noMatchingBills": "No Matching Bills",
+    "createFirstBill": "Create your first bill to get started",
+    "adjustFilters": "Try adjusting your filters to see more results",
+    "listLoadFailed": "Couldn't load bills",
+    "listLoadFailedHint": "The list didn't load, so totals aren't shown as zero. Retry to see open checks.",
+    "listLoadRetry": "Retry"
+  },
+  "search": {
+    "activeBillsPlaceholder": "Search active bills...",
+    "billHistoryPlaceholder": "Search bill history..."
+  },
+  "filters": {
+    "to": "to",
+    "fromDate": "From date",
+    "toDate": "To date",
+    "filterByStatusAria": "Filter by status",
+    "fromDateAria": "From date",
+    "toDateAria": "To date",
+    "customerFilter": "Showing one customer's bills",
+    "clearCustomerFilter": "Clear customer filter"
+  },
+  "warnings": {
+    "activeBillsCapped": "Showing the newest open bills. Narrow the date range if a check is missing."
+  },
+  "view": "View",
+  "close": "Close",
+  "table": "Table",
+  "counter": "Counter",
+  "delivery": "Delivery",
+  "allStatuses": "All Statuses",
+  "paid": "Paid",
+  "closed": "Closed",
+  "voided": "Voided",
+  "reset": "Reset",
+  "billDetails": "Bill Details",
+  "billInformation": "Bill Information",
+  "billSummary": "Bill Summary",
+  "subtotal": "Subtotal",
+  "tax": "Tax",
+  "serviceFee": "Service Fee",
+  "loyaltyDiscount": "Loyalty discount",
+  "total": "Total",
+  "remaining": "Remaining",
+  "overpaid": "Overpaid",
+  "tips": "Tips",
+  "splitBill": "Split Bill",
+  "noItems": "No Items",
+  "noItemsDescription": "This bill has no items",
+  "unknownItem": "Unknown Item",
+  "orderNotes": "Order Notes",
+  "pendingOrdersTitle": "Pending Orders",
+  "pendingOrdersCount": "{count} tickets awaiting approval",
+  "pendingOrdersCountOne": "1 ticket awaiting approval",
+  "pendingOrdersShowAll": "Show {count} more",
+  "pendingOrdersShowFewer": "Show fewer",
+  "pendingOrders": {
+    "deliveryBadge": "Delivery",
+    "awaitingPayment": "Awaiting guest payment",
+    "expired": "Expired"
+  },
+  "orderNumber": "Order #{orderNumber}",
+  "billNumber": "Bill",
+  "pending": "Pending",
+  "approve": "Approve",
+  "reject": "Reject",
+  "notesLabel": "Notes",
+  "additionalItems": "+{count} more items",
+  "cancelOrder": "Cancel Order",
+  "cancelled": "Cancelled",
+  "cancelledOrdersTitle": "Recently Cancelled Orders",
+  "cancelledOrdersSubtitle": "Cancelled tickets stay visible so staff has a clear record.",
+  "cancelledOrdersNote": "Cancelled orders are not added to the bill. They stay here briefly so the team can verify what changed.",
+  "cancelledOrderMeta": "Cancelled {time}",
+  "cancelReasonLabel": "Cancellation reason",
+  "cancelledByLabel": "By {actor}",
+  "messages": {
+    "orderCancelledSuccess": "Order #{orderNumber} cancelled",
+    "orderCancelledError": "Failed to cancel the order",
+    "closeBillError": "Failed to close the bill. Please try again.",
+    "approveOrderError": "Failed to approve the order. Please try again.",
+    "loadBillsError": "Couldn't load bills. Please try again.",
+    "viewBillError": "Couldn't open the bill. Please try again."
+  },
+  "errors": {
+    "billNotInThisBusiness": "That bill belongs to a different business."
+  },
+  "history": {
+    "title": "Bill Timeline",
+    "subtitle": "Staff-visible audit trail for bill and order changes.",
+    "empty": "No history yet for this bill.",
+    "byLabel": "By {actor}",
+    "showingCount": "Showing {shown} of {total}",
+    "showOlder": "Show older",
+    "reasonLabel": "Reason: {reason}",
+    "events": {
+      "billCreated": "Bill created",
+      "billCreatedDescription": "{count} items opened on this bill for {total}.",
+      "billUpdated": "Bill items updated",
+      "billUpdatedDescription": "Items changed from {before} to {after}.",
+      "billClosed": "Bill closed",
+      "billClosedDescription": "Bill closed with a total of {total}.",
+      "itemAdded": "Added {item}",
+      "itemAddedDescription": "{quantity} item(s) added for {subtotal}.",
+      "itemRemoved": "Removed {item}",
+      "itemRemovedDescription": "{quantity} item(s) removed for {subtotal}.",
+      "itemVoided": "Voided {item}",
+      "itemVoidedDescription": "{quantity} item(s) removed from the live bill for {subtotal}.",
+      "itemQuantityUpdated": "Updated {item} quantity",
+      "itemQuantityUpdatedDescription": "Quantity changed from {before} to {after}.",
+      "orderApproved": "Approved order #{orderNumber}",
+      "orderApprovedDescription": "{count} item(s) moved into the live bill.",
+      "orderApprovedAlreadyBilledDescription": "Items were already on the bill; approval sent them to the kitchen.",
+      "orderCancelled": "Cancelled order #{orderNumber}",
+      "orderCancelledDescription": "Order was marked as cancelled."
+    }
+  },
+  "splitSummary": {
+    "title": "Split progress",
+    "subtitle": "Guest-held and paid shares for this bill.",
+    "shares": "shares",
+    "paidOfTotal": "Paid of total",
+    "held": "Held",
+    "available": "Available",
+    "managePayments": "Manage payments",
+    "guestFallback": "Guest {id}",
+    "mode": {
+      "equal": "Equal split",
+      "custom": "Custom amount",
+      "items": "Item claim"
+    },
+    "status": {
+      "held": "Held",
+      "settled": "Settled",
+      "released": "Released",
+      "failed": "Failed"
+    }
+  },
+  "itemTypes": {
+    "bundle": "Bundle",
+    "bundleItem": "Bundle Item",
+    "discount": "Discount",
+    "item": "Item",
+    "bundleIncluded": "Included"
+  },
+  "appliedOffersTitle": "Applied Offers",
+  "discountLabel": "Discount",
+  "discountOrderAttribution": "From order #{orderId}",
+  "empty": {
+    "title": "No bills yet",
+    "subtitle": "Bills are created when guests scan a table QR and order — or start one yourself.",
+    "action": "Create Bill",
+    "previewTablesAction": "Preview a table QR"
+  },
+  "fiscalCustomer": {
+    "toggle": "Need a fiscal invoice with your details?",
+    "hint": "Optional. Add your tax ID so we can issue a fiscal invoice (factura) in your name.",
+    "docTypeLabel": "Document type",
+    "docTypeNone": "Consumidor Final",
+    "docTypeDni": "DNI",
+    "docTypeCuit": "CUIT",
+    "docTypeCuil": "CUIL",
+    "docNumberLabel": "Document number",
+    "docNumberPlaceholder": "e.g. 20-12345678-3",
+    "errorCuit": "CUIT/CUIL must have 11 digits.",
+    "errorDni": "DNI must have 7 or 8 digits.",
+    "cuitHint": "A Factura A requires a CUIT/CUIL. Without one, we'll issue a Factura B.",
+    "taxConditionLabel": "Tax condition",
+    "taxConsumidorFinal": "Consumidor Final",
+    "taxResponsableInscripto": "Responsable Inscripto",
+    "taxMonotributo": "Monotributo",
+    "taxExento": "Exento",
+    "nameLabel": "Name or business name",
+    "namePlaceholder": "Name on the invoice",
+    "save": "Save fiscal data",
+    "saved": "Fiscal data saved",
+    "saveError": "Could not save fiscal data",
+    "operatorToggle": "Customer fiscal identity",
+    "operatorHint": "Optional. Capture the customer's tax ID so fiscal invoices issue correctly.",
+    "emailLabel": "Email for your invoice (optional)",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "We'll send your fiscal invoice (factura) to this address.",
+    "errorEmail": "Enter a valid email address."
+  },
+  "cryptoRefund": {
+    "title": "On-chain crypto refund",
+    "subtitle": "Noncustodial: you sign from the settlement wallet. Only confirmed on-chain transfers are marked refunded.",
+    "manualSupportRequired": "No verified refund destination is on file for this payment. Refund requires manual support — do not invent an address.",
+    "mainnetOffNotice": "Mainnet instant signing is off. Use the manual/testnet workflow and submit a transaction hash after sending USDC externally. Instant refunds are not promised.",
+    "mainnetOffDisabled": "Instant mainnet signing disabled",
+    "mainnetOffSettingsLink": "Open settlement settings",
+    "irreversibleNotice": "Submitting a transaction hash is irreversible once the chain confirms. Double-check the amount and destination.",
+    "labels": {
+      "destination": "Verified destination",
+      "network": "Network",
+      "refundable": "Refundable",
+      "refunded": "Refunded",
+      "explorer": "View on explorer",
+      "txHash": "Transaction hash",
+      "txHashHint": "Paste the hash after your settlement wallet (or Safe) sends USDC.",
+      "reason": "Reason",
+      "reasonPlaceholder": "Why is this crypto payment being refunded?"
+    },
+    "actions": {
+      "request": "Request on-chain refund",
+      "approve": "Approve",
+      "reject": "Reject",
+      "submitTx": "Submit transaction hash"
+    },
+    "pin": {
+      "requestTitle": "Confirm crypto refund request",
+      "requestDescription": "Request a durable on-chain refund for this payment",
+      "approveTitle": "Approve crypto refund",
+      "approveDescription": "Approve and prepare signature / manual submission",
+      "rejectTitle": "Reject crypto refund",
+      "rejectDescription": "Reject this refund request (ledger stays unchanged)",
+      "submitTitle": "Submit refund transaction",
+      "submitDescription": "Bind the on-chain transfer hash for verification"
+    },
+    "toasts": {
+      "requested": "Crypto refund requested — awaiting approval",
+      "approved": "Crypto refund approved — submit a transaction hash",
+      "rejected": "Crypto refund rejected — ledger unchanged",
+      "submitted": "Transaction submitted — awaiting on-chain confirmation (not refunded yet)"
+    },
+    "errors": {
+      "loadFailed": "Could not load crypto refund status",
+      "manualSupport": "Refund requires manual support (no verified destination)",
+      "reasonTooShort": "Reason must be at least 3 characters",
+      "insufficientBalance": "No remaining refundable on-chain balance",
+      "requestFailed": "Could not request crypto refund",
+      "approveFailed": "Could not approve crypto refund",
+      "rejectFailed": "Could not reject crypto refund",
+      "invalidTxHash": "Enter a valid 0x transaction hash",
+      "submitFailed": "Could not submit transaction hash"
+    },
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "awaiting_signature": "Awaiting signature",
+      "submitted": "Submitted",
+      "confirming": "Confirming",
+      "confirmed": "Confirmed",
+      "failed": "Failed",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    }
+  },
+  "copyBillNumber": "Copy bill number for support",
+  "copiedBillNumber": "Copied",
+  "preparedUnitsOne": "{count} item",
+  "preparedUnitsOther": "{count} items",
+  "bundleIncluded": "Included"
+}

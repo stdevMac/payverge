@@ -1,0 +1,116 @@
+{
+  "title": "Payment Status",
+  "subtitle": "Accept payments via USDC and other crypto methods",
+  "buttons": {
+    "markPaid": "Mark Payment Received",
+    "cancel": "Cancel",
+    "close": "Close",
+    "addPayment": "Add Payment",
+    "confirmPayment": "Confirm Payment",
+    "rejectPayment": "Reject"
+  },
+  "fields": {
+    "amount": {
+      "label": "Amount (USD)",
+      "placeholder": "0.00"
+    },
+    "paymentMethod": {
+      "label": "Payment Method"
+    }
+  },
+  "messages": {
+    "info": "Alternative payment methods allow customers to pay using cryptocurrency or other digital payment solutions.",
+    "success": "Payment marked successfully!",
+    "error": "Failed to mark payment. Please try again.",
+    "loading": "Loading payment data...",
+    "rejected": "Payment request rejected.",
+    "rejectError": "Failed to reject the payment request. Please try again.",
+    "validation": {
+      "amountRequired": "Please fill in all fields",
+      "amountInvalid": "Amount must be greater than 0",
+      "amountTooHigh": "Amount cannot exceed bill total"
+    }
+  },
+  "status": {
+    "complete": "Bill Complete"
+  },
+  "breakdown": {
+    "total": "Total Bill",
+    "cryptoPaid": "Crypto Paid",
+    "alternativePaid": "Alternative Paid",
+    "remaining": "Remaining"
+  },
+  "pendingPayments": {
+    "title": "Pending Alternative Payments",
+    "via": "via",
+    "requestedAt": "Requested {time}",
+    "expired": "Expired — cannot confirm",
+    "requestRef": "Request #{id}"
+  },
+  "manualPayment": {
+    "title": "Mark Alternative Payment",
+    "description": "Manually mark payments made through cash, card, or other methods."
+  },
+  "modal": {
+    "title": "Mark Alternative Payment",
+    "fields": {
+      "customerAddress": {
+        "label": "Customer Address",
+        "placeholder": "0x... or customer identifier",
+        "description": "Ethereum address or customer identifier"
+      },
+      "note": {
+        "label": "Note (optional)",
+        "placeholder": "Table 4, walk-in, etc.",
+        "description": "For your records when marking in-person payment."
+      }
+    },
+    "warning": {
+      "title": "Note",
+      "message": "Only mark payments as received after you have physically collected the payment. This action cannot be undone."
+    }
+  },
+  "paymentMethods": {
+    "usdc": "USDC",
+    "bitcoin": "Bitcoin",
+    "ethereum": "Ethereum",
+    "crypto": "Crypto (USDC)",
+    "cash": "Cash",
+    "card": "Credit/Debit Card",
+    "mercadopago": "Mercado Pago",
+    "venmo": "Venmo/PayPal",
+    "other": "Other",
+    "unknown": "Unknown",
+    "bankTransfer": "Bank Transfer"
+  },
+  "page": {
+    "backToBills": "Back to Bills",
+    "breadcrumbs": {
+      "business": "Business",
+      "bills": "Bills",
+      "bill": "Bill #{{billId}}",
+      "alternativePayments": "Alternative Payments"
+    },
+    "paymentManagement": "Payment Management",
+    "title": "Alternative Payment Management",
+    "subtitle": "Manage cash, card, and other non-crypto payments for this bill",
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": "Customers can request alternative payments through the guest interface",
+      "step2": "You receive payment requests in real-time",
+      "step3": "Confirm payments after receiving cash, card, or other payments",
+      "step4": "Bill automatically completes when fully paid"
+    },
+    "paymentMethods": {
+      "title": "Payment Methods",
+      "cash": "Cash payments",
+      "card": "Credit/Debit cards",
+      "wallets": "Venmo/PayPal",
+      "other": "Other methods"
+    },
+    "hybrid": {
+      "title": "Hybrid Payments",
+      "description": "Customers can mix crypto and traditional payments on the same bill"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "metaTitle": "Staff login — Payverge",
+  "title": "Staff Login",
+  "subtitle": "Sign in to access your business dashboard",
+  "errors": {
+    "notFound": "No staff account found for that Google email.",
+    "inactive": "Your staff account is inactive. Contact your manager.",
+    "generic": "Staff login failed. Please try again."
+  },
+  "steps": {
+    "email": {
+      "title": "Enter your email",
+      "subtitle": "We'll send you a verification code",
+      "placeholder": "Enter your email address",
+      "button": "Send Code",
+      "sending": "Sending...",
+      "googleButton": "Continue with Google"
+    },
+    "code": {
+      "title": "Enter verification code",
+      "subtitle": "Check your email for the 6-digit code",
+      "placeholder": "Enter 6-digit code",
+      "button": "Sign In",
+      "verifying": "Verifying...",
+      "resend": "Resend Code",
+      "resendIn": "Resend in {seconds}s",
+      "backToEmail": "Back to Email",
+      "notReceiving": "Not receiving it? Make sure this is the exact email your manager invited.",
+      "subtitleNoEmail": "Email delivery is off on this server, so the 6-digit code was not emailed. Ask your administrator for it",
+      "notReceivingNoEmail": "Ask your administrator for the code for the email your manager invited."
+    },
+    "membership": {
+      "title": "Choose a business",
+      "subtitle": "Your account belongs to more than one business. Choose where you want to work.",
+      "unnamedBusiness": "Business",
+      "backToEmail": "Use another email"
+    }
+  },
+  "messages": {
+    "codeExpired": "Verification code has expired. Please request a new one.",
+    "invalidCode": "Invalid verification code. Please try again.",
+    "emailSent": "If a staff account exists for {email}, we've sent a login code. Check your inbox and spam folder.",
+    "codeLogged": "If a staff account exists for {email}, a login code was created. Email is off on this server: ask your administrator for the code.",
+    "loginSuccess": "Login successful! Redirecting...",
+    "networkError": "Network error. Please try again.",
+    "unknownError": "An error occurred. Please try again."
+  },
+  "validation": {
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Check that your email looks right.",
+    "codeRequired": "Verification code is required.",
+    "codeInvalid": "Enter the 6-digit code we sent you."
+  },
+  "footer": {
+    "businessOwner": "Business owner?",
+    "businessLogin": "Sign in as owner",
+    "poweredBy": "Secure staff access powered by Payverge"
+  }
+}

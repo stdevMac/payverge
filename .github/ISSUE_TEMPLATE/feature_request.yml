@@ -1,0 +1,86 @@
+name: Feature request
+description: Propose a concrete, scoped improvement. For open-ended ideas, start a Discussion first.
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Large or open-ended ideas get a better hearing in [Discussions, Ideas](https://github.com/stdevMac/payverge/discussions) first; open an issue once the shape is clear.
+
+        Payverge aims to be **self-hostable with zero third-party accounts**. Features that need an external service should be optional and degrade gracefully when it is not configured.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today? Describe the problem before the solution.
+      placeholder: During the dinner rush, kitchen staff can't tell which tickets belong to the same table when…
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should Payverge do? Include UI sketches, API shapes or configuration if you have them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you use today, or other approaches you thought about.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Guest QR menu, ordering or bill
+        - Payments
+        - Owner and staff console
+        - Kitchen display (KDS) or printing
+        - Reservations, waitlist or delivery
+        - AI features
+        - Translations and locales
+        - Installation, upgrades or self-hosting
+        - Backend API or integrations
+        - Admin MCP tool or agentic configuration
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Who benefits?
+      multiple: true
+      options:
+        - Restaurant owners and managers
+        - Floor and kitchen staff
+        - Guests
+        - People self-hosting Payverge
+        - Developers and integrators
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to implement this myself, with guidance (see CONTRIBUTING.md).
+          required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and discussions, and this has not been proposed already.
+          required: true

@@ -1,0 +1,63 @@
+{
+    "updateError": "Failed to update settings. Please try again.",
+    "button": {
+        "disableAiWaiter": "Disable AI Waiter"
+    },
+    "disableModal": {
+        "title": "Disable AI Waiter?",
+        "description": "This will disable the AI-powered concierge for your guests. They will not be able to:",
+        "features": {
+            "concierge": "Chat with the AI concierge on your digital menu",
+            "recommendations": "Get personalized menu recommendations",
+            "upselling": "Receive intelligent upselling suggestions",
+            "multilingual": "Interact in their preferred language"
+        },
+        "confirmation": "Are you sure you want to continue?",
+        "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Yes, Disable"
+        }
+    },
+    "enableModal": {
+        "title": "Activate AI Waiter?",
+        "description": "This will enable the AI-powered digital concierge for your business.",
+        "featuresTitle": "This will activate:",
+        "features": {
+            "concierge": "AI-powered concierge on your digital menu",
+            "recommendations": "Smart menu recommendations for guests",
+            "upselling": "Intelligent upselling to increase revenue",
+            "multilingual": "Multilingual support for international guests"
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Activate"
+        }
+    },
+    "activationCard": {
+        "title": "Activate AI Waiter",
+        "description": "Enhance your guests' dining experience with an intelligent AI concierge that recommends dishes, answers questions, and helps drive revenue.",
+        "features": {
+            "concierge": {
+                "title": "AI Concierge",
+                "description": "A smart chatbot on your digital menu that assists guests in real-time"
+            },
+            "recommendations": {
+                "title": "Smart Recommendations",
+                "description": "Personalized dish suggestions based on guest preferences and menu analysis"
+            },
+            "upselling": {
+                "title": "Revenue Optimization",
+                "description": "Intelligent upselling and cross-selling to increase average order value"
+            },
+            "multilingual": {
+                "title": "Multilingual Support",
+                "description": "Automatic language detection and responses in the guest's preferred language"
+            }
+        },
+        "disclaimer": "You can disable the AI Waiter at any time from this page.",
+        "buttons": {
+            "activate": "Activate AI Waiter",
+            "activating": "Activating..."
+        }
+    }
+}

@@ -1,0 +1,1 @@
+Willkommen bei {{BUSINESS_NAME}}! Ich bin {{AI_NAME}}, der KI-Assistent, und helfe Ihnen gerne bei der Auswahl der perfekten Mahlzeit. Zur Info: Sie chatten mit einer KI. Möchten Sie eine Empfehlung oder Hilfe bei der Bestellung?

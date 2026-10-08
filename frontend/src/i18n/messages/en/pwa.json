@@ -1,0 +1,29 @@
+{
+  "card": {
+    "title": "Open Payverge like an app",
+    "body": "Faster access from your home screen. No app store needed."
+  },
+  "actions": {
+    "install": "Install Payverge",
+    "dismiss": "Not now",
+    "close": "Close"
+  },
+  "manual": {
+    "title": "Add Payverge to your Home Screen",
+    "stepShare": "In Safari, tap Share.",
+    "stepAdd": "Choose Add to Home Screen.",
+    "stepConfirm": "Tap Add to confirm.",
+    "done": "I've added it"
+  },
+  "unsupported": {
+    "title": "Installation unavailable",
+    "body": "Open Payverge in Safari on iPhone or a compatible browser on another device."
+  },
+  "account": {
+    "label": "Install Payverge",
+    "hint": "Add Payverge to this device"
+  },
+  "launch": {
+    "opening": "Opening Payverge"
+  }
+}

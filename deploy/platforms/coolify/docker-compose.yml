@@ -1,0 +1,194 @@
+# Payverge on Coolify (v4) -- "Docker Compose" resource, or a Dokploy
+# "Compose" service with the variables below set by hand.
+#
+# STATUS: untested on a live Coolify/Dokploy instance. `docker compose config`
+# validates locally; see deploy/platforms/README.md for the support matrix.
+#
+# Shape (differs from deploy/docker-compose.yml on purpose):
+#   - no Caddy: the platform proxy (Traefik/Caddy inside Coolify) terminates
+#     TLS and forwards everything to the frontend on port 3000;
+#   - one public origin: the Next server proxies /api/v1/* and /media/* to the
+#     backend over the private network (BACKEND_INTERNAL_URL; streams SSE,
+#     15 MB request bodies, 300 s upstream timeout). The backend gets no
+#     domain and publishes no port;
+#   - Postgres and uploads (STORAGE_DIR) live on named volumes;
+#   - run exactly ONE copy of each service (in-memory rate limits, wallet
+#     challenges and SSE hubs; local file storage).
+#
+# Coolify magic variables (generated once, kept across deploys, editable in
+# the resource's Environment Variables tab):
+#   SERVICE_URL_FRONTEND_3000   public https URL routed to frontend:3000
+#   SERVICE_PASSWORD_POSTGRES   database password (32 chars, no symbols)
+#   SERVICE_PASSWORD_64_JWT     JWT signing key (64 chars)
+#   SERVICE_REALBASE64_PLUGIN   plugin encryption key (base64 of 32 random
+#                               bytes, the format PLUGIN_SECRET_KEY expects)
+#   SERVICE_PASSWORD_ADMIN      first admin password (shown in the UI)
+# On Dokploy (no magic variables) set the same names yourself:
+#   SERVICE_URL_FRONTEND_3000=https://<your domain>
+#   SERVICE_PASSWORD_POSTGRES=$(openssl rand -hex 24)
+#   SERVICE_PASSWORD_64_JWT=$(openssl rand -base64 48)
+#   SERVICE_REALBASE64_PLUGIN=$(openssl rand -base64 32)
+#   SERVICE_PASSWORD_ADMIN=<a long passphrase>
+# and attach the domain to the "frontend" service, port 3000.
+#
+# Magic variables are referenced as plain ${NAME} (Coolify detects them that
+# way); if one is empty the backend preflight refuses to start and names it.
+#
+# ADMIN_EMAIL is required: the backend creates that platform admin on first
+# boot (docs/self-hosting/admin.md).
+#
+# SERVICE_URL_FRONTEND_3000 MUST be https. The backend preflight refuses any
+# non-loopback http PUBLIC_URL (public_url.insecure). A default Coolify
+# install generates http://<id>.<ip>.sslip.io, so set an https domain on the
+# frontend service (or an https wildcard domain on the server) before deploying.
+#
+# If you set EMAIL_PROVIDER, preflight also needs FROM_EMAIL and
+# FROM_EMAIL_UPDATES; with resend, also RESEND_API_KEY and
+# EMAIL_ALLOWED_FROM_DOMAINS. Every other variable is optional; the full list
+# with explanations is deploy/.env.example.
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  postgres:
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: payverge
+      POSTGRES_USER: payverge
+      POSTGRES_PASSWORD: ${SERVICE_PASSWORD_POSTGRES}
+    volumes:
+      # PostgreSQL 18 layout (PGDATA /var/lib/postgresql/18/docker). A volume
+      # from before PostgreSQL 18 holds 15 data at its root, which the image
+      # refuses to start on (nothing is overwritten); move it with a dump and
+      # restore first: docs/self-hosting/upgrades.md, "PostgreSQL 18".
+      - payverge-db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payverge -d payverge"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    shm_size: 256m
+    stop_grace_period: 60s
+    logging: *default-logging
+
+  backend:
+    # x-release-please-start-version
+    image: ghcr.io/stdevmac/payverge-backend:${PAYVERGE_VERSION:-1.0.0}
+    # x-release-please-end
+    restart: unless-stopped
+    # The server reads its database location from flags only.
+    command:
+      - --production
+      - --db-host
+      - postgres
+      - --db-port
+      - "5432"
+      - --db-user
+      - payverge
+      - --db-name
+      - payverge
+      - --db-sslmode
+      - disable
+    environment:
+      - APP_ENV=production
+      - PORT=8080
+      - PUBLIC_URL=${SERVICE_URL_FRONTEND_3000}
+      - DB_PASSWORD=${SERVICE_PASSWORD_POSTGRES}
+      - JWT_SECRET_KEY=${SERVICE_PASSWORD_64_JWT}
+      - PLUGIN_SECRET_KEY=${SERVICE_REALBASE64_PLUGIN}
+
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?set ADMIN_EMAIL to the first admin's address}
+      - ADMIN_PASSWORD=${SERVICE_PASSWORD_ADMIN}
+      - REGISTRATION_MODE=${REGISTRATION_MODE:-invite}
+      - DEMO_DATA=${DEMO_DATA:-false}
+
+      # Client IP: the peer is the frontend's same-origin proxy on the stack
+      # network. Set explicitly: unset means the backend default, which is
+      # loopback only and would make every request look like the frontend.
+      - EDGE=none
+      - TRUSTED_PROXIES=${TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      - TRUSTED_PLATFORM=
+
+      - PRODUCT_NAME=${PRODUCT_NAME:-}
+      - COMPANY_NAME=${COMPANY_NAME:-}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
+      - SECURITY_EMAIL=${SECURITY_EMAIL:-}
+
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER:-}
+      - EMAIL_LOG_CONTENT=${EMAIL_LOG_CONTENT:-}
+      - EMAIL_PROVIDER_LOG_ALLOW_PRODUCTION=${EMAIL_PROVIDER_LOG_ALLOW_PRODUCTION:-}
+      - FROM_EMAIL=${FROM_EMAIL:-}
+      - FROM_EMAIL_UPDATES=${FROM_EMAIL_UPDATES:-}
+      - EMAIL_ALLOWED_FROM_DOMAINS=${EMAIL_ALLOWED_FROM_DOMAINS:-}
+      - EMAIL_API_KEY=${EMAIL_API_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-}
+      - SMTP_USERNAME=${SMTP_USERNAME:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - SMTP_TLS=${SMTP_TLS:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_WEBHOOK_SECRET=${RESEND_WEBHOOK_SECRET:-}
+
+      - STORAGE_DRIVER=local
+      - STORAGE_DIR=/data/storage
+
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - AI_DAILY_BUDGET_USD=${AI_DAILY_BUDGET_USD:-5}
+      - AI_BUDGET_GLOBAL_USD_DAY=${AI_BUDGET_GLOBAL_USD_DAY:-}
+
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - MERCADOPAGO_CLIENT_ID=${MERCADOPAGO_CLIENT_ID:-}
+      - MERCADOPAGO_CLIENT_SECRET=${MERCADOPAGO_CLIENT_SECRET:-}
+      - MERCADOPAGO_WEBHOOK_SECRET=${MERCADOPAGO_WEBHOOK_SECRET:-}
+      - RPC_URL=${RPC_URL:-}
+    volumes:
+      - payverge-storage:/data/storage
+      - payverge-backend-data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # The image's HEALTHCHECK (/app/healthcheck) is inherited.
+    stop_grace_period: 30s
+    logging: *default-logging
+
+  frontend:
+    # x-release-please-start-version
+    image: ghcr.io/stdevmac/payverge-frontend:${PAYVERGE_VERSION:-1.0.0}
+    # x-release-please-end
+    restart: unless-stopped
+    environment:
+      # Declares the public domain in Coolify and routes it to port 3000.
+      - SERVICE_URL_FRONTEND_3000
+      - PUBLIC_URL=${SERVICE_URL_FRONTEND_3000}
+      - BACKEND_INTERNAL_URL=http://backend:8080
+      - PORT=3000
+      # The platform proxy reaches Next over the stack's private Docker
+      # network; trusting private ranges keeps its X-Forwarded-For chain so
+      # the backend rate-limits real client IPs. The frontend publishes no
+      # host port, so only containers on that network can connect.
+      - FRONTEND_TRUSTED_PROXIES=${FRONTEND_TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      - EDGE=none
+      - NETWORK=${NETWORK:-base}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
+      - SECURITY_EMAIL=${SECURITY_EMAIL:-}
+      - SEO_INDEXING=${SEO_INDEXING:-false}
+    depends_on:
+      backend:
+        condition: service_healthy
+    stop_grace_period: 20s
+    logging: *default-logging
+
+volumes:
+  payverge-db: {}
+  payverge-storage: {}
+  payverge-backend-data: {}

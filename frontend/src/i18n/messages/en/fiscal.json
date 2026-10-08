@@ -1,0 +1,258 @@
+{
+  "serviceUnavailable": "Electronic invoicing is switched off on the server right now, so nothing was sent to the tax authority. Ask your Payverge contact to turn it back on.",
+  "dashboard": {
+    "title": "Invoices",
+    "description": "Official invoices and tax documents for paid bills.",
+    "loading": "Refreshing",
+    "errorTitle": "Could not load invoice data.",
+    "unexpectedError": "Unexpected invoice API error",
+    "tryAgain": "Try again"
+  },
+  "status": {
+    "titleSetup": "Invoice setup",
+    "relativeNow": "just now",
+    "relativeMinutes": "{{n}}m ago",
+    "relativeHours": "{{n}}h ago",
+    "relativeDays": "{{n}}d ago"
+  },
+  "summary": {
+    "lastIssued": "Last invoice",
+    "refresh": "Refresh",
+    "editSetup": "Edit setup",
+    "sandboxBanner": "Invoices issued here are simulated — not legally valid. Switch to Production from Edit setup after AFIP/ARCA credentials validate.",
+    "sandboxBannerPrefix": "Sandbox",
+    "demoBannerPrefix": "Demo",
+    "demoBanner": "These invoices are practice documents only — not legally valid tax invoices. Switching Environment to Production here will not make them official."
+  },
+  "setup": {
+    "title": "Invoice setup",
+    "description": "Update country, tax profile, or issuance mode. Changes apply to new paid bills.",
+    "emptyDescription": "Set this up once so Payverge can queue official invoices for paid bills.",
+    "compareModes": "Compare modes",
+    "currentMode": "Current",
+    "comingSoon": "Coming soon",
+    "environmentDemoLocked": "Demo tenants stay in Sandbox. To go live, set country to Argentina and complete AFIP/ARCA credentials — Production is not available for the demo provider.",
+    "fields": {
+      "country": "Country",
+      "provider": "Provider",
+      "mode": "Invoice mode",
+      "environment": "Environment",
+      "taxId": "Tax ID",
+      "taxCondition": "Tax condition",
+      "taxConditionPlaceholder": "Select tax condition",
+      "pointOfSale": "Point of sale",
+      "pointOfSaleHelp": "Whole number assigned by your provider for this location."
+    },
+    "placeholders": {
+      "taxId": "e.g. 30-12345678-9",
+      "pointOfSale": "e.g. 1"
+    },
+    "taxConditions": {
+      "AR": {
+        "responsable_inscripto": "Responsable Inscripto",
+        "exento": "Exento",
+        "consumidor_final": "Consumidor Final",
+        "no_responsable": "No Responsable",
+        "monotributo": "Monotributo"
+      },
+      "AE": {
+        "vat_registered": "VAT Registered",
+        "vat_exempt": "VAT Exempt",
+        "non_resident": "Non-resident"
+      }
+    },
+    "actions": {
+      "save": "Save invoice setup",
+      "saving": "Saving invoice setup",
+      "cancel": "Cancel"
+    },
+    "saveSuccess": "Invoice setup saved",
+    "saveError": "Could not save invoice setup.",
+    "invalidPointOfSale": "Point of sale must be a whole number.",
+    "validationErrorTitle": "Provider rejected the last validation:",
+    "invalidTaxId": "CUIT must contain exactly 11 digits."
+  },
+  "credentials": {
+    "title": "AFIP credentials",
+    "description": "Upload the digital certificate and private key issued by AFIP/ARCA so Payverge can request CAE authorizations on your behalf.",
+    "certLabel": "Certificate (.crt or .pem)",
+    "certHint": "The X.509 certificate downloaded from AFIP.",
+    "keyLabel": "Private key (.key)",
+    "keyHint": "Your private key is encrypted at rest and is never shown again.",
+    "keyNeverStored": "For your security, the private key is never displayed after upload.",
+    "selectFile": "Choose file",
+    "noFileSelected": "No file selected",
+    "upload": "Upload credentials",
+    "uploading": "Uploading credentials",
+    "uploadSuccess": "Credentials uploaded.",
+    "uploadError": "Could not upload credentials.",
+    "missingFiles": "Select both the certificate and the private key before uploading.",
+    "validate": "Validate",
+    "validating": "Validating with AFIP",
+    "validateSuccess": "Credentials validated. You're ready to issue invoices.",
+    "validateError": "Could not run the validation.",
+    "validateNeedsCredentials": "Upload your certificate and private key first.",
+    "validationFailed": "AFIP rejected the credentials:",
+    "fingerprint": "Fingerprint",
+    "expiresAt": "Expires",
+    "lastValidated": "Last validated",
+    "status": {
+      "label": "Setup status",
+      "draft": "Credentials needed",
+      "draftHint": "Upload your AFIP certificate and private key to continue.",
+      "credentials_set": "Pending validation",
+      "credentialsSetHint": "Validate the uploaded credentials against AFIP to finish setup.",
+      "ready": "Ready",
+      "readyHint": "Credentials are valid. Payverge can request CAE authorizations.",
+      "validated": "Validated"
+    }
+  },
+  "region": {
+    "title": "E-invoicing",
+    "unavailableTitle": "E-invoicing isn't available in your region yet",
+    "unavailableDescription": "Payverge currently issues official electronic invoices for Argentina (AFIP/ARCA). E-invoicing is not available in {country} yet.",
+    "unavailablePathToLive": "Path to live: when your country is supported, you'll upload provider credentials and switch Environment to Production from Edit setup.",
+    "demoTitle": "Demo fiscal environment",
+    "demoDescription": "This business issues simulated DEMO invoices only. They are not legally valid tax documents, and no real certificate upload is required.",
+    "demoPathToLive": "Path to live: change country to Argentina, upload AFIP/ARCA credentials, validate them, then switch Environment to Production. Until then, treat every DEMO stamp as practice."
+  },
+  "modes": {
+    "off": {
+      "title": "Off",
+      "description": "Payverge will not issue invoices and the manual button is disabled."
+    },
+    "manual": {
+      "title": "Manual",
+      "description": "Issue invoices yourself from the history when you're ready."
+    },
+    "automatic_non_blocking": {
+      "title": "Automatic",
+      "description": "Paid bills queue invoices in the background. Bills close even if the provider is slow."
+    }
+  },
+  "history": {
+    "title": "Invoice history",
+    "description": "Invoices queued for paid bills — including pending, authorized, and failed.",
+    "emptyTitle": "No invoices yet",
+    "emptyDescription": "Paid bills will appear here as soon as Payverge issues an invoice for them.",
+    "emptyDescriptionManual": "Enter a paid bill’s ID below to issue your first invoice.",
+    "emptyDescriptionOff": "Invoice issuance is off. Switch to Manual or Automatic from Edit setup to start queuing invoices for paid bills.",
+    "noMatch": "No invoices match this filter.",
+    "unnumbered": "Awaiting number",
+    "pdfReady": "PDF",
+    "viewPdf": "View invoice PDF",
+    "search": "Search bill #",
+    "searchPlaceholder": "e.g. 1234",
+    "clearFilters": "Clear filters",
+    "exportCsv": "Export CSV",
+    "csvFile": "invoices",
+    "filters": {
+      "all": "All",
+      "authorized": "Authorized",
+      "pending": "Pending",
+      "attention": "Needs attention"
+    },
+    "issue": {
+      "billId": "Bill ID to issue",
+      "placeholder": "e.g. 1234",
+      "button": "Issue invoice",
+      "issuing": "Issuing",
+      "success": "Invoice issue queued",
+      "error": "Could not issue invoice.",
+      "hint": "Use the Bill # from the Bills tab. The bill must be paid first.",
+      "billNotFound": "We couldn’t find a paid bill with that ID. Open the Bills tab to confirm the number.",
+      "alreadyIssued": "This bill already has an invoice. Open it from the Invoices list instead of issuing a second one."
+    },
+    "retry": {
+      "button": "Retry",
+      "retrying": "Retrying",
+      "success": "Invoice retry queued",
+      "error": "Could not retry invoice."
+    },
+    "resend": {
+      "button": "Re-send",
+      "resending": "Re-sending",
+      "success": "Invoice re-send queued",
+      "error": "Could not re-send invoice."
+    },
+    "delivery": {
+      "label": "Delivery channels",
+      "retry": "Retry",
+      "retrying": "Retrying",
+      "retryError": "Could not requeue delivery.",
+      "retryAria": "Retry {{channel}} delivery",
+      "channel": {
+        "artifact": "PDF",
+        "email": "Email",
+        "print": "Print"
+      },
+      "status": {
+        "pending": "Pending",
+        "leased": "In progress",
+        "succeeded": "Sent",
+        "dead": "Failed"
+      }
+    },
+    "creditNote": {
+      "button": "Credit note",
+      "crediting": "Issuing",
+      "success": "Credit note queued",
+      "error": "Could not issue the credit note.",
+      "confirmTitle": "Issue a credit note?",
+      "confirmDescription": "This queues an official credit note (nota de crédito) that cancels invoice #{{bill}} with AFIP. This cannot be undone.",
+      "reasonLabel": "Reason (optional)",
+      "reasonPlaceholder": "e.g. Order cancelled by customer",
+      "confirm": "Issue credit note",
+      "cancel": "Cancel"
+    },
+    "cae": "CAE",
+    "viewQr": "View AFIP QR",
+    "columns": {
+      "billId": "Bill",
+      "receipt": "Invoice",
+      "receiptNumber": "Number",
+      "amount": "Amount",
+      "currency": "Currency",
+      "issuedAt": "Issued at",
+      "status": "Status",
+      "error": "Error",
+      "actions": "Actions"
+    }
+  },
+  "common": {
+    "notSet": "Not set",
+    "none": "—"
+  },
+  "labels": {
+    "AE": "United Arab Emirates",
+    "AR": "Argentina",
+    "active": "Active",
+    "afip": "AFIP",
+    "arca": "ARCA",
+    "automatic_non_blocking": "Automatic",
+    "authorized": "Authorized",
+    "cancelled": "Cancelled",
+    "credited": "Credited",
+    "draft": "Draft",
+    "edicom": "EDICOM",
+    "failed_permanent": "Failed permanent",
+    "failed_retryable": "Failed retryable",
+    "invalid": "Invalid",
+    "invoice_a": "Invoice A",
+    "manual": "Manual",
+    "off": "Off",
+    "pending": "Pending",
+    "production": "Production",
+    "rejected": "Rejected",
+    "sandbox": "Sandbox",
+    "valid": "Valid",
+    "US": "United States",
+    "demo": "Demo",
+    "receipt": "Receipt",
+    "invoice": "Invoice",
+    "standard_invoice": "Standard invoice",
+    "factura_a": "Factura A",
+    "factura_b": "Factura B",
+    "factura_c": "Factura C"
+  }
+}

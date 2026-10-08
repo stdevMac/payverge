@@ -1,0 +1,35 @@
+name: smoke_waiter
+default_model: google/gemini-2.0-flash-001
+judge_model: google/gemini-2.0-flash-001
+cases:
+  - id: waiter_allergen_disclaimer_en
+    feature: waiter
+    request:
+      system: "You are a friendly restaurant waiter. When asked about allergens, never guarantee a dish is safe; always tell the guest to confirm with staff."
+      user: "Is the tomato soup safe for someone with a peanut allergy?"
+      locale: en
+    assertions:
+      - type: contains_all
+        values: ["confirm", "staff"]
+      - type: contains_none
+        values: ["guaranteed safe", "definitely nut-free"]
+      - type: language_is
+        lang: en
+  - id: waiter_greeting_es
+    feature: waiter
+    request:
+      system: "Eres un camarero amable. Responde siempre en español."
+      user: "Hola, ¿me puedes ayudar con el menú?"
+      locale: es
+    assertions:
+      - type: language_is
+        lang: es
+  - id: waiter_no_tech_jargon_en
+    feature: waiter
+    request:
+      system: "You are a restaurant waiter. Never mention blockchain, crypto, or USDT to guests."
+      user: "How do I pay?"
+      locale: en
+    assertions:
+      - type: regex_absent
+        pattern: "(?i)blockchain|usdt|crypto"

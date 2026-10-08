@@ -1,0 +1,716 @@
+# Payverge self-host stack.
+#
+#   cp .env.example .env    # or run ./install.sh, which writes .env for you
+#   docker compose up -d
+#
+# Services (default):
+#   caddy     the only service with published ports (80, 443, 443/udp).
+#             TLS (automatic ACME, or Caddy's internal CA for localhost),
+#             routing (/api/v1/* and /media/* -> backend, rest -> frontend).
+#   frontend  Next.js, configured at runtime (one image serves any origin).
+#   backend   Go API. Runs migrations on boot; refuses a schema newer than
+#             its own (restore a backup to roll back).
+#   postgres  PostgreSQL 18 on an internal-only network.
+#
+# Optional profiles (COMPOSE_PROFILES in .env, comma-separated):
+#   backup          nightly pg_dump + uploads tarball into ./backups,
+#                   keeping 7 daily, 4 weekly and 6 monthly sets.
+#   backup-offsite  copies ./backups to any rclone remote every hour.
+#   minio           S3-compatible object storage (MinIO, AGPL-3.0) for
+#                   STORAGE_DRIVER=s3 without a cloud account.
+#   restore         one-shot restore job; see README.md "Restore".
+#
+# Every setting comes from .env next to this file. See .env.example for the
+# full list; README.md covers install, upgrades, backup/restore, Cloudflare
+# and uninstall.
+#
+# Third-party images are pinned to a version and digest (Dependabot proposes
+# updates); the Payverge images follow PAYVERGE_VERSION, which install.sh
+# sets to a release number. Unset, they default to the release this file
+# shipped with (the release tooling bumps the marked defaults), never :latest.
+name: payverge
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+# The one canonical origin. Set PUBLIC_URL only when it is not
+# https://${DOMAIN} (for example a non-443 HTTPS_PORT).
+x-public-url: &public-url ${PUBLIC_URL:-https://${DOMAIN:?DOMAIN must be set in .env (the public host name, or localhost for a trial)}}
+
+services:
+  postgres:
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-payverge}
+      # The superuser. postgres/init-app-role.sql removes its password on the
+      # first start, so it connects only over the container's local socket.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env (openssl rand -hex 24)}
+      # The role every other service logs in as: it owns DB_NAME, is not a
+      # superuser, and gets DB_PASSWORD (postgres/init-app-role.sql).
+      PAYVERGE_DB_USER: ${DB_USER:-payverge}
+    # pg18-guard.sh wraps the image's entrypoint: when the legacy db volume
+    # still holds PostgreSQL 15 data and pgdata holds none, it refuses to
+    # initialise an empty database and points at ./upgrade-postgres.sh.
+    entrypoint: ["/bin/sh", "/payverge/pg18-guard.sh"]
+    command: ["postgres"]
+    volumes:
+      # PostgreSQL 18 layout: PGDATA is /var/lib/postgresql/18/docker, so a
+      # future major can be laid out next to it in the same volume.
+      - pgdata:/var/lib/postgresql
+      # PostgreSQL 15 data from installs before PostgreSQL 18, read-only and
+      # only looked at by the guard. Kept for rollback; see upgrade-postgres.sh.
+      - db:/payverge-legacy-db:ro
+      - ./postgres/pg18-guard.sh:/payverge/pg18-guard.sh:ro
+      - ./postgres/init-app-role.sql:/docker-entrypoint-initdb.d/10-app-role.sql:ro
+    networks:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      # The entrypoint chowns the data directory and drops to the postgres user.
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    shm_size: 256m
+    mem_limit: 1500m
+    stop_grace_period: 60s
+    logging: *default-logging
+
+  backend:
+    # x-release-please-start-version
+    image: ghcr.io/stdevmac/payverge-backend:${PAYVERGE_VERSION:-1.0.0}
+    # x-release-please-end
+    restart: unless-stopped
+    command:
+      - --production
+      - --db-host
+      - postgres
+      - --db-port
+      - "5432"
+      - --db-user
+      - ${DB_USER:-payverge}
+      - --db-name
+      - ${DB_NAME:-payverge}
+      - --db-sslmode
+      - disable
+      - --aws-region
+      - ${AWS_REGION:-us-east-1}
+      - --s3-protected-base-url
+      - ${S3_PROTECTED_BASE_URL:-}
+    environment:
+      - APP_ENV=production
+      - PORT=8080
+
+      # --- Core (required; install.sh generates the secrets) ---------------
+      - PUBLIC_URL=${PUBLIC_URL:-https://${DOMAIN:?DOMAIN must be set in .env (the public host name, or localhost for a trial)}}
+      - APP_BASE_URL=${PUBLIC_URL:-https://${DOMAIN}}
+      - APP_DOMAIN=${DOMAIN}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:?JWT_SECRET_KEY must be set in .env (openssl rand -base64 48)}
+      - PLUGIN_SECRET_KEY=${PLUGIN_SECRET_KEY:?PLUGIN_SECRET_KEY must be set in .env (openssl rand -hex 32)}
+      # Maintenance commands (docker compose exec backend /app/server admin ...)
+      # read the database location from these.
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-payverge}
+      - DB_NAME=${DB_NAME:-payverge}
+      - DB_SSLMODE=disable
+
+      # --- First admin, signups, demo data -----------------------------------
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - REGISTRATION_MODE=${REGISTRATION_MODE:-invite}
+      - DEMO_DATA=${DEMO_DATA:-false}
+      # The venue served at "/" (custom URL or id); empty = auto.
+      - PRIMARY_VENUE=${PRIMARY_VENUE:-}
+      - ADMIN_DEMO_AUTOMATION_ENABLED=${ADMIN_DEMO_AUTOMATION_ENABLED:-}
+
+      # --- Edge and proxy trust ----------------------------------------------
+      # Caddy and the frontend proxy are the backend's only peers: the backend
+      # publishes no host port and sits on the edge network (EDGE_SUBNET, a
+      # fixed /24) and the internal db network. Both replace X-Forwarded-For
+      # with the client IP they verified, so the edge subnet is trusted here,
+      # and nothing else: another container or a host on some other private
+      # range cannot pose as a proxy. Unset, the backend trusts loopback only,
+      # so every visitor would share Caddy's address for rate limits. Keep
+      # this in step with FRONTEND_TRUSTED_PROXIES below.
+      - EDGE=${EDGE:-none}
+      - TRUSTED_PROXIES=${TRUSTED_PROXIES:-${EDGE_SUBNET:-172.30.0.0/24},127.0.0.1}
+      - TRUSTED_PLATFORM=
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-}
+      - ALLOWED_REDIRECT_DOMAINS=${ALLOWED_REDIRECT_DOMAINS:-}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN:-}
+      - FORCE_HSTS=${FORCE_HSTS:-false}
+
+      # --- Branding and contacts ---------------------------------------------
+      - PRODUCT_NAME=${PRODUCT_NAME:-}
+      - COMPANY_NAME=${COMPANY_NAME:-}
+      - COMPANY_ADDRESS=${COMPANY_ADDRESS:-}
+      - LEGAL_ENTITY=${LEGAL_ENTITY:-}
+      - LEGAL_TERMS_URL=${LEGAL_TERMS_URL:-}
+      - LEGAL_PRIVACY_URL=${LEGAL_PRIVACY_URL:-}
+      - SUPPORT_EMAIL=${SUPPORT_EMAIL:-}
+      - SECURITY_EMAIL=${SECURITY_EMAIL:-}
+      - LOGO_URL=${LOGO_URL:-}
+      - BRAND_COLOR=${BRAND_COLOR:-}
+
+      # --- Email (empty provider = inferred from the key, else "log") -------
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER:-}
+      - EMAIL_LOG_CONTENT=${EMAIL_LOG_CONTENT:-}
+      - EMAIL_PROVIDER_LOG_ALLOW_PRODUCTION=${EMAIL_PROVIDER_LOG_ALLOW_PRODUCTION:-}
+      - EMAIL_VERIFICATION=${EMAIL_VERIFICATION:-auto}
+      - FROM_EMAIL=${FROM_EMAIL:-}
+      - FROM_EMAIL_UPDATES=${FROM_EMAIL_UPDATES:-}
+      - EMAIL_REPLY_TO=${EMAIL_REPLY_TO:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-}
+      - SMTP_USERNAME=${SMTP_USERNAME:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - SMTP_TLS=${SMTP_TLS:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_WEBHOOK_SECRET=${RESEND_WEBHOOK_SECRET:-}
+      - EMAIL_API_KEY=${EMAIL_API_KEY:-}
+      - EMAIL_ALLOWED_FROM_DOMAINS=${EMAIL_ALLOWED_FROM_DOMAINS:-}
+      - EMAIL_SPF_DOMAIN=${EMAIL_SPF_DOMAIN:-}
+      - EMAIL_DKIM_DOMAIN=${EMAIL_DKIM_DOMAIN:-}
+      - EMAIL_RETURN_PATH_DOMAIN=${EMAIL_RETURN_PATH_DOMAIN:-}
+      - EMAIL_DMARC_POLICY=${EMAIL_DMARC_POLICY:-}
+      # Per-tenant send budgets (empty = built-in defaults; docs/self-hosting/email.md).
+      - EMAIL_TENANT_DAILY_CAP=${EMAIL_TENANT_DAILY_CAP:-}
+      - EMAIL_TENANT_DEMO_DAILY_CAP=${EMAIL_TENANT_DEMO_DAILY_CAP:-}
+      - EMAIL_TENANT_RECIPIENT_DAILY_CAP=${EMAIL_TENANT_RECIPIENT_DAILY_CAP:-}
+      - EMAIL_TENANT_RECIPIENT_GLOBAL_DAILY_CAP=${EMAIL_TENANT_RECIPIENT_GLOBAL_DAILY_CAP:-}
+      - EMAIL_TENANT_RECIPIENT_GLOBAL_ALL_DAILY_CAP=${EMAIL_TENANT_RECIPIENT_GLOBAL_ALL_DAILY_CAP:-}
+      - EMAIL_TENANT_RESERVATION_DAILY_CAP=${EMAIL_TENANT_RESERVATION_DAILY_CAP:-}
+      - EMAIL_TENANT_RESERVATION_RECIPIENT_DAILY_CAP=${EMAIL_TENANT_RESERVATION_RECIPIENT_DAILY_CAP:-}
+      - EMAIL_TENANT_DEDUPE_MINUTES=${EMAIL_TENANT_DEDUPE_MINUTES:-}
+
+      # --- Uploads: local volume (default) or S3-compatible -----------------
+      - STORAGE_DRIVER=${STORAGE_DRIVER:-local}
+      - STORAGE_DIR=/data/storage
+      - S3_BUCKET=${S3_BUCKET:-}
+      - S3_ENDPOINT=${S3_ENDPOINT:-}
+      - S3_PUBLIC_BASE_URL=${S3_PUBLIC_BASE_URL:-}
+      - S3_FORCE_PATH_STYLE=${S3_FORCE_PATH_STYLE:-false}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY:-}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY:-}
+      - S3_PROTECTED_BUCKET=${S3_PROTECTED_BUCKET:-}
+      - S3_PROTECTED_ENDPOINT=${S3_PROTECTED_ENDPOINT:-}
+      - AWS_PROTECTED_ACCESS_KEY=${AWS_PROTECTED_ACCESS_KEY:-}
+      - AWS_PROTECTED_SECRET_KEY=${AWS_PROTECTED_SECRET_KEY:-}
+
+      # --- AI (optional; any OpenAI-compatible endpoint) ---------------------
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL_CHAT=${OPENROUTER_MODEL_CHAT:-google/gemini-2.5-flash}
+      - OPENROUTER_MODEL_MENU=${OPENROUTER_MODEL_MENU:-google/gemini-2.5-flash}
+      - OPENROUTER_MODEL_IMAGE=${OPENROUTER_MODEL_IMAGE:-google/gemini-2.5-flash-image}
+      - OPENROUTER_MODEL_DIRECTOR=${OPENROUTER_MODEL_DIRECTOR:-google/gemini-2.5-flash}
+      - OPENROUTER_MODEL_GUARDRAIL=${OPENROUTER_MODEL_GUARDRAIL:-google/gemini-2.5-flash-lite}
+      - OPENROUTER_CHAT_FALLBACKS=${OPENROUTER_CHAT_FALLBACKS:-}
+      - OPENROUTER_MENU_FALLBACKS=${OPENROUTER_MENU_FALLBACKS:-}
+      - OPENROUTER_IMAGE_FALLBACKS=${OPENROUTER_IMAGE_FALLBACKS:-}
+      - OPENROUTER_DIRECTOR_FALLBACKS=${OPENROUTER_DIRECTOR_FALLBACKS:-}
+      - OPENROUTER_GUARDRAIL_FALLBACKS=${OPENROUTER_GUARDRAIL_FALLBACKS:-}
+      - OPENROUTER_ZDR_MODE=${OPENROUTER_ZDR_MODE:-}
+      - OPENROUTER_ZDR_APPROVED_MODELS=${OPENROUTER_ZDR_APPROVED_MODELS:-}
+      - OPENROUTER_APP_URL=${OPENROUTER_APP_URL:-}
+      - OPENROUTER_APP_TITLE=${OPENROUTER_APP_TITLE:-}
+      # Extra model prices (model=in/out USD per Mtok, comma-separated) for a
+      # model missing from the built-in table; unpriced models fail closed.
+      - OPENROUTER_PRICES=${OPENROUTER_PRICES:-}
+      # Guardrail failure posture: empty = fail closed in production.
+      - GUARDRAIL_STRICT=${GUARDRAIL_STRICT:-}
+      # Daily USD spend ceilings; always on whenever an LLM is configured.
+      - AI_DAILY_BUDGET_USD=${AI_DAILY_BUDGET_USD:-5}
+      - AI_BUDGET_GLOBAL_USD_DAY=${AI_BUDGET_GLOBAL_USD_DAY:-}
+      - AI_BUDGET_GUEST_POOL_USD_DAY=${AI_BUDGET_GUEST_POOL_USD_DAY:-}
+      - AI_WAITER_DAILY_MESSAGE_BUDGET=${AI_WAITER_DAILY_MESSAGE_BUDGET:-}
+      - AI_WAITER_DAILY_MESSAGES_PER_IP=${AI_WAITER_DAILY_MESSAGES_PER_IP:-}
+      - AI_WAITER_DAILY_MESSAGES_PER_DEVICE=${AI_WAITER_DAILY_MESSAGES_PER_DEVICE:-}
+      - GOOGLE_TRANSLATE_API_KEY=${GOOGLE_TRANSLATE_API_KEY:-}
+      - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY:-}
+
+      # --- Payments (configured per restaurant in the dashboard) -------------
+      # Production keeps each card provider OFF until its switch is "true",
+      # after the operator has proven it in that provider's sandbox.
+      - PAYMENT_PROVIDER_STRIPE_ENABLED=${PAYMENT_PROVIDER_STRIPE_ENABLED:-}
+      - PAYMENT_PROVIDER_PAYPAL_ENABLED=${PAYMENT_PROVIDER_PAYPAL_ENABLED:-}
+      - PAYMENT_PROVIDER_MERCADOPAGO_ENABLED=${PAYMENT_PROVIDER_MERCADOPAGO_ENABLED:-}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - STRIPE_PLUGIN_WEBHOOK_SECRET=${STRIPE_PLUGIN_WEBHOOK_SECRET:-}
+      - STRIPE_CONNECT_CLIENT_ID=${STRIPE_CONNECT_CLIENT_ID:-}
+      - STRIPE_CONNECT_WEBHOOK_SECRET=${STRIPE_CONNECT_WEBHOOK_SECRET:-}
+      - PAYPAL_WEBHOOK_SECRET=${PAYPAL_WEBHOOK_SECRET:-}
+      - MERCADOPAGO_CLIENT_ID=${MERCADOPAGO_CLIENT_ID:-}
+      - MERCADOPAGO_CLIENT_SECRET=${MERCADOPAGO_CLIENT_SECRET:-}
+      - MERCADOPAGO_WEBHOOK_SECRET=${MERCADOPAGO_WEBHOOK_SECRET:-}
+      - MERCADOPAGO_WEBHOOK_SECRET_PREVIOUS=${MERCADOPAGO_WEBHOOK_SECRET_PREVIOUS:-}
+      - MAX_PAYMENT_AMOUNT_CENTS=${MAX_PAYMENT_AMOUNT_CENTS:-}
+
+      # --- On-chain USDC (Base mainnet; empty RPC_URL = public Base RPC) ----
+      - RPC_URL=${RPC_URL:-}
+      - USDC_MIN_CONFIRMATIONS=${USDC_MIN_CONFIRMATIONS:-}
+      - QUOTE_RATE_MAX_AGE_MINUTES=${QUOTE_RATE_MAX_AGE_MINUTES:-}
+      - CRYPTO_REFUND_MAINNET_ENABLED=${CRYPTO_REFUND_MAINNET_ENABLED:-}
+
+      # --- Sign-in with Google (optional) ------------------------------------
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+
+      # --- Telegram and WhatsApp (optional) ----------------------------------
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - TELEGRAM_BOT_USERNAME=${TELEGRAM_BOT_USERNAME:-}
+      - TELEGRAM_WEBHOOK_SECRET=${TELEGRAM_WEBHOOK_SECRET:-}
+      - TELEGRAM_NOTIFICATION_EVENTS=${TELEGRAM_NOTIFICATION_EVENTS:-}
+      - TELEGRAM_ESCALATION_BOT_TOKEN=${TELEGRAM_ESCALATION_BOT_TOKEN:-}
+      - TELEGRAM_ESCALATION_CHAT_ID=${TELEGRAM_ESCALATION_CHAT_ID:-}
+      # Honoured only by an image built with the `whatsapp` Go tag (GPL-3.0); the
+      # published image ignores it. See docs/self-hosting/whatsapp.md.
+      - WHATSAPP_ENABLED=${WHATSAPP_ENABLED:-false}
+
+      # --- Web push (optional) -----------------------------------------------
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY:-}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY:-}
+      - VAPID_SUBJECT=${VAPID_SUBJECT:-}
+
+      # --- Observability (optional; nothing is sent when empty) -------------
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
+      # x-release-please-start-version
+      - SENTRY_RELEASE=${PAYVERGE_VERSION:-1.0.0}
+      # x-release-please-end
+      - POSTHOG_API_KEY=${POSTHOG_API_KEY:-}
+      - POSTHOG_HOST=${POSTHOG_HOST:-}
+      - METRICS_TOKEN=${METRICS_TOKEN:-}
+      # Bearer token that unlocks the detailed /api/v1/health/ready body;
+      # unset = binary ready/not-ready only.
+      - HEALTH_DETAIL_TOKEN=${HEALTH_DETAIL_TOKEN:-}
+
+      # --- Admin MCP server (agentic configuration; docs/ai/) ---------------
+      # Empty = the admin MCP endpoints are disabled.
+      - PAYVERGE_ADMIN_MCP_TOKEN=${PAYVERGE_ADMIN_MCP_TOKEN:-}
+      - PAYVERGE_ADMIN_MCP_TOKEN_SHA256=${PAYVERGE_ADMIN_MCP_TOKEN_SHA256:-}
+      - PAYVERGE_ADMIN_MCP_ALLOWED_IPS=${PAYVERGE_ADMIN_MCP_ALLOWED_IPS:-}
+
+      # --- Rate limits (empty = built-in defaults) ---------------------------
+      - GLOBAL_RATE_LIMIT_REQUESTS_PER_MINUTE=${GLOBAL_RATE_LIMIT_REQUESTS_PER_MINUTE:-}
+      - AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE=${AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE:-}
+      - AUTH_RATE_LIMIT_BURST=${AUTH_RATE_LIMIT_BURST:-}
+      - REGISTRATION_RATE_LIMIT_PER_HOUR=${REGISTRATION_RATE_LIMIT_PER_HOUR:-}
+    volumes:
+      - storage:/data/storage
+      - backend_data:/app/data
+    # Lets LLM_BASE_URL reach a model server on the host, for example Ollama:
+    # LLM_BASE_URL=http://host.docker.internal:11434/v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - edge
+      - db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+        required: false
+    healthcheck:
+      # Liveness probe baked into the image (GET /api/v1/health/live).
+      test: ["CMD", "/app/healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 120s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 1500m
+    stop_grace_period: 30s
+    logging: *default-logging
+
+  frontend:
+    # x-release-please-start-version
+    image: ghcr.io/stdevmac/payverge-frontend:${PAYVERGE_VERSION:-1.0.0}
+    # x-release-please-end
+    restart: unless-stopped
+    environment:
+      PUBLIC_URL: *public-url
+      # Server-side API reads and the next/image /media fetches go straight to
+      # the backend over the private network. Keep it set behind Caddy.
+      BACKEND_INTERNAL_URL: http://backend:8080
+      EDGE: ${EDGE:-none}
+      # Caddy is the frontend's only peer (no host port is published) and it
+      # sets X-Forwarded-For to its verified {client_ip}. Empty in the binary
+      # means trust nothing; the bundled stack trusts the edge subnet only.
+      FRONTEND_TRUSTED_PROXIES: ${FRONTEND_TRUSTED_PROXIES:-${EDGE_SUBNET:-172.30.0.0/24}}
+      # Must match the backend: USDC settlement runs on Base mainnet.
+      NETWORK: ${NETWORK:-base}
+      PUBLIC_RPC_URL: ${PUBLIC_RPC_URL:-}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+      SECURITY_EMAIL: ${SECURITY_EMAIL:-}
+      MEDIA_ORIGINS: ${MEDIA_ORIGINS:-}
+      # Same value the backend gets: the CSP img-src allows the logo's host.
+      LOGO_URL: ${LOGO_URL:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      SEO_INDEXING: ${SEO_INDEXING:-false}
+      SEO_TWITTER_HANDLE: ${SEO_TWITTER_HANDLE:-}
+      CLOUDFLARE_INSIGHTS: ${CLOUDFLARE_INSIGHTS:-}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-false}
+      FRONTEND_SENTRY_DSN: ${FRONTEND_SENTRY_DSN:-}
+      FRONTEND_SENTRY_ENVIRONMENT: ${FRONTEND_SENTRY_ENVIRONMENT:-production}
+      POSTHOG_KEY: ${POSTHOG_KEY:-}
+      POSTHOG_HOST: ${POSTHOG_HOST:-}
+    networks:
+      - edge
+    depends_on:
+      backend:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 768m
+    stop_grace_period: 20s
+    logging: *default-logging
+
+  caddy:
+    image: caddy:2.11.6-alpine@sha256:c776e0c6413b544d0459665e54ec7b8b2a15000c0cbee8b254da0067b1d184ff
+    restart: unless-stopped
+    # EDGE picks the Caddyfile: none -> Caddyfile, cloudflare -> Caddyfile.cloudflare.
+    # TLS_TERMINATION=proxy: another web server on this host terminates TLS
+    # and forwards plain HTTP, so Caddy serves http://DOMAIN with no
+    # certificate and no redirect to HTTPS (README.md "Behind another web server").
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        case "$${EDGE:-none}" in
+          none) config=/etc/caddy/Caddyfile ;;
+          cloudflare) config=/etc/caddy/Caddyfile.cloudflare ;;
+          *) echo "EDGE must be none or cloudflare" >&2; exit 64 ;;
+        esac
+        case "$${TLS_TERMINATION:-caddy}" in
+          caddy) unset CADDY_SITE_SCHEME ;;
+          proxy)
+            if [ "$${EDGE:-none}" != none ]; then
+              echo "TLS_TERMINATION=proxy needs EDGE=none: Caddy then trusts only TRUSTED_PROXY_CIDRS" >&2
+              exit 64
+            fi
+            export CADDY_SITE_SCHEME=http://
+            ;;
+          *) echo "TLS_TERMINATION must be caddy or proxy" >&2; exit 64 ;;
+        esac
+        exec caddy run --config "$$config" --adapter caddyfile
+    environment:
+      DOMAIN: ${DOMAIN}
+      EDGE: ${EDGE:-none}
+      TLS_TERMINATION: ${TLS_TERMINATION:-caddy}
+      # Empty ACME_EMAIL = no contact address on the ACME account.
+      CADDY_ACME_EMAIL_OPTION: ${ACME_EMAIL:+email ${ACME_EMAIL:-}}
+      # EDGE=none only: proxies in front of Caddy whose X-Forwarded-For it may
+      # believe. Empty = none; the client IP is the TCP peer. When set, Caddy
+      # reads X-Forwarded-For right to left and skips only those proxies, so a
+      # client cannot prepend its own entry (trusted_proxies_strict).
+      CADDY_TRUSTED_PROXIES_OPTION: ${TRUSTED_PROXY_CIDRS:+trusted_proxies static ${TRUSTED_PROXY_CIDRS:-}}
+      CADDY_TRUSTED_PROXIES_STRICT_OPTION: ${TRUSTED_PROXY_CIDRS:+trusted_proxies_strict}
+      # Strict-Transport-Security sent for DOMAIN. The edge replaces the apps'
+      # own header with this value.
+      CADDY_HSTS: ${HSTS_POLICY:-max-age=31536000}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.cloudflare:/etc/caddy/Caddyfile.cloudflare:ro
+      - ./payverge.caddy:/etc/caddy/payverge.caddy:ro
+      - ./cloudflare-cidrs.caddy:/etc/caddy/cloudflare-cidrs.caddy:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+    healthcheck:
+      # The admin API answers on loopback inside the container only.
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    mem_limit: 256m
+    logging: *default-logging
+
+  # --- profile: minio --------------------------------------------------------
+  # S3-compatible storage on this host, for STORAGE_DRIVER=s3 without a cloud
+  # account. minio-init creates both buckets (private) and an application user
+  # (AWS_ACCESS_KEY / AWS_SECRET_KEY) with the readwrite policy, so the backend
+  # never holds the MinIO root credentials. README.md "MinIO" lists the .env
+  # lines. MinIO is AGPL-3.0 and runs as its own unmodified program.
+  # Chainguard publishes its free MinIO image as :latest only, so the default
+  # is pinned to that tag's digest (multi-arch index); a release refreshes it.
+  minio:
+    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:4cf4831a2bbcf13ddca09c1cbcc9faff716dd3c4247e0babc32864b8ee8e0034}
+    profiles: ["minio"]
+    restart: unless-stopped
+    # Refuse an empty root password: MinIO would fall back to its public
+    # default credentials. install.sh generates one.
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        : "$${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env (install.sh generates one; openssl rand -hex 24)}"
+        exec minio server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-payverge-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-}
+      MINIO_BROWSER: "off"
+    volumes:
+      - minio:/data
+    networks:
+      - edge
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 1g
+    logging: *default-logging
+
+  minio-init:
+    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:4cf4831a2bbcf13ddca09c1cbcc9faff716dd3c4247e0babc32864b8ee8e0034}
+    profiles: ["minio"]
+    restart: "no"
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        export HOME=/tmp
+        : "$${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env (install.sh generates one; openssl rand -hex 24)}"
+        : "$${S3_BUCKET:?set S3_BUCKET in .env}"
+        : "$${S3_PROTECTED_BUCKET:?set S3_PROTECTED_BUCKET in .env}"
+        mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+        for bucket in "$$S3_BUCKET" "$$S3_PROTECTED_BUCKET"; do
+          mc mb --ignore-existing "local/$$bucket"
+          mc anonymous set none "local/$$bucket" >/dev/null
+        done
+        echo "minio-init: buckets $$S3_BUCKET and $$S3_PROTECTED_BUCKET ready (anonymous access off)"
+        if [ -n "$$AWS_ACCESS_KEY" ] && [ "$$AWS_ACCESS_KEY" != "$$MINIO_ROOT_USER" ]; then
+          : "$${AWS_SECRET_KEY:?set AWS_SECRET_KEY in .env}"
+          mc admin user add local "$$AWS_ACCESS_KEY" "$$AWS_SECRET_KEY" >/dev/null
+          # A policy that is already attached is success (mc since 2024-10;
+          # older mc says "already in effect"). Anything else stops here, so
+          # the backend never starts with a user that cannot read or write.
+          if ! attach=$$(mc admin policy attach local readwrite --user "$$AWS_ACCESS_KEY" 2>&1); then
+            case "$$attach" in
+              *"already in effect"*) ;;
+              *)
+                echo "minio-init: could not give $$AWS_ACCESS_KEY the readwrite policy: $$attach" >&2
+                exit 1
+                ;;
+            esac
+          fi
+          echo "minio-init: application user $$AWS_ACCESS_KEY ready (readwrite policy)"
+        else
+          echo "minio-init: no separate application user (AWS_ACCESS_KEY is empty or the root user)"
+        fi
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-payverge-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_PROTECTED_BUCKET: ${S3_PROTECTED_BUCKET:-}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY:-}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY:-}
+    networks:
+      - edge
+    depends_on:
+      minio:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging: *default-logging
+
+  # --- profile: backup -------------------------------------------------------
+  # Runs backup/backup.sh daily at BACKUP_TIME (container time zone, UTC by
+  # default). One-off backup: docker compose run --rm backup once
+  backup:
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    profiles: ["backup"]
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/scripts/backup.sh"]
+    command: ["daemon"]
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: ${DB_USER:-payverge}
+      PGDATABASE: ${DB_NAME:-payverge}
+      PGPASSWORD: ${DB_PASSWORD}
+      BACKUP_TIME: ${BACKUP_TIME:-03:30}
+      BACKUP_KEEP_DAILY: ${BACKUP_KEEP_DAILY:-7}
+      BACKUP_KEEP_WEEKLY: ${BACKUP_KEEP_WEEKLY:-4}
+      BACKUP_KEEP_MONTHLY: ${BACKUP_KEEP_MONTHLY:-6}
+      # Host user and group that receive the sets (install.sh sets them to the
+      # user who installed, unless that was root).
+      BACKUP_UID: ${BACKUP_UID:-}
+      BACKUP_GID: ${BACKUP_GID:-}
+      BACKUP_ARCHIVE_ATTEMPTS: ${BACKUP_ARCHIVE_ATTEMPTS:-3}
+      BACKUP_MAX_AGE_HOURS: ${BACKUP_MAX_AGE_HOURS:-26}
+      # x-release-please-start-version
+      PAYVERGE_VERSION: ${PAYVERGE_VERSION:-1.0.0}
+      # x-release-please-end
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./backup:/scripts:ro
+      - ${BACKUP_DIR:-./backups}:/backups
+      - storage:/data/storage:ro
+      - minio:/data/minio:ro
+    networks:
+      - db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Unhealthy when the last run failed or no run succeeded for
+    # BACKUP_MAX_AGE_HOURS (default 26): reads /backups/.status.
+    healthcheck:
+      test: ["CMD", "/bin/sh", "/scripts/backup.sh", "health"]
+      interval: 5m
+      timeout: 10s
+      retries: 1
+      start_period: 1m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      # Read the uploads volume (owned by the backend's uid), write into
+      # BACKUP_DIR whatever its host owner, and hand the sets to BACKUP_UID.
+      - CHOWN
+      - DAC_OVERRIDE
+      - DAC_READ_SEARCH
+    logging: *default-logging
+
+  backup-offsite:
+    image: rclone/rclone:1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5
+    profiles: ["backup-offsite"]
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        : "$${RCLONE_REMOTE:?set RCLONE_REMOTE in .env, e.g. offsite:my-bucket/payverge}"
+        while true; do
+          echo "backup-offsite: rclone $${RCLONE_MODE:-copy} /backups -> $${RCLONE_REMOTE}"
+          rclone "$${RCLONE_MODE:-copy}" /backups "$${RCLONE_REMOTE}" --links || echo "backup-offsite: upload failed, retrying next cycle" >&2
+          sleep "$${RCLONE_INTERVAL_SECONDS:-3600}"
+        done
+    environment:
+      RCLONE_REMOTE: ${RCLONE_REMOTE:-}
+      RCLONE_MODE: ${RCLONE_MODE:-copy}
+      RCLONE_INTERVAL_SECONDS: ${RCLONE_INTERVAL_SECONDS:-3600}
+    volumes:
+      - ${BACKUP_DIR:-./backups}:/backups:ro
+      # Remote definitions: ./rclone/rclone.conf, written with
+      #   docker run --rm -it -v "$PWD/rclone:/config/rclone" rclone/rclone:1.75.1 config
+      - ./rclone:/config/rclone:ro
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_OVERRIDE
+      - DAC_READ_SEARCH
+    logging: *default-logging
+
+  # --- profile: restore ------------------------------------------------------
+  # docker compose stop backend frontend
+  # docker compose --profile restore run --rm restore latest --yes
+  # docker compose up -d
+  restore:
+    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    profiles: ["restore"]
+    restart: "no"
+    entrypoint: ["/bin/sh", "/scripts/restore.sh"]
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: ${DB_USER:-payverge}
+      PGDATABASE: ${DB_NAME:-payverge}
+      PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./backup:/scripts:ro
+      - ${BACKUP_DIR:-./backups}:/backups:ro
+      - storage:/data/storage
+      - minio:/data/minio
+    networks:
+      - db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - DAC_READ_SEARCH
+      - FOWNER
+    logging: *default-logging
+
+networks:
+  # Caddy, the apps and MinIO. Not internal: the backend reaches email, AI,
+  # payment and RPC providers, and Caddy reaches ACME. A fixed subnet, so the
+  # backend and frontend trust exactly these peers' X-Forwarded-For. Change
+  # EDGE_SUBNET (a /24 or smaller) if 172.30.0.0/24 is already used on this
+  # host, then: docker compose down && docker compose up -d
+  edge:
+    ipam:
+      config:
+        - subnet: ${EDGE_SUBNET:-172.30.0.0/24}
+  # Postgres has no route to the internet and no published port.
+  db:
+    internal: true
+
+volumes:
+  # PostgreSQL 18 data.
+  pgdata: {}
+  # PostgreSQL 15 data from installs before PostgreSQL 18 (read-only above).
+  # upgrade-postgres.sh copies it into pgdata and never changes it; remove it
+  # once the upgrade is settled: docker volume rm <project>_db
+  db: {}
+  storage: {}
+  backend_data: {}
+  caddy_data: {}
+  caddy_config: {}
+  minio: {}

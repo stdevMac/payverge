@@ -1,0 +1,31 @@
+{
+  "header": {
+    "title": "Access Your Table",
+    "subtitle": "Scan the QR code at your table or enter the table code manually"
+  },
+  "actions": {
+    "scanQr": "Scan QR Code",
+    "or": "or",
+    "manualPlaceholder": "Enter table code (e.g., ABC123)",
+    "accessTable": "Access Table"
+  },
+  "errors": {
+    "invalidCode": "Invalid table code",
+    "validationFailed": "Failed to validate table code. Please try again.",
+    "emptyCode": "Please enter a table code"
+  },
+  "help": {
+    "lookFor": "Look for the QR code on your table or ask your server for the table code.",
+    "needHelp": "Need help? Contact restaurant staff."
+  },
+  "manualEntryPrompt": "Enter table code manually:",
+  "scanner": {
+    "title": "Scan QR Code",
+    "cameraAccessTitle": "Camera Access Required",
+    "cameraAccessBody": "Please allow camera access to scan QR codes",
+    "enableCamera": "Enable Camera",
+    "positionPrompt": "Position QR code within the frame",
+    "startScanning": "Start Scanning",
+    "enterManually": "Enter Code Manually"
+  }
+}

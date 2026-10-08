@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Payverge Marketing Screenshots",
+  "version": "0.3.0",
+  "description": "Capture curated marketing screenshots of Payverge from your logged-in session.",
+  "permissions": ["tabs", "downloads", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Payverge Screenshots",
+    "default_popup": "popup.html"
+  }
+}

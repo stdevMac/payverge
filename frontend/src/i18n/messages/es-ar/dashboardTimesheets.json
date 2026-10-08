@@ -1,0 +1,13 @@
+{
+  "subtitle": "Aprobá las horas que fichó tu equipo",
+  "error": "No pudimos cargar las hojas de horas. Volvé a intentarlo en un momento.",
+  "emptySubtitle": "Cuando tu equipo fiche su salida, sus horas van a aparecer acá para que las apruebes.",
+  "flagZeroWorked": "Fichó entrada y salida a la misma hora — revisá antes de aprobar",
+  "flagNoShift": "Ningún turno programado coincide con este fichaje — revisá antes de aprobar",
+  "manualHint": "Registrá las horas de un compañero que se olvidó de fichar.",
+  "manualStaffPlaceholder": "Elegí un integrante",
+  "manualError": "No pudimos agregar esa entrada. Revisá los horarios y volvé a intentarlo.",
+  "manualInvalidRange": "La salida tiene que ser posterior a la entrada.",
+  "rejectConfirmBody": "Esto devuelve el registro a la atención del empleado. Agregá un motivo para que sepa qué corregir.",
+  "editError": "No pudimos guardarlo. Revisá las horas e intentá de nuevo."
+}

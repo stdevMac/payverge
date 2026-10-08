@@ -1,0 +1,11 @@
+{
+  "title": "En el salón hoy",
+  "chipOnClock": "en turno",
+  "chipLate": "demorados",
+  "chipNoShow": "ausentes",
+  "since": "Desde {time}",
+  "minLate": "{minutes} min de demora",
+  "footerScheduled": "{count} programados",
+  "footerDone": "{count} terminados",
+  "unknownStaff": "Miembro del equipo"
+}

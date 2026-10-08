@@ -1,0 +1,36 @@
+{
+  "chargeButton": "Charge with QR",
+  "modalTitle": "Charge with Mercado Pago QR",
+  "amountLabel": "Amount",
+  "amountHint": "Outstanding balance: {remaining}",
+  "confirmCharge": "Generate QR",
+  "cancel": "Cancel",
+  "cancelCharge": "Cancel charge",
+  "retry": "Generate new QR",
+  "done": "Done",
+  "scanHint": "Customer scans with the Mercado Pago app",
+  "brandChip": "Mercado Pago",
+  "countdown": "Expires in {time}",
+  "expired": "This QR code has expired.",
+  "regenerate": "Generate new code",
+  "status": {
+    "pending": "Waiting for the customer to pay…",
+    "completed": "Payment completed.",
+    "cancelled": "Charge was cancelled or failed.",
+    "expired": "The QR charge expired.",
+    "failed": "Charge failed."
+  },
+  "toasts": {
+    "charged": "QR ready — show it to the customer",
+    "completed": "QR payment completed",
+    "cancelled": "QR charge cancelled",
+    "cancelFailed": "Could not cancel the QR charge",
+    "chargeFailed": "Could not create the QR charge"
+  },
+  "errors": {
+    "amountInvalid": "Enter a valid amount greater than zero.",
+    "amountTooHigh": "Amount exceeds the remaining balance.",
+    "pendingConflict": "A Mercado Pago charge is already pending for this bill.",
+    "otherDevice": "A charge is already in progress on another device — cancel to retry."
+  }
+}

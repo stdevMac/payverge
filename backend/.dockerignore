@@ -1,0 +1,33 @@
+# Build artefacts and editor metadata
+bin/
+.git
+.gitignore
+*.md
+.vscode
+.idea
+coverage*
+*.log
+
+# CRITICAL — never bake secrets into the image. Backend secrets are passed
+# via CLI flags / docker-compose env, never via baked-in .env.
+.env
+.env.*
+!.env.example
+
+# Local certs / private keys
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.aws/
+.ssh/
+
+# Test data and coverage
+testdata/large/
+*.coverprofile
+test-results/
+
+# Local tooling state
+tmp/
+.golangci-cache/

@@ -1,0 +1,37 @@
+{
+  "errors": {
+    "selectLanguage": "Por favor seleccioná al menos un idioma",
+    "selectDefaultLanguage": "Por favor seleccioná un idioma predeterminado de tus idiomas seleccionados",
+    "saveVenueFailed": "Error al guardar la hora del local"
+  },
+  "currency": {
+    "description": "Configurá cómo funcionan las monedas en tu negocio.",
+    "defaultDescription": "La moneda que usás para establecer precios en los elementos de tu menú."
+  },
+  "language": {
+    "description": "Configurá idiomas para tu menú e interfaz de cliente.",
+    "supportedDescription": "Seleccioná idiomas para tu menú e interfaz de cliente.",
+    "searchPlaceholder": "Buscá idioma",
+    "defaultDescription": "Elegí el idioma principal para tu negocio.",
+    "supportInfoDescription": "Los idiomas seleccionados van a estar disponibles para traducción del menú e interfaz de cliente. Tu idioma predeterminado se va a usar cuando no haya traducción disponible."
+  },
+  "venue": {
+    "title": "Hora del local",
+    "description": "Zona horaria y corte del día de servicio para turnos, saludos, analítica y caja.",
+    "timezoneLabel": "Zona horaria del negocio",
+    "timezonePlaceholder": "Seleccioná zona horaria",
+    "timezoneHelp": "Los turnos, los saludos del Director y los reportes del día usan esta zona — no el reloj del dispositivo.",
+    "serviceDayLabel": "El día de servicio empieza a las",
+    "serviceDayHelp": "Los cierres antes de este corte siguen perteneciendo al día de servicio anterior (p. ej. 4:00 para locales nocturnos).",
+    "serviceDayOptions": {
+      "0": "Medianoche (12:00)",
+      "120": "2:00",
+      "180": "3:00",
+      "240": "4:00",
+      "300": "5:00",
+      "360": "6:00"
+    },
+    "savedMessage": "Hora del local guardada",
+    "saveButton": "Guardá la hora del local"
+  }
+}

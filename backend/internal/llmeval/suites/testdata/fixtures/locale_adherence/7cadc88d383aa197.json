@@ -1,0 +1,13 @@
+{
+  "key": "7cadc88d383aa197",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "初めてのお客様には、シェフのおまかせコースをおすすめします。当店で一番人気の料理が含まれており、当店の魅力をよくお伝えできます。グリルサーモンと手作りパスタも大変好評です。どちらもよく出るメニューですので、ぜひお試しください。",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}
