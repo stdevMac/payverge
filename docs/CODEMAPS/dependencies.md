@@ -19,7 +19,7 @@
 | PostHog | Product analytics | `backend/internal/metrics/`, frontend providers |
 | Prometheus | Metrics scrape (`/metrics` gated by `METRICS_TOKEN(S)`) | `backend/internal/observability/` |
 
-## Backend (Go 1.26 language target; Go 1.26.6 toolchain) — key libs
+## Backend (Go 1.26 language target; Go 1.27.0 toolchain) — key libs
 ```
 gin-gonic/gin              HTTP framework
 gorm.io/gorm + driver/postgres
@@ -38,7 +38,7 @@ stretchr/testify           Test assertions
 skip2/go-qrcode + fogleman/gg + golang/freetype  QR + image gen
 ```
 
-## Frontend (Node 22.22.0 release toolchain; Node 20.18+ package minimum) — key libs
+## Frontend (Node 26.10.0 release toolchain; Node 20.18+ package minimum) — key libs
 ```
 next 15.5                  App Router
 react 18.3

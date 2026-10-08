@@ -168,7 +168,7 @@ func redactAccessLogPath(rawPathWithQuery string) string {
 	return redactAccessLogPathForRoute(rawPathWithQuery, "")
 }
 
-func fullPathFromKeys(keys map[string]any) string {
+func fullPathFromKeys(keys map[any]any) string {
 	if v, ok := keys[accessLogFullPathKey].(string); ok {
 		return v
 	}

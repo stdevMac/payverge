@@ -162,7 +162,7 @@ Notices reproduced from Apache-2.0 dependencies (Apache License 2.0, 4(d)):
   (https://www.datadoghq.com/). Copyright 2021 Datadog, Inc.
 
 Container base images
-  The published images build on node:22-alpine (frontend) and
+  The published images build on node:26-alpine (frontend) and
   gcr.io/distroless/static-debian12 (backend). The operating-system packages
   in those images carry their own licences and notices, available from the
   respective image distributions.

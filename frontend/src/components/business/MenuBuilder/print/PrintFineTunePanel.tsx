@@ -15,7 +15,7 @@ export interface PrintFineTunePanelProps {
   tString: (key: string) => string;
   onClose: () => void;
   /** Exposed so the caller can move focus to a specific control inside. */
-  panelRef?: React.RefObject<HTMLDivElement>;
+  panelRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 const FOCUSABLE_SELECTOR = [

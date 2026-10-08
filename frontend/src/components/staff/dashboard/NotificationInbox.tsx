@@ -11,7 +11,7 @@ export interface NotificationInboxProps {
   labels: NotificationBellLabels;
   locale: string;
   onClose: () => void;
-  containerRef?: React.RefObject<HTMLElement>;
+  containerRef?: React.RefObject<HTMLElement | null>;
 }
 
 const listKey = (b: string) => ["staff", "notifications", "list", b] as const;

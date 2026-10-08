@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
 # Use an official Node runtime as the base image.
 # node:20.18.0-alpine pinned the (now-EOL) 20.18.0 patch, leaving 23 HIGH/CRITICAL
-# CVEs in the Alpine base. node:22-alpine is the current LTS with a clean base.
+# CVEs in the Alpine base. node:26-alpine is the current release line with a clean base.
 FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS deps
 
 # Install dependencies only when needed

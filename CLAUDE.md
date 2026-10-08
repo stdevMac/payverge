@@ -97,7 +97,7 @@ Production self-hosting is a separate compose file under `deploy/` (Caddy, relea
 ### Backend (`backend/`)
 - **Entry point**: `cmd/app/main.go` initializes all services, DB work, and routes.
 - **Layered architecture**: Handlers (`internal/server/` is the larger home — about 130 non-test files, business/auth/RBAC/AI/director live here; `internal/handlers/` about 80 non-test files carries payments, analytics, accounting, fiscal, telegram webhooks) → Services (`internal/services/`) → Database (`internal/database/`).
-- **Framework**: Gin web framework with GORM ORM on PostgreSQL 15. Go 1.26 language target (`go 1.26.0` in backend/go.mod); repository and CI use Go 1.26.6.
+- **Framework**: Gin web framework with GORM ORM on PostgreSQL 18. Go 1.26 language target (`go 1.26.0` in backend/go.mod); repository and CI use Go 1.27.0 toolchain.
 - **Migrations / schema ownership**: Source of truth is the **genesis baseline** (`backend/schema/genesis/current_schema.sql`) plus **versioned SQL** in `backend/migrations/` (zero-padded `NNNNNN_*.up.sql`/`.down.sql`; numbering restarted at the open-source squash, where the baseline is version 0; no numbered migration yet, so the next migration is `000001`). Empty DBs bootstrap from the genesis baseline then apply only pending numbered migrations; production startup does not run GORM AutoMigrate or schema-changing `RunEnsure*` helpers. **Do not add new `.AutoMigrate(` call sites** (enforced by `TestProductionStartupHasNoAdHocDDL` / `TestAutoMigrateSourceGate`). All new schema changes must be a numbered migration in `backend/migrations/`. Fatal startup paths: genesis bootstrap (empty DB), `RunMigrations`, schema verification.
 - **Plugin system**: Payment integrations (Stripe, PayPal, MercadoPago) and the Telegram and Trustpilot integrations live in `internal/plugins/` and register via a **deferred initializer**: each plugin's `init()` calls `plugins.RegisterPluginInitializer(func(svc *services.PluginService) { ... })`, then `main.go` runs all initializers once `PluginService` is ready.
 - **Auth**: JWT tokens with SIWE (Sign-In with Ethereum) and OAuth support in `internal/auth/`.
@@ -145,7 +145,7 @@ GitHub Actions under `.github/workflows/`:
 
 ## Infrastructure
 
-- **Database**: PostgreSQL 15 (internal-only inside compose; not exposed on the host).
+- **Database**: PostgreSQL 18 (internal-only inside compose; not exposed on the host).
 - **Reverse proxy**: Caddy (stock image, config under `deploy/`) — one host: `/api/v1/*` and `/media/*` go to the backend, the rest to the frontend. Caddy owns TLS and edge security headers; backend keeps its own CORS.
 - **File storage**: local disk by default (`STORAGE_DRIVER=local`, served under `/media`), or any S3-compatible service (public + protected buckets). See `docs/self-hosting/storage.md`.
 - **Notifications**: email through `EMAIL_PROVIDER` (`log` writes to the backend log and is the default with nothing configured; `smtp`; or the API providers Resend and Postmark). Telegram, and WhatsApp (`whatsmeow`) only in the separate `-tags whatsapp` build, handle the other outbound channels.

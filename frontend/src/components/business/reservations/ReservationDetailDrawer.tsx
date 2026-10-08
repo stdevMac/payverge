@@ -23,7 +23,7 @@ const reservationDetailRowClass =
 
 export type ReservationDetailDrawerProps = {
   reservation: Reservation;
-  drawerRef: React.RefObject<HTMLDivElement>;
+  drawerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   getStatusLabel: (status: ReservationStatus | string) => string;

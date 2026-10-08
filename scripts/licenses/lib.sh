@@ -19,7 +19,7 @@ GO_LICENSES_VERSION="${GO_LICENSES_VERSION:-v2.0.1}"
 lic_log() { printf 'licenses: %s\n' "$*" >&2; }
 lic_die() { printf 'licenses: FAIL: %s\n' "$*" >&2; exit 1; }
 
-# Use the toolchain go.mod asks for (go1.26.6 via GOTOOLCHAIN auto-switching),
+# Use the toolchain go.mod asks for (go1.27.0 via GOTOOLCHAIN auto-switching),
 # then pin it. go-licenses shells out to `go list` and type-checks against
 # GOROOT; a mismatch fails with "compile: version X does not match go tool
 # version Y".

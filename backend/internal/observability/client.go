@@ -32,7 +32,6 @@ func Init(cfg Config, logger *logrus.Logger) (*Client, error) {
 		ServerName:            cfg.Service,
 		EnableTracing:         cfg.EnableTracing,
 		TracesSampleRate:      cfg.TracesSampleRate,
-		EnableLogs:            cfg.EnableLogs,
 		SendDefaultPII:        false,
 		AttachStacktrace:      true,
 		BeforeSend:            ScrubEvent,

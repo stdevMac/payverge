@@ -462,7 +462,7 @@ export default function PublicMenuDisplay({
   const categoryPanelId = `${categoryTabsScope}-panel`;
   const activeCategoryTabId = `${categoryTabsScope}-tab-${activeCategory}`;
   const categoryTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // Delivery can intentionally use different hours from the dining room.
   // A live quote is authoritative for whether delivery ordering is open.
   const orderingOpen =

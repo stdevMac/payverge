@@ -970,7 +970,7 @@ each family. The fonts are not relicensed under Apache-2.0.
 
 ## Not covered here
 
-- **Container base images.** The frontend runs on `node:22-alpine`, the backend on
+- **Container base images.** The frontend runs on `node:26-alpine`, the backend on
   `gcr.io/distroless/static-debian12`. Their OS packages carry their own licences;
   see each image's documentation.
 - **`-tags whatsapp` builds.** The opt-in WhatsApp channel links `go.mau.fi/whatsmeow`

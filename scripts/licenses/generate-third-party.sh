@@ -105,7 +105,7 @@ font_section() {
   npm_section
   font_section
   printf '## Not covered here\n\n'
-  printf -- '- **Container base images.** The frontend runs on `node:22-alpine`, the backend on\n'
+  printf -- '- **Container base images.** The frontend runs on `node:26-alpine`, the backend on\n'
   printf '  `gcr.io/distroless/static-debian12`. Their OS packages carry their own licences;\n'
   printf '  see each image'"'"'s documentation.\n'
   printf -- '- **`-tags whatsapp` builds.** The opt-in WhatsApp channel links `go.mau.fi/whatsmeow`\n'

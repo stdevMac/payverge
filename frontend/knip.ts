@@ -61,8 +61,6 @@ const ignoreDependencies = [
   // webpack externals in next.config.mjs (optional peers of wallet SDKs).
   "encoding",
   "pino-pretty",
-  // Resolved by name through FlatCompat: compat.extends("next/core-web-vitals").
-  "eslint-config-next",
   // Pins the jsdom that jest-environment-jsdom resolves.
   "jsdom",
 ];

@@ -72,9 +72,9 @@ func TestHermeticFrontendVerificationEntryPoint(t *testing.T) {
 }
 
 func TestReleaseToolchainsUseExactRepositoryVersions(t *testing.T) {
-	const nodeVersion = "22.22.0"
-	const npmVersion = "10.9.4"
-	const goVersion = "1.26.6"
+	const nodeVersion = "26.10.0"
+	const npmVersion = "11.19.1"
+	const goVersion = "1.27.0"
 
 	if got := strings.TrimSpace(readRepoFile(t, ".nvmrc")); got != nodeVersion {
 		t.Fatalf(".nvmrc = %q, want %q", got, nodeVersion)

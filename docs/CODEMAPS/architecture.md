@@ -15,7 +15,7 @@ Browser ──HTTPS──> Caddy (TLS, security headers, one origin = PUBLIC_URL
                     │                                                                         │
                     └──> /api/v1/*, /media/* ──> Go/Gin :8080 <──────────────────────────────┘
                                               │
-                                              ├──> PostgreSQL 15 (GORM)
+                                              ├──> PostgreSQL 18 (GORM)
                                               ├──> local disk or S3-compatible storage (public + protected)
                                               ├──> email: log / SMTP / Resend / Postmark
                                               ├──> Telegram; WhatsApp only in the -tags whatsapp build
@@ -35,8 +35,8 @@ Browser ──HTTPS──> Caddy (TLS, security headers, one origin = PUBLIC_URL
 ## Workspaces
 | Path | Tech | Port |
 |---|---|---|
-| `frontend/` | Next.js 15.5 + React 18 + Tailwind 3.4 + NextUI 2.4 | 3000 (container and dev) |
-| `backend/` | Go 1.26 + Gin + GORM (Go 1.26.6 toolchain) | 8080 (container and dev) |
+| `frontend/` | Next.js 15.5 + React 19 + Tailwind 3.4 + NextUI 2.6 | 3000 (container and dev) |
+| `backend/` | Go 1.26 + Gin + GORM (Go 1.27.0 toolchain) | 8080 (container and dev) |
 | `docs/` | Plain Markdown (no build step) | — |
 
 ## Production Topology

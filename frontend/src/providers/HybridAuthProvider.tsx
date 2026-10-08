@@ -195,7 +195,7 @@ export function HybridAuthProvider({ children }: { children: ReactNode }) {
     time: 0,
     address: null,
   });
-  const fetchTimeoutRef = useRef<NodeJS.Timeout>();
+  const fetchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const initAttemptedRef = useRef(false);
   const dynamicAuthProcessedRef = useRef(false);
   const staffTokenProcessedRef = useRef(false);

@@ -8,7 +8,7 @@ import (
 
 // ExtractAdminUserID reads the authenticated admin user id from Gin context.
 func ExtractAdminUserID(c interface {
-	Get(string) (interface{}, bool)
+	Get(any) (any, bool)
 }) (uint, error) {
 	id, exists := c.Get("user_id")
 	if !exists {

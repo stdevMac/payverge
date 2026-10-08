@@ -72,7 +72,7 @@ export function AssistantComposer({
   const isComposingRef = useRef(false);
   const isSubmittingRef = useRef(false);
   const restoreFocusRef = useRef(false);
-  const latestControlledDraftRef = useRef<string>();
+  const latestControlledDraftRef = useRef<string | undefined>(undefined);
   const initialValueRef = useRef(initialValue);
   const maxLengthRef = useRef(maxLength);
   initialValueRef.current = initialValue;

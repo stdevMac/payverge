@@ -8,12 +8,12 @@ AI-powered restaurant management platform with Web3 (USDC) payment support. Mono
 ## Tech Stack
 | Layer | Technology | Notes |
 |---|---|---|
-| Frontend | Next.js 15.5 (App Router) + React 18 | package name `payverge-frontend` |
+| Frontend | Next.js 15.5 (App Router) + React 19 | package name `payverge-frontend` |
 | UI | NextUI 2.4 + Tailwind 3.4 + lucide-react | DM Serif Display headings, DM Sans body |
 | Web3 | Wagmi 2 + Viem | USDC reads only; `ethers` is **not** a direct dependency |
 | State | Zustand + TanStack Query | |
-| Backend | Go 1.26 + Gin + GORM | Repository and CI pin Go 1.26.6 |
-| DB | PostgreSQL 15 | Production schema SoT: genesis baseline (`backend/schema/genesis/`) + versioned SQL (`backend/migrations/`); startup performs no GORM AutoMigrate or ad-hoc schema ensures |
+| Backend | Go 1.26 + Gin + GORM | Repository and CI pin Go 1.27.0 |
+| DB | PostgreSQL 18 | Production schema SoT: genesis baseline (`backend/schema/genesis/`) + versioned SQL (`backend/migrations/`); startup performs no GORM AutoMigrate or ad-hoc schema ensures |
 | Infra | Docker Compose + Caddy (TLS) | Self-host stack and installer in `deploy/`; release images on GHCR |
 | Notifications | Email via `EMAIL_PROVIDER` (`log` default, `smtp`, Resend, Postmark), Telegram bot, `whatsmeow` | WhatsApp only in the `-tags whatsapp` build |
 | Observability | PostHog + Prometheus | `/metrics` gated by `METRICS_TOKEN(S)` |

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
-  "packageManager": "npm@10.9.4",
+  "packageManager": "npm@11.19.1",
   "scripts": {
     "copy-pdf-worker": "node scripts/copy-pdf-worker.mjs",
     "predev": "node scripts/copy-pdf-worker.mjs",
@@ -83,7 +83,6 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@eslint/eslintrc": "^3.3.7",
     "@nextui-org/theme": "2.4.5",
     "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^6.9.1",
@@ -99,7 +98,7 @@
     "babel-jest": "^30.3.0",
     "dom-accessibility-api": "^0.7.1",
     "eslint": "^10.12.0",
-    "eslint-config-next": "^15.5.16",
+    "eslint-config-next": "^16.4.0",
     "fontkit": "^2.0.4",
     "glob": "^13.0.6",
     "jest": "^30.2.0",
@@ -117,6 +116,7 @@
     "npm": ">=10.7.0"
   },
   "overrides": {
+    "@internationalized/date": "$@internationalized/date",
     "glob": "^13.0.6",
     "h3": "^1.15.5",
     "hono": "^4.12.25",

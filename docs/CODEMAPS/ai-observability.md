@@ -90,7 +90,7 @@ OPENROUTER_API_KEY=... npm run ai:eval:promptfoo:full
   and uses per-surface production params. Use this for model comparisons and
   larger release confidence.
 - The scripts retain `promptfoo@0.120.19` for reproducible eval output. The
-  repository runtime is `.nvmrc` Node 22.22.0; evaluate promptfoo upgrades as a
+  repository runtime is `.nvmrc` Node 26.10.0; evaluate promptfoo upgrades as a
   separate dependency change with the smoke and production-faithful suites.
 
 ## 3. Regression-eval discipline (add a case when prod breaks)

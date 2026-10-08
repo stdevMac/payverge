@@ -434,7 +434,7 @@ export const TopMenu = ({ onReady }: { onReady?: () => void }) => {
                   >
                     {link.name}
                   </DropdownItem>
-                )) as unknown as ReactElement
+                )) as unknown as ReactElement<any>
               }
             </DropdownSection>
 

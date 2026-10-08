@@ -63,7 +63,7 @@ func TestInit_EnabledConfigInstallsSentryOptionsWithoutLogHook(t *testing.T) {
 	require.Equal(t, "backend", options.ServerName)
 	require.True(t, options.EnableTracing)
 	require.Equal(t, 0.25, options.TracesSampleRate)
-	require.False(t, options.EnableLogs)
+	// sentry-go >= 0.47 has no EnableLogs option: log forwarding is on only when the logrus hook is installed.
 	require.False(t, options.SendDefaultPII)
 	require.True(t, options.AttachStacktrace)
 	require.Equal(t, "backend", options.Tags["service"])
