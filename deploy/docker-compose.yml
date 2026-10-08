@@ -477,7 +477,7 @@ services:
   # Chainguard publishes its free MinIO image as :latest only, so the default
   # is pinned to that tag's digest (multi-arch index); a release refreshes it.
   minio:
-    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:4cf4831a2bbcf13ddca09c1cbcc9faff716dd3c4247e0babc32864b8ee8e0034}
+    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:f74600a1a46330cdbda1ef760d17a96bd6e0f4a6f0a2c49792ca3ee7e4c6fa18}
     profiles: ["minio"]
     restart: unless-stopped
     # Refuse an empty root password: MinIO would fall back to its public
@@ -509,7 +509,7 @@ services:
     logging: *default-logging
 
   minio-init:
-    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:4cf4831a2bbcf13ddca09c1cbcc9faff716dd3c4247e0babc32864b8ee8e0034}
+    image: ${MINIO_IMAGE:-cgr.dev/chainguard/minio:latest@sha256:f74600a1a46330cdbda1ef760d17a96bd6e0f4a6f0a2c49792ca3ee7e4c6fa18}
     profiles: ["minio"]
     restart: "no"
     entrypoint: ["/bin/sh", "-ec"]
