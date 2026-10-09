@@ -408,14 +408,27 @@ function DashboardInner() {
   // `?auth=signin|signup` only asks for the dialog. Once a session exists it
   // has done its job; leaving it in the URL would reopen the dialog on reload
   // or share a sign-in link instead of the dashboard.
+  // A staff-only session is leaving for its venue (the orchestration effect
+  // above), which drops the query anyway; a replace to /dashboard here would
+  // race that redirect and could win, leaving the venue spinner up for good.
+  const staffGoesToVenue =
+    isStaffUser && !isOAuthUser && Boolean(staffData?.business_id);
   useEffect(() => {
     if (!authParam || !isInitialized || !hasAuthSurface) return;
+    if (staffGoesToVenue) return;
     const next = new URLSearchParams(searchParams?.toString() ?? "");
     next.delete("auth");
     const query = next.toString();
     setShowAuthModal(false);
     router.replace(query ? `/dashboard?${query}` : "/dashboard");
-  }, [authParam, isInitialized, hasAuthSurface, searchParams, router]);
+  }, [
+    authParam,
+    isInitialized,
+    hasAuthSurface,
+    staffGoesToVenue,
+    searchParams,
+    router,
+  ]);
   const showSignIn =
     authError || needsSignIn || (isInitialized && !hasAuthSurface);
 

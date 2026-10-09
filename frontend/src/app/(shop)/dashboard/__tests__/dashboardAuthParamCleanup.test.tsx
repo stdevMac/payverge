@@ -111,6 +111,27 @@ describe("dashboard ?auth= cleanup", () => {
     );
   });
 
+  // The demo "Enter as Staff" button signs in over /dashboard?auth=signin.
+  // A staff session goes straight to its venue; a cleanup replace to
+  // /dashboard racing that redirect used to win and strand the visitor on
+  // "Loading your businesses…".
+  it("lets a staff session go to its venue instead of /dashboard", async () => {
+    mockSearch = "auth=signin";
+    mockAuth = {
+      ...ownerSession,
+      isOAuthUser: false,
+      oauthData: null,
+      isStaffUser: true,
+      staffData: { id: 14, business_id: 3, role: "kitchen" },
+    };
+    renderDashboard();
+    await waitFor(() =>
+      expect(mockRouterReplace).toHaveBeenCalledWith("/business/3/dashboard"),
+    );
+    await new Promise((r) => setTimeout(r, 50));
+    expect(mockRouterReplace).not.toHaveBeenCalledWith("/dashboard");
+  });
+
   it("leaves the URL alone while signed out", async () => {
     mockSearch = "auth=signin";
     mockAuth = { ...ownerSession, isOAuthUser: false, oauthData: null };
