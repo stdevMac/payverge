@@ -1,0 +1,37 @@
+{{ define "subject" }}Solicitud de reservación pendiente de respuesta{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Una solicitud de reservación espera tu respuesta
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p>
+    Una solicitud de reservación en {{ .business_name }} todavía no ha sido respondida. Si nadie responde, se rechazará automáticamente el {{ .respond_by }}.
+</p>
+
+<p>
+    Cliente: {{ .customer_name }}<br>
+    Personas: {{ .party_size }}<br>
+    Solicitada para: el {{ .reservation_date }} a las {{ .reservation_time }}
+</p>
+
+{{ if .special_requests }}
+<p>
+    Solicitudes especiales: {{ .special_requests }}
+</p>
+{{ end }}
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Revisar solicitud
+    </a>
+</div>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

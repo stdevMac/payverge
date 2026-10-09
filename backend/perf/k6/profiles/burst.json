@@ -1,0 +1,13 @@
+{
+  "duration": "2m",
+  "external_only": true,
+  "peak_multiplier": 2,
+  "flows": {
+    "anonymous_menu": 24,
+    "operator_action": 6,
+    "guest_quote": 4,
+    "guest_order": 4,
+    "callback_webhook": 2,
+    "sse": 40
+  }
+}

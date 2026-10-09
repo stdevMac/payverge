@@ -1,0 +1,24 @@
+{{ define "subject" }}Reservation Updated{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Reservation Updated
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi there,
+</p>
+
+<p>
+    Your reservation at {{ .business_name }} has been updated.
+</p>
+
+<p>
+    New Date: {{ .reservation_date }}<br>
+    New Time: {{ .reservation_time }}<br>
+    Party Size: {{ .party_size }}
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

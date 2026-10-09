@@ -1,0 +1,14 @@
+{
+  "title": "Your week",
+  "subtitle": "Your published shifts",
+  "loading": "Loading your schedule…",
+  "error": "We couldn't load your schedule. Refresh or try again in a moment.",
+  "emptyTitle": "No shifts this week",
+  "emptySubtitle": "Your manager hasn't published your schedule for this week yet. It will appear here as soon as it's posted.",
+  "hoursUnit": "h",
+  "minutesUnit": "m",
+  "breakTemplate": "{minutes}m break",
+  "positionFallback": "Shift",
+  "thisWeek": "This week",
+  "nextWeek": "Next week"
+}

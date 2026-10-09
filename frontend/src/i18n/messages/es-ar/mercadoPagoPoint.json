@@ -1,0 +1,43 @@
+{
+  "chargeButton": "Cobrar con Point",
+  "modalTitle": "Cobrar con Mercado Pago Point",
+  "terminalLabel": "Terminal",
+  "terminalPlaceholder": "Seleccioná una terminal",
+  "amountLabel": "Monto",
+  "amountHint": "Saldo pendiente: {remaining}",
+  "confirmCharge": "Enviar a la terminal",
+  "cancel": "Cancelar",
+  "cancelCharge": "Cancelar cobro",
+  "retry": "Reintentar",
+  "done": "Listo",
+  "loadingTerminals": "Cargando terminales…",
+  "noTerminals": "No se encontraron terminales Point en esta cuenta de Mercado Pago.",
+  "terminalsError": "No se pudieron cargar las terminales. Revisá la conexión con Mercado Pago e intentá de nuevo.",
+  "pdvCalloutTitle": "Se requiere modo integración",
+  "pdvCalloutBody": "Esta terminal no está en modo PDV (integración). Activalo para que Payverge pueda enviar cobros. La terminal se reiniciará brevemente.",
+  "pdvActivate": "Activar modo integración (PDV)",
+  "pdvActivating": "Cambiando modo…",
+  "pdvActivated": "Modo PDV activado. Espera a que la terminal se reinicie y vuelve a cobrar.",
+  "pdvActivateFailed": "No se pudo cambiar la terminal a modo PDV.",
+  "status": {
+    "pending": "Esperando el pago en la terminal…",
+    "completed": "Pago completado en la terminal.",
+    "cancelled": "El cobro se canceló o falló.",
+    "expired": "El cobro expiró en la terminal.",
+    "failed": "El cobro falló en la terminal."
+  },
+  "toasts": {
+    "charged": "Cobro enviado a la terminal",
+    "completed": "Pago Point completado",
+    "cancelled": "Cobro Point cancelado",
+    "cancelFailed": "No se pudo cancelar el cobro Point",
+    "chargeFailed": "No se pudo enviar el cobro a la terminal"
+  },
+  "errors": {
+    "selectTerminal": "Seleccioná una terminal para continuar.",
+    "amountInvalid": "Ingresá un monto válido mayor que cero.",
+    "amountTooHigh": "El monto supera el saldo pendiente.",
+    "terminalBusy": "Esa terminal está ocupada con otro cobro. Probá otra o cancelá el cobro abierto.",
+    "pendingConflict": "Ya hay un cobro de Mercado Pago pendiente para esta cuenta."
+  }
+}

@@ -1,0 +1,38 @@
+{{ define "subject" }}Miembro del equipo retirado{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Miembro del equipo retirado
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Retiramos a un miembro del equipo de tu negocio en Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Su acceso al panel y a la operación del negocio fue revocado.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Podés revisar y gestionar la lista del equipo en cualquier momento desde el panel.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Gestionar equipo
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si este cambio no era esperado, revisá la configuración del equipo o respondé este mail y te
+    ayudamos.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

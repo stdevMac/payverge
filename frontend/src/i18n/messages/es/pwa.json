@@ -1,0 +1,29 @@
+{
+  "card": {
+    "title": "Abre Payverge como una app",
+    "body": "Accede más rápido desde tu pantalla de inicio. No necesitas una tienda de aplicaciones."
+  },
+  "actions": {
+    "install": "Instalar Payverge",
+    "dismiss": "Ahora no",
+    "close": "Cerrar"
+  },
+  "manual": {
+    "title": "Añade Payverge a tu pantalla de inicio",
+    "stepShare": "En Safari, toca Compartir.",
+    "stepAdd": "Elige Añadir a pantalla de inicio.",
+    "stepConfirm": "Toca Añadir para confirmar.",
+    "done": "Ya la añadí"
+  },
+  "unsupported": {
+    "title": "La instalación no está disponible",
+    "body": "Abre Payverge en Safari desde un iPhone o en un navegador compatible desde otro dispositivo."
+  },
+  "account": {
+    "label": "Instalar Payverge",
+    "hint": "Añade Payverge a este dispositivo"
+  },
+  "launch": {
+    "opening": "Abriendo Payverge"
+  }
+}

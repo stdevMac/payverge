@@ -1,0 +1,76 @@
+{
+  "loading": "Loading settings...",
+  "errors": {
+    "loadFailed": "Failed to load settings",
+    "selectLanguage": "Please select at least one language",
+    "keepAtLeastOneLanguage": "At least one language must remain selected",
+    "selectDefaultLanguage": "Please select a default language from your selected languages",
+    "saveCurrencyFailed": "Failed to save currency settings",
+    "saveLanguageFailed": "Failed to save language settings",
+    "saveVenueFailed": "Failed to save venue time settings"
+  },
+  "actions": {
+    "discard": "Discard changes"
+  },
+  "currency": {
+    "title": "Currency Settings",
+    "description": "Configure how currencies work in your business.",
+    "defaultTitle": "Default Currency (Pricing)",
+    "defaultDescription": "The currency you use to set prices for your menu items.",
+    "defaultLabel": "Default Currency",
+    "defaultPlaceholder": "Select default currency",
+    "displayTitle": "Display Currency (Customer View)",
+    "displayDescription": "The currency your customers see on menus and bills.",
+    "displayLabel": "Display Currency",
+    "displayPlaceholder": "Select display currency",
+    "conversionPreview": "Conversion Preview",
+    "updatingPreview": "Updating preview...",
+    "pricingToUsdc": "Pricing → USDC",
+    "pricingToDisplay": "Pricing → Display",
+    "displayToUsdc": "Display → USDC",
+    "paymentFlow": "Payment Flow:",
+    "paymentFlowSame": "Customers see and pay in {currency}.",
+    "paymentFlowConverted": "Customers see prices in {display}, converted from your {default} pricing at checkout.",
+    "paymentFlowCryptoSuffix": "Crypto payments settle in USDC at the current FX rate.",
+    "savedMessage": "Currency settings saved",
+    "saveButton": "Save Currency Settings"
+  },
+  "language": {
+    "title": "Language Settings",
+    "description": "Configure languages for your menu and customer interface.",
+    "supportedTitle": "Supported Languages",
+    "supportedDescription": "Select languages for your menu and customer interface.",
+    "selectedCount": "{count} selected",
+    "searchPlaceholder": "Search language",
+    "noResults": "No languages match your search.",
+    "selectAllButton": "Select all",
+    "defaultTitle": "Default Language",
+    "defaultDescription": "Choose the primary language for your business.",
+    "defaultLabel": "Default Language",
+    "defaultPlaceholder": "Select default language",
+    "defaultBadge": "Default",
+    "supportInfo": "Language Support:",
+    "supportInfoDescription": "Selected languages will be available for menu translation and customer interface. Your default language will be used when no translation is available.",
+    "savedMessage": "Language settings saved",
+    "saveButton": "Save Language Settings"
+  },
+  "venue": {
+    "title": "Venue time",
+    "description": "Timezone and service-day cutoff used for schedules, greetings, analytics, and cash-register day boundaries.",
+    "timezoneLabel": "Business timezone",
+    "timezonePlaceholder": "Select timezone",
+    "timezoneHelp": "All shift times, Director greetings, and day reports use this zone — not the operator's device clock.",
+    "serviceDayLabel": "Service day starts at",
+    "serviceDayHelp": "Late closes before this cutoff still belong to the previous service day (e.g. 4:00 AM for late-night venues).",
+    "serviceDayOptions": {
+      "0": "Midnight (12:00 AM)",
+      "120": "2:00 AM",
+      "180": "3:00 AM",
+      "240": "4:00 AM",
+      "300": "5:00 AM",
+      "360": "6:00 AM"
+    },
+    "savedMessage": "Venue time settings saved",
+    "saveButton": "Save venue time"
+  }
+}

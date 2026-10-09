@@ -1,0 +1,13 @@
+{
+  "key": "f6e8e8934563addd",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "The Pad Thai is listed with peanuts in its allergen data, so I would not recommend it for someone with a peanut allergy. Please confirm with our staff before ordering anything, as they can advise on possible alternatives.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

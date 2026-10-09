@@ -1,0 +1,18 @@
+# Overlay used only by scripts/acceptance/zero-accounts.sh, on top of
+# deploy/docker-compose.yml and deploy/docker-compose.build.yml.
+#
+# - Tags the from-source images payverge-*:oss-accept so the acceptance run
+#   never overwrites a developer's payverge-*:local images.
+# - Publishes Caddy on 127.0.0.1 only, on the ports the script picks, so a
+#   test run is never reachable from the network.
+services:
+  backend:
+    image: payverge-backend:oss-accept
+
+  frontend:
+    image: payverge-frontend:oss-accept
+
+  caddy:
+    ports: !override
+      - "127.0.0.1:${HTTP_PORT:?}:80"
+      - "127.0.0.1:${HTTPS_PORT:?}:443"

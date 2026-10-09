@@ -1,0 +1,29 @@
+# golangci-lint v2 configuration for the backend module.
+#
+# The config reports every issue; callers choose the baseline. CI
+# (.github/workflows/ci.yml backend-lint) passes --new-from-rev=HEAD~1
+# (HEAD on a root commit); `make lint` passes --new-from-rev=origin/main
+# (override with LINT_BASE, empty LINT_BASE for the full report).
+version: "2"
+
+run:
+  timeout: 15m
+  tests: true
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofmt
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

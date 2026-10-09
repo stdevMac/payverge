@@ -1,0 +1,89 @@
+{
+  "yes": "Sí",
+  "no": "No",
+  "confirm": "Confirmar",
+  "cancel": "Cancelar",
+  "skipToMainContent": "Saltar al contenido principal",
+  "loading": "Cargando…",
+  "retry": "Reintentar",
+  "loadingSession": "Cargando sesión",
+  "sessionCheckFailed": "No pudimos verificar tu sesión",
+  "sessionCheckFailedHint": "Revisa tu conexión e inténtalo de nuevo. Es posible que sigas autenticado.",
+  "invalidBusinessId": "ID de negocio inválido",
+  "poweredBy": "Desarrollado por",
+  "help": "Ayuda",
+  "learnMore": "Más información",
+  "close": "Cerrar",
+  "dismiss": "Descartar",
+  "copy": "Copiar",
+  "edit": "Editar",
+  "delete": "Eliminar",
+  "businessPageLoading": {
+    "title": "Cargando Página del Negocio",
+    "message": "Estamos preparando la experiencia de tu negocio..."
+  },
+  "comingSoonBadge": "Pr\u00f3ximamente",
+  "aiProviderNotice": {
+    "title": "La generación de texto con IA no está configurada en este servidor",
+    "body": "Los borradores de menú, marketing y asistente necesitan un proveedor de LLM. Tus vistas de datos siguen funcionando. El administrador del servidor puede activarla definiendo OPENROUTER_API_KEY, o LLM_BASE_URL (más LLM_API_KEY si el endpoint la requiere)."
+  },
+  "maintenance": {
+    "title": "En Mantenimiento",
+    "message": "Estamos mejorando {productName} para servirte mejor. Volveremos pronto.",
+    "visitWebsite": "Visita nuestro sitio web",
+    "checkDocs": "Consulta nuestra documentaci\u00f3n",
+    "exploreLinks": "Cont\u00e1ctanos"
+  },
+  "errors": {
+    "network": "No se pudo conectar. Revisa tu conexi\u00f3n a internet e int\u00e9ntalo de nuevo.",
+    "server": "Algo sali\u00f3 mal de nuestro lado. Int\u00e9ntalo de nuevo m\u00e1s tarde.",
+    "timeout": "La solicitud tard\u00f3 demasiado. Int\u00e9ntalo de nuevo.",
+    "rateLimited": "Demasiadas solicitudes. Espera un momento e int\u00e9ntalo de nuevo.",
+    "validation": "Revisa los datos ingresados e int\u00e9ntalo de nuevo.",
+    "authentication": "Inicia sesi\u00f3n para continuar.",
+    "authorization": "No tienes permiso para realizar esta acci\u00f3n.",
+    "notFound": "No se encontr\u00f3 el recurso solicitado.",
+    "conflict": "Esta acci\u00f3n entra en conflicto con un cambio m\u00e1s reciente. Actualiza la p\u00e1gina e int\u00e9ntalo de nuevo.",
+    "default": "Ocurri\u00f3 un error inesperado. Int\u00e9ntalo de nuevo.",
+    "rangeTooLarge": "Este rango es demasiado grande para exportar. Elige un per\u00edodo de 31 d\u00edas o menos."
+  },
+  "metric": {
+    "empty": "—",
+    "noData": "Aún no hay datos",
+    "chartEmpty": "Sin datos para graficar"
+  },
+  "pagination": {
+    "range": "{start}–{end} de {total}",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "previousPageAria": "Página anterior",
+    "nextPageAria": "Página siguiente"
+  },
+  "featureUnavailable": {
+    "docsLink": "Cómo activarlo (documentación de autoalojamiento)",
+    "ai": {
+      "title": "La IA no está configurada en este servidor",
+      "body": "El mesero IA, el director, el asistente de operaciones y el asistente de menú necesitan un proveedor de LLM. El administrador del servidor puede activarlos configurando OPENROUTER_API_KEY, o LLM_BASE_URL (más LLM_API_KEY si el endpoint la requiere)."
+    },
+    "fiscal_ar": {
+      "title": "La facturación fiscal no está disponible en este servidor",
+      "body": "La facturación electrónica de ARCA no está habilitada en esta instalación."
+    },
+    "whatsapp": {
+      "title": "WhatsApp no está configurado en este servidor",
+      "body": "El administrador del servidor debe activar primero la integración de WhatsApp."
+    },
+    "telegram": {
+      "title": "Telegram no está configurado en este servidor",
+      "body": "El administrador del servidor debe configurar primero el bot de Telegram."
+    },
+    "crypto": {
+      "title": "Los pagos cripto no están configurados en este servidor",
+      "body": "Los pagos con USDC y entre cadenas necesitan un endpoint RPC de blockchain. El administrador del servidor puede habilitarlos en la configuración del backend."
+    },
+    "email": {
+      "title": "El correo no está configurado en este servidor",
+      "body": "El administrador del servidor debe configurar primero un proveedor de correo."
+    }
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "title": "Your Businesses",
+  "subtitle": "Hub cards show today and this week — open a venue for full history, bills, reservations, kitchen, and team.",
+  "badge": "Business Dashboard",
+  "loading": "Loading your businesses...",
+  "errors": {
+    "signIn": "Please sign in to continue.",
+    "connectWallet": "Please sign in to continue.",
+    "invalidToken": "Invalid session token.",
+    "loadingUserData": "Loading user data...",
+    "error": "Error",
+    "unreachable": "Couldn't reach Payverge. Check your connection and try again."
+  },
+  "authentication": {
+    "title": "Authentication Required",
+    "subtitle": "Sign in with Google or your email to open your Payverge dashboard.",
+    "subtitleEmail": "Sign in with your email to open your Payverge dashboard.",
+    "welcomeBack": "Welcome back, {email}",
+    "signInSignUp": "Sign In / Sign Up",
+    "signInOnly": "Sign In",
+    "connectMessage": "Sign in with Google or your email to access the business dashboard.",
+    "signMessage": "Complete sign-in to authenticate.",
+    "tryAgain": "Try Again",
+    "backToHome": "Back to Home",
+    "retryLoadingUser": "Retry Loading User",
+    "valueProp": {
+      "title": "What's inside",
+      "bullets": [
+        {
+          "title": "Director Console",
+          "description": "Owner-level decisions backed by AI.",
+          "feature": "ai"
+        },
+        {
+          "title": "AI Waiter",
+          "description": "Menu-aware guest service in English and Spanish, with more languages in beta.",
+          "feature": "ai"
+        },
+        {
+          "title": "Payments go straight to you",
+          "description": "Guests pay on the rails you connect; nothing sits in between."
+        }
+      ],
+      "imageAlt": "Payverge analytics dashboard with sales, tips, and payment mix"
+    }
+  },
+  "businesses": {
+    "title": "Businesses",
+    "noneTitle": "No businesses yet",
+    "noneDescription": "Create your first business to start taking orders, payments, and reservations from one dashboard.",
+    "createFirst": "Create Your First Business",
+    "create": "Create Business",
+    "createNew": "Create New Business",
+    "createNewDescription": "Set up another venue — POS, KDS, reservations, and delivery in minutes.",
+    "manage": "Manage",
+    "active": "Active",
+    "inactive": "Inactive",
+    "settlementAddress": "Settlement Address",
+    "tippingAddress": "Tipping Address",
+    "taxRate": "Tax Rate",
+    "serviceFee": "Service Fee",
+    "copySettlement": "Copy settlement address",
+    "copyTipping": "Copy tipping address",
+    "role": {
+      "owner": "Owner",
+      "staff": "Staff",
+      "admin": "Admin"
+    },
+    "features": {
+      "kitchen": "Kitchen",
+      "orders": "Orders",
+      "crm": "CRM",
+      "delivery": "Delivery"
+    }
+  },
+  "stats": {
+    "title": "Business Performance Overview",
+    "subtitle": "Combined metrics for all your businesses",
+    "revenue": "Total Revenue",
+    "tips": "Total Tips",
+    "transactions": "Total Transactions",
+    "bills": "Total Bills",
+    "activeBills": "Active Bills",
+    "averageTicket": "Avg. Ticket",
+    "growth": "vs last period",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "live": "Live",
+    "loadError": "Couldn't load performance metrics.",
+    "retry": "Try again",
+    "unavailable": "Metrics unavailable"
+  },
+  "miniStats": {
+    "sales": "Sales",
+    "active": "Active",
+    "thisWeek": "This week",
+    "tapToManage": "Tap to manage"
+  },
+  "overview": {
+    "heading": "Your businesses",
+    "allBusinesses": "All businesses",
+    "combinedView": "Combined view",
+    "businessesLabel": "Businesses",
+    "scope": {
+      "ownedLabel": "Your venues",
+      "adminLabel": "Visible as platform admin",
+      "adminHint": "Demo venues on other admin accounts. You can open them, but they are not yours and are not counted in your totals.",
+      "adminChip": "Admin view",
+      "combinedNote": "Totals cover your venues only. {count} more are listed because you are a platform admin."
+    },
+    "businessMetrics": "Business metrics",
+    "portfolioSubtitle": "Combined performance across your businesses.",
+    "todayRevenue": "Revenue today",
+    "todayPaidBills": "Paid bills today",
+    "paidShort": "paid",
+    "selectBusinessHint": "Select a business to see its revenue trend, tips, average ticket, and paid bills.",
+    "viewMetrics": "View metrics for",
+    "openBusiness": "Open business",
+    "todayTotal": "Today",
+    "liveBills": "live",
+    "addBusiness": "Add business",
+    "manage": "Manage",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "row": {
+      "todayRevenue": "Today's revenue",
+      "liveBills": "Live bills",
+      "sparklineLabel": "7-day revenue trend",
+      "expand": "Show trend",
+      "collapse": "Hide trend"
+    },
+    "panel": {
+      "trendTitle": "Revenue trend",
+      "period7d": "7d",
+      "period30d": "30d",
+      "period90d": "90d",
+      "tips": "Tips",
+      "averageTicket": "Avg. ticket",
+      "bills": "Bills",
+      "wow": "vs prior 7 days",
+      "openFullAnalytics": "Open full analytics",
+      "loadError": "Couldn't load the trend.",
+      "noData": "No data yet"
+    },
+    "grainToday": "today",
+    "grainWeek": "this week",
+    "weekRevenue": "Revenue this week",
+    "weekPaidBills": "Paid bills this week",
+    "noActivityToday": "No activity today"
+  },
+  "engagement": {
+    "title": "Engagement",
+    "subtitle": "Checklists, documents, and polls for your team",
+    "tabs": {
+      "checklists": "Checklists",
+      "documents": "Documents",
+      "polls": "Polls"
+    },
+    "audience": {
+      "label": "Audience",
+      "all": "Everyone",
+      "roleGroup": "By role",
+      "deptGroup": "By department",
+      "roles": {
+        "manager": "Managers",
+        "server": "Servers",
+        "host": "Hosts",
+        "kitchen": "Kitchen"
+      }
+    },
+    "checklists": {
+      "new": "New checklist",
+      "name": "Name",
+      "namePlaceholder": "e.g. Opening checklist",
+      "kind": "Type",
+      "kinds": {
+        "onboarding": "Onboarding",
+        "opening": "Opening",
+        "closing": "Closing",
+        "custom": "Custom"
+      },
+      "addItem": "Add item",
+      "itemLabel": "Step",
+      "itemPlaceholder": "Describe the task",
+      "required": "Required",
+      "removeItem": "Remove",
+      "save": "Save checklist",
+      "saving": "Saving…",
+      "saved": "Checklist saved",
+      "saveError": "Couldn't save the checklist",
+      "empty": "No checklists yet",
+      "emptyHint": "Create your first opening, closing, or onboarding checklist.",
+      "assign": "Assign",
+      "assignTitle": "Assign this checklist",
+      "assignStaff": "Assign to",
+      "assignStaffPlaceholder": "Choose a team member",
+      "assignStart": "Start run",
+      "assignCancel": "Cancel",
+      "runStarted": "Checklist assigned",
+      "runStartError": "We couldn't start that run. Try again in a moment.",
+      "runsTitle": "Active runs",
+      "runsEmpty": "No runs yet",
+      "runsEmptyHint": "Assign a checklist above to send it to a team member.",
+      "runUnassigned": "Unassigned",
+      "runStatus": {
+        "pending": "Not started",
+        "in_progress": "In progress",
+        "complete": "Complete"
+      }
+    },
+    "documents": {
+      "new": "New document",
+      "docTitle": "Title",
+      "titlePlaceholder": "e.g. Employee handbook",
+      "body": "Body",
+      "bodyPlaceholder": "Paste the policy text",
+      "link": "Link (optional)",
+      "linkPlaceholder": "https://…",
+      "requireAck": "Require acknowledgement",
+      "save": "Publish",
+      "saving": "Publishing…",
+      "saved": "Document published",
+      "saveError": "Couldn't publish the document",
+      "edit": "Edit",
+      "editHeading": "Edit document",
+      "update": "Publish new version",
+      "updating": "Publishing…",
+      "updated": "New version published",
+      "updateError": "Couldn't update the document",
+      "cancel": "Cancel",
+      "version": "Version {n}",
+      "empty": "No documents yet",
+      "emptyHint": "Publish a policy or handbook for your team to read."
+    },
+    "polls": {
+      "new": "New poll",
+      "question": "Question",
+      "questionPlaceholder": "e.g. Pizza night this Friday?",
+      "anonymous": "Anonymous",
+      "closesAt": "Closes at (optional)",
+      "addOption": "Add option",
+      "option": "Option",
+      "optionPlaceholder": "Answer choice",
+      "removeOption": "Remove",
+      "save": "Open poll",
+      "saving": "Opening…",
+      "saved": "Poll opened",
+      "saveError": "Couldn't open the poll",
+      "close": "Close poll",
+      "statusOpen": "Open",
+      "statusClosed": "Closed",
+      "empty": "No polls yet",
+      "emptyHint": "Open a quick poll to gather your team's input.",
+      "resultsLoading": "Loading results…",
+      "voteCount": "{count} votes",
+      "totalVotes": "{count} total votes",
+      "closeConfirmTitle": "Close this poll?",
+      "closeConfirmBody": "Closing stops new votes. The tally stays visible but this can't be reopened."
+    }
+  }
+}

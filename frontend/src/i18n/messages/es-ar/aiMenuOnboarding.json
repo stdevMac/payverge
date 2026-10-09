@@ -1,0 +1,55 @@
+{
+  "wizard": {
+    "description": "¡Contanos sobre tu restaurante y dejá que la IA genere un menú completo con categorías, platos, descripciones y precios adaptados a tu cocina!",
+    "descriptionPro": "Hablá con nuestra IA para generar un menú personalizado para tu restaurante. Solo respondé unas pocas preguntas sobre tu cocina, estilo y preferencias.",
+    "inputPlaceholder": "Escribí tu respuesta...",
+    "retryResponse": "Reintentá esta respuesta",
+    "errors": {
+      "structuredOutput": "La respuesta de la IA quedó incompleta. Tus respuestas están guardadas; reintentá esta respuesta."
+    }
+  },
+  "pdfDigitizer": {
+    "description": "Subí tu menú en PDF y dejá que la IA extraiga automáticamente todos los artículos, precios y descripciones. ¡Ahorrá horas de entrada de datos manual!",
+    "dropzone": {
+      "title": "Soltá tu menú en PDF o imagen acá"
+    },
+    "processing": {
+      "waiting": "Esperá mientras procesamos tu menú"
+    },
+    "error": {
+      "invalidFile": "Por favor, subí un archivo PDF o imagen",
+      "fileTooLarge": "Ese archivo es demasiado grande. Subí un menú de menos de {max} MB.",
+      "tooManyPages": "Ese PDF tiene demasiadas páginas. Subí un menú con {max} páginas o menos.",
+      "startExtractionFailed": "No se pudo iniciar la extracción del menú. Intentá de nuevo.",
+      "fileUnreadable": "No pudimos leer este archivo. Volvé a seleccionarlo desde tu computadora."
+    },
+    "success": {
+      "subtitle": "Revisá y editá el menú extraído a continuación"
+    }
+  },
+  "reviewEditor": {
+    "addItem": "Agregar Artículo",
+    "addCategory": "Agregar Categoría",
+    "confirmDeleteMessage": "¿Estás seguro de que querés eliminar este {{type}}?",
+    "sanitization": {
+      "title": "Revisar cambios del menú",
+      "description": "Se van a eliminar algunos valores no compatibles. Revisá cada cambio antes de importar este menú.",
+      "dropped": "Eliminados",
+      "normalized": "Conservados después de normalizar",
+      "fields": {
+        "allergens": "Alérgeno",
+        "dietary_tags": "Etiqueta alimentaria",
+        "price": "Artículo"
+      },
+      "reasons": {
+        "unknown_enum_value": "Valor no compatible",
+        "price_out_of_range": "Precio fuera del rango permitido",
+        "alias_normalized": "Coincide con un valor compatible",
+        "canonical_value": "Valor compatible"
+      },
+      "confirm": "Confirmar e importar",
+      "confirming": "Importando...",
+      "back": "Volver a editar"
+    }
+  }
+}

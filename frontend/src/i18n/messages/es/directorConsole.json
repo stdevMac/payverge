@@ -1,0 +1,281 @@
+{
+  "duration": {
+    "minutes": "{count} minutos",
+    "hours": "{count} horas",
+    "days": "{count} días"
+  },
+  "title": "Sage",
+  "subtitle": "Tu gerente, leyendo los números por ti.",
+  "strip": {
+    "countOne": "{count} aviso",
+    "countOther": "{count} avisos",
+    "viewAll": "Ver todos ({count})",
+    "allClear": "Todo en orden — nada requiere tu atención ahora.",
+    "askPrompt": "Pregúntale lo que quieras a Sage",
+    "drawerTitle": "Tu resumen",
+    "close": "Cerrar",
+    "insightsHeading": "Lo que necesita tu atención",
+    "chipAction": "Abrir",
+    "pulseToday": "Hoy hasta ahora: {revenue} cobrado en {orders} cuentas cerradas (ticket promedio {avgTicket}).",
+    "pulseRemaining": "{remaining} restante en cuentas abiertas.",
+    "asOf": "a las {time}",
+    "openAnalytics": "Abrir analítica"
+  },
+  "honesty": {
+    "notEnoughData": "No hay datos suficientes",
+    "notEnoughDataDetail": "No tengo cifras ni un período que pueda mostrar para este consejo de ingresos.",
+    "openAnalytics": "Abrir analítica"
+  },
+  "preShift": {
+    "greeting": {
+      "morning": "Buenos días.",
+      "afternoon": "Buenas tardes.",
+      "evening": "Buenas noches.",
+      "morningNamed": "Buenos días, {name}.",
+      "afternoonNamed": "Buenas tardes, {name}.",
+      "eveningNamed": "Buenas noches, {name}."
+    },
+    "intro": "Esto es lo que necesita tu atención.",
+    "loading": "Revisando tus números…",
+    "action": "Echar un vistazo",
+    "briefing": {
+      "moveHeading": "Una jugada que vale la pena",
+      "learning": "Todavía estoy aprendiendo tus números. Con unos días de ventas, recetas y turnos, voy a abrir cada día con la lectura y una jugada que vale la pena.",
+      "read": {
+        "withPace": "{weekday} viene por encima de lo habitual — proyecta ~{projected}, cerca de {pace} más que un {weekdayLower} típico. {orders} pedidos hasta ahora, con un ticket promedio de {avgTicket}.",
+        "withPaceBehind": "{weekday} viene más tranquilo — proyecta ~{projected}, cerca de {pace} menos que un {weekdayLower} típico. {orders} pedidos hasta ahora, con un ticket promedio de {avgTicket}.",
+        "noPace": "{revenue} en ventas hasta ahora, en {orders} pedidos con un ticket promedio de {avgTicket}."
+      },
+      "health": {
+        "both": "En la cocina, el costo de insumos está en {food} y la mano de obra en {labor}.",
+        "food": "El costo de insumos está en {food}.",
+        "labor": "La mano de obra está en {labor} de las ventas."
+      },
+      "play": {
+        "reprice_up": "{item} se vende bien pero está barato — pasarlo de {current} a {suggested} podría sumar unos {impact} en los próximos 30 días (estimación).",
+        "promote": "{item} es un ganador silencioso — buen margen, pero poco pedido. Destacarlo podría sumar unos {impact} en los próximos 30 días (estimación).",
+        "cta": {
+          "reprice_up": "Ajusta el precio",
+          "promote": "Destaca este plato"
+        },
+        "ctaAria": "Abrir el menú para trabajar {item}"
+      },
+      "win": {
+        "revenue_up_wow": "Un punto a favor — los ingresos subieron {pct} respecto de la semana pasada. Sigue así."
+      },
+      "marketing": {
+        "one": "Registraste 1 publicación de marketing en los últimos {days} días.",
+        "other": "Registraste {count} publicaciones de marketing en los últimos {days} días.",
+        "channelsSuffix": "Canales anotados: {channels}.",
+        "cta": "Abrir biblioteca de marketing"
+      }
+    },
+    "cards": {
+      "outOfStock": {
+        "one": "El inventario de {names} está en cero. Revisa su uso y repón existencias.",
+        "other": "{count} insumos de inventario están en cero: {names}. Revisa su uso y repón existencias."
+      },
+      "lowStock": "Quedan pocas unidades de {count} productos: {names}. Repón antes de quedarte sin stock.",
+      "staleBills": {
+        "one": "1 cuenta abierta desde hace más de {duration} — fíjate si el cliente se fue.",
+        "other": "{count} cuentas abiertas desde hace más de {duration} — fíjate si los clientes se fueron."
+      },
+      "staleBillsOldest": "{count} cuentas abiertas — la más vieja hace {duration}. Fíjate si los clientes se fueron.",
+      "aiPending": {
+        "one": "1 chat de cliente está esperando que tu equipo responda.",
+        "other": "{count} chats de clientes están esperando que tu equipo responda."
+      },
+      "foodCostHigh": {
+        "one": "1 plato supera el 40% de costo de insumos: {names}. Conviene revisar precios.",
+        "other": "{count} platos superan el 40% de costo de insumos: {names}. Conviene revisar precios."
+      },
+      "wasteHigh": "Tiraste cerca de {amount} de {ingredient} últimamente — ajusta el pedido o la preparación.",
+      "laborHigh": "La mano de obra está en {pct}% de las ventas (unos {amount}). Vale un vistazo antes de la nómina.",
+      "marketingPosts": {
+        "one": "Se registró 1 publicación de marketing en los últimos {days} días. Revísala en la biblioteca.",
+        "other": "Se registraron {count} publicaciones de marketing en los últimos {days} días. Revísalas en la biblioteca."
+      },
+      "marketingPostsWithChannel": {
+        "one": "Se registró 1 publicación de marketing en los últimos {days} días ({channels}). Abre la biblioteca para reutilizarla.",
+        "other": "Se registraron {count} publicaciones de marketing en los últimos {days} días ({channels}). Abre la biblioteca para reutilizarlas."
+      },
+      "oversold": {
+        "one": "El inventario de {names} está sobrevendido. Cuenta y corrige el stock antes del próximo servicio.",
+        "other": "{count} insumos de inventario están sobrevendidos: {names}. Cuenta y corrige el stock antes del próximo servicio."
+      },
+      "outOfStockMixed": "{count} insumos de inventario necesitan atención — sobrevendidos ({oversoldCount}): {oversoldNames}; en cero ({zeroCount}): {zeroNames}. Cuenta y corrige el stock antes del próximo servicio."
+    },
+    "loadError": "Sage no pudo leer tus números en este momento.",
+    "retry": "Reintentar"
+  },
+  "threadsAria": "Hilos",
+  "quickPrompts": [
+    "¿Por qué el martes estuvo lento y qué debo cambiar esta semana?",
+    "Dame un plan de 7 días para aumentar el ticket promedio.",
+    "¿Cuáles son las 3 acciones clave para mejorar retención este mes?",
+    "¿Qué plugins debo activar después para mejorar reportes?"
+  ],
+  "threads": {
+    "title": "Conversaciones",
+    "new": "Nuevo chat",
+    "emptyTitle": "Aún no hay conversaciones",
+    "empty": "Hazle tu primera pregunta a Sage para empezar.",
+    "pinnedLabel": "Fijado",
+    "loadOlder": "Cargar más antiguas",
+    "archivedTitle": "Archivadas",
+    "archivedEmpty": "No hay conversaciones archivadas.",
+    "showArchived": "Ver archivadas",
+    "hideArchived": "Ocultar archivadas",
+    "restore": "Restaurar",
+    "appliedTitle": "Cambios aplicados"
+  },
+  "emptyState": {
+    "title": "¿En qué te gustaría enfocarte esta semana?",
+    "description": "Elige una sugerencia para empezar un hilo nuevo."
+  },
+  "chat": {
+    "newConversation": "Nueva conversación",
+    "assistantName": "{{name}} está aquí para ayudar",
+    "askedLabel": "Tu consulta",
+    "inputPlaceholder": "Pregunta sobre tendencias, ideas de crecimiento, operaciones o qué mejorar ahora...",
+    "send": "Preguntar a {{name}}",
+    "sending": "Pensando...",
+    "stop": "Detener",
+    "thinking": "{{name}} está pensando…",
+    "composing": "{{name}} está armando la respuesta…",
+    "empty": "Comienza con una sugerencia rápida o haz una pregunta de negocio específica.",
+    "details": "Ver el detalle",
+    "speakerYou": "Tú",
+    "composerHint": "⌘↵ para enviar",
+    "newReply": "Nueva respuesta ↓",
+    "newReplyAria": "Ir a la última respuesta"
+  },
+  "composer": {
+    "slashPaletteAria": "Paleta de comandos"
+  },
+  "relativeTime": {
+    "justNow": "ahora mismo",
+    "minutesAgo": "hace {count} min",
+    "hoursAgo": "hace {count} h",
+    "yesterday": "ayer",
+    "daysAgo": "hace {count} d"
+  },
+  "sections": {
+    "context": "La situación",
+    "signals": "Lo que veo",
+    "outlook": "Qué esperar"
+  },
+  "actions": {
+    "open": "Abrir en panel",
+    "copy": "Copiar",
+    "regenerate": "Regenerar",
+    "edit": "Editar"
+  },
+  "threadActions": {
+    "menu": "Acciones del hilo",
+    "rename": "Renombrar",
+    "pin": "Fijar",
+    "unpin": "Dejar de fijar",
+    "export": "Exportar markdown",
+    "archive": "Archivar",
+    "delete": "Eliminar definitivamente",
+    "deleteTitle": "¿Eliminar este hilo?",
+    "deleteDescription": "Esto borra permanentemente la conversación y su historial. No se puede deshacer. Si solo quieres apartarla pero recuperable, usa Archivar.",
+    "deleteConfirm": "Eliminar",
+    "renameTitle": "Renombrar hilo",
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  },
+  "applied": {
+    "title": "Cambios aplicados",
+    "empty": "Aún no se aplicó ningún cambio.",
+    "open": "Cambios aplicados",
+    "undo": "Deshacer",
+    "undone": "Deshecho",
+    "expired": "Ventana de deshacer cerrada",
+    "appliedAt": "Aplicado {when}"
+  },
+  "toolTrace": {
+    "lookingUp": "Consultando tus números",
+    "sourcesSingular": "Consultó {count} fuente",
+    "sourcesPlural": "Consultó {count} fuentes",
+    "close": "cerrar"
+  },
+  "feedback": {
+    "helpful": "Útil",
+    "notHelpful": "No útil"
+  },
+  "errors": {
+    "loadThreads": "No se pudieron cargar los hilos de conversación.",
+    "loadMessages": "No se pudieron cargar los mensajes.",
+    "askFailed": "No se pudo obtener respuesta. Intenta nuevamente.",
+    "feedbackFailed": "No se pudo guardar la valoración.",
+    "renameFailed": "No se pudo renombrar el hilo. Intenta nuevamente.",
+    "pinFailed": "No se pudo actualizar el fijado. Intenta nuevamente.",
+    "archiveFailed": "No se pudo archivar el hilo. Intenta nuevamente.",
+    "restoreFailed": "No se pudo restaurar el hilo. Intenta nuevamente.",
+    "deleteFailed": "No se pudo eliminar el hilo. Intenta nuevamente.",
+    "loadApplied": "No se pudieron cargar los cambios aplicados.",
+    "undoFailed": "No se pudo deshacer el cambio. Puedes deshacer durante {hours} horas después de aplicar."
+  },
+  "proposal": {
+    "disclosure": "Cambio propuesto por la IA — revísalo antes de aplicarlo.",
+    "kinds": {
+      "menu_adjust_prices": "Ajuste de precios",
+      "menu_set_availability": "Cambio de disponibilidad",
+      "menu_edit_content": "Edición de contenido"
+    },
+    "titleWithCount": "{kind} · {count} ítems",
+    "titleWithCount_one": "{kind} · {count} ítem",
+    "titleWithCount_other": "{kind} · {count} ítems",
+    "descNoneAffected": "Ningún ítem se vería afectado.",
+    "descAffected": "Se aplica a {count} ítems.",
+    "descAffected_one": "Se aplica a {count} ítem.",
+    "descAffected_other": "Se aplica a {count} ítems.",
+    "expiresInMinutes": "Caduca en {count} min",
+    "expiresInHours": "Caduca en {count} h",
+    "expired": "Esta propuesta ha caducado",
+    "affectedCount": "{count} artículos afectados",
+    "affectedCount_one": "{count} artículo afectado",
+    "affectedCount_other": "{count} artículos afectados",
+    "before": "Antes",
+    "after": "Después",
+    "valueAvailable": "Disponible",
+    "valueUnavailable": "No disponible",
+    "warningsTitle": "Advertencias",
+    "apply": "Aplicar",
+    "applying": "Aplicando…",
+    "confirmApply": "Confirmar aplicación",
+    "reconfirmHint": "Es un cambio grande. Presiona de nuevo para confirmar.",
+    "dismiss": "Descartar",
+    "appliedNote": "Cambio aplicado al menú.",
+    "viewInMenu": "Ver en el Menú",
+    "undo": "Deshacer",
+    "undoing": "Deshaciendo…",
+    "undoneNote": "Cambio revertido.",
+    "noMatchNotice": "Esta propuesta no coincide con ningún artículo del menú — no hay nada que aplicar.",
+    "errors": {
+      "noItemsMatch": "Esta propuesta no coincide con ningún artículo del menú — no hay nada que aplicar.",
+      "menuChanged": "El menú cambió desde la vista previa — vuelve a preguntar para obtener una propuesta nueva.",
+      "gone": "Esta propuesta ya no está disponible.",
+      "applyFailed": "No se pudo aplicar el cambio. Inténtalo de nuevo.",
+      "undoStale": "El menú cambió desde que se aplicó — ya no es seguro deshacerlo.",
+      "undoExpired": "La ventana de {hours} horas para deshacer ya venció.",
+      "alreadyUndone": "Este cambio ya fue deshecho.",
+      "undoFailed": "No se pudo deshacer el cambio. Puedes deshacer durante {hours} horas después de aplicar."
+    },
+    "summaryNone": "Ningún elemento cambiaría.",
+    "summaryAffected": "Vista previa de {count} elementos.",
+    "summaryAffected_one": "Vista previa de {count} elemento.",
+    "summaryAffected_other": "Vista previa de {count} elementos.",
+    "warnings": {
+      "noMatch": "Ningún elemento coincide con el alcance de esta propuesta.",
+      "largeChange": "Este es un cambio grande — revísalo con cuidado antes de aplicar.",
+      "generic": "Revisa esta advertencia antes de aplicar."
+    }
+  },
+  "empty": {
+    "title": "¿En qué te gustaría enfocarte esta semana?",
+    "subtitle": "Elige una sugerencia para empezar un hilo nuevo."
+  }
+}

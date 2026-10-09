@@ -1,0 +1,94 @@
+{
+  "categories": [
+    {
+      "name": "Appetizers",
+      "items": [
+        {
+          "name": "Bruschetta Classica",
+          "description": "Toasted ciabatta with fresh tomatoes, basil, garlic, and extra virgin olive oil",
+          "price": 9.50,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": ["vegetarian"],
+          "image_url": null
+        },
+        {
+          "name": "Calamari Fritti",
+          "description": "Crispy fried squid rings with marinara sauce and lemon aioli",
+          "price": 12.00,
+          "allergens": ["gluten", "shellfish"],
+          "dietary_tags": [],
+          "image_url": null
+        },
+        {
+          "name": "Caprese Salad",
+          "description": "Vine-ripened tomatoes, fresh mozzarella, basil, balsamic reduction",
+          "price": 10.50,
+          "allergens": ["dairy"],
+          "dietary_tags": ["vegetarian", "gluten-free"],
+          "image_url": null
+        },
+        {
+          "name": "Garlic Bread",
+          "description": "House-baked ciabatta with roasted garlic butter",
+          "price": 6.00,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": ["vegetarian"],
+          "image_url": null
+        }
+      ]
+    },
+    {
+      "name": "Pizzas",
+      "items": [
+        {
+          "name": "Margherita",
+          "description": "San Marzano tomatoes, fresh mozzarella, basil",
+          "price": 14.00,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": ["vegetarian"],
+          "image_url": null
+        },
+        {
+          "name": "Pepperoni",
+          "description": "Pepperoni, mozzarella, tomato sauce",
+          "price": 16.00,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": [],
+          "image_url": null
+        },
+        {
+          "name": "Quattro Formaggi",
+          "description": "Four-cheese blend with gorgonzola, mozzarella, parmesan, fontina",
+          "price": 17.50,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": ["vegetarian"],
+          "image_url": null
+        },
+        {
+          "name": "Pizza Vegetariana",
+          "description": "Grilled eggplant, zucchini, bell peppers, mushrooms, olives, mozzarella",
+          "price": 15.50,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": ["vegetarian", "vegan-option"],
+          "image_url": null
+        },
+        {
+          "name": "Diavola",
+          "description": "Spicy salami, chili flakes, mozzarella, tomato sauce",
+          "price": 16.50,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": [],
+          "image_url": null
+        },
+        {
+          "name": "Prosciutto e Funghi",
+          "description": "Parma ham, mushrooms, mozzarella, truffle oil",
+          "price": 18.00,
+          "allergens": ["gluten", "dairy"],
+          "dietary_tags": [],
+          "image_url": null
+        }
+      ]
+    }
+  ]
+}

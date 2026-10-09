@@ -1,0 +1,9 @@
+{
+  "staffNoMatchesTitle": "Sin coincidencias para «{query}»",
+  "staffNoMatchesBody": "Prueba otra búsqueda o limpia el filtro para ver todo el equipo.",
+  "widgetStaleTitle": "No se pudo actualizar este widget",
+  "widgetStaleBody": "Mostrar los últimos datos conocidos podría ser incorrecto — reintenta cuando la conexión sea estable.",
+  "widgetStaleRetry": "Reintentar",
+  "tabNotPermittedTitle": "No tienes acceso a esta sección",
+  "tabNotPermittedBody": "El enlace apuntaba a «{tab}», que no está disponible para tu rol. Te llevamos a Resumen."
+}

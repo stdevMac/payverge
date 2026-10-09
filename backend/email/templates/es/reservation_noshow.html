@@ -1,0 +1,29 @@
+{{ define "subject" }}Te echamos de menos en {{ .business_name }}{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Te echamos de menos
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola,
+</p>
+
+<p>
+    Notamos que no pudiste asistir a tu reservación en <strong>{{ .business_name }}</strong>
+    el {{ .reservation_date }} a las {{ .reservation_time }}.
+</p>
+
+{{ if .phone_number }}
+<p style="margin:16px 0 0 0;">
+    Si fue un error o quieres reservar de nuevo, contáctanos en {{ .phone_number }}.
+</p>
+{{ else }}
+<p style="margin:16px 0 0 0;">
+    Si fue un error o quieres reservar de nuevo, contacta al restaurante.
+</p>
+{{ end }}
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

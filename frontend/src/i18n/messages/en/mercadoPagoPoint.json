@@ -1,0 +1,43 @@
+{
+  "chargeButton": "Charge with Point",
+  "modalTitle": "Charge with Mercado Pago Point",
+  "terminalLabel": "Terminal",
+  "terminalPlaceholder": "Select a terminal",
+  "amountLabel": "Amount",
+  "amountHint": "Outstanding balance: {remaining}",
+  "confirmCharge": "Send to terminal",
+  "cancel": "Cancel",
+  "cancelCharge": "Cancel charge",
+  "retry": "Try again",
+  "done": "Done",
+  "loadingTerminals": "Loading terminals…",
+  "noTerminals": "No Point terminals found for this Mercado Pago account.",
+  "terminalsError": "Could not load terminals. Check the Mercado Pago connection and try again.",
+  "pdvCalloutTitle": "Integration mode required",
+  "pdvCalloutBody": "This terminal is not in PDV (integration) mode. Activate it so Payverge can send charges. The terminal will reboot briefly.",
+  "pdvActivate": "Activate integration mode (PDV)",
+  "pdvActivating": "Switching mode…",
+  "pdvActivated": "PDV mode activated. Wait for the terminal to reboot, then charge again.",
+  "pdvActivateFailed": "Could not switch the terminal to PDV mode.",
+  "status": {
+    "pending": "Waiting for payment on the terminal…",
+    "completed": "Payment completed on the terminal.",
+    "cancelled": "Charge was cancelled or failed.",
+    "expired": "The charge expired on the terminal.",
+    "failed": "Charge failed on the terminal."
+  },
+  "toasts": {
+    "charged": "Charge sent to the terminal",
+    "completed": "Point payment completed",
+    "cancelled": "Point charge cancelled",
+    "cancelFailed": "Could not cancel the Point charge",
+    "chargeFailed": "Could not send the charge to the terminal"
+  },
+  "errors": {
+    "selectTerminal": "Select a terminal to continue.",
+    "amountInvalid": "Enter a valid amount greater than zero.",
+    "amountTooHigh": "Amount exceeds the remaining balance.",
+    "terminalBusy": "That terminal is busy with another order. Try another terminal or cancel the open charge.",
+    "pendingConflict": "A Mercado Pago charge is already pending for this bill."
+  }
+}

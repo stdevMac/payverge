@@ -1,0 +1,13 @@
+{
+  "key": "2a59e4c87baccc1a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"message\":\"Great, I can help set up your Mexican food truck menu! Based on what you described, here's what I have so far: burritos, tacos, and drinks. Let me configure that for you.\",\"is_complete\":false,\"extracted_config\":{\"cuisine\":\"Mexican\",\"format\":\"food truck\",\"items\":\"burritos, tacos, drinks\"},\"suggested_options\":[\"Add rice and beans as sides\",\"Include vegetarian and meat burrito options\",\"Offer horchata and agua fresca as drinks\"]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Inténtalo de nuevo.",
+  "button": {
+    "disableOrdering": "Desactivar Pedidos",
+    "enableOrdering": "Activar Pedidos"
+  },
+  "disableModal": {
+    "title": "¿Desactivar Cocina y Pedidos?",
+    "description": "Esto desactivará tanto la gestión de Cocina como las funciones de aprobación de Pedidos. Tu personal no podrá:",
+    "features": {
+      "createOrders": "Crear nuevos pedidos",
+      "approveOrders": "Aprobar pedidos pendientes",
+      "manageKitchen": "Gestionar el flujo de trabajo de la cocina",
+      "trackStatus": "Rastrear el estado de los pedidos"
+    },
+    "confirmation": "¿Estás seguro de que quieres continuar?",
+    "buttons": {
+      "cancel": "Cancelar",
+      "confirm": "Sí, Desactivar"
+    }
+  },
+  "enableModal": {
+    "title": "¿Activar Cocina y Pedidos?",
+    "description": "Esto habilitará tanto la gestión de Cocina como las funciones de Pedidos para tu negocio.",
+    "featuresTitle": "Podrás:",
+    "features": {
+      "createOrders": "Crear nuevos pedidos",
+      "approveOrders": "Aprobar pedidos pendientes",
+      "acceptOrders": "Aceptar y aprobar pedidos de clientes",
+      "manageKitchen": "Gestionar el flujo de trabajo de preparación de cocina",
+      "trackStatus": "Rastrear el estado de los pedidos en tiempo real",
+      "improveEfficiency": "Mantener el tablero de tickets en movimiento sin papel"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "confirm": "Activar"
+    }
+  },
+  "activationCard": {
+    "title": "Activar Gestión de Cocina y Pedidos",
+    "description": "Activa la aprobación de pedidos y los tickets de cocina para que el personal lleve la comida de pedido a listo sin tickets de papel.",
+    "ordersManagement": {
+      "title": "Gestión de Pedidos",
+      "description": "Crea, aprueba y rastrea pedidos de clientes en tiempo real"
+    },
+    "kitchenWorkflow": {
+      "title": "Flujo de Trabajo de Cocina",
+      "description": "Gestiona la preparación, cocción y finalización de pedidos"
+    },
+    "buttons": {
+      "activate": "Activar Ahora",
+      "activating": "Activando..."
+    },
+    "disclaimer": "Puedes desactivar esta función en cualquier momento desde la configuración"
+  }
+}

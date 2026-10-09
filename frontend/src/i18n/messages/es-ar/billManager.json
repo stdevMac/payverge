@@ -1,0 +1,200 @@
+{
+  "title": "Cuentas",
+  "subtitle": "Gestioná y seguí todas tus cuentas",
+  "loading": "Cargando cuentas...",
+  "billLabel": "cuenta",
+  "tabs": {
+    "active": "Cuentas Activas",
+    "history": "Historial de Cuentas"
+  },
+  "buttons": {
+    "createBill": "Crear Cuenta",
+    "closeBill": "Cerrar Cuenta",
+    "launchDisplay": "Pantalla de Cuentas",
+    "printBill": "Imprimir cuenta"
+  },
+  "print": {
+    "queued": "Cuenta enviada a la estación de impresión seleccionada"
+  },
+  "confirmation": {
+    "closeBillTitle": "¿Cerrar esta cuenta?",
+    "closeBillDescription": "Esto cerrará permanentemente la cuenta. Cualquier saldo impago será dado de baja. Esta acción no se puede deshacer.",
+    "closeBillConfirm": "Sí, Cerrar Cuenta"
+  },
+  "display": {
+    "title": "Pantalla de Cuentas",
+    "searchPlaceholder": "Buscar por cuenta, mesa, mostrador, nota o total...",
+    "openBills": "Cuentas Abiertas",
+    "completedBills": "Cuentas Completadas",
+    "noBills": "Sin cuentas",
+    "preparedUnits": "{count} ítems",
+    "itemsSubtitle": "Revisá la cuenta en vivo y editala solo cuando haga falta.",
+    "preparedUnitsOne": "{count} ítem",
+    "preparedUnitsOther": "{count} ítems"
+  },
+  "editItems": {
+    "currentItemsSubtitle": "Revisá la cuenta en vivo antes de hacer cambios manuales.",
+    "removalWarning": "Quitar un artículo acá actualiza la cuenta en vivo de inmediato. Usá la cancelación de pedidos para tickets de cocina.",
+    "manualChangesDescription": "Los cambios manuales actualizan los totales al instante y quedan visibles en el historial de la cuenta. Cancelá pedidos cuando los tickets de cocina o servicio deban conservarse.",
+    "removeItemHelper": "Quitá esta línea de la cuenta en vivo de inmediato.",
+    "voidReasonPlaceholder": "Explicá por qué se anula este artículo",
+    "quantityHelper": "Usá cambios de cantidad para ajustar conteos. Anular requiere un motivo.",
+    "menuSubtitle": "Buscá, filtrá y agregá artículos del menú sin perder el contexto de la cuenta.",
+    "browseHint": "Usá agregar rápido para el camino común, o elegí cantidad y opciones cuando haga falta.",
+    "noCurrentItemsDescription": "Agregá artículos desde el menú para seguir armando esta cuenta.",
+    "menuEmptyDescription": "Probá otra búsqueda o categoría.",
+    "autoDiscountsHint": "Las ofertas se aplican por pedido. Nombres idénticos con montos distintos son descuentos separados — anulá uno si no debería aplicar."
+  },
+  "pagination": {
+    "totalBills": "{count} cuentas"
+  },
+  "tableColumns": {
+    "billNumber": "Número de Cuenta"
+  },
+  "emptyState": {
+    "noActiveBills": "Sin Cuentas Activas",
+    "noMatchingBills": "Sin Cuentas Coincidentes",
+    "createFirstBill": "Creá tu primera cuenta para comenzar",
+    "adjustFilters": "Intentá ajustar tus filtros para ver más resultados",
+    "listLoadFailed": "No se pudieron cargar las cuentas",
+    "listLoadFailedHint": "La lista no cargó, así que no mostramos totales en cero. Reintentá para ver las cuentas abiertas.",
+    "listLoadRetry": "Reintentar"
+  },
+  "search": {
+    "activeBillsPlaceholder": "Buscar cuentas activas...",
+    "billHistoryPlaceholder": "Buscar historial de cuentas..."
+  },
+  "warnings": {
+    "activeBillsCapped": "Mostrando las cuentas abiertas más recientes. Acota el rango de fechas si falta alguna."
+  },
+  "billDetails": "Detalles de Cuenta",
+  "billInformation": "Información de Cuenta",
+  "billSummary": "Resumen de Cuenta",
+  "splitBill": "Dividir Cuenta",
+  "noItemsDescription": "Esta cuenta no tiene artículos",
+  "billNumber": "Cuenta",
+  "empty": {
+    "title": "Aún no hay cuentas",
+    "subtitle": "Las cuentas se crean cuando los invitados escanean el QR de la mesa y piden — o creá una vos mismo.",
+    "action": "Crear cuenta",
+    "previewTablesAction": "Ver QR de una mesa"
+  },
+  "splitSummary": {
+    "title": "Progreso de división",
+    "subtitle": "Partes retenidas y pagadas por clientes para esta cuenta.",
+    "shares": "partes",
+    "paidOfTotal": "Pagado del total",
+    "held": "Retenido",
+    "available": "Disponible",
+    "managePayments": "Gestionar pagos",
+    "guestFallback": "Cliente {id}",
+    "mode": {
+      "equal": "División igual",
+      "custom": "Monto personalizado",
+      "items": "Ítems reclamados"
+    },
+    "status": {
+      "held": "Retenida",
+      "settled": "Liquidada",
+      "released": "Liberada",
+      "failed": "Fallida"
+    }
+  },
+  "voidRefund": {
+    "errors": {
+      "selectPayment": "Seleccioná un pago para reembolsar",
+      "kitchenTicketsLive": "La cocina todavía está preparando esta cuenta — cerrá o cancelá los pedidos abiertos antes de anular."
+    },
+    "refundModal": {
+      "choosePayment": "Elegí un pago"
+    }
+  },
+  "fiscalCustomer": {
+    "toggle": "¿Necesitás factura con tus datos?",
+    "hint": "Opcional. Ingresá tu CUIT para emitir la factura a tu nombre.",
+    "cuitHint": "La Factura A necesita un CUIT/CUIL. Sin eso, emitimos una Factura B.",
+    "docNumberPlaceholder": "ej. 20-12345678-3",
+    "errorEmail": "Ingresá un email válido."
+  },
+  "recordPayment": {
+    "methods": {
+      "mercadopago": "Mercado Pago"
+    },
+    "pending": {
+      "reject": "Rechazar"
+    },
+    "modal": {
+      "description": "Ingresá el monto recibido. Saldo pendiente: {remaining}."
+    },
+    "errors": {
+      "amountInvalid": "Ingresá un monto válido mayor que cero.",
+      "tipInvalid": "Ingresá una propina válida.",
+      "rejectFailed": "No se pudo rechazar la solicitud de pago. Intentá de nuevo o consultá al gerente.",
+      "cashSessionRequired": "Abrí una sesión de caja registradora antes de registrar efectivo.",
+      "cashSessionLookupFailed": "No se pudo comprobar la sesión de caja. Abrí un cajón e intentá de nuevo.",
+      "openDrawerFailed": "No se pudo abrir la caja. Probá la pestaña Caja registradora."
+    },
+    "warnings": {
+      "cashSessionRequired": "Abrí el cajón de la caja registradora antes de registrar efectivo.",
+      "cashSessionChecking": "Comprobando la sesión de caja registradora…"
+    },
+    "toasts": {
+      "rejected": "Solicitud de pago rechazada",
+      "drawerOpened": "Caja abierta"
+    },
+    "actions": {
+      "openDrawer": "Abrir caja"
+    }
+  },
+  "cryptoRefund": {
+    "title": "Reembolso crypto en cadena",
+    "subtitle": "No custodial: firmás con la billetera de settlement. Solo las transferencias confirmadas en cadena se marcan como reembolsadas.",
+    "manualSupportRequired": "No hay destino de reembolso verificado para este pago. El reembolso requiere soporte manual — no inventes una dirección.",
+    "mainnetOffNotice": "La firma instantánea en mainnet está desactivada. Usá el flujo manual/testnet y enviá el hash de la transacción después de mandar USDC por fuera. No se prometen reembolsos instantáneos.",
+    "irreversibleNotice": "Enviar un hash de transacción es irreversible una vez que la cadena confirma. Verificá el monto y el destino.",
+    "labels": {
+      "destination": "Destino verificado",
+      "network": "Red",
+      "refundable": "Reembolsable",
+      "refunded": "Reembolsado",
+      "explorer": "Ver en el explorador",
+      "txHash": "Hash de transacción",
+      "txHashHint": "Pegá el hash después de que tu billetera de settlement (o Safe) envíe USDC.",
+      "reason": "Motivo",
+      "reasonPlaceholder": "¿Por qué se reembolsa este pago crypto?"
+    },
+    "actions": {
+      "request": "Solicitar reembolso en cadena",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "submitTx": "Enviar hash de transacción"
+    },
+    "pin": {
+      "requestTitle": "Confirmar solicitud de reembolso crypto",
+      "requestDescription": "Solicitar un reembolso durable en cadena para este pago",
+      "approveTitle": "Aprobar reembolso crypto",
+      "approveDescription": "Aprobar y preparar firma / envío manual",
+      "rejectTitle": "Rechazar reembolso crypto",
+      "rejectDescription": "Rechazar esta solicitud (el ledger no cambia)",
+      "submitTitle": "Enviar transacción de reembolso",
+      "submitDescription": "Vincular el hash de la transferencia en cadena para verificación"
+    },
+    "toasts": {
+      "requested": "Reembolso crypto solicitado — pendiente de aprobación",
+      "approved": "Reembolso crypto aprobado — enviá un hash de transacción",
+      "rejected": "Reembolso crypto rechazado — ledger sin cambios",
+      "submitted": "Transacción enviada — esperando confirmación en cadena (aún no reembolsado)"
+    },
+    "errors": {
+      "loadFailed": "No se pudo cargar el estado del reembolso crypto",
+      "manualSupport": "El reembolso requiere soporte manual (sin destino verificado)",
+      "reasonTooShort": "El motivo debe tener al menos 3 caracteres",
+      "insufficientBalance": "No queda saldo reembolsable en cadena",
+      "requestFailed": "No se pudo solicitar el reembolso crypto",
+      "approveFailed": "No se pudo aprobar el reembolso crypto",
+      "rejectFailed": "No se pudo rechazar el reembolso crypto",
+      "invalidTxHash": "Ingresá un hash de transacción 0x válido",
+      "submitFailed": "No se pudo enviar el hash de transacción"
+    }
+  }
+}

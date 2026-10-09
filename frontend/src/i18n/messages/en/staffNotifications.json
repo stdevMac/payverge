@@ -1,0 +1,13 @@
+{
+  "bell": { "aria": "Notifications" },
+  "inbox": {
+    "title": "Notifications",
+    "empty": "You're all caught up",
+    "markAll": "Mark all read"
+  },
+  "push": {
+    "prompt": "Turn on alerts to know the moment your schedule, shifts, or team posts change.",
+    "enable": "Turn on alerts",
+    "dismiss": "Not now"
+  }
+}

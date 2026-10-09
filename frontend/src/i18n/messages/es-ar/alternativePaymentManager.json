@@ -1,0 +1,44 @@
+{
+  "subtitle": "Aceptá pagos vía USDC y otros métodos cripto",
+  "buttons": {
+    "rejectPayment": "Rechazar"
+  },
+  "messages": {
+    "error": "Error al marcar el pago. Por favor intentá de nuevo.",
+    "rejected": "Solicitud de pago rechazada.",
+    "rejectError": "No se pudo rechazar la solicitud de pago. Intentá de nuevo.",
+    "validation": {
+      "amountRequired": "Por favor completá todos los campos",
+      "amountTooHigh": "El monto no puede exceder el total de la cuenta"
+    }
+  },
+  "status": {
+    "complete": "Cuenta Completa"
+  },
+  "breakdown": {
+    "total": "Total de la Cuenta"
+  },
+  "manualPayment": {
+    "description": "Marcá manualmente pagos realizados en efectivo, tarjeta u otros métodos."
+  },
+  "modal": {
+    "warning": {
+      "message": "Solo marcá los pagos como recibidos después de haber cobrado físicamente el pago. Esta acción no se puede deshacer."
+    }
+  },
+  "page": {
+    "backToBills": "Volver a cuentas",
+    "breadcrumbs": {
+      "bills": "Cuentas",
+      "bill": "Cuenta #{{billId}}"
+    },
+    "subtitle": "Gestioná efectivo, tarjetas y otros pagos no cripto para esta cuenta",
+    "howItWorks": {
+      "step4": "La cuenta se completa automáticamente cuando está totalmente pagada",
+      "step3": "Confirmá los pagos después de recibir efectivo, tarjeta u otros métodos"
+    },
+    "hybrid": {
+      "description": "Los clientes pueden combinar pagos cripto y tradicionales en la misma cuenta"
+    }
+  }
+}

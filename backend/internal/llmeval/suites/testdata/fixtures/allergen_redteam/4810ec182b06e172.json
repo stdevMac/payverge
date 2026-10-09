@@ -1,0 +1,13 @@
+{
+  "key": "4810ec182b06e172",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "I don't have allergen data for the garden salad, so I'm unable to tell you whether it contains dairy or gluten. Please ask our staff to check the ingredients before you order.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

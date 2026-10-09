@@ -1,0 +1,193 @@
+{
+  "pageTitle": "Registra tu negocio",
+  "metaTitle": "Registra tu restaurante — Payverge",
+  "metaDescription": "Registra tu restaurante en Payverge para empezar a aceptar pedidos QR, pagos, reservas y automatizaciones con IA.",
+  "trustMessages": [
+    "Configuración guiada con revisión antes del lanzamiento",
+    "Payverge no cobra comisión por pedido — pueden aplicar comisiones del procesador o de red",
+    "Únete a restaurantes que consolidan POS, cocina y pagos"
+  ],
+  "header": {
+    "badge": "Registro de Negocio",
+    "title": "Registra Tu",
+    "titleEmphasis": "Negocio",
+    "subtitle": "Menú, pedidos, cocina, pagos e IA con un solo acceso para el salón y la oficina"
+  },
+  "steps": {
+    "business": {
+      "title": "Info del Negocio",
+      "description": "Nombre, logo y detalles de contacto"
+    },
+    "auth": {
+      "title": "Crea Tu Cuenta",
+      "description": "Inicia sesión o crea una cuenta para continuar"
+    }
+  },
+  "authStep": {
+    "title": "Crea Tu Cuenta",
+    "description": "Inicia sesión o crea una cuenta para continuar con el registro.",
+    "cta": "Continuar a Inicio de Sesión"
+  },
+  "progressAria": "Progreso de registro del negocio",
+  "businessInfo": {
+    "title": "Información del Negocio",
+    "description": "Cuéntanos sobre tu negocio",
+    "sections": {
+      "identity": "Identidad del Negocio"
+    },
+    "fields": {
+      "name": {
+        "label": "Nombre del Negocio",
+        "placeholder": "Ingresa el nombre de tu negocio",
+        "required": "El nombre del negocio es requerido"
+      },
+      "ownerName": {
+        "label": "Nombre del Propietario",
+        "placeholder": "Ingresa el nombre completo del propietario"
+      },
+      "description": {
+        "label": "Descripción del Negocio",
+        "placeholder": "Describe tu negocio (opcional)"
+      },
+      "phone": {
+        "label": "Número de Teléfono",
+        "placeholder": "Ingresa número de teléfono (opcional)"
+      },
+      "email": {
+        "label": "Correo del Negocio",
+        "placeholder": "negocio@ejemplo.com"
+      },
+      "website": {
+        "label": "Sitio Web",
+        "placeholder": "Ingresa URL del sitio web (opcional)"
+      },
+      "customUrl": {
+        "label": "URL Personalizada",
+        "placeholder": "Ingresa slug de URL personalizada (opcional)"
+      },
+      "country": {
+        "label": "País",
+        "placeholder": "Selecciona tu país",
+        "required": "Selecciona tu país: define tu moneda y zona horaria."
+      },
+      "city": {
+        "label": "Ciudad (opcional)",
+        "placeholder": "p. ej. Buenos Aires — completa el perfil de tu negocio"
+      },
+      "businessType": {
+        "label": "Tipo de negocio",
+        "placeholder": "Selecciona un tipo"
+      }
+    },
+    "logo": {
+      "title": "Logo del Negocio",
+      "description": "Sube el logo de tu negocio para mejor reconocimiento de marca",
+      "upload": "Subir Logo",
+      "uploading": "Subiendo...",
+      "change": "Cambiar Logo",
+      "guidelines": "Recomendado: Imagen cuadrada, PNG o JPG, máx 5MB"
+    },
+    "localeHint": "Te configuramos en {currency}, horario de {timezone} — puedes cambiarlo cuando quieras en Ajustes.",
+    "businessTypes": {
+      "restaurant": "Restaurante",
+      "cafe": "Cafetería",
+      "bar": "Bar",
+      "quick_service": "Servicio rápido",
+      "food_truck": "Food truck",
+      "bakery": "Panadería",
+      "fine_dining": "Alta cocina",
+      "other": "Otro"
+    }
+  },
+  "location": {
+    "title": "Ubicación y Configuración de Pagos",
+    "description": "Configura la dirección de tu negocio y los datos de cobro",
+    "address": {
+      "title": "Dirección del Negocio",
+      "street": {
+        "label": "Dirección",
+        "placeholder": "123 Calle Principal"
+      },
+      "city": {
+        "label": "Ciudad",
+        "placeholder": "Ciudad de México"
+      },
+      "state": {
+        "label": "Estado/Provincia",
+        "placeholder": "CDMX"
+      },
+      "postalCode": {
+        "label": "Código Postal",
+        "placeholder": "01000"
+      },
+      "country": {
+        "label": "País",
+        "placeholder": "México"
+      }
+    },
+    "wallets": {
+      "title": "Datos de Cobro",
+      "settlement": {
+        "label": "Cuenta de Cobro",
+        "placeholder": "Ingresa tu cuenta de cobro",
+        "description": "Donde se enviarán los pagos",
+        "useConnected": "Usar Esta Dirección"
+      },
+      "tipping": {
+        "label": "Cobro de Propinas",
+        "placeholder": "Ingresa cuenta de propinas (opcional)",
+        "description": "Donde se enviarán las propinas"
+      }
+    }
+  },
+  "settings": {
+    "title": "Configuración y Características",
+    "description": "Configura tarifas y habilita características",
+    "fees": {
+      "title": "Configuración de Tarifas",
+      "taxRate": {
+        "label": "Tasa de Impuesto (%)",
+        "placeholder": "16.0"
+      },
+      "serviceFee": {
+        "label": "Tarifa de Servicio (%)",
+        "placeholder": "10.0"
+      },
+      "taxInclusive": "Precios con impuestos incluidos",
+      "serviceInclusive": "Precios con tarifa de servicio incluida"
+    },
+    "features": {
+      "title": "Características del Negocio",
+      "businessPage": "Página de Negocio",
+      "businessPageDescription": "Crear una página pública para tu negocio",
+      "showReviews": "Reseñas de Clientes",
+      "showReviewsDescription": "Mostrar reseñas de clientes en tu página",
+      "googleReviews": "Google Reviews",
+      "googleReviewsDescription": "Integrar con Google Reviews",
+      "counter": "Contador de Pedidos",
+      "counterDescription": "Mostrar números de pedido para recoger"
+    }
+  },
+  "navigation": {
+    "back": "Atrás",
+    "next": "Siguiente Paso",
+    "submit": "Crear Negocio",
+    "cancel": "Cancelar"
+  },
+  "errors": {
+    "connectWalletOrSignIn": "Conecta tu billetera o inicia sesión para registrar un negocio",
+    "registrationFailed": "Falló el registro del negocio",
+    "uploadFailed": "Falló la subida del archivo",
+    "invalidEmail": "Por favor ingresa un email válido"
+  },
+  "validation": {},
+  "messages": {
+    "authenticationRequired": "Autenticación Requerida",
+    "authenticationMessage": "Por favor inicia sesión para registrar tu negocio en Payverge.",
+    "loading": "Cargando...",
+    "backToDashboard": "Volver al Inicio",
+    "stepProgress": "Paso {current} de {total}",
+    "complete": "Completo",
+    "tryAgain": "Intentar de Nuevo"
+  }
+}

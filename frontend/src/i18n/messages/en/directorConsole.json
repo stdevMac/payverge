@@ -1,0 +1,281 @@
+{
+  "duration": {
+    "minutes": "{count} minutes",
+    "hours": "{count} hours",
+    "days": "{count} days"
+  },
+  "title": "Sage",
+  "subtitle": "Your GM, reading the numbers so you don't have to.",
+  "strip": {
+    "countOne": "{count} insight",
+    "countOther": "{count} insights",
+    "viewAll": "View all ({count})",
+    "allClear": "All clear — nothing needs you right now.",
+    "askPrompt": "Ask Sage anything",
+    "drawerTitle": "Your briefing",
+    "close": "Close",
+    "insightsHeading": "What needs you",
+    "chipAction": "Open",
+    "pulseToday": "Today so far: {revenue} collected across {orders} closed checks (avg check {avgTicket}).",
+    "pulseRemaining": "{remaining} remaining on open checks.",
+    "asOf": "as of {time}",
+    "openAnalytics": "Open Analytics"
+  },
+  "honesty": {
+    "notEnoughData": "Not enough data",
+    "notEnoughDataDetail": "I don't have figures and a date range I can show for this revenue advice.",
+    "openAnalytics": "Open Analytics"
+  },
+  "preShift": {
+    "greeting": {
+      "morning": "Good morning.",
+      "afternoon": "Good afternoon.",
+      "evening": "Good evening.",
+      "morningNamed": "Good morning, {name}.",
+      "afternoonNamed": "Good afternoon, {name}.",
+      "eveningNamed": "Good evening, {name}."
+    },
+    "intro": "Here's what needs you.",
+    "loading": "Reading your numbers…",
+    "action": "Take a look",
+    "briefing": {
+      "moveHeading": "One move worth making",
+      "learning": "I'm still learning your numbers. After a few days of sales, recipes and shifts, I'll open each day with the read and one move worth making.",
+      "read": {
+        "withPace": "{weekday}'s pacing ahead — on track for ~{projected}, about {pace} ahead of a typical {weekdayLower}. {orders} orders in, with the check average holding at {avgTicket}.",
+        "withPaceBehind": "{weekday}'s running a little behind — on track for ~{projected}, about {pace} under a typical {weekdayLower}. {orders} orders in, with the check average at {avgTicket}.",
+        "noPace": "{revenue} in sales so far today, across {orders} orders with a {avgTicket} average check."
+      },
+      "health": {
+        "both": "In the kitchen, food cost's at {food} and labor at {labor}.",
+        "food": "Food cost's running at {food}.",
+        "labor": "Labor's at {labor} of sales."
+      },
+      "play": {
+        "reprice_up": "{item} is selling well but underpriced — moving it from {current} to {suggested} could add about {impact} over the next 30 days (estimate).",
+        "promote": "{item} is a quiet winner — strong margin, but under-ordered. Featuring it could add about {impact} over the next 30 days (estimate).",
+        "cta": {
+          "reprice_up": "Update the price",
+          "promote": "Push this dish"
+        },
+        "ctaAria": "Open the Menu tab to act on {item}"
+      },
+      "win": {
+        "revenue_up_wow": "One bright spot — revenue's up {pct} from last week. Keep it going."
+      },
+      "marketing": {
+        "one": "You recorded 1 marketing post in the last {days} days.",
+        "other": "You recorded {count} marketing posts in the last {days} days.",
+        "channelsSuffix": "Channels noted: {channels}.",
+        "cta": "Open Marketing Library"
+      }
+    },
+    "cards": {
+      "outOfStock": {
+        "one": "Inventory for {names} is at zero. Review its usage and restock.",
+        "other": "{count} inventory items are at zero: {names}. Review their usage and restock."
+      },
+      "lowStock": "Running low on {count} items: {names}. Reorder before you run dry.",
+      "staleBills": {
+        "one": "1 bill open longer than {duration} — check if a guest slipped out.",
+        "other": "{count} bills open longer than {duration} — check if guests slipped out."
+      },
+      "staleBillsOldest": "{count} bills still open — the oldest is {duration}. Check if guests slipped out.",
+      "aiPending": {
+        "one": "1 guest chat is waiting on your team to follow up.",
+        "other": "{count} guest chats are waiting on your team to follow up."
+      },
+      "foodCostHigh": {
+        "one": "1 dish is running over 40% food cost: {names}. Worth a look at pricing.",
+        "other": "{count} dishes are running over 40% food cost: {names}. Worth a look at pricing."
+      },
+      "wasteHigh": "You binned about {amount} of {ingredient} recently — tighten the order or the prep.",
+      "laborHigh": "Labor's at {pct}% of sales (about {amount}). Worth a glance before payroll.",
+      "marketingPosts": {
+        "one": "1 marketing post was recorded in the last {days} days. Review it in the Library.",
+        "other": "{count} marketing posts were recorded in the last {days} days. Review them in the Library."
+      },
+      "marketingPostsWithChannel": {
+        "one": "1 marketing post was recorded in the last {days} days ({channels}). Open the Library to reuse it.",
+        "other": "{count} marketing posts were recorded in the last {days} days ({channels}). Open the Library to reuse them."
+      },
+      "oversold": {
+        "one": "Inventory for {names} is oversold. Count and correct stock before the next service.",
+        "other": "{count} inventory items are oversold: {names}. Count and correct stock before the next service."
+      },
+      "outOfStockMixed": "{count} inventory items need attention — oversold ({oversoldCount}): {oversoldNames}; at zero ({zeroCount}): {zeroNames}. Count and correct stock before the next service."
+    },
+    "loadError": "Sage couldn’t read your numbers just now.",
+    "retry": "Try again"
+  },
+  "threadsAria": "Threads",
+  "quickPrompts": [
+    "Why was Tuesday slow, and what should I change this week?",
+    "Give me a 7-day plan to increase average order value.",
+    "What are the top 3 actions to improve retention this month?",
+    "Which plugins should I enable next for better reporting?"
+  ],
+  "threads": {
+    "title": "Threads",
+    "new": "New chat",
+    "emptyTitle": "No conversations yet",
+    "empty": "Ask Sage your first question to get started.",
+    "pinnedLabel": "Pinned",
+    "loadOlder": "Load older",
+    "archivedTitle": "Archived",
+    "archivedEmpty": "No archived conversations.",
+    "showArchived": "Show archived",
+    "hideArchived": "Hide archived",
+    "restore": "Restore",
+    "appliedTitle": "Applied changes"
+  },
+  "emptyState": {
+    "title": "What would you like to focus on this week?",
+    "description": "Pick a prompt to start a new thread."
+  },
+  "chat": {
+    "newConversation": "New conversation",
+    "assistantName": "{{name}} is here to help",
+    "askedLabel": "You asked",
+    "inputPlaceholder": "Ask about trends, growth ideas, operations, or what to improve next...",
+    "send": "Ask {{name}}",
+    "sending": "Thinking...",
+    "stop": "Stop",
+    "thinking": "{{name}} is thinking…",
+    "composing": "{{name}} is composing your answer…",
+    "empty": "Start with a quick prompt or ask a specific business question.",
+    "details": "See the details",
+    "speakerYou": "You",
+    "composerHint": "⌘↵ to send",
+    "newReply": "New reply ↓",
+    "newReplyAria": "Jump to latest reply"
+  },
+  "composer": {
+    "slashPaletteAria": "Slash command palette"
+  },
+  "relativeTime": {
+    "justNow": "just now",
+    "minutesAgo": "{count} m ago",
+    "hoursAgo": "{count} h ago",
+    "yesterday": "yesterday",
+    "daysAgo": "{count} d ago"
+  },
+  "sections": {
+    "context": "The situation",
+    "signals": "What I'm seeing",
+    "outlook": "What to expect"
+  },
+  "actions": {
+    "open": "Open in dashboard",
+    "copy": "Copy",
+    "regenerate": "Regenerate",
+    "edit": "Edit"
+  },
+  "threadActions": {
+    "menu": "Thread actions",
+    "rename": "Rename",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "export": "Export markdown",
+    "archive": "Archive",
+    "delete": "Delete permanently",
+    "deleteTitle": "Delete this thread?",
+    "deleteDescription": "This permanently erases the conversation and its history. This cannot be undone. To keep it out of the way but recoverable, use Archive instead.",
+    "deleteConfirm": "Delete",
+    "renameTitle": "Rename thread",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "applied": {
+    "title": "Applied changes",
+    "empty": "No changes applied yet.",
+    "open": "Applied changes",
+    "undo": "Undo",
+    "undone": "Undone",
+    "expired": "Undo window closed",
+    "appliedAt": "Applied {when}"
+  },
+  "toolTrace": {
+    "lookingUp": "Looking up your numbers",
+    "sourcesSingular": "Looked at {count} source",
+    "sourcesPlural": "Looked at {count} sources",
+    "close": "close"
+  },
+  "feedback": {
+    "helpful": "Helpful",
+    "notHelpful": "Not helpful"
+  },
+  "errors": {
+    "loadThreads": "Failed to load conversation threads.",
+    "loadMessages": "Failed to load conversation messages.",
+    "askFailed": "Failed to get an answer. Please try again.",
+    "feedbackFailed": "Failed to save feedback.",
+    "renameFailed": "Couldn't rename this thread. Please try again.",
+    "pinFailed": "Couldn't update the pin. Please try again.",
+    "archiveFailed": "Couldn't archive this thread. Please try again.",
+    "restoreFailed": "Couldn't restore this thread. Please try again.",
+    "deleteFailed": "Couldn't delete this thread. Please try again.",
+    "loadApplied": "Couldn't load applied changes.",
+    "undoFailed": "Couldn't undo this change. Undo is available for {hours} hours after apply."
+  },
+  "proposal": {
+    "disclosure": "AI-proposed change — review before applying.",
+    "kinds": {
+      "menu_adjust_prices": "Price adjustment",
+      "menu_set_availability": "Availability change",
+      "menu_edit_content": "Content edit"
+    },
+    "titleWithCount": "{kind} · {count} items",
+    "titleWithCount_one": "{kind} · {count} item",
+    "titleWithCount_other": "{kind} · {count} items",
+    "descNoneAffected": "No items would be affected.",
+    "descAffected": "Applies to {count} items.",
+    "descAffected_one": "Applies to {count} item.",
+    "descAffected_other": "Applies to {count} items.",
+    "expiresInMinutes": "Expires in {count} min",
+    "expiresInHours": "Expires in {count} h",
+    "expired": "This proposal has expired",
+    "affectedCount": "{count} items affected",
+    "affectedCount_one": "{count} item affected",
+    "affectedCount_other": "{count} items affected",
+    "before": "Before",
+    "after": "After",
+    "valueAvailable": "Available",
+    "valueUnavailable": "Unavailable",
+    "warningsTitle": "Warnings",
+    "apply": "Apply",
+    "applying": "Applying…",
+    "confirmApply": "Confirm apply",
+    "reconfirmHint": "This is a large change. Press again to confirm.",
+    "dismiss": "Dismiss",
+    "appliedNote": "Change applied to the menu.",
+    "viewInMenu": "View in Menu",
+    "undo": "Undo",
+    "undoing": "Undoing…",
+    "undoneNote": "Change reverted.",
+    "noMatchNotice": "This proposal doesn't match any menu items — there's nothing to apply.",
+    "errors": {
+      "noItemsMatch": "This proposal doesn't match any menu items — there's nothing to apply.",
+      "menuChanged": "The menu changed since this was previewed — ask again for a fresh proposal.",
+      "gone": "This proposal is no longer available.",
+      "applyFailed": "Couldn't apply the change. Please try again.",
+      "undoStale": "The menu changed since this was applied — undo is no longer safe.",
+      "undoExpired": "The {hours}-hour undo window has elapsed.",
+      "alreadyUndone": "This change was already undone.",
+      "undoFailed": "Couldn't undo the change. Undo is available for {hours} hours after apply."
+    },
+    "summaryNone": "No items would change.",
+    "summaryAffected": "Preview of {count} items.",
+    "summaryAffected_one": "Preview of {count} item.",
+    "summaryAffected_other": "Preview of {count} items.",
+    "warnings": {
+      "noMatch": "No items matched this proposal scope.",
+      "largeChange": "This is a large change — review carefully before applying.",
+      "generic": "Review this warning before applying."
+    }
+  },
+  "empty": {
+    "title": "What would you like to focus on this week?",
+    "subtitle": "Pick a prompt to start a new thread."
+  }
+}

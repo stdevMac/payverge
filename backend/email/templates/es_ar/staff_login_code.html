@@ -1,0 +1,41 @@
+{{ define "subject" }}Tu código para ingresar{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Tu código para ingresar
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .staff_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Usá este código para ingresar a <strong>{{ .business_name }}</strong> en Payverge.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <div style="
+    display:inline-block;
+    padding:14px 22px;
+    font-size:22px;
+    letter-spacing:2px;
+    font-weight:600;
+    background:#f3f4f6;
+    border-radius:6px;
+    color:#1c1917;
+  ">
+        {{ .login_code }}
+    </div>
+</div>
+
+<p style="margin:0 0 18px 0;">
+    Este código vence en {{ .expires_minutes }} minutos.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Si no pediste este código, podés ignorar este mail sin problema.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

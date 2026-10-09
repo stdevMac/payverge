@@ -1,0 +1,24 @@
+{
+  "tab": {
+    "subtitle": "Hablá con tu equipo y mantenete al día con los anuncios"
+  },
+  "list": {
+    "error": "No pudimos cargar tus canales. Volvé a intentarlo en un momento.",
+    "emptySubtitle": "Tus canales de rol y de departamento van a aparecer acá cuando tu encargado lo configure.",
+    "roles": {
+      "server": "Mozos"
+    }
+  },
+  "thread": {
+    "error": "No pudimos cargar esta conversación. Volvé a intentarlo en un momento.",
+    "you": "Vos",
+    "composerPlaceholder": "Escribí un mensaje…",
+    "sendError": "No pudimos enviarlo. Volvé a intentarlo en un momento."
+  },
+  "announcements": {
+    "menuHint": "Leé los anuncios del equipo y confirmá que los viste",
+    "error": "No pudimos cargar los anuncios. Volvé a intentarlo en un momento.",
+    "emptySubtitle": "Los avisos de tu encargado van a aparecer acá.",
+    "ackError": "No pudimos registrarlo. Volvé a intentarlo en un momento."
+  }
+}

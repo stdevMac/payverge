@@ -1,0 +1,13 @@
+{
+  "key": "42d33b27fc92c1d8",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Sure! A glass of water, coming right up. Would you like anything else with that?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

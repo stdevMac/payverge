@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  @page { size: 80mm 119mm; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { width: 80mm; min-width: 80mm; max-width: 80mm; margin: 0; padding: 0; background: #fff; color: #000; }
+  body { padding: 3.5mm; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 11px; line-height: 1.35; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  main { width: 100%; }
+  h1 { margin: 0; text-align: center; font-family: Arial, sans-serif; font-size: 18px; line-height: 1.15; overflow-wrap: anywhere; }
+  .address, .document-type, .paid, .footer { text-align: center; overflow-wrap: anywhere; }
+  .address { margin-top: 3px; font-size: 9px; line-height: 1.3; }
+  .document-type { margin-top: 5px; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+  .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; break-inside: avoid; }
+  .row + .row { margin-top: 2px; }
+  .label, .amount { flex: 0 0 auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .value { min-width: 0; text-align: right; overflow-wrap: anywhere; }
+  .item-name { min-width: 0; flex: 1 1 auto; overflow-wrap: anywhere; }
+  .item-amount { flex: 0 0 auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .detail { padding-left: 8px; color: #333; font-size: 9px; }
+  .detail .item-name::before { content: "↳ "; }
+  .discount { font-weight: 600; }
+  .transaction { display: block; margin-top: 2px; font-size: 9px; line-height: 1.25; overflow-wrap: anywhere; word-break: break-word; }
+  .sep { border-top: 1px dashed #000; margin: 7px 0; }
+  .total { margin-top: 5px; padding-top: 4px; border-top: 2px solid #000; font-size: 13px; font-weight: 800; }
+  .paid { margin-top: 8px; border: 2px solid #000; padding: 4px; font-size: 12px; font-weight: 800; letter-spacing: .12em; }
+  .footer { margin-top: 7px; font-size: 10px; font-weight: 700; }
+  .fiscal { margin-top: 7px; }
+  .fiscal-title { text-align: center; font-size: 12px; font-weight: 800; letter-spacing: .06em; }
+  .fiscal-legend { margin-top: 4px; text-align: center; font-size: 9px; font-weight: 700; overflow-wrap: anywhere; }
+  .fiscal-qr { margin-top: 5px; text-align: center; }
+  .fiscal-qr img { width: 22mm; height: 22mm; }
+</style></head><body><main>
+<h1>Test Bistro</h1>
+
+<div class="document-type">RECEIPT</div>
+<div class="sep"></div>
+<div class="row"><span class="label">Bill</span><span class="value">B-0001</span></div>
+<div class="row"><span class="label">Table</span><span class="value">4</span></div>
+<div class="row"><span class="label">Date</span><span class="value">2026-05-19T19:38:00Z</span></div>
+<div class="sep"></div>
+<div class="row item"><span class="item-name">2× Burger</span><span class="item-amount">24.00</span></div>
+<div class="sep"></div>
+<div class="row"><span class="label">Subtotal</span><span class="amount">24.00</span></div>
+<div class="row"><span class="label">Tax</span><span class="amount">2.40</span></div>
+
+<div class="row"><span class="label">Tip</span><span class="amount">3.00</span></div>
+<div class="row total"><span>Total Paid USD</span><span class="amount">29.40</span></div>
+<div class="sep"></div>
+<div class="row"><span class="label">Method</span><span class="value">card_visa</span></div>
+<div><span class="label">Txn</span><span class="transaction">txn_abc123</span></div>
+
+<div class="paid">*** PAID ***</div>
+<div class="footer">Thank you!</div>
+</main></body></html>

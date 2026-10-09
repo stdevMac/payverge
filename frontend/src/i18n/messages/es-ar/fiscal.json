@@ -1,0 +1,58 @@
+{
+  "serviceUnavailable": "La facturación electrónica está desactivada en el servidor en este momento, así que no se envió nada a ARCA. Pedile a tu contacto de Payverge que la vuelva a activar.",
+  "summary": {
+    "sandboxBanner": "Las facturas emitidas acá son simuladas — no son válidas legalmente. Cambiá a Producción desde Editar configuración después de validar las credenciales AFIP/ARCA.",
+    "demoBanner": "Estas facturas son solo de práctica — no son facturas fiscales válidas. Cambiar el Entorno a Producción acá no las hace oficiales."
+  },
+  "setup": {
+    "description": "Actualizá país, perfil fiscal o modo de emisión. Los cambios aplican a nuevas cuentas pagadas.",
+    "emptyDescription": "Configurálo una vez para que Payverge pueda encolar facturas oficiales por cada cuenta pagada.",
+    "fields": {
+      "taxConditionPlaceholder": "Seleccioná la condición fiscal"
+    }
+  },
+  "credentials": {
+    "description": "Subí el certificado digital y la clave privada emitidos por AFIP/ARCA para que Payverge pueda solicitar autorizaciones de CAE en tu nombre.",
+    "certHint": "El certificado X.509 que descargaste de AFIP.",
+    "keyHint": "Tu clave privada se cifra en reposo y no se vuelve a mostrar.",
+    "missingFiles": "Seleccioná el certificado y la clave privada antes de subir.",
+    "validateSuccess": "Credenciales validadas. Ya podés emitir facturas.",
+    "validateNeedsCredentials": "Subí primero tu certificado y tu clave privada.",
+    "status": {
+      "draftHint": "Subí tu certificado y clave privada de AFIP para continuar.",
+      "credentialsSetHint": "Validá las credenciales subidas contra AFIP para terminar la configuración."
+    }
+  },
+  "modes": {
+    "manual": {
+      "description": "Emitís las facturas vos mismo desde el historial cuando estés listo."
+    }
+  },
+  "history": {
+    "emptyDescriptionManual": "Ingresá el ID de una cuenta pagada abajo para emitir tu primera factura.",
+    "emptyDescriptionOff": "La emisión de facturas está apagada. Cambiá a Manual o Automático desde Editar configuración para que Payverge encole facturas por cada cuenta pagada.",
+    "issue": {
+      "hint": "Usá el número de cuenta de la pestaña Cuentas. La cuenta debe estar pagada.",
+      "billNotFound": "No encontramos una cuenta pagada con ese ID. Revisá la pestaña Cuentas para confirmar el número.",
+      "alreadyIssued": "Esta cuenta ya tiene una factura. Abrila desde la lista de Facturas en lugar de emitir una segunda."
+    },
+    "delivery": {
+      "label": "Canales de entrega",
+      "retry": "Reintentar",
+      "retrying": "Reintentando",
+      "retryError": "No se pudo reencolar la entrega.",
+      "retryAria": "Reintentar entrega por {{channel}}",
+      "channel": {
+        "artifact": "PDF",
+        "email": "Email",
+        "print": "Impresión"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "leased": "En curso",
+        "succeeded": "Enviado",
+        "dead": "Fallido"
+      }
+    }
+  }
+}

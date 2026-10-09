@@ -1,0 +1,6 @@
+{
+  "notClockedIn": "Todavía no fichaste tu entrada.",
+  "clockInError": "No pudimos fichar tu entrada. Volvé a intentarlo en un momento.",
+  "clockOutError": "No pudimos fichar tu salida. Volvé a intentarlo en un momento.",
+  "breakError": "No pudimos agregar ese descanso. Volvé a intentarlo en un momento."
+}

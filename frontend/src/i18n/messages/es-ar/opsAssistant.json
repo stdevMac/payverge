@@ -1,0 +1,14 @@
+{
+  "welcome": "¿Necesitás ayuda con el panel?",
+  "newConversation": "Nueva conversación",
+  "feedbackUp": "Útil",
+  "feedbackDown": "No útil",
+  "errors": {
+    "generic": "No pudimos contactar al asistente. Intentá de nuevo.",
+    "contactPrompt": "¿Seguís con dudas?",
+    "contactCta": "Pedí ayuda"
+  },
+  "nudge": {
+    "setupIncomplete": "Configuración {completed}/{total} — ¿necesitás ayuda?"
+  }
+}

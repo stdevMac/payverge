@@ -1,0 +1,18 @@
+{
+  "loadingAria": "Loading business page",
+  "errors": {
+    "pageNotAvailable": "Business page not available",
+    "notFound": "Business not found",
+    "loadFailed": "Failed to load business"
+  },
+  "error": {
+    "notFoundEyebrow": "Not found",
+    "notFoundTitle": "We couldn't find that page",
+    "notFoundBody": "We couldn't find a business with that custom URL. It may have been removed, or the URL may be misspelled.",
+    "notFoundCta": "Go to homepage",
+    "unavailableEyebrow": "Unavailable",
+    "unavailableTitle": "Business temporarily unavailable",
+    "unavailableBody": "We're having trouble loading this page. Please try again.",
+    "retry": "Try again"
+  }
+}

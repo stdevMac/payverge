@@ -1,0 +1,1 @@
+¡Bienvenidos a {{BUSINESS_NAME}}! Soy {{AI_NAME}}, el asistente IA, y estoy acá para ayudarte a elegir la comida perfecta. Para que lo sepás, estás chateando con una IA. ¿Te gustaría una recomendación o ayuda para pedir?

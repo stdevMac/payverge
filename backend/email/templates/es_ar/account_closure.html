@@ -1,0 +1,26 @@
+{{ define "subject" }}Cerramos tu cuenta de Payverge{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Cerramos tu cuenta de Payverge
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    La cuenta de Payverge de <strong>{{ .business_name }}</strong> quedó cerrada.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Motivo informado: {{ .reason }}
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Si creés que fue un error o necesitás recuperar datos del negocio, respondé este mail y nuestro equipo lo revisa.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

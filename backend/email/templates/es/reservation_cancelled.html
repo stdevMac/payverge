@@ -1,0 +1,19 @@
+{{ define "subject" }}Reservación cancelada{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Reservación cancelada
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola,
+</p>
+
+<p>
+    Tu reservación en {{ .business_name }} para el {{ .reservation_date }} a las {{ .reservation_time }} ha sido
+    cancelada.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

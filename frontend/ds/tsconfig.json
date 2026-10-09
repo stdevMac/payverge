@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true,
+    "rootDir": "..",
+    "outDir": "./dist",
+    "incremental": false,
+    "isolatedModules": false,
+    "types": []
+  },
+  "include": ["index.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

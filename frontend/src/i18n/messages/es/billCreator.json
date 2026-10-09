@@ -1,0 +1,117 @@
+{
+  "title": "Crear Nueva Cuenta",
+  "header": {
+    "subtitle": "Elige una ubicación de servicio, agrega artículos y revisa la cuenta antes de enviarla a cocina.",
+    "locationRequired": "Ubicación requerida",
+    "itemsSelected": "artículos seleccionados"
+  },
+  "billSummary": {
+    "title": "Resumen de Cuenta",
+    "description": "Revisa el borrador antes de crear la cuenta activa.",
+    "location": "Ubicación de Servicio",
+    "locationPlaceholder": "Elige una mesa o mostrador para continuar",
+    "locationReady": "Listo para crear esta cuenta",
+    "locationHint": "Elige una mesa o mostrador para que el pedido vaya al lugar correcto.",
+    "subtotal": "Subtotal:",
+    "items": "Elementos",
+    "selectedItems": "Artículos Seleccionados",
+    "each": "cada uno",
+    "addOns": "Complementos",
+    "note": "Nota",
+    "autoDiscounts": "Descuentos automáticos",
+    "totalBeforeTaxService": "Total antes de impuestos/servicio",
+    "tax": "Impuestos",
+    "serviceFee": "Cargo por servicio",
+    "tip": "Propina",
+    "finalTotal": "Total",
+    "noItemsSelected": "Todavía no hay artículos seleccionados",
+    "noItemsDescription": "Busca en el menú o toca un artículo a la izquierda para empezar a armar esta cuenta."
+  },
+  "menu": {
+    "title": "Elementos del Menú",
+    "description": "Busca en el menú o salta a una categoría para agregar artículos más rápido.",
+    "searchPlaceholder": "Buscar elementos del menú...",
+    "noItemsFound": "No se encontraron elementos",
+    "noMenuItems": "Sin elementos del menú",
+    "noItemsMatch": "Ningún elemento coincide con \"{query}\". Intenta un término de búsqueda diferente.",
+    "noItemsAvailable": "No hay elementos del menú disponibles para este negocio.",
+    "clearSearch": "Limpiar búsqueda",
+    "allCategories": "Todas",
+    "item": "elemento",
+    "items": "elementos",
+    "addOns": "Complementos",
+    "bundlesTitle": "Combos",
+    "bundleBadge": "Combo",
+    "bundleSave": "Ahorra",
+    "unavailable": "No disponible"
+  },
+  "form": {
+    "selectTable": "Seleccionar Mesa",
+    "tableLabel": "Mesa",
+    "chooseTable": "Elige una mesa",
+    "noTablesAvailable": "No hay mesas disponibles",
+    "allTablesHaveBills": "Todas las mesas activas actualmente tienen cuentas abiertas. Por favor cierra las cuentas existentes o agrega más mesas.",
+    "allTablesOccupied": "Todas las mesas están ocupadas. Usa un mostrador abajo para pedidos para llevar.",
+    "activeBillsCapped": "Mostrando las cuentas abiertas más recientes — en un servicio ajetreado algunas mesas ocupadas pueden ocultarse hasta actualizar.",
+    "or": "O",
+    "selectCounter": "Seleccionar Mostrador",
+    "counterLabel": "Mostrador",
+    "chooseCounter": "Elige un mostrador para servicio para llevar/rápido",
+    "noCountersAvailable": "No hay mostradores disponibles",
+    "enableCountersMessage": "Habilita mostradores en la configuración del negocio para servicio para llevar",
+    "perfectForTakeaway": "Perfecto para pedidos para llevar y servicio rápido",
+    "orderNotes": "Notas del Pedido",
+    "orderNotesPlaceholder": "Agrega instrucciones especiales, nombre del cliente o notas para cocina/personal...",
+    "orderNotesDescription": "Notas opcionales que serán visibles para el personal de cocina y en los recibos"
+  },
+  "cart": {
+    "decreaseQuantityAria": "Disminuir la cantidad de {name}",
+    "quantityAria": "Cantidad de {name}",
+    "increaseQuantityAria": "Aumentar la cantidad de {name}",
+    "removeItemAria": "Quitar {name} de la cuenta"
+  },
+  "kitchenNote": {
+    "orderFor": "Pedido para {location}",
+    "notesLabel": "Notas:"
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "createBill": "Crear Cuenta",
+    "retry": "Reintentar"
+  },
+  "messages": {
+    "billCreated": "Cuenta creada correctamente",
+    "billCreateFailed": "No se pudo crear la cuenta",
+    "orderCreateFailed": "La cuenta se guardó, pero no se pudo enviar el pedido a la cocina. Abre la cuenta para reenviarlo a la cocina.",
+    "tableOccupied": "Esa mesa ya tiene una cuenta abierta. Ciérrala primero o elige otra mesa.",
+    "locationOccupied": "Ese lugar ya tiene una cuenta abierta. Abriéndola ahora.",
+    "loadError": "No se pudo cargar el menú. Comprueba tu conexión e intenta de nuevo.",
+    "loadingQuote": "Actualizando total",
+    "quoteFailed": "Los precios en vivo no están disponibles temporalmente. Se muestra el subtotal sin descuentos.",
+    "quoteBlocked": "Un artículo de este pedido ya no está disponible. Elimínalo antes de crear la cuenta."
+  },
+  "inventoryWarnings": {
+    "outBadge": "Inventario agotado",
+    "lowBadge": "Stock bajo",
+    "outDescription": "Advertencia de inventario: los requisitos de la receta no están completamente disponibles.",
+    "lowDescription": "Stock bajo: los ingredientes vinculados están cerca de su umbral."
+  },
+  "discardOrderTitle": "¿Descartar el pedido?",
+  "discardOrderDescription": "Tienes artículos en este pedido. Si lo cierras ahora, se eliminarán junto con sus personalizaciones. Esta acción no se puede deshacer.",
+  "discard": "Descartar pedido",
+  "keepEditing": "Seguir editando",
+  "success": {
+    "title": "Cuenta creada para {location}",
+    "subtitle": "¿Qué sigue?",
+    "viewBill": "Ver cuenta",
+    "recordPayment": "Registrar pago",
+    "done": "Listo"
+  },
+  "validation": {
+    "selectLocation": "Selecciona una mesa o mostrador primero",
+    "addItems": "Agrega al menos un ítem",
+    "quotePending": "Esperando cotización de precio…",
+    "quoteError": "Falló la cotización — ajusta los ítems e inténtalo de nuevo",
+    "quoteInvalid": "La cotización está incompleta — revisa disponibilidad"
+  }
+}

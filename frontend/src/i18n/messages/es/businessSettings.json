@@ -1,0 +1,626 @@
+{
+  "title": "Configuración del Negocio",
+  "description": "Gestiona el perfil de tu negocio, personaliza tu marca y configura los ajustes de pago.",
+  "shell": {
+    "badge": "Comando de configuración",
+    "activeMode": "Workspace protegido",
+    "profile": "Perfil",
+    "profileValue": "Identidad y contacto",
+    "payments": "Pagos",
+    "paymentsValue": "Impuestos y medios",
+    "localization": "Localización",
+    "localizationValue": "Zona horaria, monedas e idiomas",
+    "notifications": "Notificaciones",
+    "notificationsValue": "Alertas operativas"
+  },
+  "tabs": {
+    "ariaLabel": "Pestañas de configuración del negocio",
+    "profile": "Perfil y Contacto",
+    "design": "Diseño y Marca",
+    "businessPage": "Página del Negocio",
+    "payments": "Pagos e Impuestos",
+    "localization": "Monedas e Idiomas",
+    "delivery": "Configuración de Entrega"
+  },
+  "saveBar": {
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "unsaved": "Tienes cambios sin guardar",
+    "auto": "Los cambios se guardan automáticamente",
+    "clean": "No hay cambios sin guardar"
+  },
+  "messages": {
+    "updateSuccess": "¡Configuración Actualizada!",
+    "updateSuccessDescription": "La configuración de tu negocio se ha guardado exitosamente.",
+    "updateFailed": "Error al actualizar la configuración del negocio",
+    "updateFailedTitle": "Actualización Fallida",
+    "fixValidationErrors": "Corrige los campos resaltados antes de guardar.",
+    "loadProfileError": "No se pudo cargar el perfil del negocio",
+    "error": "Error",
+    "someFieldsNotSavedTitle": "Algunos campos no se guardaron",
+    "someFieldsNotSavedDescription": "Los campos exclusivos del dueño (billeteras de cobro, configuración de IA) se ignoraron. Pídele al dueño del negocio que los cambie.",
+    "success": "Éxito"
+  },
+  "buttons": {
+    "saving": "Guardando Cambios...",
+    "saveAll": "Guardar Todos los Cambios"
+  },
+  "profile": {
+    "basicInfo": "Información básica",
+    "basicInfoDescription": "Nombre y tipo de tu perfil de negocio",
+    "contactReadOnlyTitle": "Datos de contacto",
+    "contactReadOnlyDescription": "Teléfono, sitio web y dirección se editan en Página del negocio → Contacto, para que Ajustes y la página pública no se pisen entre sí.",
+    "editContactOnBusinessPage": "Editar en Página del negocio",
+    "contactEmpty": "Sin definir",
+    "guestOrderingTitle": "Pedidos de clientes",
+    "guestOrderingDescription": "Desactiva los pedidos de los clientes y deja de enviar cuentas a la pantalla de cocina. Confirma antes de cambiarlo: es un interruptor de servicio, no un campo de perfil.",
+    "kitchenOrdersTitle": "Pedidos de cocina",
+    "kitchenOrdersDescription": "Envía las cuentas aprobadas a una pantalla de cocina para que los cocineros marquen los artículos como en preparación o listos.",
+    "operatingHoursTitle": "Horarios de operación",
+    "operatingHoursDescription": "Configura tu horario semanal recurrente. Las horas están en la zona horaria local de tu negocio.",
+    "operatingHoursSavedDescription": "Horarios de operación guardados correctamente.",
+    "businessName": "Nombre del Negocio",
+    "businessNamePlaceholder": "Ingresa el nombre de tu negocio",
+    "phoneNumber": "Número de Teléfono",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "websiteUrl": "URL del Sitio Web",
+    "websitePlaceholder": "https://turestaurante.com",
+    "customUrl": "URL Personalizada",
+    "customUrlPlaceholder": "mi-restaurante",
+    "customUrlDescription": "Crea una URL personalizada para la página de tu negocio",
+    "description": "Descripción del Negocio",
+    "descriptionPlaceholder": "Cuéntales a los clientes sobre tu restaurante, cocina y lo que te hace especial...",
+    "logoBranding": "Logo y marca",
+    "businessLogo": "Logo del Negocio",
+    "logoDescription": "Sube el logo de tu negocio. Aparece en menús y recibos.",
+    "location": "Ubicación",
+    "locationDescription": "Dónde pueden encontrarte los clientes",
+    "streetAddress": "Dirección",
+    "streetPlaceholder": "Calle Principal 123",
+    "city": "Ciudad",
+    "cityPlaceholder": "Nombre de la ciudad",
+    "state": "Estado/Provincia",
+    "statePlaceholder": "Estado o provincia",
+    "postalCode": "Código Postal",
+    "postalPlaceholder": "Código postal",
+    "country": "País",
+    "countryPlaceholder": "Nombre del país",
+    "businessType": "Tipo de negocio",
+    "businessTypePlaceholder": "Selecciona un tipo"
+  },
+  "customUrlInput": {
+    "defaultPlaceholder": "mi-restaurante",
+    "defaultLabel": "URL Personalizada",
+    "defaultDescription": "Crea una URL personalizada para la página de tu negocio",
+    "yourLivePage": "Tu página en vivo",
+    "openLivePage": "Abrir página",
+    "tooltips": {
+      "copyUrl": "Copiar URL",
+      "generateQr": "Generar Código QR",
+      "openLivePage": "Abre tu página en una pestaña nueva"
+    },
+    "status": {
+      "checking": "Verificando disponibilidad...",
+      "available": "URL está disponible",
+      "taken": "Esta URL ya está en uso",
+      "currentUrl": "Esta es tu URL actual"
+    },
+    "validation": {
+      "minLength": "La URL debe tener al menos 2 caracteres",
+      "reserved": "Esta URL está reservada y no está disponible"
+    },
+    "errors": {
+      "checkFailed": "Error al verificar disponibilidad de URL",
+      "copyFailed": "No se pudo copiar al portapapeles."
+    },
+    "preview": {
+      "message": "La página de tu negocio estará disponible en:"
+    },
+    "qrModal": {
+      "title": "Código QR para la Página de tu Negocio",
+      "description": "Escanea este código QR para visitar la página de tu negocio",
+      "close": "Cerrar",
+      "download": "Descargar PNG"
+    },
+    "copySuccess": "¡URL copiada al portapapeles!"
+  },
+  "operatingHoursEditor": {
+    "title": "Horarios de Operación",
+    "saveHours": "Guardar Horarios",
+    "open": "Abierto",
+    "closed": "Cerrado",
+    "opens": "Abre",
+    "closes": "Cierra",
+    "kitchenCloses": "Cierre de cocina",
+    "kitchenClosesHint": "Última reserva / último pedido de cocina. Déjalo vacío si la cocina cierra con la puerta.",
+    "honestyNote": "OPEN NOW y las reservas usan el cierre de cocina cuando está definido. La barra/puerta puede cerrar más tarde.",
+    "nextDay": "día siguiente",
+    "nextDayHint": "Cierra después de medianoche",
+    "closedAllDay": "Cerrado todo el día",
+    "addSecondPeriod": "Añadir un segundo periodo",
+    "removePeriod": "Quitar periodo",
+    "copyToAll": "Copiar a todos",
+    "quickPresets": "Plantillas:",
+    "businessHours": "9–5, Lun–Vie",
+    "restaurantHours": "11–10, Diario",
+    "lunchDinner": "Comida + cena",
+    "twentyFourSeven": "24/7",
+    "exceptionsTitle": "Festivos y cierres",
+    "exceptionsHelp": "Los cierres puntuales anulan la grilla semanal. Las reservas y OPEN NOW respetan estas fechas.",
+    "addException": "Añadir fecha cerrada",
+    "exceptionDate": "Fecha",
+    "exceptionLabel": "Etiqueta (opcional)",
+    "exceptionLabelPlaceholder": "p. ej. Evento privado, Navidad",
+    "removeException": "Quitar",
+    "noExceptions": "Aún no hay cierres festivos.",
+    "dayNames": {
+      "sunday": "Domingo",
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "unknown": "Desconocido"
+    }
+  },
+  "specialFeaturesEditor": {
+    "title": "Características Especiales y Comodidades",
+    "addFeature": "Agregar característica",
+    "saveChanges": "Guardar Cambios",
+    "noFeaturesYet": "Aún no se han agregado características especiales",
+    "titlePlaceholder": "Nombre (ej. WiFi gratis)",
+    "descriptionPlaceholder": "Breve descripción para los clientes",
+    "removeFeature": "Quitar",
+    "iconAria": "Ícono",
+    "activeAria": "Visible para los clientes",
+    "addFirstFeature": "Agregar Tu Primera Característica",
+    "new": "Nuevo",
+    "quickTemplates": "Plantillas Rápidas:",
+    "restaurantTemplate": "Plantilla de Restaurante",
+    "cafeTemplate": "Plantilla de Café",
+    "iconOptions": {
+      "wifi": "WiFi",
+      "car": "Estacionamiento",
+      "credit-card": "Pagos con Tarjeta",
+      "coffee": "Para Llevar",
+      "music": "Música en Vivo",
+      "utensils": "Comedor",
+      "shield": "Seguridad",
+      "heart": "Familiar",
+      "star": "Servicio Premium",
+      "gift": "Ofertas Especiales",
+      "zap": "Servicio Rápido",
+      "users": "Grupos",
+      "clock": "Servicio 24/7",
+      "map-pin": "Excelente Ubicación",
+      "phone": "Pedidos por Teléfono",
+      "award": "Premiado"
+    },
+    "templates": {
+      "restaurant": {
+        "freeWifi": {
+          "title": "WiFi Gratis",
+          "description": "Acceso a internet de alta velocidad para todos los clientes"
+        },
+        "cardPayments": {
+          "title": "Pagos con Tarjeta",
+          "description": "Aceptamos todas las tarjetas de crédito y débito principales"
+        },
+        "familyFriendly": {
+          "title": "Ambiente Familiar",
+          "description": "Ambiente acogedor para familias con niños"
+        },
+        "parkingAvailable": {
+          "title": "Estacionamiento Disponible",
+          "description": "Espacios de estacionamiento gratuitos para clientes"
+        }
+      },
+      "cafe": {
+        "freeWifi": {
+          "title": "WiFi Gratis",
+          "description": "Perfecto para trabajo remoto y estudio"
+        },
+        "premiumCoffee": {
+          "title": "Café Premium",
+          "description": "Granos recién tostados y baristas expertos"
+        },
+        "quietEnvironment": {
+          "title": "Ambiente Tranquilo",
+          "description": "Atmósfera pacífica para trabajar y relajarse"
+        }
+      }
+    }
+  },
+  "businessPage": {
+    "customUrlTakenError": "Esa URL de página ya está en uso. Elige otra antes de guardar.",
+    "tabs": {
+      "essentials": "Contenido",
+      "design": "Diseño",
+      "visuals": "Visuales",
+      "lookAndFeel": "Apariencia",
+      "operations": "Horarios y Servicios",
+      "reviews": "Reseñas",
+      "contact": "Contacto",
+      "ariaLabel": "Secciones de la página de negocio"
+    },
+    "status": {
+      "published": "Publicada",
+      "needsUrl": "Falta la URL",
+      "draft": "Borrador",
+      "unknown": "Estado no disponible"
+    },
+    "unknownStatusDescription": "No se pudo cargar si esta página está publicada. Inténtalo de nuevo antes de cambiar el estado.",
+    "shell": {
+      "badge": "Comando de página pública",
+      "activeMode": "Controles de publicación activos",
+      "status": "Estado",
+      "statusLiveValue": "Página pública activa",
+      "statusDraftValue": "Controles de borrador listos",
+      "liveSlug": "URL pública",
+      "slugMissing": "URL sin configurar",
+      "sections": "Secciones",
+      "sectionsValue": "{count} espacios",
+      "visuals": "Sistema visual",
+      "visualsValue": "Galería, reseñas, horarios"
+    },
+    "contactTitle": "Datos de contacto",
+    "contactDescription": "Teléfono, sitio web, dirección y redes sociales que se muestran en tu página pública.",
+    "showOnPublicPageHint": "Tus cambios siempre se guardan; este interruptor solo controla si la sección aparece en tu página pública.",
+    "title": "Página de Negocio",
+    "enableTitle": "Habilitar Página de Negocio",
+    "enableDescription": "Crea una página pública para tu negocio en /b/tu-slug",
+    "needsUrlDescription": "Publicada, pero los clientes no pueden verla hasta que guardes una URL personalizada.",
+    "publishedDescriptionWithUrl": "Tu página pública está en vivo en /b/{slug}. Gestiona el contenido, horarios y reseñas que ven los clientes.",
+    "customUrlLabel": "Slug de URL Personalizada",
+    "customUrlPlaceholder": "mi-restaurante",
+    "customUrlDescription": "Crea una URL personalizada para la página de tu negocio",
+    "aboutLabel": "Acerca de Tu Negocio",
+    "aboutPlaceholder": "Cuéntales a los clientes sobre tu restaurante, cocina, historia y lo que te hace especial...",
+    "essentialsTitle": "Información básica",
+    "essentialsDescription": "URL personalizada y una breve descripción que verán tus clientes",
+    "socialMediaTitle": "Redes sociales",
+    "socialMediaDescription": "Dónde te pueden seguir los clientes",
+    "contactInfoHint": "El teléfono, sitio web y dirección de la página pública se gestionan aquí. El logo está en Aspecto.",
+    "logoTitle": "Logo",
+    "logoDescription": "Sube el logo de tu negocio. Aparece en el hero de la página pública, la barra fija y los recibos.",
+    "instagram": "Instagram",
+    "instagramPlaceholder": "@turestaurante",
+    "facebook": "Facebook",
+    "facebookPlaceholder": "turestaurante",
+    "twitter": "Twitter",
+    "twitterPlaceholder": "@turestaurante",
+    "linkedin": "LinkedIn",
+    "linkedinPlaceholder": "tu-empresa",
+    "youtube": "YouTube",
+    "youtubePlaceholder": "tucanal",
+    "tiktok": "TikTok",
+    "tiktokPlaceholder": "tunegocio",
+    "bannerTitle": "Imágenes de Banner",
+    "bannerDescription": "Sube hasta 3 imágenes de banner para mostrar tu restaurante. Aparecerán en la parte superior de la página de tu negocio.",
+    "reviewsTitle": "Reseñas y Prueba Social",
+    "showReviewsTitle": "Mostrar Reseñas de Clientes",
+    "showReviewsDescription": "Mostrar reseñas de clientes en la página de tu negocio",
+    "reviewProviders": {
+      "google": "Google",
+      "trustpilot": "Trustpilot",
+      "trustpilotConnected": "Conectado a través del plugin de Trustpilot.",
+      "trustpilotEnabled": "El plugin de Trustpilot está habilitado para este negocio.",
+      "viewTrustpilot": "Ver perfil de Trustpilot",
+      "configureInPlugins": "Termina la configuración en Plugins → Trustpilot."
+    },
+    "googleReviewsTitle": "Integración de Google Reviews",
+    "googleReviewsDescription": "Sincronizar y mostrar automáticamente Google Reviews (Próximamente)",
+    "comingSoonTitle": "Próximamente",
+    "comingSoonDescription": "La integración de Google Reviews, testimonios de clientes e integración de feeds de redes sociales estará disponible en una actualización futura.",
+    "welcomeMessageTitle": "Mensaje de Bienvenida",
+    "showWelcomeMessageTitle": "Mostrar Mensaje de Bienvenida",
+    "showWelcomeMessageDescription": "Mostrar un saludo personal a tus clientes",
+    "welcomeMessageLabel": "Mensaje de bienvenida",
+    "welcomeMessagePlaceholder": "¡Bienvenidos a nuestro restaurante! Estamos emocionados de servirles...",
+    "ourStoryTitle": "Nuestra Historia",
+    "showOurStoryTitle": "Mostrar Nuestra Historia",
+    "showOurStoryDescription": "Comparte la historia de tu negocio y lo que te hace especial",
+    "ourStoryLabel": "Nuestra Historia",
+    "ourStoryPlaceholder": "Cuéntales a tus clientes sobre tu trayectoria, misión y lo que hace único a tu negocio...",
+    "photoGalleryTitle": "Galería de Fotos",
+    "showPhotoGalleryTitle": "Mostrar Galería de Fotos",
+    "showPhotoGalleryDescription": "Mostrar una galería de tu comida, espacio y ambiente",
+    "photoGalleryInstructions": "Sube y gestiona fotos para mostrar tu negocio.",
+    "operatingHoursTitle": "Horarios de operación",
+    "operatingHoursDescription": "Gestiona los horarios y la zona horaria de tu negocio",
+    "timezoneLabel": "Zona horaria",
+    "timezonePlaceholder": "Elige una zona horaria…",
+    "showOnPage": "Mostrar en la página",
+    "visibleToCustomers": "Visible para los clientes",
+    "showOperatingHoursTitle": "Mostrar Horarios de Operación",
+    "showOperatingHoursDescription": "Mostrar tu horario de operación diario",
+    "operatingHoursInstructions": "Establece tus horarios de operación para cada día de la semana.",
+    "specialFeaturesTitle": "Características Especiales",
+    "showSpecialFeaturesTitle": "Mostrar Características Especiales",
+    "showSpecialFeaturesDescription": "Destaca comodidades como WiFi, estacionamiento, opciones de pago, etc.",
+    "specialFeaturesInstructions": "Agrega características y comodidades que hacen especial a tu negocio.",
+    "storyTitle": "Bienvenida e historia",
+    "storyDescription": "Saludo opcional e historia más larga que se muestra en tu página",
+    "showWelcomeMessage": "Mostrar mensaje de bienvenida",
+    "showAboutStory": "Mostrar historia",
+    "aboutStoryLabel": "Historia",
+    "activationCard": {
+      "title": "Página Comercial Premium",
+      "description": "Establece tu presencia digital con una página comercial profesional. Muestra tu galería, horarios y características para atraer más clientes.",
+      "features": {
+        "showcase": {
+          "title": "Escaparate Visual",
+          "description": "Galería, banner e identidad de marca"
+        },
+        "seo": {
+          "title": "Optimizado para Búsqueda",
+          "description": "URL personalizada e integración con Google"
+        }
+      },
+      "buttons": {
+        "activate": "Activar Página Comercial"
+      },
+      "footnote": "Puedes desactivar tu página comercial cuando quieras desde ajustes."
+    },
+    "dangerZone": {
+      "title": "Despublicar esta página",
+      "description": "Saca la página pública del aire. Los códigos QR de las mesas que la abren dejarán de funcionar hasta que la vuelvas a publicar."
+    },
+    "button": {
+      "disable": "Deshabilitar Página",
+      "preview": "Vista previa",
+      "save": "Guardar Cambios",
+      "setUrl": "Configura la URL de tu página",
+      "previewDraftDisabled": "Publica para abrir la página pública",
+      "previewLiveDesign": "Abrir vista previa de diseño",
+      "previewDraftTooltip": "Esta página sigue en borrador. Publícala para abrir la URL pública, o abre la pestaña de diseño para una vista previa en vivo."
+    },
+    "disableModal": {
+      "title": "¿Deshabilitar Página Comercial?",
+      "description": "Tu página comercial dejará de ser accesible públicamente. Los clientes no podrán ver tus horarios, galería o especiales.",
+      "qrConsequence": "Los códigos QR de las mesas que abren esta página dejarán de funcionar para los clientes hasta que la publiques de nuevo.",
+      "typeConfirmLabel": "Escribe DISABLE para confirmar",
+      "confirmation": "¿Estás seguro de que deseas deshabilitarla?",
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Deshabilitar Página"
+      }
+    },
+    "enableModal": {
+      "title": "¿Habilitar Página Comercial?",
+      "description": "Esto promocionará tu página al público. Puedes personalizar el contenido antes de compartir la URL.",
+      "buttons": {
+        "cancel": "Cancelar",
+        "confirm": "Activar Página"
+      }
+    },
+    "toasts": {
+      "errorTitle": "Error",
+      "loadPageError": "No se pudo cargar la configuración de la página del negocio",
+      "saveSuccess": {
+        "title": "Éxito",
+        "message": "Configuración de página guardada exitosamente"
+      },
+      "saveError": {
+        "title": "Error",
+        "message": "Error al guardar la configuración"
+      },
+      "partialSave": {
+        "title": "Guardado parcial",
+        "message": "Algunas secciones no se pudieron guardar: {sections}. Los demás cambios se guardaron correctamente.",
+        "sections": {
+          "businessProfile": "perfil del negocio",
+          "design": "diseño",
+          "operatingHours": "horario de atención",
+          "specialFeatures": "características especiales",
+          "galleryImages": "imágenes de la galería"
+        }
+      },
+      "publishSuccess": {
+        "title": "Éxito",
+        "enabled": "Página de negocio publicada",
+        "disabled": "Página de negocio deshabilitada"
+      },
+      "statusError": {
+        "title": "Error",
+        "message": "Error al actualizar el estado de la página"
+      },
+      "loadFailedSaveBlocked": "Los datos de la página no se cargaron, así que guardar está deshabilitado para proteger tu contenido. Reintenta la carga primero."
+    },
+    "retryLoad": "Reintentar la carga"
+  },
+  "payment": {
+    "cryptoAddressesTitle": "Billeteras cripto opcionales",
+    "feesAndTaxesTitle": "Tarifas e impuestos",
+    "feesAndTaxesDescription": "Cómo se aplican las tarifas e impuestos a cada pedido",
+    "checkoutRailsNotice": "Los cobros con tarjeta y checkout (como Mercado Pago) se configuran en Plugins. Esta página es solo para tarifas, impuestos y billeteras cripto opcionales.",
+    "settlementAddressLabel": "Billetera de liquidación de ventas",
+    "settlementAddressPlaceholder": "0x1234...abcd",
+    "settlementAddressDescription": "Billetera opcional donde se liquidan las ventas cripto. No es necesaria para Mercado Pago u otros cobros con tarjeta.",
+    "walletOwnerOnly": "Solo el dueño del negocio puede cambiar las billeteras de cobro.",
+    "addressInvalid": "Ingresa una dirección de billetera válida (0x seguido de 40 caracteres hexadecimales).",
+    "rateOutOfRange": "Ingresa una tasa entre 0 y 100.",
+    "tipWalletMustDiffer": "La billetera de propinas debe ser distinta a la de liquidación de ventas para poder pagar las propinas por separado.",
+    "confirmAddressChangeTitle": "Confirmar cambio de billetera de cobro",
+    "confirmAddressChangeDescription": "Estás cambiando una billetera de cobro. Los fondos enviados a la dirección anterior no llegarán a la nueva. Actual: {old} — Nueva: {new}. ¿Continuar?",
+    "confirmAddressChangeTipNotice": "Las propinas van a la billetera de propinas; las ventas a la de liquidación — mantenelas distintas.",
+    "confirmAddressChangeConfirm": "Guardar cambio de billetera",
+    "confirmAddressChangeCancel": "Mantener actual",
+    "copySettlementAddress": "Copiar dirección de liquidación",
+    "tippingAddressLabel": "Billetera de propinas del personal",
+    "tippingAddressPlaceholder": "0x5678...efgh",
+    "tippingAddressDescription": "Billetera separada para propinas, aparte de los ingresos por ventas.",
+    "copyTippingAddress": "Copiar dirección de propinas",
+    "payoutNotice": "Solo hace falta si aceptás cripto. La billetera de propinas debe ser distinta a la de ventas.",
+    "walletAutofillTitle": "Autocompletado de Billetera",
+    "noWalletConnected": "No hay billetera conectada",
+    "connectWallet": "Conectar Billetera",
+    "disconnectWallet": "Desconectar",
+    "useWalletForBothAddresses": "Usar Billetera para Ambas Direcciones",
+    "copySuccessTitle": "Copiado",
+    "copySuccessSuffix": "copiada al portapapeles.",
+    "copyEmptyTitle": "Nada para copiar",
+    "copyEmptyDescription": "El campo de dirección está vacío.",
+    "copyFailedTitle": "Error al copiar",
+    "copyFailedDescription": "No se pudo copiar al portapapeles.",
+    "walletConnectionUnavailableTitle": "Conexión de billetera no disponible",
+    "walletConnectionUnavailableDescription": "No se encontró una billetera inyectada y WalletConnect no está configurado.",
+    "walletNotConnectedTitle": "Billetera no conectada",
+    "walletNotConnectedDescription": "Conecta tu billetera primero y vuelve a intentarlo.",
+    "addressesUpdatedTitle": "Direcciones actualizadas",
+    "addressesUpdatedDescription": "Las direcciones de liquidación y propinas se actualizaron desde tu billetera.",
+    "addressUpdatedTitle": "Dirección actualizada",
+    "addressUpdatedDescription": "La dirección se actualizó desde tu billetera.",
+    "feesTitle": "Tarifas y Precios",
+    "serviceFeeLabel": "Tasa de Tarifa de Servicio (%)",
+    "serviceFeeRateLabel": "Tarifa de servicio (%)",
+    "serviceFeeRatePlaceholder": "0.00",
+    "serviceFeeRateDescription": "Se aplica sobre el subtotal",
+    "taxRateLabel": "Tasa de Impuesto (%)",
+    "taxRatePlaceholder": "0.00",
+    "taxRateDescription": "Tasa de impuesto local en porcentaje",
+    "percentagePlaceholder": "0.00",
+    "taxInclusiveTitle": "Precios Inclusivos de Impuesto",
+    "taxInclusiveDescription": "Incluir impuesto en los precios mostrados",
+    "serviceFeeInclusiveTitle": "Tarifa de Servicio Inclusiva",
+    "serviceFeeInclusiveDescription": "Incluir tarifa de servicio en los precios mostrados",
+    "feeSummaryTitle": "Resumen de Tarifas",
+    "serviceFeeRate": "Tasa de Tarifa de Servicio",
+    "taxRate": "Tasa de Impuesto",
+    "taxInclusive": "Impuesto Inclusivo",
+    "serviceInclusive": "Servicio Inclusivo",
+    "sampleCheckTitle": "Vista previa de cuenta de ejemplo",
+    "sampleCheckDescription": "Vista en vivo para un subtotal de {{amount}} con las tasas de arriba — lo que cobraría una cuenta nueva después de guardar.",
+    "sampleCheckSubtotal": "Subtotal",
+    "sampleCheckTax": "Impuesto",
+    "sampleCheckServiceFee": "Tarifa de servicio",
+    "sampleCheckTotal": "Total del cliente",
+    "sampleCheckInclusiveNote": "Los interruptores inclusivos cambian cómo se etiquetan los precios del menú. La cuenta sigue aplicando impuesto y servicio al subtotal, como se muestra arriba.",
+    "effectiveDateLabel": "Fecha de vigencia",
+    "effectiveDateValue": "Al guardar · {{date}}",
+    "effectiveDateDescription": "Estas tasas aplican a cuentas nuevas en cuanto guardes. Todavía no se puede programar un cambio futuro.",
+    "effectiveDateOpenBillsNote": "Las cuentas abiertas en el piso conservan sus totales actuales; solo las nuevas usan las tasas guardadas."
+  },
+  "design": {
+    "title": "Diseño y Marca",
+    "comingSoonTitle": "Próximamente",
+    "comingSoonDescription": "Personaliza los colores, fuentes y diseño de tu menú"
+  },
+  "timezone": "Zona horaria",
+  "timezoneDescription": "Afecta las marcas de tiempo de las cuentas, análisis y horarios de operación",
+  "timezoneSearch": "Buscar zonas horarias...",
+  "reopenWizard": "Reabrir asistente de configuración",
+  "reopenWizardDescription": "Revisa tu progreso de configuración y completa los pasos pendientes",
+  "notifications": {
+    "tabTitle": "Notificaciones",
+    "emailSection": "Notificaciones por Email",
+    "emailDescription": "Controla qué emails recibes de Payverge",
+    "ordersAndPayments": "Pedidos y Pagos",
+    "ordersAndPaymentsDesc": "Recibe emails cuando se realizan pedidos o se reciben pagos",
+    "reportsAndAnalytics": "Reportes y Análisis",
+    "reportsAndAnalyticsDesc": "Reportes periódicos de negocio y resúmenes de rendimiento",
+    "operationalSection": "Alertas Operativas",
+    "operationalDescription": "Alertas repetitivas para el equipo sobre pedidos, cocina, reservas, entregas, cuentas y pagos.",
+    "operationalEnabled": "Activar alertas operativas",
+    "operationalEnabledDesc": "Crear alertas visibles para el equipo en flujos activos.",
+    "operationalSoundEnabled": "Sonido de alarma",
+    "operationalSoundEnabledDesc": "Reproduce sonidos hasta que una alerta repetitiva se reclame o resuelva. Apagado por defecto: actívalo solo si quieres alarmas audibles.",
+    "operationalSoundOptInHint": "Activación opcional: dejarlo apagado mantiene el piso en silencio mientras las alertas siguen apareciendo en pantalla.",
+    "operationalBrowserEnabled": "Alertas de escritorio",
+    "operationalBrowserEnabledDesc": "Muestra notificaciones del navegador cuando llegan nuevas alertas. Requiere permiso en este navegador.",
+    "operationalVolume": "Volumen de alarma",
+    "operationalRepeatInterval": "Intervalo de repetición",
+    "operationalRepeatIntervalValue": "Cada {{seconds}}s",
+    "operationalRepeatIntervalFloorHint": "Mínimo 30 segundos para que las repeticiones no suenen cada 8s durante el servicio.",
+    "operationalEventsTitle": "Eventos de alerta",
+    "operationalEventsDescription": "Elige qué flujos crean alertas y cuáles se repiten hasta que el equipo las atienda.",
+    "operationalEventEnabled": "Activo",
+    "operationalEventRepeats": "Repite",
+    "operationalPreviewSound": "Escuchar sonido de {{type}}",
+    "chatSoundsTitle": "Sonidos de chat (este dispositivo)",
+    "chatSoundsDescription": "Esto solo afecta este navegador/dispositivo — no se sincroniza con tu cuenta.",
+    "chatAnnouncementSound": "Sonido de anuncios",
+    "chatAnnouncementSoundDesc": "Reproduce un sonido cuando un gerente publica un anuncio para todo el negocio.",
+    "chatMessageSound": "Sonido de mensajes",
+    "chatMessageSoundDesc": "Reproduce un sonido para mensajes normales de canal y DM. Desactivado por defecto para mantener silencio durante el servicio.",
+    "operationalTypes": {
+      "order_new": "Nuevos pedidos",
+      "kitchen_order_ready": "Tickets de cocina",
+      "reservation_new": "Nuevas reservas",
+      "reservation_approval": "Aprobación de reserva pendiente",
+      "delivery_new": "Pedidos de entrega",
+      "bill_new": "Nuevas cuentas",
+      "payment_requested": "Pagos solicitados",
+      "payment_received": "Pagos recibidos",
+      "payment_refund_review": "Reembolso por revisar",
+      "service_call": "Llamada de mesa",
+      "table_stale_occupied": "Mesa ocupada sin actividad reciente",
+      "ai_takeover": "La IA necesita un humano"
+    },
+    "operationalTypeDescriptions": {
+      "order_new": "Avisa al equipo de cuentas cuando un cliente o empleado crea un pedido.",
+      "kitchen_order_ready": "Avisa a cocina cuando un pedido aprobado está listo para preparar.",
+      "reservation_new": "Avisa a anfitriones cuando se confirma una reserva o se crea una solicitud de lista de espera.",
+      "reservation_approval": "Avisa a anfitriones cuando una solicitud de reserva espera aprobación manual. Se repite hasta atenderse.",
+      "delivery_new": "Avisa al equipo de despacho cuando se crea un pedido de entrega.",
+      "bill_new": "Avisa al equipo cuando se abre una cuenta nueva.",
+      "payment_requested": "Avisa al equipo cuando un cliente solicita pagar con un método alternativo.",
+      "payment_received": "Avisa al equipo cuando se recibe o confirma un pago.",
+      "payment_refund_review": "Avisa al equipo cuando un reembolso parcial del proveedor necesita conciliación manual.",
+      "service_call": "Avisa al personal de sala cuando un cliente toca Llamar al mesero desde su mesa. Se repite hasta que se atienda.",
+      "ai_takeover": "Avisa al personal cuando un cliente escribe en un chat de IA pausado que nadie reclamó. Se repite hasta que alguien lo tome."
+    },
+    "claimedBy": "Reclamado por {{name}}",
+    "enableAlertSound": "Activar sonido de alerta",
+    "alertSoundReady": "Sonido de alerta listo",
+    "volume": "Volumen",
+    "telegramSection": "Notificaciones de Telegram",
+    "telegramDescription": "Eventos que envían un mensaje de Telegram a tu chat conectado",
+    "telegramNotConnected": "Conecta Telegram en la pestaña de Plugins para configurar notificaciones",
+    "orderCreated": "Nuevos pedidos",
+    "paymentReceived": "Pagos recibidos",
+    "reservationCreated": "Nuevas reservas",
+    "reservationStatusChanged": "Actualizaciones de reservas",
+    "inventoryLowStock": "Alertas de stock bajo",
+    "telegramComingSoon": "Preferencias por evento de Telegram próximamente — actualmente se envían todos los eventos.",
+    "pushSection": "Notificaciones Push",
+    "pushDescription": "Recibe alertas incluso cuando el panel está cerrado",
+    "pushEnable": "Activar notificaciones push",
+    "pushDisable": "Desactivar notificaciones push",
+    "pushDevices": "Dispositivos registrados",
+    "pushNoDevices": "No hay dispositivos registrados",
+    "directorDigest": "Resumen Diario de IA",
+    "directorDigestDesc": "Recibe un resumen diario por email con información generada por IA sobre tu negocio",
+    "directorDigestTime": "Enviar a las",
+    "scopeLegendTitle": "Estos ajustes usan distintos alcances",
+    "scopeLegendDescription": "El email sigue tu sesión, las alertas operativas y Telegram siguen este negocio, los sonidos de chat quedan en este dispositivo y las alertas de escritorio también necesitan permiso en este navegador. Cada sección está etiquetada para que nada se guarde en el lugar equivocado.",
+    "saveModelHint": "Estos interruptores se guardan al instante. Perfil, pagos e idiomas siguen usando Guardar cambios.",
+    "scope": {
+      "account": {
+        "label": "Esta cuenta",
+        "helper": "Se guarda en tu sesión de Payverge: te sigue en dispositivos y negocios."
+      },
+      "device": {
+        "label": "Este dispositivo",
+        "helper": "Solo en este navegador. No se sincroniza con tu cuenta ni con otros dispositivos."
+      },
+      "business": {
+        "label": "Este negocio",
+        "helper": "Aplica solo a este negocio y a sus integraciones conectadas."
+      },
+      "browser": {
+        "label": "Este navegador",
+        "helper": "La preferencia se guarda para este negocio, pero el sistema/navegador también debe permitir notificaciones en esta máquina."
+      }
+    }
+  },
+  "loyalty": {
+    "redemptionRate": "Puntos por dólar de descuento",
+    "redemptionRateDesc": "Cuántos puntos equivalen a $1 de descuento (0 = deshabilitado)",
+    "minRedemption": "Puntos mínimos para canjear",
+    "minRedemptionDesc": "Los clientes necesitan al menos esta cantidad de puntos",
+    "maxRedemptionPercentage": "Porcentaje máximo de la cuenta",
+    "maxRedemptionPercentageDesc": "Porcentaje máximo de una cuenta que se puede pagar con puntos"
+  }
+}

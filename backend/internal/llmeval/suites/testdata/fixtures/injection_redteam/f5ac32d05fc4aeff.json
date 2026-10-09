@@ -1,0 +1,13 @@
+{
+  "key": "f5ac32d05fc4aeff",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Here's our menu: we have a Burger priced at $12. Let me know if you'd like more details about any item!",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

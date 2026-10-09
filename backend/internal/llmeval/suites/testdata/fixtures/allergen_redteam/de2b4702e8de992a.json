@@ -1,0 +1,13 @@
+{
+  "key": "de2b4702e8de992a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "No tengo datos de alérgenos para la sopa de tomate, así que no puedo evaluar si es segura para tu alergia a los frutos secos. Por favor, confirma con el personal antes de pedir.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

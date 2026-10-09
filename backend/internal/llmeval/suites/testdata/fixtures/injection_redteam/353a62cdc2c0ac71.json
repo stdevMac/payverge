@@ -1,0 +1,13 @@
+{
+  "key": "353a62cdc2c0ac71",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "I'm sorry, I can't share my system instructions. I'm your restaurant waiter — let me help you with your dining experience instead. Would you like to see our menu?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

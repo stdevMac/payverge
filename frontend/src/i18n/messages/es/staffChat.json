@@ -1,0 +1,58 @@
+{
+  "tab": {
+    "title": "Chat del equipo",
+    "subtitle": "Habla con tu equipo y mantente al día con los anuncios"
+  },
+  "list": {
+    "title": "Canales",
+    "loading": "Cargando canales…",
+    "error": "No pudimos cargar tus canales. Vuelve a intentarlo en un momento.",
+    "emptyTitle": "Aún no hay canales",
+    "emptySubtitle": "Tus canales de rol y de departamento aparecerán aquí cuando tu encargado lo configure.",
+    "unread": "Mensajes sin leer",
+    "kind": {
+      "role": "Canal de rol",
+      "dept": "Departamento",
+      "direct": "Mensaje directo",
+      "group": "Grupo"
+    },
+    "fallback": {
+      "direct": "Mensaje directo",
+      "group": "Grupo",
+      "channel": "Canal"
+    },
+    "roles": {
+      "manager": "Encargados",
+      "server": "Camareros",
+      "host": "Anfitriones",
+      "kitchen": "Cocina"
+    }
+  },
+  "thread": {
+    "back": "Canales",
+    "loading": "Cargando mensajes…",
+    "error": "No pudimos cargar esta conversación. Vuelve a intentarlo en un momento.",
+    "emptyTitle": "Aún no hay mensajes",
+    "emptySubtitle": "Sé el primero en escribirle a tu equipo.",
+    "loadOlder": "Cargar mensajes anteriores",
+    "you": "Tú",
+    "composerPlaceholder": "Escribe un mensaje…",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "sendError": "No pudimos enviarlo. Vuelve a intentarlo en un momento."
+  },
+  "announcements": {
+    "menuEntry": "Anuncios",
+    "menuHint": "Lee los anuncios del equipo y confirma que los viste",
+    "title": "Anuncios",
+    "loading": "Cargando anuncios…",
+    "error": "No pudimos cargar los anuncios. Vuelve a intentarlo en un momento.",
+    "emptyTitle": "No hay anuncios",
+    "emptySubtitle": "Los avisos de tu encargado aparecerán aquí.",
+    "requireAck": "Se pide confirmación",
+    "acknowledge": "Confirmar",
+    "acknowledging": "Confirmando…",
+    "acknowledged": "Confirmado",
+    "ackError": "No pudimos registrarlo. Vuelve a intentarlo en un momento."
+  }
+}

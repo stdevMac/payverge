@@ -1,0 +1,11 @@
+{
+  "_comment": "Reviewed npm advisories that check-npm-audit.js accepts in production dependencies. Each entry needs a reason and a reviewBy date (YYYY-MM-DD); an expired entry fails CI. Remove an entry once npm stops reporting it. Mirror any entry in .github/SECURITY.md 'Known limitations'.",
+  "advisories": [
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces (via micromatch, fast-glob and chokidar under tailwindcss 3.4)",
+      "reason": "Build-time only. tailwindcss is a peer of @nextui-org/react, so npm counts it as a production dependency, but it only runs during `next build` to scan our own source globs. The running Next.js server never loads it, and no request input reaches braces. No patched braces exists; the fix is the Tailwind 4 / HeroUI migration.",
+      "reviewBy": "2027-01-31"
+    }
+  ]
+}

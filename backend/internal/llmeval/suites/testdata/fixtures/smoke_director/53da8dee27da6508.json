@@ -1,0 +1,9 @@
+{
+  "key": "53da8dee27da6508",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Revenue grew 12% from 2026-05-30 to 2026-06-06\",\"actions\":[{\"title\":\"Replicate successful campaigns\",\"priority\":\"high\"},{\"title\":\"Analyze traffic sources\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {"PromptTokens": 50, "CompletionTokens": 40, "TotalTokens": 90}
+  }
+}

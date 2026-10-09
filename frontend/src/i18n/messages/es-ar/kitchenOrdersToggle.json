@@ -1,0 +1,14 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Intentá de nuevo.",
+  "disableModal": {
+    "description": "Esto desactivará tanto la gestión de Cocina como las funciones de aprobación de Pedidos. Tu personal no va a poder:",
+    "confirmation": "¿Estás seguro de que querés continuar?"
+  },
+  "activationCard": {
+    "description": "Activá la aprobación de pedidos y los tickets de cocina para que el personal lleve la comida de pedido a listo sin tickets de papel.",
+    "disclaimer": "Podés desactivar esta función en cualquier momento desde la configuración",
+    "ordersManagement": {
+      "description": "Creá, aprobá y rastreá pedidos de clientes en tiempo real"
+    }
+  }
+}

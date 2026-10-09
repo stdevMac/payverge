@@ -1,0 +1,73 @@
+{
+  "metaTitle": "Aceptar invitación — Payverge",
+  "metaDescription": "Acepta tu invitación de personal de Payverge y termina de configurar tu cuenta.",
+  "title": "Únete al Equipo",
+  "subtitle": "Has sido invitado a unirte como miembro del personal",
+  "loading": {
+    "validating": "Validando invitación..."
+  },
+  "form": {
+    "invitationInfo": {
+      "title": "Invitación del Restaurante",
+      "description": "Has sido invitado a unirte al equipo de personal. Completa tu registro a continuación para comenzar.",
+      "emailLabel": "Email"
+    },
+    "nameField": {
+      "label": "Nombre Completo",
+      "placeholder": "Ingresa tu nombre completo"
+    },
+    "whatHappensNext": {
+      "title": "¿Qué sucede después?",
+      "items": [
+        "Tu cuenta de personal será creada",
+        "Podrás iniciar sesión con tu dirección de correo y códigos de acceso",
+        "El acceso se basará en tu rol asignado",
+        "No se requiere billetera de criptomonedas"
+      ]
+    },
+    "buttons": {
+      "accept": "Aceptar Invitación",
+      "accepting": "Creando Cuenta..."
+    }
+  },
+  "success": {
+    "title": "¡Bienvenido al Equipo!",
+    "subtitle": "Tu cuenta de personal ha sido creada exitosamente.",
+    "businessLabel": "Negocio:",
+    "roleLabel": "Rol:",
+    "defaultBusiness": "Restaurante",
+    "continueButton": "Abrir Panel del Personal",
+    "loginInfo": "Tu sesión de personal ya está lista. Continúa al panel para empezar a trabajar."
+  },
+  "roles": {
+    "manager": "Gerente",
+    "server": "Mesero",
+    "host": "Anfitrión",
+    "kitchen": "Cocina"
+  },
+  "messages": {
+    "invalidLink": "Enlace de invitación inválido",
+    "nameRequired": "Por favor ingresa tu nombre completo",
+    "invalidToken": "Token de invitación inválido",
+    "accountCreated": "¡Cuenta creada exitosamente!",
+    "acceptFailed": "Error al aceptar la invitación",
+    "expiredTitle": "Esta invitación ya no es válida",
+    "expiredHelp": "Es posible que haya expirado o ya se haya usado. Pídele a tu gerente que envíe una nueva invitación.",
+    "transientTitle": "No pudimos cargar esta invitación",
+    "transientHelp": "Revisa tu conexión e inténtalo de nuevo — el enlace de invitación sigue siendo válido."
+  },
+  "actions": {
+    "backToLogin": "Ir al Inicio de Sesión",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "footer": {
+    "poweredBy": "Incorporación segura de personal impulsada por Payverge"
+  },
+  "existingSession": {
+    "title": "Ya hay una sesión iniciada",
+    "description": "Aceptar esta invitación cerrará la sesión actual en este navegador:",
+    "signOutCta": "Cerrar sesión y continuar",
+    "cancelCta": "Mantener mi sesión actual",
+    "signOutFailed": "No se pudo cerrar la sesión actual. Inténtalo de nuevo."
+  }
+}

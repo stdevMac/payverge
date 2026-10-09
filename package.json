@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "ai:eval": "cd backend && make eval-offline",
+    "ai:eval:promptfoo": "npx --yes promptfoo@0.120.19 eval -c promptfooconfig.yaml",
+    "ai:eval:promptfoo:full": "./evals/promptfoo/runner.sh",
+    "ai:eval:promptfoo:validate": "npx --yes promptfoo@0.120.19 validate -c promptfooconfig.yaml"
+  }
+}
