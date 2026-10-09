@@ -1,0 +1,39 @@
+{{ define "subject" }}Your daily briefing{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Your daily briefing
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Here is your AI-powered daily briefing for <strong>{{ .business_name }}</strong> on {{ .digest_date }}.
+</p>
+
+{{ if .insights_summary }}
+{{ .insights_summary }}
+{{ else }}
+<p style="margin:0 0 18px 0;">
+    Your Director Console has been analysing your recent activity to surface proactive insights.
+    Open the console to see what the AI has found.
+</p>
+{{ end }}
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .director_console_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Open Director Console
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    This briefing is sent once per day. You can adjust notification
+    preferences from your business settings.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

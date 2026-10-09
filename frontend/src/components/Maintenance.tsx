@@ -1,0 +1,119 @@
+"use client";
+
+import { useSiteUrl } from "@/hooks/useSiteUrl";
+import Image from "next/image";
+import { brandLinks } from "@/config/brand";
+import InstanceLogo from "@/components/instance/InstanceLogo";
+import { useInstance } from "@/hooks/useInstance";
+import { useSimpleLocale } from "@/i18n/OperatorLocaleProvider";
+import { getChromeTranslation } from "@/i18n/operatorChromeCatalog";
+
+export default function Maintenance() {
+  const { locale } = useSimpleLocale();
+  const { productName } = useInstance();
+  const appBaseUrl = useSiteUrl();
+  const normalizedBaseUrl = appBaseUrl.replace(/\/$/, "");
+
+  // Translation helper
+  const tString = (key: string): string => {
+    const fullKey = `common.maintenance.${key}`;
+    const result = getChromeTranslation(fullKey, locale, { productName });
+    return Array.isArray(result) ? result[0] || key : (result as string);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-warm-50">
+      <div className="bg-white shadow-lg rounded-2xl p-8 sm:p-12 mb-6 sm:mb-8 max-w-lg text-center transition-shadow duration-300">
+        <InstanceLogo
+          imgClassName="h-auto w-32 mb-6 mx-auto"
+          fallback={(alt) => (
+            <Image
+              src="/images/PayvergeLogo.png"
+              alt={alt}
+              width={128}
+              height={128}
+              className="h-auto mb-6 mx-auto hover:scale-110 transition-transform duration-300"
+            />
+          )}
+        />
+        <h1 className="font-title text-5xl font-bold mb-6 animate-gradient bg-gradient-text">
+          {tString("title") || "Under Maintenance"}
+        </h1>
+        <p className="mb-8 text-lg text-gray-700 animate-slide-up">
+          {tString("message") ||
+            `We're improving ${productName} to serve you better. We'll be back shortly.`}
+        </p>
+        <div className="flex flex-col gap-4 animate-fade-in-delayed">
+          <a
+            href={normalizedBaseUrl}
+            className="text-brand hover:text-brand-dark hover:translate-x-2 transition-all duration-300"
+          >
+            {tString("visitWebsite") || "Visit our Website"}
+          </a>
+          {brandLinks.contactEmail ? (
+            <a
+              href={`mailto:${brandLinks.contactEmail}`}
+              className="text-brand hover:text-brand-dark hover:translate-x-2 transition-all duration-300"
+            >
+              {tString("exploreLinks") || "Contact Us"}
+            </a>
+          ) : null}
+        </div>
+      </div>
+      <style jsx global>{`
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .bg-gradient-text {
+          background: linear-gradient(270deg, #1a6b6a, #2a9d8f, #1a6b6a);
+          background-size: 200% auto;
+          color: transparent;
+          -webkit-background-clip: text;
+          background-clip: text;
+        }
+
+        .animate-gradient {
+          animation: gradient 3s ease infinite;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-delayed {
+          opacity: 0;
+          animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        .animate-slide-up {
+          animation: slideUp 1s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+}

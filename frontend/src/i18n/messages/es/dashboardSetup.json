@@ -1,0 +1,13 @@
+{
+  "title": "Configuremos tu equipo",
+  "subtitle": "Unos pasos rápidos y estarás armando turnos en minutos.",
+  "positionsTitle": "Agrega tus puestos",
+  "positionsDescription": "Define los roles que cubre tu equipo: mesero, cocinero, anfitrión. Los turnos se arman en torno a ellos.",
+  "positionsAction": "Agregar puestos",
+  "inviteTitle": "Invita a tu equipo",
+  "inviteDescription": "Envía invitaciones para que tu equipo vea su horario y fiche su entrada.",
+  "inviteAction": "Invitar personas",
+  "scheduleTitle": "Arma la semana",
+  "scheduleDescription": "Distribuye los turnos en la grilla semanal y publícalos para que todos los vean.",
+  "scheduleAction": "Ir al horario"
+}

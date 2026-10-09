@@ -1,0 +1,15 @@
+{
+  "title": "Shift log",
+  "subtitle": "Today's handover notes from the team",
+  "loading": "Loading shift log…",
+  "authorFallback": "Team member",
+  "countOne": "1 note",
+  "countOther": "{count} notes",
+  "categories": {
+    "sales": "Sales",
+    "guests": "Guests",
+    "staffing": "Staffing",
+    "maintenance": "Maintenance",
+    "other": "Other"
+  }
+}

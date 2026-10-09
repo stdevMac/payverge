@@ -1,0 +1,57 @@
+{
+  "title": "Ops Assistant",
+  "subtitle": "How-to help for your dashboard",
+  "subtitleStaff": "Procedural help for your role",
+  "fabLabel": "Help",
+  "placeholder": "How do I…?",
+  "send": "Send",
+  "welcome": "Need a hand with the dashboard?",
+  "welcomeHint": "I can point you to the right screen or walk through a workflow.",
+  "thinking": "Looking that up…",
+  "close": "Close",
+  "newConversation": "New conversation",
+  "feedbackUp": "Helpful",
+  "feedbackDown": "Not helpful",
+  "assistant": {
+    "conversation": "Ops Assistant conversation",
+    "jumpToLatest": "Jump to latest",
+    "completion": "Response complete",
+    "characterCount": "{current} of {maximum} characters",
+    "usedSource": "{count} source used",
+    "usedSources": "{count} sources used",
+    "sourceRegion": "{count} verified source",
+    "sourcesRegion": "{count} verified sources",
+    "verifiedSource": "Verified Payverge guide",
+    "externalSource": "External source: {hostname}",
+    "actions": "Actions",
+    "steps": "Steps",
+    "entities": "Related items",
+    "availability": "Availability: {availability}",
+    "continuation": "Continue with",
+    "notices": "Notices",
+    "notice": "Notice",
+    "statusComplete": "Complete",
+    "statusNeedsClarification": "Needs clarification",
+    "statusBlocked": "Blocked",
+    "statusDegraded": "Limited response",
+    "workflowProgress": "Step {current} of {total}",
+    "disabledAction": "This action is unavailable",
+    "renderError": "This response could not be displayed."
+  },
+  "suggestions": [
+    "How do I add menu items?",
+    "Where do I connect payments?",
+    "How do I invite staff?"
+  ],
+  "errors": {
+    "generic": "Could not reach the assistant. Try again in a moment.",
+    "retry": "Try again",
+    "contactPrompt": "Still stuck?",
+    "contactCta": "Ask for help"
+  },
+  "nudge": {
+    "setupIncomplete": "Setup is {completed}/{total} complete — need help finishing?",
+    "cta": "Open Assistant",
+    "dismiss": "Dismiss"
+  }
+}

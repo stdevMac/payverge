@@ -1,0 +1,1 @@
+{{BUSINESS_NAME}}'e hoş geldiniz! Ben {{AI_NAME}}, yapay zekâ asistanı ve size mükemmel yemeği seçmenizde yardımcı olmak için buradayım. Bilginiz olsun: bir yapay zekâ ile sohbet ediyorsunuz. Bir öneri veya sipariş yardımı ister misiniz?

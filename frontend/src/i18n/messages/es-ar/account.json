@@ -1,0 +1,26 @@
+{
+  "subtitle": "Administrá la configuración y privacidad de tu cuenta.",
+  "unauthenticated": {
+    "description": "Iniciá sesión para acceder a la configuración de tu cuenta."
+  },
+  "emailPrefs": {
+    "sectionDescription": "Elegí qué correos te envía Payverge. Se aplican a toda tu cuenta.",
+    "errorMessage": "No pudimos cargar tus preferencias de correo. Actualizá la página o volvé a intentarlo en un momento.",
+    "saveErrorToast": "No pudimos guardar ese cambio. Intentá de nuevo."
+  },
+  "notifications": {
+    "sectionDescription": "Las alertas de pedidos, reservas y Telegram se configuran por negocio. Abrí un negocio para administrar sus alertas.",
+    "emptyTitle": "Todavía no tenés negocios",
+    "emptyDescription": "Cuando crees un negocio, vas a poder administrar sus alertas por negocio desde acá.",
+    "errorMessage": "No pudimos cargar tus negocios. Actualizá la página o volvé a intentarlo en un momento."
+  },
+  "privacy": {
+    "deleteDescription": "Desactiva tu cuenta e inicia un período de revisión de 30 días. Puede ser necesario conservar algunos registros tributarios, fiscales, de facturación, fraude, seguridad o legales.",
+    "sectionDescription": "Descargá una copia de los datos de tu cuenta Payverge o solicitá su eliminación.",
+    "exportSuccess": "Tu exportación fue descargada. El archivo es válido por 24 horas — volvé a exportar si necesitás datos más recientes.",
+    "exportError": "No pudimos preparar tu exportación. Intentá de nuevo o contactá a soporte si el problema persiste.",
+    "modalIntro": "Esto desactiva tu cuenta y fija una fecha de revisión de eliminación dentro de 30 días. La eliminación final se revisa porque puede ser necesario conservar algunos registros. Escribí el valor de abajo para confirmar.",
+    "modalConfirmLabel": "Escribí tu correo electrónico para confirmar",
+    "modalError": "La eliminación falló. Asegurate de que la confirmación coincida e intentá de nuevo."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "subtitle": "Tocá tu nombre y luego ingresá tu PIN",
+  "enterPin": "Ingresá tu PIN",
+  "offClock": "Tocá para fichar",
+  "emptyBody": "Asigná un PIN a cada persona en Equipo para usar la terminal de fichaje.",
+  "errWrongPin": "PIN incorrecto. Probá de nuevo.",
+  "errSessionExpired": "La sesión de este dispositivo expiró. Volvé a iniciar sesión para seguir usando la terminal.",
+  "errLocked": "Demasiados intentos. Volvé a intentar en unos minutos.",
+  "errGeneric": "No se pudo registrar. Probá de nuevo.",
+  "loadError": "No pudimos cargar la lista. Probá de nuevo.",
+  "retry": "Reintentar"
+}

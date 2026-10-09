@@ -1,0 +1,10 @@
+{
+  "title": "Horas",
+  "subtitle": "Tus turnos recientes",
+  "loading": "Cargando tus horas…",
+  "empty": "Aún no hay horas registradas",
+  "weekTotal": "Total de la semana",
+  "hoursUnit": "h",
+  "statusPending": "Pendiente",
+  "statusApproved": "Aprobado"
+}

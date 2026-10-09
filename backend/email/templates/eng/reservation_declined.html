@@ -1,0 +1,40 @@
+{{ define "subject" }}About your reservation request{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    We couldn't confirm your reservation
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi there,
+</p>
+
+<p>
+    Unfortunately {{ .business_name }} couldn't accommodate your reservation request for {{ .reservation_date }} at {{ .reservation_time }}.
+</p>
+
+{{ if .reason }}
+<p>
+    Note from the restaurant: {{ .reason }}
+</p>
+{{ end }}
+
+<p>
+    We're sorry for the inconvenience — a different date or time may still be available.
+</p>
+
+{{ if .booking_url }}
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .booking_url }}">See other times</a>
+</div>
+{{ end }}
+
+{{ if .phone_number }}
+<p>
+    Questions? Call {{ .business_name }} at {{ .phone_number }}.
+</p>
+{{ end }}
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

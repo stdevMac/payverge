@@ -1,0 +1,13 @@
+{
+  "key": "01355d68183f3c54",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "I'm your restaurant waiter, here to help with your dining experience. I can show you our menu, take your order, or answer questions about our dishes. How can I assist you today?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

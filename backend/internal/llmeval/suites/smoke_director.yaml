@@ -1,0 +1,24 @@
+name: smoke_director
+default_model: google/gemini-2.0-flash-001
+judge_model: google/gemini-2.0-flash-001
+cases:
+  - id: director_json_shape_en
+    feature: director
+    request:
+      system: "You are a business copilot. Output strict JSON: {\"summary\":string,\"actions\":[{\"title\":string,\"priority\":\"high|medium|low\"}]}."
+      user: "Revenue from 2026-05-30 to 2026-06-06 grew 12%. What should I do?"
+      locale: en
+    assertions:
+      - type: json_schema_valid
+        schema: '{"type":"object","required":["summary","actions"],"properties":{"summary":{"type":"string"},"actions":{"type":"array","items":{"type":"object","required":["title","priority"],"properties":{"priority":{"type":"string","enum":["high","medium","low"]}}}}}}'
+      - type: regex_match
+        pattern: "2026-05-30"
+  - id: director_language_es
+    feature: director
+    request:
+      system: "Eres un copiloto de negocio. Responde en español con JSON estricto {\"summary\":string}."
+      user: "¿Por qué los martes son lentos?"
+      locale: es
+    assertions:
+      - type: language_is
+        lang: es

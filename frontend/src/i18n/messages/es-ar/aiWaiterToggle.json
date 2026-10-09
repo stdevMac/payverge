@@ -1,0 +1,21 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Intentá de nuevo.",
+  "button": {
+    "disableAiWaiter": "Deshabilitar Mozo IA"
+  },
+  "disableModal": {
+    "title": "¿Deshabilitar Mozo IA?",
+    "description": "Esto deshabilitará el conserje digital con IA para tus clientes. No van a poder:",
+    "confirmation": "¿Estás seguro de que querés continuar?"
+  },
+  "enableModal": {
+    "title": "¿Activar Mozo IA?"
+  },
+  "activationCard": {
+    "title": "Activar Mozo IA",
+    "disclaimer": "Podés deshabilitar el Mozo IA en cualquier momento desde esta página.",
+    "buttons": {
+      "activate": "Activar Mozo IA"
+    }
+  }
+}

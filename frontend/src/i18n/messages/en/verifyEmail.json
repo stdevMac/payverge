@@ -1,0 +1,31 @@
+{
+  "labels": {
+    "loading": "Verifying",
+    "success": "Success",
+    "error": "Error"
+  },
+  "headings": {
+    "loading": "Verifying your email",
+    "success": "Email verified",
+    "error": "Verification failed"
+  },
+  "messages": {
+    "verifying": "Verifying your email...",
+    "missingToken": "Missing verification token.",
+    "successDefault": "Email verified successfully. You can sign in now.",
+    "failed": "Failed to verify email.",
+    "alreadyVerified": "This email is already verified. You can sign in."
+  },
+  "actions": {
+    "returnHome": "Return home",
+    "contactSupport": "Contact support",
+    "continueToDashboard": "Continue to dashboard"
+  },
+  "resend": {
+    "sent": "If your account is unverified, a fresh link is on its way.",
+    "prompt": "Didn't get the email?",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Resend verification email"
+  }
+}

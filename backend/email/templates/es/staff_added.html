@@ -1,0 +1,39 @@
+{{ define "subject" }}Miembro del personal añadido{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Miembro del personal añadido
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Un nuevo miembro del personal ha sido añadido a tu negocio en Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Se le ha asignado el rol de <strong>{{ .staff_role }}</strong> y ahora puede acceder a las partes del panel
+    relacionadas con sus responsabilidades.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Puedes gestionar el acceso y los roles del personal en cualquier momento desde el panel.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Gestionar personal
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si esto no era esperado o necesitas hacer cambios, puedes actualizar el acceso del personal directamente en el
+    panel.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

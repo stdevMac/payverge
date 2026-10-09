@@ -1,0 +1,1871 @@
+{
+  "$schema": "./advertised-feature-contract.schema.json",
+  "version": 1,
+  "features": [
+    {
+      "id": "apple-pay",
+      "title": "Apple Pay at guest checkout",
+      "keys": [],
+      "status": "coming_soon",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Stripe plugin enabled for the business"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/stripe/stripe.go",
+          "note": "CreateBillPayment builds Checkout Sessions without payment_method_types or wallet/Payment Request fields — no first-party Apple Pay enablement."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest checkout routes by plugin tile; no Apple Pay / paymentRequest button component in the frontend."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "google-pay",
+      "title": "Google Pay at guest checkout",
+      "keys": [],
+      "status": "coming_soon",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Stripe plugin enabled for the business"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/stripe/stripe.go",
+          "note": "Checkout Session payload has no google_pay / wallet configuration."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "No Google Pay or Payment Request Button UI in guest payment flow."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "usdc-fiat-auto-convert",
+      "title": "USDC auto-convert to fiat instantly",
+      "keys": [],
+      "status": "removed",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/payment/PaymentProcessor.tsx",
+          "note": "USDC path is on-chain ERC-20 transfer to operator settlement wallet — no fiat off-ramp."
+        },
+        {
+          "path": "frontend/src/components/payment/CrossChainPayment.tsx",
+          "note": "autoConvertNotice is guest-token→USDC (LiFi), not USDC→fiat bank conversion."
+        },
+        {
+          "path": "frontend/src/lib/lifi/hooks.ts",
+          "note": "LiFi routes settle to USDC; no conversion-to-fiat code."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "google-reviews-auto-sync",
+      "title": "Automatically sync and display Google Reviews",
+      "keys": [
+        "businessSettings.json#businessPage.googleReviewsDescription",
+        "businessSettings.json#businessPage.comingSoonDescription"
+      ],
+      "status": "coming_soon",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Google Places API key configured"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/i18n/messages/en/businessSettings.json",
+          "note": "Operator copy: Automatically sync and display Google Reviews (Coming Soon)."
+        },
+        {
+          "path": "backend/internal/services/google_places.go",
+          "note": "GetPlaceReviews API helper exists, but operator settings still mark auto sync/display Coming Soon."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "growth"
+    },
+    {
+      "id": "daily-weekly-automated-reports",
+      "title": "Daily and weekly automated email reports",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "daily_email_report or weekly_email_report plugin enabled",
+        "Postmark email configured"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/report_scheduler.go",
+          "note": "ReportScheduler implements sendDailyReport / sendWeeklyReport and schedule sync."
+        },
+        {
+          "path": "backend/internal/services/plugin_init.go",
+          "note": "Catalog seeds daily_email_report and weekly_email_report with schedule config."
+        },
+        {
+          "path": "backend/internal/handlers/plugin_handlers.go",
+          "note": "Operator can enable + configure (hour/timezone/day_of_week) and disable the daily & weekly report schedules; config persists and reads back, and disable is honored — proven live. The underlying ReportSchedule row + actual Postmark dispatch stay unit-test/beta covered (not API-readable)."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:daily-weekly-automated-reports] daily and weekly report schedules enable, configure, and disable"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "unlimited-tables",
+      "title": "Unlimited tables",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Business not suspended by the server administrator"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/server/table_handlers.go",
+          "note": "CreateTableWithQR has no MaxTables / table-count gate."
+        },
+        {
+          "path": "frontend/src/components/business/TableManager.tsx",
+          "note": "Operator table CRUD without a table cap UI."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:unlimited-tables] no table cap is imposed"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "ai-waiter-unlimited-tables",
+      "title": "AI waiter supports menu questions across multiple tables",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance",
+        "AI Waiter enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/server/ai_waiter_handler.go",
+          "note": "AI Waiter is conversation-scoped and can support separate table conversations; surviving copy makes no unlimited-concurrency guarantee."
+        },
+        {
+          "path": "backend/internal/server/table_handlers.go",
+          "note": "Table-scoped guest conversations are supported; capacity still depends on service availability and configured budget controls."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "ai-waiter-24-7",
+      "title": "AI Waiter 24/7 availability",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance",
+        "AI Waiter enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/server/ai_waiter_handler.go",
+          "note": "HTTP AI Waiter chat is available whenever enabled (no business-hours gate)."
+        },
+        {
+          "path": "frontend/src/components/business/AiWaiter",
+          "note": "Operator AI Waiter dashboard for continuous guest channel configuration."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "reservations-24-7",
+      "title": "Accept reservations 24/7 through website",
+      "keys": [
+        "businessDashboard.json#reservations.toggle.features.bookingDesc"
+      ],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Reservations enabled",
+        "Business not suspended by the server administrator"
+      ],
+      "evidence": [
+        {
+          "path": "backend/cmd/app/main.go",
+          "note": "Public reservation create/availability routes under /api/v1/."
+        },
+        {
+          "path": "backend/internal/services/reservation_service.go",
+          "note": "Reservation scheduling for public and staff booking (online intake is always-on; slots respect hours)."
+        },
+        {
+          "path": "backend/internal/services/reservation_service.go",
+          "note": "Live journey proves the always-open online intake outcome: a guest self-books through the public page and gets an auto-confirmed reservation with a confirmation code, no operator on shift. CAVEAT (empirically verified): the reservation slot TIME is bounded by the business's operating hours (line ~1094 'reservation must fall within business operating hours'); an off-hours slot is rejected 400. So '24/7' = round-the-clock intake channel, not round-the-clock seating. The literal '24/7' marketing copy is flagged for P3 to add the operating-hours caveat."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:reservations-24-7] a guest self-books online and receives a confirmation code"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "setup-in-5-minutes",
+      "title": "Guided setup with review before publishing",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/MenuBuilder/AIMenuOnboarding",
+          "note": "Guided AI menu onboarding is live. Timed and 'quick' setup guarantees were removed because no setup-duration instrumentation exists; surviving copy requires review before publishing."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:setup-in-5-minutes] a self-onboarded business publishes a public storefront"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "growth"
+    },
+    {
+      "id": "zero-lost-tickets",
+      "title": "Digital kitchen tickets remain visible in the KDS workflow",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Kitchen display used by staff"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/Kitchen.tsx",
+          "note": "Operator kitchen orders UI presents active digital tickets without claiming that ticket loss is impossible."
+        },
+        {
+          "path": "frontend/src/components/business/KitchenDisplayMode.tsx",
+          "note": "KDS display mode presents digital tickets to the kitchen team."
+        },
+        {
+          "path": "frontend/src/api/kitchenOrders.ts",
+          "note": "Kitchen orders API client."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:zero-lost-tickets] a ticket survives every kitchen status transition"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "guest-locale-count",
+      "title": "Publishable guest-language scope",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "English or Spanish guest-menu content is configured"
+      ],
+      "evidence": [
+        {
+          "path": "locales/registry.json",
+          "note": "Only en, es, and es-AR are both guest locales and publishable for launch."
+        },
+        {
+          "path": "frontend/src/i18n/localeRegistry.ts",
+          "note": "Publishable status is read from the canonical generated registry rather than inferred from bundle count."
+        },
+        {
+          "path": "frontend/src/i18n/guest-messages",
+          "note": "Additional guest message bundles ship as beta and are not counted as launch-ready languages."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:guest-locale-count] the platform serves publishable guest locales and labels others beta"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "qr-ordering",
+      "title": "QR ordering & digital menu",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/server/guest_handlers.go",
+          "note": "Guest table/order endpoints for QR guest flow."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest bill/payment surface after QR order path."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:qr-ordering] an unauthenticated guest orders from a table QR and the kitchen receives it"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "bill-splitting",
+      "title": "Bill splitting",
+      "keys": [],
+      "status": "live",
+      "audience": "guest",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/splitting",
+          "note": "Guest/operator bill split UI components."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:bill-splitting] an approved order's bill splits evenly among guests"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "card-payments-stripe",
+      "title": "Card payments via Stripe",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Stripe plugin enabled",
+        "Stripe secret key configured"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/stripe/stripe.go",
+          "note": "CreateBillPayment Checkout Session for card collection."
+        },
+        {
+          "path": "frontend/src/components/business/plugins/StripeConfig.tsx",
+          "note": "Operator Stripe plugin configuration."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest selects Stripe payment method when enabled."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "paypal-payments",
+      "title": "PayPal payments",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "PayPal plugin enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/paypal",
+          "note": "PayPal payment plugin package."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest payment plugin tiles include PayPal when enabled."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "mercadopago-payments",
+      "title": "Mercado Pago payments",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "AR",
+        "MX",
+        "BR",
+        "CL",
+        "CO",
+        "UY"
+      ],
+      "prerequisites": [
+        "Mercado Pago plugin enabled",
+        "Market AR support for LATAM rails"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/mercadopago",
+          "note": "Mercado Pago payment plugin package."
+        },
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest checkout can route to Mercado Pago when plugin enabled."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "usdc-stablecoin-payments",
+      "title": "USDC accepted at checkout via a signed, FX-locked quote",
+      "keys": [
+        "businessDashboard.json#dashboard.pluginManager.config.usdcPayment.features.instantSettlement"
+      ],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "USDC/crypto plugin enabled",
+        "Settlement wallet configured"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/payment/PaymentProcessor.tsx",
+          "note": "Guest USDC transfer via wallet + on-chain confirm."
+        },
+        {
+          "path": "backend/internal/handlers/payments.go",
+          "note": "Live journey proves a guest bill issues a signed (HMAC), FX-locked USDC quote (usd_microunits at rate 1). Full on-chain settlement to the operator wallet (bill -> paid) is BETA: it needs a live RPC verifier + chain sandbox. NOTE/FLAG: guest QR bills do not carry a settlement address (publicBusinessColumns omits owner wallets, business.go:3910), so guest USDC settlement returns 503 even with a configured wallet — routed to P6/backend."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:usdc-stablecoin-payments] a guest bill issues a signed, FX-locked USDC quote"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "cross-chain-to-usdc",
+      "title": "Cross-chain tokens auto-converted to USDC",
+      "keys": [
+        "businessDashboard.json#dashboard.pluginManager.config.crossChainPayment.howItWorksDesc",
+        "businessDashboard.json#dashboard.pluginManager.config.crossChainPayment.features.autoConversionDesc"
+      ],
+      "status": "coming_soon",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Cross-chain / LiFi path enabled",
+        "Settlement USDC address configured"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/crypto_quote_binding.go",
+          "note": "Guest settlement through this rail is switched off (guestCrossChainSettlementEnabled = services.CrossChainGuestSettlementAvailable = false): a bridged delivery cannot be bound to one payer-bound quote, so cross-chain-payment answers 422 plugin_unavailable and the rail is hidden from guest checkout."
+        },
+        {
+          "path": "backend/internal/services/plugin_init.go",
+          "note": "While guest settlement is off the catalog seeds cross_chain_payment coming-soon (operators cannot enable it; boot switches off existing enablements) with copy that says why."
+        },
+        {
+          "path": "frontend/src/components/payment/CrossChainPayment.tsx",
+          "note": "Guest pays with other tokens; route settles to USDC."
+        },
+        {
+          "path": "frontend/src/lib/lifi/hooks.ts",
+          "note": "LiFi quote/execute to settlement USDC."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "kitchen-display",
+      "title": "Kitchen display system (KDS)",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/KitchenDisplayMode.tsx",
+          "note": "KDS mode UI."
+        },
+        {
+          "path": "frontend/src/components/business/Kitchen.tsx",
+          "note": "Kitchen order board."
+        },
+        {
+          "path": "frontend/src/i18n/messages/en/kitchenDisplay.json",
+          "note": "Kitchen display operator copy."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:kitchen-display] a placed order surfaces as a ticket on the operator kitchen board"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "table-management",
+      "title": "Table management & QR tables",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/TableManager.tsx",
+          "note": "Table CRUD + QR management."
+        },
+        {
+          "path": "backend/internal/server/table_handlers.go",
+          "note": "Table create/update/delete handlers."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:table-management] a created table is persisted with a QR code"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "reservations",
+      "title": "Table reservations",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Reservations enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/reservation_service.go",
+          "note": "Reservation domain service."
+        },
+        {
+          "path": "backend/cmd/app/main.go",
+          "note": "Public and protected reservation routes."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:reservations] a reservation is booked and returns a confirmation code"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "delivery-management",
+      "title": "Delivery management",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Delivery enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/delivery_service.go",
+          "note": "Delivery order/driver/zone service."
+        },
+        {
+          "path": "docs/ONBOARDING.md",
+          "note": "Product overview lists delivery as a platform capability."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:delivery-management] a delivery order is created and its fee is charged to the bill"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "inventory-recipes",
+      "title": "Inventory & recipes",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/database/inventory.go",
+          "note": "Inventory domain database layer."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:inventory-recipes] a menu item is mapped to an ingredient recipe"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "staff-rbac",
+      "title": "Staff management with RBAC",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/server/rbac.go",
+          "note": "Role permission defaults and RBAC keys."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:staff-rbac] role-scoped staff sessions are allowed and denied by permission"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "scheduling-time-clock",
+      "title": "Scheduling & time clock",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/schedule.go",
+          "note": "Weekly schedule drafting and publishing."
+        },
+        {
+          "path": "backend/internal/handlers/timeclock.go",
+          "note": "Staff clock in / clock out."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:scheduling-time-clock] a weekly schedule drafts and staff clock in and out"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "team-messaging",
+      "title": "Team messaging & announcements",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/database/chat_announcement_service.go",
+          "note": "Team announcements are persisted and fanned out."
+        },
+        {
+          "path": "backend/internal/handlers/chat.go",
+          "note": "Team chat routes."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:team-messaging] an announcement is published to the team"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "accounting-payroll",
+      "title": "Accounting, expenses & payroll",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/accounting.go",
+          "note": "Accounting handlers for financial reporting."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:accounting-payroll] an expense entry and a payroll run are recorded and paid"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "analytics-reporting",
+      "title": "Analytics & reporting dashboard",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/analytics.go",
+          "note": "Analytics API handlers."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:analytics-reporting] a settled sale appears as a row in the exported sales report"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "crm-guest-profiles",
+      "title": "CRM & customer profiles",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/crm",
+          "note": "CRM package for customer relationship management."
+        },
+        {
+          "path": "backend/internal/crm/consent.go",
+          "note": "Live journey proves operators persist + retrieve a guest profile's name + email. Phone (and other PII) is consent-redacted on operator reads until the guest opts into cross-business sharing, so it is not asserted — narrowed to the operator-provable name+email outcome."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:crm-guest-profiles] a customer profile persists name and email in the CRM"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "offers-bundles",
+      "title": "Offers & bundles",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/database/offers.go",
+          "note": "Offers storage."
+        },
+        {
+          "path": "backend/internal/database/bundles.go",
+          "note": "Priced bundles storage."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:offers-bundles] an offer and a priced bundle are created and served back"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "business-page-editor",
+      "title": "Business page editor",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/i18n/messages/en/businessSettings.json",
+          "note": "Business page settings surfaces."
+        },
+        {
+          "path": "frontend/src/components/business/GoogleBusinessSearch.tsx",
+          "note": "Business page related Google integration settings."
+        }
+      ],
+      "test_ids": [
+        "advertised-live-capabilities.spec.ts::[claim:business-page-editor] published business edits reach the guest page"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "growth"
+    },
+    {
+      "id": "menu-multilingual",
+      "title": "Multilingual menus",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/locales/locales.go",
+          "note": "Guest locale registry powers guest UI languages."
+        },
+        {
+          "path": "backend/internal/server/business_content_translation.go",
+          "note": "Business content translation helpers for guest locales."
+        },
+        {
+          "path": "backend/internal/services/translation.go",
+          "note": "TranslateTextWithSource is disabled unless GOOGLE_TRANSLATE_API_KEY is set; without it POST /menu/translate is a no-op (English echoed). The advertised translated-menu outcome needs a live, billable Google Cloud Translation key absent from release smoke — reclassified beta. The language-aware guest read path (?language=) is regression-guarded but not claimed live. See P3."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "ai-waiter",
+      "title": "AI Waiter guest service",
+      "keys": [
+        "aiWaiterDashboard.json#title",
+        "aiWaiterToggle.json#activationCard.title"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance",
+        "AI Waiter enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/server/ai_waiter_handler.go",
+          "note": "AI Waiter HTTP handlers."
+        },
+        {
+          "path": "frontend/src/components/business/AiWaiter",
+          "note": "Operator AI Waiter dashboard."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "director-human-approval",
+      "title": "AI proposes, a human applies, every applied action can be undone",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/database/director_proposed_action.go",
+          "note": "A director tool call only writes a DirectorProposedAction row with a PreviewJSON payload — never a menu write. DirectorActionAudit keeps before/after snapshots so undo can restore."
+        },
+        {
+          "path": "backend/internal/server/director_action_handler.go",
+          "note": "Apply and undo are separate human-initiated endpoints; main.go gates both behind director:write AND menu:write."
+        },
+        {
+          "path": "backend/internal/services/director_tools/tool_propose_price_change.go",
+          "note": "The repricing tool the margin vignette illustrates: menu-engineering flags a popular low-margin dish, the tool proposes a price, a human applies it."
+        },
+        {
+          "path": "backend/internal/server/ai_waiter_handler.go",
+          "note": "Backs the chat chip: a staff claim sets IsPaused, and while the claim is live the AI stops replying to the guest."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "412cb4d67",
+        "date": "2026-07-31"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "director-console",
+      "title": "Director Console (Sage)",
+      "keys": [
+        "directorConsole.json#title"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/director_console_service.go",
+          "note": "Director Console service."
+        },
+        {
+          "path": "frontend/src/components/business/DirectorConsole",
+          "note": "Operator Director Console UI."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "director-daily-digest",
+      "title": "Director daily AI digest email",
+      "keys": [
+        "directorConsole.json#title"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance",
+        "Director digest enabled"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/director_digest_scheduler.go",
+          "note": "Schedules director digest emails."
+        },
+        {
+          "path": "backend/internal/emails/senders.go",
+          "note": "SendDirectorDigestEmail transactional sender."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "ai-menu-digitizer",
+      "title": "AI menu digitizer",
+      "keys": [
+        "aiMenuOnboarding.json#wizard.title"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/MenuBuilder/AIMenuOnboarding",
+          "note": "AI menu onboarding wizard."
+        },
+        {
+          "path": "frontend/src/i18n/messages/en/aiMenuOnboarding.json",
+          "note": "AI menu digitizer/onboarding copy."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "ai-menu-images",
+      "title": "AI menu image generation",
+      "keys": [],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/server/menu_enhancements.go",
+          "note": "AI menu image generation and enhancement routes."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "203f39927",
+        "date": "2026-08-01"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "marketing-studio",
+      "title": "AI Marketing Studio",
+      "keys": [
+        "marketingDashboard.json#hero.eyebrow"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/Marketing",
+          "note": "Marketing studio operator UI."
+        },
+        {
+          "path": "frontend/src/i18n/messages/en/marketingDashboard.json",
+          "note": "Marketing studio dashboard copy."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "ops-assistant",
+      "title": "AI Ops Assistant",
+      "keys": [
+        "opsAssistant.json#title"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/opsAssistant/OpsAssistantWidget.tsx",
+          "note": "Ops Assistant widget."
+        },
+        {
+          "path": "frontend/src/api/opsAssistant.ts",
+          "note": "Ops Assistant API client."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "counter-service",
+      "title": "Counter / walk-up service",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/Kitchen.tsx",
+          "note": "Kitchen/order flows support non-table service patterns alongside table service."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:counter-service] a walk-up bill is created against an active counter"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "prime-cost-analytics",
+      "title": "Prime cost & labor tracking",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/accounting.go",
+          "note": "Accounting/labor reporting endpoints support prime-cost style metrics."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:prime-cost-analytics] prime cost composes labor and food cost from real data"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "waste-variance-analytics",
+      "title": "Waste & variance analytics",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/database/inventory.go",
+          "note": "Inventory movements underpin waste/variance analysis."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:waste-variance-analytics] tracked waste and variance are computed from recipe usage"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "menu-engineering",
+      "title": "Menu engineering matrix",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/handlers/accounting.go",
+          "note": "Menu-engineering quadrant classification of sold dishes."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:menu-engineering] a sold dish is classified into a menu-engineering quadrant"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "plugins-marketplace",
+      "title": "Plugins marketplace",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/registry.go",
+          "note": "Plugin registry and category fan-out."
+        },
+        {
+          "path": "backend/internal/services/plugin_init.go",
+          "note": "Default plugin catalog seed."
+        }
+      ],
+      "test_ids": [
+        "advertised-live-capabilities.spec.ts::[claim:plugins-marketplace] active plugin catalog is served by the built backend"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "onboarding-dashboard-setup",
+      "title": "Dashboard team setup onboarding",
+      "keys": [
+        "dashboardSetup.json#title"
+      ],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/i18n/messages/en/dashboardSetup.json",
+          "note": "Team setup checklist copy."
+        }
+      ],
+      "test_ids": [
+        "advertised-live-capabilities.spec.ts::[claim:onboarding-dashboard-setup] setup status is readable"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "onboarding-manual",
+      "title": "Manual staff/owner onboarding join",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/app/(shop)/business/register/page.tsx",
+          "note": "Owners self-onboard a business with no plan step and no AI."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:onboarding-manual] an owner self-onboards a working business without AI"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "onboarding-ai-menu",
+      "title": "AI menu onboarding wizard",
+      "keys": [
+        "aiMenuOnboarding.json#wizard.title",
+        "aiMenuOnboarding.json#wizard.description"
+      ],
+      "status": "beta",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "LLM provider configured on the instance"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/MenuBuilder/AIMenuOnboarding",
+          "note": "AI menu onboarding component."
+        },
+        {
+          "path": "frontend/src/i18n/messages/en/aiMenuOnboarding.json",
+          "note": "Wizard copy for AI menu onboarding."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "ai"
+    },
+    {
+      "id": "security-tls-in-transit",
+      "title": "TLS encryption in transit (legal claim)",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "deploy/payverge.caddy",
+          "note": "Self-host Caddy edge that terminates TLS and serves the frontend, /api/v1 and /media on one origin."
+        },
+        {
+          "path": "backend/internal/middleware/security.go",
+          "note": "Backend sets Strict-Transport-Security (max-age=31536000; includeSubDomains) on production responses."
+        }
+      ],
+      "test_ids": [
+        "advertised-live-capabilities.spec.ts::[claim:security-tls-in-transit] release edge serves the privacy page over TLS"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "legal"
+    },
+    {
+      "id": "security-access-controls",
+      "title": "Access controls & authentication (legal claim)",
+      "keys": [],
+      "status": "live",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/auth",
+          "note": "Auth package (JWT, OAuth, SIWE)."
+        },
+        {
+          "path": "backend/internal/server/rbac.go",
+          "note": "RBAC permission matrix."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:security-access-controls] protected routes reject unauthenticated and cross-tenant access"
+      ],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "legal"
+    },
+    {
+      "id": "security-pci-processor",
+      "title": "PCI DSS via processors (legal claim)",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Card payments via Stripe/PayPal/MercadoPago only — Payverge stores no PANs"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/plugins/stripe/stripe.go",
+          "note": "Card data collected via Stripe Checkout, not stored by Payverge."
+        },
+        {
+          "path": "backend/internal/server/guest_handlers.go",
+          "note": "Structural SAQ-A journey: the guest payment request binds no PAN/CVV fields, so forged card data is dropped (never echoed/stored), and card payments are a processor redirect (return_url/cancel_url). Proven live by the no-PAN release journey. Broader PCI attestation remains counsel-owned (P3)."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "legal"
+    },
+    {
+      "id": "security-at-rest-sensitive",
+      "title": "Encryption of sensitive data at rest (legal claim — not currently published)",
+      "keys": [],
+      "status": "coming_soon",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "PLUGIN_SECRET_KEY envelope encryption deployed to production"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/security/secrets.go",
+          "note": "App-level at-rest encryption covers plugin credentials only (AES-GCM envelope keyed by PLUGIN_SECRET_KEY); the Postgres volume is not app-encrypted, so the broad at-rest claim stays unpublished (keys empty)."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "legal"
+    },
+    {
+      "id": "security-audits-claim",
+      "title": "Internal security reviews (legal claim)",
+      "keys": [],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "docs/runbooks/credential-exposure-response.md",
+          "note": "Internal security-review process claim. The review write-ups are private and not published in this repository; no third-party penetration test is claimed. Reclassified beta (evidence-doc); narrow copy to 'internal reviews'."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "legal"
+    },
+    {
+      "id": "docs-onboarding-feature-list",
+      "title": "docs/ONBOARDING product capability list",
+      "keys": [
+        "docs/ONBOARDING.md"
+      ],
+      "status": "beta",
+      "audience": "public-marketing",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "docs/ONBOARDING.md",
+          "note": "Contributor onboarding lists AI waiter, POS/KDS, payments, plugins, fiscal, etc."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "b88c4ddb6",
+        "date": "2026-07-11"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "waiter-call",
+      "title": "Guest waiter call from the table QR page",
+      "keys": [],
+      "status": "live",
+      "audience": "guest",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/guest/CallWaiterButton.tsx",
+          "note": "Guest table-page waiter call with water/order/check reason chips, live open→acknowledged→resolved status polling, and cooldown handling."
+        },
+        {
+          "path": "backend/internal/server/service_call_handlers.go",
+          "note": "Service-call endpoints create and poll table service requests."
+        },
+        {
+          "path": "backend/internal/services/operational_alerts/service.go",
+          "note": "Service calls raise operational alerts staff claim and resolve from the dashboard."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:waiter-call] a guest raises a waiter call from the table and the floor resolves it"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "printing-print-studio",
+      "title": "Receipt/kitchen printing and menu print studio",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Configured printer or an active browser print station"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/services/print/service.go",
+          "note": "Print queue service with role-based printer routing, jobs, and health."
+        },
+        {
+          "path": "backend/internal/services/print/formatters/kitchen.go",
+          "note": "Kitchen ticket formatter alongside bill and receipt formatters."
+        },
+        {
+          "path": "frontend/src/components/business/MenuBuilder/print/PrintMenuStudio.tsx",
+          "note": "Menu print studio composes designed, print-ready menu documents from the digital menu."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:printing-print-studio] a bill print job renders, routes to a station, and completes the browser print lifecycle"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "operator-alerts",
+      "title": "Real-time operator alerts (in-app + Telegram)",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Telegram plugin connected for Telegram notifications"
+      ],
+      "evidence": [
+        {
+          "path": "frontend/src/components/business/operational-alerts/OperationalAlertsProvider.tsx",
+          "note": "In-app live operational alerts with claim/resolve/snooze and an optional alert sound."
+        },
+        {
+          "path": "backend/internal/services/telegram_notification_templates.go",
+          "note": "Localized Telegram operator notifications: orders, payments received, reservations, low stock, daily summary, schedule events."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:operator-alerts] a new order raises a real-time alert that staff claim, resolve, and audit"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "cash-register",
+      "title": "Cash register sessions and reconciliation",
+      "keys": [],
+      "status": "live",
+      "audience": "operator",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "backend/internal/services/cashregister/service.go",
+          "note": "Cash sessions with opening float, manual cash-in/out movements, close computing expected vs counted variance, and unassigned-cash listing."
+        },
+        {
+          "path": "frontend/src/components/business/CashRegisterDashboard.tsx",
+          "note": "Operator cash register dashboard: drawer, movements, unassigned cash, closed shifts."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:cash-register] a cash drawer session tracks tenders, movements, and closes with a real variance"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "fiscal-invoicing-ar",
+      "title": "Electronic fiscal invoicing with ARCA/AFIP (Argentina)",
+      "keys": [],
+      "status": "market_limited",
+      "audience": "operator",
+      "markets": [
+        "AR"
+      ],
+      "prerequisites": [
+        "Fiscal setup completed (tax profile, tax condition, point of sale)"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/fiscal/service.go",
+          "note": "Fiscal service queues electronic invoices for paid bills and issues credit notes for refunds and manual operator corrections (bills with confirmed payments cannot be voided)."
+        },
+        {
+          "path": "backend/internal/fiscal/providers/ar/factory.go",
+          "note": "Argentina ARCA provider implementation for electronic invoicing."
+        },
+        {
+          "path": "frontend/src/i18n/messages/en/fiscal.json",
+          "note": "Operator invoice dashboard: sandbox/production environments and AR tax conditions."
+        }
+      ],
+      "test_ids": [],
+      "last_verified": {
+        "sha": "9b8c570ec",
+        "date": "2026-08-10"
+      },
+      "owner": "platform"
+    },
+    {
+      "id": "digital-tipping",
+      "title": "Digital tipping at checkout with tip analytics",
+      "keys": [],
+      "status": "live",
+      "audience": "guest",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [],
+      "evidence": [
+        {
+          "path": "frontend/src/components/guest/PaymentSection.tsx",
+          "note": "Guest checkout tip selector with percentage presets and a custom amount input; tip_amount recorded with the payment."
+        },
+        {
+          "path": "frontend/src/components/dashboard/panels/ServiceTipsPanel.tsx",
+          "note": "Tips analytics: totals, trend, distribution, hourly tips."
+        },
+        {
+          "path": "backend/internal/services/delivery_payment.go",
+          "note": "Delivery checkout supports driver tips."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:digital-tipping] a tip is collected at checkout, kept out of bill revenue, and reported in tip analytics"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "payments"
+    },
+    {
+      "id": "loyalty-rewards",
+      "title": "Loyalty points, tiers, and bill redemption",
+      "keys": [],
+      "status": "live",
+      "audience": "guest",
+      "markets": [
+        "global"
+      ],
+      "prerequisites": [
+        "Loyalty program enabled in CRM"
+      ],
+      "evidence": [
+        {
+          "path": "backend/internal/crm/settlement.go",
+          "note": "Loyalty points accrue automatically when payments settle."
+        },
+        {
+          "path": "backend/internal/loyalty/redemption.go",
+          "note": "Point redemption converts points to a bill discount; void restores redeemed points."
+        },
+        {
+          "path": "frontend/src/components/business/crm/LoyaltyTab.tsx",
+          "note": "Loyalty program management with tier editor (names, colors, spend thresholds)."
+        },
+        {
+          "path": "frontend/src/components/guest/GuestBill.tsx",
+          "note": "Guests redeem points against the live bill; discount shows as a bill line."
+        }
+      ],
+      "test_ids": [
+        "advertised-operator-capabilities.spec.ts::[claim:loyalty-rewards] a loyalty program publishes its tiers and redemption rate and guards point redemption"
+      ],
+      "last_verified": {
+        "sha": "535146e48",
+        "date": "2026-07-31"
+      },
+      "owner": "platform"
+    }
+  ]
+}

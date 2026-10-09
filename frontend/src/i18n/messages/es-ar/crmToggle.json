@@ -1,0 +1,7 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Intentá de nuevo.",
+  "disableModal": {
+    "description": "Esto desactivará las funciones de Gestión de Relaciones con Clientes. No vas a poder:",
+    "confirmation": "¿Estás seguro de que querés continuar?"
+  }
+}

@@ -1,0 +1,77 @@
+{
+    "title": "Plugin Management",
+    "subtitle": "Manage platform plugins and integrations",
+    "toasts": {
+        "createSuccess": "Plugin created successfully.",
+        "createError": "Failed to create plugin.",
+        "updateSuccess": "Plugin updated successfully.",
+        "updateError": "Failed to update plugin.",
+        "enabledSuccess": "Plugin enabled successfully.",
+        "disabledSuccess": "Plugin disabled successfully.",
+        "toggleError": "Failed to toggle plugin status.",
+        "deactivateSuccess": "Plugin deactivated successfully.",
+        "deactivateError": "Failed to deactivate plugin."
+    },
+    "addNewPlugin": "Add New Plugin",
+    "searchPlaceholder": "Search by name...",
+    "categoryLabel": "Category",
+    "allCategories": "All Categories",
+    "category": {
+        "payment": "Payment Processing",
+        "analytics": "Analytics & Reporting",
+        "integration": "Third-party Integration",
+        "reporting": "Tax & Compliance",
+        "marketing": "Marketing & CRM"
+    },
+    "tableHeader": {
+        "name": "NAME",
+        "category": "CATEGORY",
+        "status": "STATUS",
+        "actions": "ACTIONS"
+    },
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "comingSoon": "Coming Soon"
+    },
+    "actions": {
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "create": "Create Plugin",
+        "update": "Update Plugin"
+    },
+    "views": {
+        "group": "Plugin view",
+        "table": "Table view",
+        "list": "List view",
+        "grid": "Grid view"
+    },
+    "noPluginsFound": "No plugins found",
+    "noDescription": "No description available.",
+    "createModal": {
+        "title": "Create New Plugin"
+    },
+    "editModal": {
+        "title": "Edit Plugin"
+    },
+    "deleteModal": {
+        "title": "Delete Plugin",
+        "confirmMessage": "Are you sure you want to delete the plugin \"{name}\"?",
+        "warning": "This action cannot be undone."
+    },
+    "form": {
+        "pluginName": "Plugin Name",
+        "displayName": "Display Name",
+        "category": "Category",
+        "version": "Version",
+        "image": "Image URL",
+        "comingSoon": "Coming Soon",
+        "description": "Description (Legacy)",
+        "message": "Message",
+        "features": "Features (JSON Array)",
+        "configSchema": "Config Schema (JSON)"
+    }
+}

@@ -1,0 +1,11 @@
+# Payverge public demo: cron alternative to demo/systemd/ (pick one, not both).
+# crontab -e as a user in the docker group. CRON_TZ needs cronie or Vixie
+# cron; on a host whose clock is not UTC without CRON_TZ, adjust the hour.
+CRON_TZ=UTC
+DEMO_COMPOSE_DIR=/opt/payverge
+# DEMO_HEALTH_URL=https://demo.payverge.io/api/v1/health/ready
+# DEMO_ALERT_URL=https://ntfy.sh/<your-private-topic>
+0 3 * * * /opt/payverge/demo/reset-demo.sh >>/var/log/payverge-demo-reset.log 2>&1
+# Hourly watchdog: alerts (DEMO_ALERT_URL) and exits non-zero when the last
+# good reset is older than DEMO_RESET_MAX_AGE_HOURS (default 26).
+17 * * * * /opt/payverge/demo/reset-demo.sh --check >>/var/log/payverge-demo-reset.log 2>&1

@@ -1,0 +1,40 @@
+{{ define "subject" }}Sobre tu solicitud de reservación{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    No pudimos confirmar tu reservación
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola,
+</p>
+
+<p>
+    Lamentablemente {{ .business_name }} no pudo aceptar tu solicitud de reservación para el {{ .reservation_date }} a las {{ .reservation_time }}.
+</p>
+
+{{ if .reason }}
+<p>
+    Nota del restaurante: {{ .reason }}
+</p>
+{{ end }}
+
+<p>
+    Sentimos el inconveniente — es posible que otra fecha u horario aún esté disponible.
+</p>
+
+{{ if .booking_url }}
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .booking_url }}">Ver otros horarios</a>
+</div>
+{{ end }}
+
+{{ if .phone_number }}
+<p>
+    ¿Tienes preguntas? Llama a {{ .business_name }} al {{ .phone_number }}.
+</p>
+{{ end }}
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

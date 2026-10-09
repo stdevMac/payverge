@@ -1,0 +1,13 @@
+{
+  "key": "ce7d5e4388c3a6d3",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Las ventas del 2026-05-01 al 2026-05-31 cayeron un 8%. Se necesita una intervención inmediata para revertir la tendencia.\",\"diagnosis\":\"La caída del 8% en ventas mensuales sugiere un problema de atracción de clientes o de retención que requiere análisis detallado.\",\"actions\":[{\"title\":\"Analizar fuentes de tráfico por canal\",\"priority\":\"high\"},{\"title\":\"Revisar precios y promociones competitivas\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "updateError": "Failed to update settings. Please try again.",
+  "button": {
+    "disableCRM": "Disable CRM"
+  },
+  "disableModal": {
+    "title": "Disable CRM?",
+    "description": "This will disable Customer Relationship Management features. You will not be able to:",
+    "features": {
+      "customers": "Manage customer profiles",
+      "loyalty": "Track loyalty points and rewards",
+      "visits": "Record customer visits",
+      "marketing": "Send targeted marketing"
+    },
+    "confirmation": "Are you sure you want to continue?",
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Yes, Disable"
+    }
+  },
+  "enableModal": {
+    "title": "Activate CRM?",
+    "description": "This will enable Customer Relationship Management features for your business.",
+    "features": {
+      "customers": "Manage customer profiles and contact information",
+      "loyalty": "Track loyalty points and rewards per customer",
+      "visits": "Record customer visits and spending history",
+      "marketing": "Send targeted promotions and communications"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Activate"
+    }
+  },
+  "activationCard": {
+    "title": "Activate Customer Relationship Management",
+    "description": "Build lasting relationships with your customers through loyalty programs, visit tracking, and personalized marketing.",
+    "hint": "Keep profiles, rewards, visits, and outreach in one customer workspace.",
+    "features": {
+      "customers": {
+        "title": "Customer Profiles",
+        "description": "Manage customer information and contact details"
+      },
+      "loyalty": {
+        "title": "Loyalty Programs",
+        "description": "Track points and rewards for repeat customers"
+      },
+      "visits": {
+        "title": "Visit Tracking",
+        "description": "Record customer visits and spending history"
+      },
+      "marketing": {
+        "title": "Marketing Tools",
+        "description": "Send targeted promotions and communications"
+      }
+    },
+    "button": "Activate CRM"
+  }
+}

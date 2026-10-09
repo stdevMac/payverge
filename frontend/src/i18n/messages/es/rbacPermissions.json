@@ -1,0 +1,542 @@
+{
+  "business:read": {
+    "label": "Negocio — ver perfil",
+    "description": "Ver el perfil del negocio, sus datos básicos y el acceso al panel."
+  },
+  "business:write": {
+    "label": "Negocio — editar perfil",
+    "description": "Editar la información principal del negocio: nombre, datos de contacto y direcciones."
+  },
+  "business:delete": {
+    "label": "Negocio — eliminar negocio",
+    "description": "Cerrar y eliminar este negocio de forma permanente. Acción de nivel propietario."
+  },
+  "business:settings": {
+    "label": "Negocio — administrar ajustes",
+    "description": "Cambiar los ajustes del negocio, incluidas las actualizaciones de perfil y su cierre."
+  },
+  "staff:read": {
+    "label": "Personal — ver miembros",
+    "description": "Ver la plantilla del equipo y los roles y permisos de cada miembro."
+  },
+  "staff:write": {
+    "label": "Personal — editar miembros",
+    "description": "Editar los datos de los miembros del equipo, como nombre e información de contacto."
+  },
+  "staff:invite": {
+    "label": "Personal — invitar miembros",
+    "description": "Enviar, reenviar y revocar invitaciones al equipo y compartir enlaces de invitación."
+  },
+  "staff:remove": {
+    "label": "Personal — quitar miembros",
+    "description": "Quitar a un miembro de la plantilla del equipo."
+  },
+  "staff:roles": {
+    "label": "Personal — administrar roles",
+    "description": "Administrar el conjunto de roles que usa el equipo."
+  },
+  "staff:delete": {
+    "label": "Personal — eliminar cuentas",
+    "description": "Eliminar la cuenta de un miembro del equipo y revocar su acceso."
+  },
+  "staff:role": {
+    "label": "Personal — cambiar el rol de un miembro",
+    "description": "Cambiar el rol de un miembro (camarero, anfitrión, cocina, encargado)."
+  },
+  "staff:permissions": {
+    "label": "Personal — otorgar permisos personalizados",
+    "description": "Otorgar, revocar o denegar permisos individuales más allá de los del rol."
+  },
+  "staff:deactivate": {
+    "label": "Personal — desactivar miembros",
+    "description": "Desactivar temporalmente el acceso de un miembro sin eliminar su cuenta."
+  },
+  "staff:reactivate": {
+    "label": "Personal — reactivar miembros",
+    "description": "Restaurar el acceso de un miembro previamente desactivado."
+  },
+  "staff:audit": {
+    "label": "Personal — ver registro de auditoría",
+    "description": "Revisar el historial de cambios de roles y permisos."
+  },
+  "staff:admin": {
+    "label": "Personal — administración completa",
+    "description": "Control total de la gestión del personal, incluidas todas las operaciones del equipo."
+  },
+  "menu:read": {
+    "label": "Menú — ver",
+    "description": "Ver el menú, las ofertas y los combos en el panel."
+  },
+  "menu:write": {
+    "label": "Menú — editar y crear",
+    "description": "Crear y reordenar menús, gestionar ofertas y combos, y usar las herramientas de menú con IA."
+  },
+  "menu:translate": {
+    "label": "Menú — traducir",
+    "description": "Ejecutar y gestionar las traducciones del menú a los idiomas de los clientes."
+  },
+  "menu:categories": {
+    "label": "Menú — administrar categorías",
+    "description": "Agregar, editar y eliminar categorías del menú."
+  },
+  "menu:items": {
+    "label": "Menú — administrar platos",
+    "description": "Agregar, editar y eliminar platos del menú."
+  },
+  "tables:read": {
+    "label": "Mesas — ver",
+    "description": "Ver las mesas, los espacios y el estado de las mesas en vivo."
+  },
+  "tables:write": {
+    "label": "Mesas — editar",
+    "description": "Editar los datos de las mesas, organizar los espacios y aplicar la marca a los QR."
+  },
+  "tables:create": {
+    "label": "Mesas — crear",
+    "description": "Crear mesas nuevas con códigos QR y configurar los espacios del salón."
+  },
+  "tables:delete": {
+    "label": "Mesas — eliminar",
+    "description": "Quitar mesas del plano del salón."
+  },
+  "tables:qr": {
+    "label": "Mesas — administrar códigos QR",
+    "description": "Administrar y regenerar los códigos QR que los clientes escanean en cada mesa."
+  },
+  "bills:read": {
+    "label": "Cuentas — ver",
+    "description": "Ver las cuentas abiertas y el historial de cuentas de clientes."
+  },
+  "bills:write": {
+    "label": "Cuentas — editar",
+    "description": "Actualizar los datos de una cuenta, incluido el cliente fiscal asociado."
+  },
+  "bills:create": {
+    "label": "Cuentas — crear",
+    "description": "Abrir cuentas nuevas para los clientes."
+  },
+  "bills:close": {
+    "label": "Cuentas — cerrar",
+    "description": "Cerrar cuentas ya saldadas."
+  },
+  "bills:items": {
+    "label": "Cuentas — administrar ítems",
+    "description": "Agregar ítems a una cuenta y ajustar o anular líneas."
+  },
+  "bills:payment": {
+    "label": "Cuentas — registrar pagos",
+    "description": "Registrar pagos presenciales como efectivo y tarjeta para saldar cuentas."
+  },
+  "bills:refund": {
+    "label": "Cuentas — anular y reembolsar",
+    "description": "Anular o reembolsar una cuenta, revirtiendo dinero. Solo propietario por defecto."
+  },
+  "refunds:crypto:request": {
+    "label": "Reembolsos cripto — solicitar",
+    "description": "Iniciar una solicitud de reembolso cripto on-chain para una cuenta pagada. Solo propietario por defecto."
+  },
+  "refunds:crypto:approve": {
+    "label": "Reembolsos cripto — aprobar",
+    "description": "Aprobar solicitudes de reembolso cripto y pasarlas a la firma. Solo propietario por defecto."
+  },
+  "orders:read": {
+    "label": "Pedidos — ver",
+    "description": "Ver los pedidos entrantes y el historial de pedidos."
+  },
+  "orders:write": {
+    "label": "Pedidos — editar",
+    "description": "Editar los datos y el contenido de los pedidos."
+  },
+  "orders:create": {
+    "label": "Pedidos — crear",
+    "description": "Crear pedidos nuevos y cotizaciones en nombre de los clientes."
+  },
+  "orders:status": {
+    "label": "Pedidos — actualizar estado",
+    "description": "Avanzar o cancelar pedidos a medida que pasan por la preparación."
+  },
+  "orders:kitchen": {
+    "label": "Cocina — pantalla y comandas",
+    "description": "Usar la pantalla de cocina y recibir los trabajos de impresión de comandas."
+  },
+  "analytics:read": {
+    "label": "Analíticas — ver panel",
+    "description": "Abrir la pestaña de analíticas y ver los reportes de rendimiento."
+  },
+  "analytics:sales": {
+    "label": "Analíticas — ventas",
+    "description": "Ver las analíticas de ventas y los ingresos a lo largo del tiempo."
+  },
+  "analytics:tips": {
+    "label": "Analíticas — propinas",
+    "description": "Ver las analíticas de propinas, incluidas las propinas por miembro del equipo."
+  },
+  "analytics:items": {
+    "label": "Analíticas — platos",
+    "description": "Ver el rendimiento de ventas por plato."
+  },
+  "reports:read": {
+    "label": "Reportes — ver",
+    "description": "Ver los reportes del negocio."
+  },
+  "reports:export": {
+    "label": "Reportes — exportar",
+    "description": "Exportar los datos de ventas y el historial de pagos en archivos CSV."
+  },
+  "financial:read": {
+    "label": "Finanzas — ver",
+    "description": "Ver la contabilidad: pérdidas y ganancias, asientos y corridas de nómina."
+  },
+  "financial:write": {
+    "label": "Finanzas — administrar libro contable",
+    "description": "Crear y anular asientos manuales, categorías, plantillas recurrentes y cierres de período."
+  },
+  "financial:withdraw": {
+    "label": "Finanzas — retirar fondos",
+    "description": "Retirar fondos liquidados del saldo del negocio."
+  },
+  "financial:blockchain": {
+    "label": "Finanzas — liquidación cripto",
+    "description": "Administrar la liquidación en blockchain y las direcciones de cobro cripto."
+  },
+  "payroll:write": {
+    "label": "Nómina — generar y pagar",
+    "description": "Crear, pagar y anular corridas de nómina y fijar las tarifas del personal. Solo propietario por defecto."
+  },
+  "plugins:read": {
+    "label": "Plugins — ver",
+    "description": "Ver los plugins instalados y su estado de conexión."
+  },
+  "plugins:write": {
+    "label": "Plugins — activar y desactivar",
+    "description": "Activar o desactivar los plugins de pagos e integraciones."
+  },
+  "plugins:config": {
+    "label": "Plugins — configurar",
+    "description": "Ver y editar la configuración de los plugins y probar sus conexiones."
+  },
+  "plugins:payments": {
+    "label": "Plugins — registrar pagos",
+    "description": "Registrar pagos de plugins y ver su historial de pagos."
+  },
+  "delivery:settings:read": {
+    "label": "Entrega — ver configuración",
+    "description": "Ver la configuración de entregas, las zonas y las tarifas."
+  },
+  "delivery:settings:write": {
+    "label": "Entrega — editar configuración",
+    "description": "Editar las zonas de entrega, tarifas, horarios y enlaces de socios."
+  },
+  "delivery:dispatch:read": {
+    "label": "Entrega — ver despacho",
+    "description": "Ver los pedidos de entrega y su estado en vivo."
+  },
+  "delivery:dispatch:write": {
+    "label": "Entrega — gestionar despacho",
+    "description": "Crear y actualizar pedidos de entrega, asignar repartidores y cambiar el estado de la entrega."
+  },
+  "delivery:drivers:read": {
+    "label": "Entrega — ver repartidores",
+    "description": "Ver la plantilla de repartidores, su disponibilidad y su rendimiento."
+  },
+  "delivery:drivers:write": {
+    "label": "Entrega — gestionar repartidores",
+    "description": "Agregar, editar y quitar repartidores."
+  },
+  "settings:read": {
+    "label": "Configuración — ver",
+    "description": "Ver la configuración del negocio: horarios, galería y servicios conectados."
+  },
+  "settings:write": {
+    "label": "Configuración — editar",
+    "description": "Editar horarios de atención, galería, funciones y servicios conectados como WhatsApp."
+  },
+  "settings:design": {
+    "label": "Configuración — diseño y marca",
+    "description": "Personalizar el diseño, los colores y la marca de la página del negocio."
+  },
+  "settings:google": {
+    "label": "Configuración — perfil de Google",
+    "description": "Vincular, actualizar o quitar el perfil de Google Business."
+  },
+  "settings:currency": {
+    "label": "Configuración — moneda",
+    "description": "Administrar la configuración de moneda del negocio."
+  },
+  "settings:language": {
+    "label": "Configuración — idiomas",
+    "description": "Administrar la configuración de idiomas del negocio."
+  },
+  "currencies:read": {
+    "label": "Monedas — ver",
+    "description": "Ver las monedas habilitadas para este negocio."
+  },
+  "currencies:write": {
+    "label": "Monedas — editar",
+    "description": "Cambiar qué monedas acepta y muestra el negocio."
+  },
+  "languages:read": {
+    "label": "Idiomas — ver",
+    "description": "Ver los idiomas habilitados para los clientes y el menú."
+  },
+  "languages:write": {
+    "label": "Idiomas — editar",
+    "description": "Cambiar qué idiomas ofrece el negocio a los clientes."
+  },
+  "files:upload": {
+    "label": "Archivos — subir",
+    "description": "Subir imágenes y archivos, incluido el logo del negocio."
+  },
+  "files:delete": {
+    "label": "Archivos — eliminar",
+    "description": "Eliminar archivos subidos anteriormente."
+  },
+  "counter:read": {
+    "label": "Mostradores — ver",
+    "description": "Ver los mostradores para llevar y su disponibilidad."
+  },
+  "counter:write": {
+    "label": "Mostradores — editar",
+    "description": "Crear y editar mostradores para pedidos para llevar."
+  },
+  "counter:settings": {
+    "label": "Mostradores — configuración",
+    "description": "Cambiar la configuración de los mostradores y sus opciones de pedido."
+  },
+  "overview:read": {
+    "label": "Resumen — ver",
+    "description": "Abrir la pestaña de resumen y recibir eventos del panel en tiempo real."
+  },
+  "overview:kpi": {
+    "label": "Resumen — KPIs",
+    "description": "Ver los resúmenes de KPIs y las cuentas en vivo en el panel de resumen."
+  },
+  "crm:read": {
+    "label": "Clientes — ver",
+    "description": "Ver los perfiles de clientes, segmentos, direcciones y estado de lealtad."
+  },
+  "crm:write": {
+    "label": "Clientes — editar",
+    "description": "Editar notas, etiquetas, direcciones y la configuración de lealtad, y vincular o desvincular clientes."
+  },
+  "crm:export": {
+    "label": "Clientes — exportar",
+    "description": "Exportar la lista de clientes en un archivo CSV."
+  },
+  "inventory:read": {
+    "label": "Inventario — ver",
+    "description": "Ver los niveles de stock, los movimientos y la configuración del inventario."
+  },
+  "inventory:write": {
+    "label": "Inventario — editar",
+    "description": "Crear y editar artículos del inventario y su configuración."
+  },
+  "inventory:adjust": {
+    "label": "Inventario — ajustar stock",
+    "description": "Registrar ajustes y conteos de stock."
+  },
+  "inventory:recipes": {
+    "label": "Inventario — recetas",
+    "description": "Ver y editar las recetas que vinculan los platos del menú con sus ingredientes."
+  },
+  "reservations:read": {
+    "label": "Reservaciones — ver",
+    "description": "Ver las reservaciones, sus estadísticas y su configuración."
+  },
+  "reservations:write": {
+    "label": "Reservaciones — gestionar",
+    "description": "Actualizar reservaciones: asignar mesas, registrar llegadas, marcar ausencias y promover la lista de espera."
+  },
+  "reservations:create": {
+    "label": "Reservaciones — crear",
+    "description": "Crear reservaciones en nombre de los clientes."
+  },
+  "reservations:delete": {
+    "label": "Reservaciones — cancelar",
+    "description": "Cancelar reservaciones."
+  },
+  "reservations:settings": {
+    "label": "Reservaciones — configuración",
+    "description": "Cambiar las ventanas de reservación, el tamaño de los grupos y las reglas de aprobación."
+  },
+  "director:read": {
+    "label": "Consola del Director — ver",
+    "description": "Ver los informes, las ideas y los hilos de conversación del Director. Solo propietario por defecto."
+  },
+  "director:write": {
+    "label": "Consola del Director — usar",
+    "description": "Consultar al Director, gestionar hilos y aplicar las acciones que propone. Solo propietario por defecto."
+  },
+  "assistant:read": {
+    "label": "Asistente Ops — consultar y ver",
+    "description": "Hacerle preguntas al Asistente Ops y ver los hilos anteriores."
+  },
+  "assistant:write": {
+    "label": "Asistente Ops — gestionar hilos",
+    "description": "Archivar y gestionar los hilos del Asistente Ops."
+  },
+  "ai_waiter:read": {
+    "label": "Camarero IA — ver conversaciones",
+    "description": "Ver y supervisar las conversaciones de los clientes con el Camarero IA."
+  },
+  "ai_waiter:reply": {
+    "label": "Camarero IA — intervenir y responder",
+    "description": "Tomar una conversación, pausar la IA y responder directamente a los clientes."
+  },
+  "ai_waiter:insights": {
+    "label": "Camarero IA — estadísticas",
+    "description": "Ver las métricas y estadísticas agregadas del Camarero IA."
+  },
+  "ai_waiter:write": {
+    "label": "Camarero IA — cerrar conversaciones",
+    "description": "Cerrar las conversaciones del Camarero IA cuando terminan."
+  },
+  "marketing:read": {
+    "label": "Marketing — ver",
+    "description": "Ver las sugerencias, la actividad y la configuración de marketing."
+  },
+  "marketing:write": {
+    "label": "Marketing — crear",
+    "description": "Generar imágenes y textos de marketing, registrar actividad y editar la configuración."
+  },
+  "printers:read": {
+    "label": "Impresoras — ver",
+    "description": "Ver las impresoras configuradas y la estación de impresión."
+  },
+  "printers:write": {
+    "label": "Impresoras — administrar",
+    "description": "Agregar, editar y quitar impresoras térmicas."
+  },
+  "print:bill": {
+    "label": "Impresión — cuentas de clientes",
+    "description": "Imprimir cuentas de clientes y recibir sus trabajos de impresión en la estación."
+  },
+  "print:receipt": {
+    "label": "Impresión — recibos de pago",
+    "description": "Imprimir recibos de pago y recibir sus trabajos de impresión."
+  },
+  "cash_register:read": {
+    "label": "Caja — ver",
+    "description": "Ver las sesiones de caja y los pagos en efectivo sin asignar."
+  },
+  "cash_register:operate": {
+    "label": "Caja — operar",
+    "description": "Abrir y cerrar sesiones de caja y registrar movimientos de efectivo."
+  },
+  "alerts:read": {
+    "label": "Alertas — ver",
+    "description": "Ver las alertas operativas y su configuración."
+  },
+  "alerts:claim": {
+    "label": "Alertas — tomar",
+    "description": "Tomar una alerta para hacerse cargo de resolverla."
+  },
+  "alerts:resolve": {
+    "label": "Alertas — resolver",
+    "description": "Resolver o posponer alertas operativas."
+  },
+  "alerts:settings": {
+    "label": "Alertas — configuración",
+    "description": "Cambiar las reglas de alertas y la configuración de notificaciones."
+  },
+  "fiscal:read": {
+    "label": "Fiscal — ver comprobantes",
+    "description": "Ver los comprobantes fiscales y su estado de emisión, y exportarlos en CSV."
+  },
+  "fiscal:write": {
+    "label": "Fiscal — configuración",
+    "description": "Editar la configuración fiscal, como los ajustes de emisión y el punto de venta."
+  },
+  "fiscal:issue": {
+    "label": "Fiscal — emitir facturas",
+    "description": "Emitir facturas fiscales oficiales para las cuentas."
+  },
+  "fiscal:retry": {
+    "label": "Fiscal — reintentar emisión",
+    "description": "Reintentar la emisión de facturas fiscales que fallaron."
+  },
+  "fiscal:export": {
+    "label": "Fiscal — exportar",
+    "description": "Exportar documentos y reportes fiscales."
+  },
+  "fiscal:credit": {
+    "label": "Fiscal — notas de crédito",
+    "description": "Emitir notas de crédito que revierten documentos fiscales. Solo propietario por defecto."
+  },
+  "fiscal:credentials": {
+    "label": "Fiscal — credenciales fiscales",
+    "description": "Subir y administrar las credenciales del organismo fiscal (AFIP/ARCA). Solo propietario por defecto."
+  },
+  "schedule:read": {
+    "label": "Horarios — ver",
+    "description": "Ver los horarios publicados, los puestos, los días libres y la cobertura de turnos."
+  },
+  "schedule:write": {
+    "label": "Horarios — armar",
+    "description": "Armar y editar borradores de horarios, turnos, puestos y la configuración de horarios."
+  },
+  "schedule:publish": {
+    "label": "Horarios — publicar",
+    "description": "Publicar los horarios para que el equipo vea sus turnos."
+  },
+  "schedule:approve": {
+    "label": "Horarios — aprobar solicitudes",
+    "description": "Aprobar o rechazar solicitudes de días libres, cambios y cobertura de turnos."
+  },
+  "schedule:self": {
+    "label": "Horarios — autoservicio",
+    "description": "Gestionar la propia disponibilidad, pedir días libres y tomar o intercambiar turnos."
+  },
+  "timeclock:punch": {
+    "label": "Fichajes — fichar",
+    "description": "Fichar entrada y salida, registrar descansos y ver la propia planilla de horas."
+  },
+  "timeclock:manage": {
+    "label": "Fichajes — gestionar planillas",
+    "description": "Revisar, aprobar y editar planillas de horas, cargar fichajes manuales y operar el kiosco."
+  },
+  "chat:read": {
+    "label": "Chat del equipo — leer",
+    "description": "Leer los canales, los mensajes y los anuncios."
+  },
+  "chat:send": {
+    "label": "Chat del equipo — enviar",
+    "description": "Enviar mensajes y mensajes directos al equipo."
+  },
+  "chat:announce": {
+    "label": "Chat del equipo — anuncios",
+    "description": "Crear y gestionar anuncios y hacer seguimiento de las confirmaciones de lectura."
+  },
+  "chat:moderate": {
+    "label": "Chat del equipo — moderar",
+    "description": "Eliminar mensajes para moderar el chat del equipo."
+  },
+  "checklist:complete": {
+    "label": "Listas de tareas — completar",
+    "description": "Ver las listas de tareas asignadas y marcar tareas como hechas."
+  },
+  "checklist:manage": {
+    "label": "Listas de tareas — administrar",
+    "description": "Crear plantillas de listas y lanzar rondas de tareas para el equipo."
+  },
+  "doc:read": {
+    "label": "Documentos — leer",
+    "description": "Leer y confirmar los documentos y políticas del equipo."
+  },
+  "doc:manage": {
+    "label": "Documentos — administrar",
+    "description": "Crear, publicar y actualizar los documentos del equipo."
+  },
+  "recognition:send": {
+    "label": "Reconocimientos — enviar",
+    "description": "Enviar y ver reconocimientos para los compañeros de equipo."
+  },
+  "poll:vote": {
+    "label": "Encuestas — votar",
+    "description": "Ver las encuestas del equipo, votar y consultar los resultados."
+  },
+  "poll:manage": {
+    "label": "Encuestas — administrar",
+    "description": "Crear y cerrar encuestas del equipo."
+  }
+}

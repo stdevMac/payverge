@@ -1,0 +1,137 @@
+{
+  "tabs": {
+    "pdfUpload": "Subir PDF / Imágenes",
+    "aiWizard": "Asistente de Menú AI",
+    "mobile": {
+      "pdf": "PDF",
+      "wizard": "AI"
+    }
+  },
+  "generatedMenuName": "Menú Generado",
+  "wizard": {
+    "title": "Asistente de Menú AI",
+    "description": "¡Cuéntanos sobre tu restaurante y deja que la IA genere un menú completo con categorías, platos, descripciones y precios adaptados a tu cocina!",
+    "descriptionPro": "Habla con nuestra IA para generar un menú personalizado para tu restaurante. Solo responde unas pocas preguntas sobre tu cocina, estilo y preferencias.",
+    "startConversation": "Iniciar Conversación",
+    "inputPlaceholder": "Escribe tu respuesta...",
+    "sendAria": "Enviar mensaje",
+    "generateMenu": "Generar",
+    "cancel": "Cancelar",
+    "dismiss": "Cerrar",
+    "retryResponse": "Reintentar esta respuesta",
+    "charCount": "{count}/{max}",
+    "errors": {
+      "startSession": "No se pudo iniciar la sesión",
+      "sendMessage": "No se pudo enviar el mensaje",
+      "generateMenu": "No se pudo generar el menú",
+      "generationCancelled": "Generación cancelada. Toca Generar Menú para intentar de nuevo.",
+      "generateRetry": "Falló la generación. Toca Generar Menú para intentar de nuevo.",
+      "structuredOutput": "La respuesta de la IA quedó incompleta. Tus respuestas están guardadas; vuelve a intentarlo.",
+      "replyDelayed": "Esta respuesta está tardando más de lo normal. Tu mensaje está guardado y la respuesta se sigue preparando; reintenta para recuperarla sin volver a escribir."
+    },
+    "generating": {
+      "title": "Generando Tu Menú...",
+      "subtitle": "La IA está creando un menú basado en tus preferencias",
+      "cancel": "Cancelar generación",
+      "steps": {
+        "analyzing": "Analizando tus preferencias",
+        "crafting": "Creando platos del menú",
+        "pricing": "Optimizando precios",
+        "finalizing": "Finalizando tu menú"
+      }
+    }
+  },
+  "pdfDigitizer": {
+    "title": "Digitalizador de Menú AI",
+    "description": "Sube tu menú en PDF y deja que la IA extraiga automáticamente todos los artículos, precios y descripciones. ¡Ahorra horas de entrada de datos manual!",
+    "dropzone": {
+      "title": "Suelta tu menú en PDF o imagen aquí",
+      "subtitle": "Formatos soportados: PDF, PNG, JPG (hasta 12 páginas)"
+    },
+    "processing": {
+      "loadingPdf": "Cargando librería PDF...",
+      "converting": "Convirtiendo PDF a imágenes...",
+      "uploading": "Subiendo páginas...",
+      "extracting": "La IA está extrayendo datos del menú...",
+      "extractingSubtitle": "El tiempo de procesamiento varía según el archivo; revisa el menú extraído antes de publicarlo",
+      "finalizing": "Finalizando imágenes del menú...",
+      "waiting": "Espera mientras procesamos tu menú",
+      "progressLabel": "Progreso",
+      "cancel": "Cancelar"
+    },
+    "error": {
+      "title": "Fallo en el procesamiento",
+      "tryAgain": "Intentar de nuevo",
+      "invalidFile": "Por favor, sube un archivo PDF o imagen",
+      "fileTooLarge": "Ese archivo es demasiado grande. Sube un menú de menos de {max} MB.",
+      "tooManyPages": "Ese PDF tiene demasiadas páginas. Sube un menú con {max} páginas o menos.",
+      "parseExtractedMenu": "No se pudo interpretar el menú extraído",
+      "extractionFailed": "La extracción falló",
+      "startExtractionFailed": "No se pudo iniciar la extracción del menú. Inténtalo de nuevo.",
+      "timeout": "Tiempo de procesamiento agotado. El servidor tardó demasiado en responder.",
+      "processFileFailed": "No se pudo procesar el archivo",
+      "fileUnreadable": "No pudimos leer este archivo. Vuelve a seleccionarlo desde tu computadora."
+    },
+    "success": {
+      "title": "¡Menú extraído con éxito!",
+      "subtitle": "Revisa y edita el menú extraído a continuación"
+    },
+    "extractButton": "Extraer Menú con IA",
+    "readingFile": "Leyendo tu archivo…"
+  },
+  "reviewEditor": {
+    "title": "Revisar Menú Extraído",
+    "subtitle": "{{name}} • {{categories}} categorías • {{items}} artículos",
+    "itemPriceAria": "Precio de {name}",
+    "categoryNameAria": "Nombre de la categoría {name}",
+    "itemNameAria": "Nombre del artículo {name}",
+    "itemDescriptionAria": "Descripción de {name}",
+    "unnamedCategory": "categoría sin nombre",
+    "unnamedItem": "artículo sin nombre",
+    "cancel": "Cancelar",
+    "import": "Importar al Menú",
+    "addItem": "Añadir Artículo",
+    "addCategory": "Añadir Categoría",
+    "newItem": "Nuevo Artículo",
+    "newCategory": "Nueva Categoría",
+    "categories": "categorías",
+    "items": "artículos",
+    "descriptionPlaceholder": "Descripción...",
+    "generateAiImage": "Generar Imagen AI",
+    "generateAiImageFor": "Generar imagen con IA de {name}",
+    "confirmDelete": "Confirmar Eliminación",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar este {{type}}?",
+    "deleteButton": "Eliminar",
+    "dismissError": "Descartar error",
+    "deleteCategory": "Eliminar categoría",
+    "deleteItem": "Eliminar artículo",
+    "sanitization": {
+      "title": "Revisar cambios del menú",
+      "description": "Se eliminarán algunos valores no compatibles. Revisa cada cambio antes de importar este menú.",
+      "dropped": "Eliminados",
+      "normalized": "Conservados tras normalizar",
+      "fields": {
+        "allergens": "Alérgeno",
+        "dietary_tags": "Etiqueta dietética",
+        "price": "Artículo"
+      },
+      "reasons": {
+        "unknown_enum_value": "Valor no compatible",
+        "price_out_of_range": "Precio fuera del rango permitido",
+        "alias_normalized": "Coincide con un valor compatible",
+        "canonical_value": "Valor compatible"
+      },
+      "confirm": "Confirmar e importar",
+      "confirming": "Importando...",
+      "back": "Volver a editar"
+    },
+    "errors": {
+      "generateImage": "No se pudo generar la imagen",
+      "importMenu": "No se pudo importar el menú"
+    },
+    "deleteTypes": {
+      "category": "categoría",
+      "item": "elemento"
+    }
+  }
+}

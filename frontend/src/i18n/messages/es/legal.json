@@ -1,0 +1,32 @@
+{
+  "template": {
+    "notConfigured": "(dirección de contacto no configurada)",
+    "label": "Plantilla.",
+    "banner": "Este es un aviso genérico incluido con el software. {legalName} no ha publicado su propia versión de este documento; escribe a {supportEmail} para obtener los términos vinculantes.",
+    "privacy": {
+      "title": "Aviso de privacidad",
+      "body": [
+        "{legalName} opera este servicio en {publicUrl} con {productName}, software para restaurantes autoalojado.",
+        "Tratamos los datos que ingresas (datos de cuenta, pedidos, pagos, reservas y mensajes) solo para prestar el servicio del restaurante con el que interactúas.",
+        "Los proveedores de pago, mensajería y correo que habilita el operador tratan los datos según sus propios términos.",
+        "Para acceder, corregir o eliminar tus datos, escribe a {supportEmail}."
+      ]
+    },
+    "terms": {
+      "title": "Términos de uso",
+      "body": [
+        "Al usar este servicio aceptas usarlo de forma lícita y no perjudicarlo ni a otros usuarios.",
+        "{legalName} ofrece el servicio tal cual, en la medida en que la ley lo permita.",
+        "Los pedidos, precios y pagos se acuerdan entre tú y el restaurante que te atiende.",
+        "Consultas sobre estos términos: {supportEmail}."
+      ]
+    },
+    "refund": {
+      "title": "Reembolsos",
+      "body": [
+        "Los reembolsos de pedidos y pagos los gestiona el restaurante que te cobró, según su propia política y la ley que le aplica.",
+        "Contacta directamente al restaurante, o escribe a {supportEmail} si no puedes comunicarte con él."
+      ]
+    }
+  }
+}

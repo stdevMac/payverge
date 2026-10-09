@@ -1,0 +1,548 @@
+{
+  "title": "Configuración de Entrega",
+  "description": "Configure sus opciones de entrega, zonas, tarifas y horarios.",
+  "saveChanges": "Guardar Cambios",
+  "saveSuccess": "Configuración de entrega guardada exitosamente",
+  "saveError": "Error al guardar la configuración de entrega",
+  "loadError": "Error al cargar la configuración de entrega",
+  "enableTitle": "Habilitar Entrega",
+  "enableDescription": "Permitir a los clientes elegir entrega al pagar",
+  "coverageTitle": "Cobertura de Entrega",
+  "coverageDescription": "Defina dónde realiza entregas",
+  "deliveryZones": "Zonas de Entrega (Códigos Postales/Áreas)",
+  "addZonePlaceholder": "ej., Centro, 10001",
+  "addZone": "Agregar Zona",
+  "feesTitle": "Tarifas de Entrega",
+  "feesDescription": "Establezca sus cargos por entrega",
+  "feeType": "Tipo de Tarifa",
+  "flatFee": "Tarifa Plana",
+  "distanceBased": "Basada en Distancia",
+  "freeAboveMinimum": "Gratis por encima del mínimo",
+  "flatFeeAmount": "Monto de Tarifa Plana",
+  "ratePerKm": "Tarifa por km",
+  "freeDeliveryMinimum": "Pedido Mínimo para Entrega Gratis",
+  "minimumOrderAmount": "Monto Mínimo de Pedido",
+  "timingTitle": "Horarios de Entrega",
+  "timingDescription": "Gestione tiempos de preparación y entrega",
+  "estimatedPrepTime": "Tiempo Estimado de Preparación",
+  "minutes": "minutos",
+  "maxConcurrentDeliveries": "Entregas Simultáneas Máximas",
+  "deliveryHours": "Horas de Entrega",
+  "sameAsBusinessHours": "Igual al Horario Comercial",
+  "startTime": "Hora de Inicio",
+  "endTime": "Hora de Finalización",
+  "additionalTitle": "Configuración Adicional",
+  "additionalDescription": "Información extra para sus clientes",
+  "deliveryInstructions": "Instrucciones de Entrega",
+  "instructionsPlaceholder": "ej., Entregamos solo en recepción...",
+  "infoBanner": "Asegúrese de que su configuración de entrega sea precisa para evitar confusiones a los clientes.",
+  "partnerLinks": {
+    "title": "Socios Externos de Entrega",
+    "description": "Muestra las apps de entrega que ya usa tu negocio cuando la entrega interna está desactivada.",
+    "addProvider": "Agregar Proveedor",
+    "nameLabel": "Nombre del Proveedor",
+    "urlLabel": "URL del Proveedor",
+    "iconSourceLabel": "Fuente del Ícono",
+    "sourcePredefined": "Predefinido",
+    "sourceCustom": "Personalizado",
+    "providerLabel": "Ícono del Proveedor",
+    "iconUrlLabel": "URL de Ícono Personalizado",
+    "uploadIcon": "Subir Ícono",
+    "removeProvider": "Eliminar",
+    "maxReached": "Máximo {max} proveedores"
+  },
+  "tabs": {
+    "configuration": "Configuración",
+    "fees": "Tarifas",
+    "timing": "Horarios",
+    "instructions": "Instrucciones"
+  },
+  "deliveryDisabled": {
+    "title": "Entrega Deshabilitada",
+    "description": "Habilite la entrega en la pestaña de Configuración para acceder a estos ajustes.",
+    "button": "Ir a Configuración"
+  },
+  "drivers": {
+    "title": "Repartidores",
+    "addDriver": "Agregar repartidor",
+    "empty": "Sin repartidores aún. Agrega uno para comenzar a despachar.",
+    "status": {
+      "online": "En línea",
+      "offline": "Desconectado",
+      "busy": "Ocupado",
+      "on_break": "En descanso"
+    },
+    "vehicleTypes": {
+      "bicycle": "Bicicleta",
+      "scooter": "Scooter",
+      "motorcycle": "Motocicleta",
+      "car": "Carro",
+      "van": "Camioneta"
+    },
+    "fields": {
+      "name": "Nombre",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "vehicleType": "Tipo de vehículo",
+      "vehiclePlate": "Placa del vehículo",
+      "licenseNumber": "Número de licencia",
+      "namePlaceholder": "Nombre del repartidor",
+      "phonePlaceholder": "+1 555 000 0000",
+      "emailPlaceholder": "repartidor@ejemplo.com",
+      "vehiclePlatePlaceholder": "ABC-123",
+      "licenseNumberPlaceholder": "DL-000000"
+    },
+    "availability": "Disponible",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "edit": "Editar",
+    "remove": "Eliminar",
+    "modal": {
+      "createTitle": "Agregar repartidor",
+      "editTitle": "Editar repartidor",
+      "save": "Guardar",
+      "cancel": "Cancelar"
+    },
+    "confirm": {
+      "removeTitle": "Eliminar repartidor",
+      "removeDescription": "¿Seguro que quieres eliminar a {name}? Esto no se puede deshacer.",
+      "removeConfirm": "Eliminar",
+      "removeCancel": "Cancelar"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "phoneRequired": "El teléfono es obligatorio",
+      "phoneInvalid": "Ingresa un teléfono válido (solo dígitos, al menos 7).",
+      "emailInvalid": "Ingresa un correo electrónico válido"
+    },
+    "toasts": {
+      "saved": "Repartidor guardado",
+      "saveError": "Error al guardar el repartidor",
+      "deleted": "Repartidor eliminado",
+      "deleteError": "Error al eliminar el repartidor",
+      "availabilityError": "Error al actualizar la disponibilidad",
+      "loadError": "No se pudieron cargar los repartidores"
+    },
+    "loadError": "No se pudieron cargar los repartidores. Comprueba tu conexión e inténtalo de nuevo.",
+    "retry": "Reintentar"
+  },
+  "dispatch": {
+    "tabsAria": "Secciones de entrega",
+    "heading": "Despacho",
+    "orderList": "Pedidos de entrega",
+    "loadError": "No se pudieron cargar las entregas. Comprueba tu conexión e intenta de nuevo.",
+    "retry": "Reintentar",
+    "assignDriver": "Asignar repartidor",
+    "cancelPaidWarning": "Este pedido puede haber sido pagado en línea. Cancelarlo queda registrado, pero cualquier compensación al cliente es responsabilidad tuya — Payverge no gestiona reembolsos.",
+    "tabs": {
+      "configuration": "Configuración",
+      "dispatch": "Despacho",
+      "history": "Historial",
+      "drivers": "Repartidores",
+      "performance": "Rendimiento"
+    },
+    "history": {
+      "title": "Historial de entregas",
+      "subtitle": "Consulta entregas terminales más allá de hoy — fallidas, canceladas y entregadas.",
+      "from": "Desde",
+      "to": "Hasta",
+      "statusFilter": "Filtro de estado",
+      "empty": "No hay entregas en este rango.",
+      "showing": "Mostrando {count} de {total}",
+      "prev": "Anterior",
+      "next": "Siguiente"
+    },
+    "columns": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "awaiting_payment": "Esperando pago",
+      "preparing": "Preparando",
+      "ready": "Listo",
+      "assigned": "Asignado",
+      "picked_up": "Recogido",
+      "in_transit": "En tránsito",
+      "nearby": "Cerca",
+      "delivered": "Entregado",
+      "out_for_delivery": "En camino",
+      "cancelled": "Cancelado",
+      "failed": "Fallido"
+    },
+    "card": {
+      "live": "En vivo",
+      "eta": "ETA",
+      "cancel": "Cancelar",
+      "items": "{count} artículos",
+      "awaitingPayment": "Esperando el pago del cliente",
+      "awaitingAcceptance": "Esperando aceptación en Cuentas"
+    },
+    "filters": {
+      "label": "Filtrar pedidos por estado",
+      "all": "Todos",
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "awaiting_payment": "Esperando pago",
+      "preparing": "Preparando",
+      "ready": "Listo",
+      "assigned": "Asignado",
+      "picked_up": "Recogido",
+      "in_transit": "En tránsito",
+      "out_for_delivery": "En camino",
+      "nearby": "Cerca",
+      "delivered": "Entregado",
+      "cancelled": "Cancelado",
+      "failed": "Fallido",
+      "filterByAria": "Filtrar por {status}"
+    },
+    "emptyBoard": {
+      "title": "Aún no hay pedidos de entrega",
+      "subtitle": "Las nuevas entregas aparecen aquí cuando los clientes finalizan la compra, incluidos los pedidos que aún esperan pago."
+    },
+    "order": {
+      "number": "Pedido",
+      "customer": "Cliente",
+      "eta": "ETA",
+      "cutoff": "Corte",
+      "fee": "Tarifa",
+      "zone": "Zona",
+      "noEta": "Sin ETA",
+      "noCutoff": "—",
+      "pastCutoff": "Corte pasado",
+      "nearCutoff": "Cerca del corte"
+    },
+    "actions": {
+      "advance": "Avanzar a {next}",
+      "assignDriver": "Asignar repartidor",
+      "assign": "Asignar",
+      "cancel": "Cancelar",
+      "refresh": "Actualizar",
+      "selectDriver": "Seleccionar repartidor",
+      "noDriversAvailable": "No hay repartidores disponibles"
+    },
+    "cancel": {
+      "title": "Cancelar Entrega",
+      "description": "Esta acción no se puede deshacer. Por favor proporcione una razón.",
+      "reasonPlaceholder": "Motivo de cancelación",
+      "confirm": "Cancelar Entrega",
+      "back": "Volver",
+      "visibleToCustomer": "Este motivo se mostrará al cliente en su página de seguimiento."
+    },
+    "empty": "No hay entregas en este filtro.",
+    "drivers": {
+      "title": "Repartidores",
+      "addDriver": "Agregar repartidor",
+      "empty": "Sin repartidores aún. Agrega uno para comenzar a despachar.",
+      "status": {
+        "online": "En línea",
+        "offline": "Desconectado",
+        "busy": "Ocupado",
+        "on_break": "En descanso"
+      },
+      "vehicleTypes": {
+        "bicycle": "Bicicleta",
+        "scooter": "Scooter",
+        "motorcycle": "Motocicleta",
+        "car": "Carro",
+        "van": "Camioneta"
+      },
+      "fields": {
+        "name": "Nombre",
+        "phone": "Teléfono",
+        "email": "Correo electrónico",
+        "vehicleType": "Tipo de vehículo",
+        "vehiclePlate": "Placa del vehículo",
+        "licenseNumber": "Número de licencia",
+        "namePlaceholder": "Nombre del repartidor",
+        "phonePlaceholder": "+1 555 000 0000",
+        "emailPlaceholder": "repartidor@ejemplo.com",
+        "vehiclePlatePlaceholder": "ABC-123",
+        "licenseNumberPlaceholder": "DL-000000"
+      },
+      "availability": "Disponible",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "edit": "Editar",
+      "remove": "Eliminar",
+      "modal": {
+        "createTitle": "Agregar repartidor",
+        "editTitle": "Editar repartidor",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      },
+      "confirm": {
+        "removeTitle": "Eliminar repartidor",
+        "removeDescription": "¿Seguro que quieres eliminar a {name}? Esto no se puede deshacer.",
+        "removeConfirm": "Eliminar",
+        "removeCancel": "Cancelar"
+      },
+      "validation": {
+        "nameRequired": "El nombre es obligatorio",
+        "phoneRequired": "El teléfono es obligatorio",
+        "phoneInvalid": "Ingresa un teléfono válido (solo dígitos, al menos 7).",
+        "emailInvalid": "Ingresa un correo electrónico válido"
+      },
+      "toasts": {
+        "saved": "Repartidor guardado",
+        "saveError": "Error al guardar el repartidor",
+        "deleted": "Repartidor eliminado",
+        "deleteError": "Error al eliminar el repartidor",
+        "availabilityError": "Error al actualizar la disponibilidad"
+      }
+    },
+    "header": {
+      "activeOrders": "{count} pedido activo",
+      "activeOrdersPlural": "{count} pedidos activos",
+      "availableDrivers": "{count} repartidor disponible",
+      "availableDriversPlural": "{count} repartidores disponibles"
+    },
+    "freshness": {
+      "updated": "Actualizado hace {seconds}s",
+      "updatedAria": "Última actualización hace {seconds} segundos"
+    },
+    "toasts": {
+      "statusUpdated": "Estado del pedido actualizado",
+      "statusError": "Error al actualizar el estado del pedido",
+      "driverAssigned": "Repartidor asignado",
+      "driverError": "Error al asignar repartidor",
+      "cancelled": "Entrega cancelada",
+      "cancelError": "Error al cancelar la entrega"
+    },
+    "truncation": {
+      "showing": "Mostrando {shown} de {total}+ entregas en esta ventana. Las entregas terminales anteriores están en Historial.",
+      "loadMore": "Cargar más"
+    },
+    "detail": {
+      "title": "Detalle de entrega",
+      "close": "Cerrar",
+      "loadError": "No se pudo cargar esta entrega.",
+      "customer": "Cliente",
+      "address": "Dirección",
+      "apartment": "Depto",
+      "contactless": "Sin contacto",
+      "leaveAtDoor": "Dejar en la puerta",
+      "fee": "Costo de envío",
+      "tip": "Propina",
+      "payment": "Pago",
+      "paymentUnknown": "Desconocido",
+      "paymentMode": {
+        "online": "En línea",
+        "cash_on_delivery": "Efectivo al entregar"
+      },
+      "viewBill": "Ver cuenta #{id}",
+      "driver": "Repartidor",
+      "driverUnnamed": "Repartidor asignado",
+      "noDriver": "Sin repartidor asignado",
+      "timeline": "Historial de estado",
+      "timelineEmpty": "Aún no hay historial de estado.",
+      "edit": "Editar contacto / dirección",
+      "editPhone": "Teléfono",
+      "editApartment": "Departamento",
+      "editInstructions": "Instrucciones de entrega",
+      "saveEdit": "Guardar cambios",
+      "cancelEdit": "Cancelar"
+    },
+    "claim": {
+      "claim": "Reclamar",
+      "release": "Liberar",
+      "steal": "Tomar el control",
+      "cancel": "Cancelar",
+      "heldBy": "En manos de {name}",
+      "heldByYou": "Tienes este pedido",
+      "unclaimed": "Sin reclamar",
+      "conflict": "{name} está gestionando este pedido",
+      "stealRequired": "{name} está gestionando este pedido. ¿Tomar el control?",
+      "claimFailed": "No se pudo reclamar este pedido",
+      "releaseFailed": "No se pudo liberar este pedido",
+      "needClaim": "Reclama este pedido antes de hacer cambios",
+      "stolenToast": "Tomaste el control de {name}"
+    },
+    "scrollHint": "Desplázate horizontalmente para ver En camino y Entregado"
+  },
+  "performance": {
+    "title": "Rendimiento de repartidores",
+    "subtitle": "Volumen, entregas a tiempo y cola activa de un vistazo.",
+    "empty": {
+      "title": "Aún no hay repartidores",
+      "subtitle": "Agrega un repartidor en la pestaña Repartidores para empezar a medir el rendimiento."
+    },
+    "columns": {
+      "driver": "Repartidor",
+      "status": "Estado",
+      "inProgress": "En curso",
+      "completedToday": "Hoy",
+      "completedWeek": "Últimos 7 días",
+      "avgDelivery": "Tiempo medio",
+      "onTime": "A tiempo",
+      "rating": "Calificación",
+      "issues": "Incidencias",
+      "actions": "Acciones"
+    },
+    "windows": {
+      "allTime": "Histórico"
+    },
+    "issuesAria": "{failed} fallidas, {cancelled} canceladas",
+    "actions": {
+      "refresh": "Actualizar",
+      "view": "Ver {name}",
+      "viewLabel": "Ver",
+      "close": "Cerrar"
+    },
+    "kpi": {
+      "completedToday": "Completadas hoy",
+      "completedWeek": "Completadas (últimos 7 días)",
+      "completedAllTime": "Completadas (histórico)",
+      "cancelled": "Canceladas (histórico)",
+      "failed": "Fallidas (histórico)",
+      "avgPickup": "Recogida media (histórico)",
+      "avgDelivery": "Entrega media (histórico)",
+      "onTime": "A tiempo (histórico)",
+      "rating": "Calificación (histórico)",
+      "grossFees": "Tarifas brutas (histórico)",
+      "grossTips": "Propinas brutas (histórico)",
+      "readOnly": "Solo lectura — no incluye pagos"
+    },
+    "queue": {
+      "title": "Cola activa",
+      "empty": "Este repartidor no tiene entregas activas.",
+      "eta": "ETA",
+      "fee": "Tarifa",
+      "tip": "Propina"
+    },
+    "scorecard": {
+      "title": "Tarjeta del repartidor",
+      "subtitle": "KPIs en vivo y asignaciones actuales"
+    },
+    "placeholders": {
+      "noData": "—"
+    },
+    "units": {
+      "min": "min"
+    },
+    "errors": {
+      "loadDetail": "No se pudieron cargar los detalles del repartidor."
+    },
+    "toasts": {
+      "loadError": "No se pudo cargar el rendimiento de repartidores."
+    }
+  },
+  "focused": {
+    "headerTitle": "Entrega",
+    "headerDescription": "Configura cómo tus clientes reciben sus pedidos — tus propias zonas y repartidores, socios externos, o ambos.",
+    "status": {
+      "live": "Activa",
+      "on": "Entrega activada",
+      "off": "Entrega desactivada",
+      "onTitle": "La entrega está activa",
+      "showingProviders": "Mostrando {count} proveedor en tu página de negocio.",
+      "showingProvidersPlural": "Mostrando {count} proveedores en tu página de negocio.",
+      "addProviderHint": "Agrega al menos un proveedor para que tus clientes puedan pedir entrega.",
+      "activeZones": "{count} zona activa",
+      "activeZonesPlural": "{count} zonas activas"
+    },
+    "providers": {
+      "cardTitle": "Proveedores de entrega",
+      "cardSubtitle": "Elige los socios a los que tus clientes pueden pasar. Hasta cinco.",
+      "connectedTitle": "Proveedores conectados",
+      "connectedDescription": "Cada proveedor aparece con su logo en tu página de negocio.",
+      "addProvider": "Agregar proveedor",
+      "nameLabel": "Nombre del proveedor",
+      "urlLabel": "URL del proveedor",
+      "iconSourceLabel": "Fuente del ícono",
+      "sourcePredefined": "Predefinido",
+      "sourceCustom": "Personalizado",
+      "providerLabel": "Ícono del proveedor",
+      "iconUrlLabel": "URL de ícono personalizado",
+      "uploadIcon": "Subir ícono",
+      "removeProvider": "Eliminar",
+      "maxReached": "Máximo {max} proveedores"
+    },
+    "note": {
+      "cardTitle": "Nota para el cliente",
+      "cardSubtitle": "Opcional. Se muestra encima de los proveedores en tu página de negocio.",
+      "ariaLabel": "Nota de entrega",
+      "placeholder": "Ejemplo: La mayoría de los proveedores entregan hasta las 10 PM. Usa el socio en el que más confías."
+    },
+    "configuration": {
+      "cardTitle": "Configuración",
+      "cardSubtitle": "Tarifas, tiempo de preparación y capacidad para entrega propia.",
+      "paymentModeTitle": "Cómo pagan los clientes",
+      "paymentModeOnline": "Aceptar primero, pagar en línea después",
+      "paymentModeOnlineHelp": "Aceptas el pedido, el cliente paga en línea y recién ahí arranca la cocina. Los pedidos sin pagar vencen en 15 minutos — no se cobra nada.",
+      "paymentModeOnlineDisabled": "Conecta un método de pago para habilitar el pago en línea.",
+      "paymentModeCOD": "Efectivo contra entrega",
+      "paymentModeCODHelp": "La cocina empieza cuando aceptas; el repartidor cobra en efectivo.",
+      "paymentModeMismatch": "El pago en línea está seleccionado pero no hay método de pago conectado — los nuevos pedidos usarán efectivo contra entrega.",
+      "paymentModeInFlightMismatch": "{count} pedidos en curso (revisados entre las 100 entregas más recientes) se realizaron con otro modo de pago — el cambio solo aplica a los pedidos nuevos.",
+      "baseFee": "Tarifa de entrega base",
+      "freeAboveMinimum": "Umbral de entrega gratuita",
+      "freeAboveHelp": "Pon 0 para nunca eximir la tarifa",
+      "minimumOrder": "Monto mínimo de pedido",
+      "invalidMoney": "Ingresa un monto válido (por ejemplo 0 o 12,50).",
+      "estimatedPrep": "Tiempo estimado de preparación",
+      "maxConcurrent": "Entregas simultáneas máximas",
+      "minutes": "min"
+    },
+    "zones": {
+      "cardTitle": "Zonas de servicio",
+      "cardSubtitle": "Cobra por área: agrega zonas para vecindarios más lejanos con su propia tarifa, mínimo y tiempo.",
+      "overlapHint": "Si una dirección coincide con varias zonas, gana la tarifa más baja y se aplica el mínimo más alto.",
+      "addZone": "Agregar zona",
+      "removeZone": "Eliminar",
+      "zoneNamePlaceholder": "Centro",
+      "namePlaceholder": "Nombre de la zona",
+      "noZones": "Todavía no hay zonas. Agrega una para comenzar a aceptar entregas propias.",
+      "name": "Nombre",
+      "priority": "Prioridad",
+      "fee": "Tarifa",
+      "minimum": "Pedido mínimo",
+      "estimatedTime": "Tiempo estimado",
+      "cutoffBuffer": "Margen de corte",
+      "postalCodes": "Códigos postales",
+      "postalCodesHelp": "Separados por coma. Ejemplo: 10001, 10002",
+      "cities": "Ciudades",
+      "citiesHelp": "Separadas por coma.",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "operatingHours": "Anulación de horario de operación (opcional)",
+      "activationNeedsName": "Ponle un nombre a la zona antes de activarla.",
+      "activationNeedsGeography": "Agrega códigos postales o ciudades antes de activar la zona.",
+      "invalidMoney": "Ingresa un monto válido (por ejemplo 0 o 12,50).",
+      "activateConfirmTitle": "¿Activar esta zona?",
+      "activateConfirmBody": "Las zonas activas habilitan la entrega propia. Confirma que esta zona está lista para recibir pedidos.",
+      "activateConfirm": "Activar zona",
+      "cancel": "Cancelar",
+      "confirm": {
+        "removeTitle": "Eliminar zona de entrega",
+        "removeDescription": "¿Eliminar la zona \"{name}\"? Su tarifa, mínimos y límites se descartarán al guardar.",
+        "removeConfirm": "Eliminar zona",
+        "removeCancel": "Conservar zona"
+      }
+    },
+    "hours": {
+      "cardTitle": "Horarios de entrega",
+      "cardSubtitle": "Cuándo la entrega acepta pedidos.",
+      "useBusinessHours": "Coincidir con el horario del negocio",
+      "useBusinessHoursHelp": "Desactivado permite establecer una ventana de entrega separada.",
+      "startTime": "Inicio",
+      "endTime": "Fin"
+    },
+    "partners": {
+      "cardTitle": "Socios de entrega",
+      "cardSubtitle": "Muestra proveedores externos en los que tus clientes ya confían."
+    },
+    "save": {
+      "unsavedChanges": "Tienes cambios sin guardar.",
+      "allSaved": "Todos los cambios están guardados.",
+      "button": "Guardar cambios",
+      "saving": "Guardando…"
+    },
+    "locked": {
+      "title": "Entrega",
+      "subtitle": "Conecta los proveedores de entrega que tus clientes ya conocen."
+    },
+    "toasts": {
+      "saved": "Configuración de entrega guardada",
+      "saveError": "No se pudo guardar la configuración de entrega",
+      "loadError": "No se pudo cargar la configuración de entrega"
+    }
+  }
+}

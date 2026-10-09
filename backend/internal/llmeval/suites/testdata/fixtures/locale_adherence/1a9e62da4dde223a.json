@@ -1,0 +1,13 @@
+{
+  "key": "1a9e62da4dde223a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Si es tu primera visita, te recomiendo empezar con nuestro menú de degustación del chef. Incluye nuestros platos más populares y te dará una buena idea de lo que ofrecemos. El salmón a la parrilla y la pasta casera son excelentes opciones.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

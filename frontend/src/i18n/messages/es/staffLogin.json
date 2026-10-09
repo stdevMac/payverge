@@ -1,0 +1,59 @@
+{
+  "metaTitle": "Inicio de sesión del personal — Payverge",
+  "title": "Inicio de Sesión del Personal",
+  "subtitle": "Inicia sesión para acceder al panel de tu negocio",
+  "errors": {
+    "notFound": "No se encontró una cuenta de personal para ese correo de Google.",
+    "inactive": "Tu cuenta de personal está inactiva. Contacta a tu gerente.",
+    "generic": "El inicio de sesión del personal falló. Inténtalo de nuevo."
+  },
+  "steps": {
+    "email": {
+      "title": "Ingresa tu correo electrónico",
+      "subtitle": "Te enviaremos un código de verificación",
+      "placeholder": "Ingresa tu dirección de correo electrónico",
+      "button": "Enviar Código",
+      "sending": "Enviando...",
+      "googleButton": "Continuar con Google"
+    },
+    "code": {
+      "title": "Ingresa el código de verificación",
+      "subtitle": "Revisa tu correo para el código de 6 dígitos",
+      "placeholder": "Ingresa el código de 6 dígitos",
+      "button": "Iniciar Sesión",
+      "verifying": "Verificando...",
+      "resend": "Reenviar Código",
+      "resendIn": "Reenviar en {seconds}s",
+      "backToEmail": "Volver al Correo",
+      "notReceiving": "¿No lo recibes? Asegúrate de usar el correo exacto con el que te invitó tu gerente.",
+      "subtitleNoEmail": "El envío de correos está desactivado en este servidor, así que el código de 6 dígitos no se envió por correo. Pídeselo a tu administrador",
+      "notReceivingNoEmail": "Pide a tu administrador el código para el correo con el que te invitó tu gerente."
+    },
+    "membership": {
+      "title": "Elige un negocio",
+      "subtitle": "Tu cuenta pertenece a más de un negocio. Elige dónde quieres trabajar.",
+      "unnamedBusiness": "Negocio",
+      "backToEmail": "Usar otro correo"
+    }
+  },
+  "messages": {
+    "codeExpired": "El código de verificación ha expirado. Por favor solicita uno nuevo.",
+    "invalidCode": "Código de verificación inválido. Por favor intenta de nuevo.",
+    "emailSent": "Si existe una cuenta de personal para {email}, te enviamos un código de acceso. Revisa tu bandeja de entrada y la carpeta de spam.",
+    "codeLogged": "Si existe una cuenta de personal para {email}, se generó un código de acceso. El correo está desactivado en este servidor: pide el código a tu administrador.",
+    "loginSuccess": "¡Inicio de sesión exitoso! Redirigiendo...",
+    "networkError": "Error de red. Por favor intenta de nuevo.",
+    "unknownError": "Ocurrió un error. Por favor intenta de nuevo."
+  },
+  "validation": {
+    "emailRequired": "El correo es obligatorio.",
+    "emailInvalid": "Revisa que tu correo sea válido.",
+    "codeRequired": "El código de verificación es requerido.",
+    "codeInvalid": "Ingresa el código de 6 dígitos que te enviamos."
+  },
+  "footer": {
+    "businessOwner": "¿Eres dueño del negocio?",
+    "businessLogin": "Iniciar sesión como propietario",
+    "poweredBy": "Acceso seguro del personal con tecnología de Payverge"
+  }
+}

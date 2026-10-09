@@ -1,0 +1,13 @@
+{
+  "bell": { "aria": "Notificaciones" },
+  "inbox": {
+    "title": "Notificaciones",
+    "empty": "Estás al día",
+    "markAll": "Marcar todo como leído"
+  },
+  "push": {
+    "prompt": "Activa las alertas para enterarte al instante cuando cambien tu horario, tus turnos o los anuncios del equipo.",
+    "enable": "Activar alertas",
+    "dismiss": "Ahora no"
+  }
+}

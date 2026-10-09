@@ -1,0 +1,98 @@
+{
+  "pageTitle": "Registrá tu negocio",
+  "metaTitle": "Registrá tu restaurante — Payverge",
+  "metaDescription": "Registrá tu restaurante en Payverge para empezar a aceptar pedidos QR, pagos, reservas y automatizaciones con IA.",
+  "trustMessages": [
+    "Configuración guiada con revisión antes del lanzamiento",
+    "Payverge no cobra comisión por pedido — pueden aplicar comisiones del procesador o de red",
+    "Sumate a restaurantes que consolidan POS, cocina y pagos"
+  ],
+  "header": {
+    "title": "Registrá Tu",
+    "subtitle": "Menú, pedidos, cocina, pagos e IA con un solo acceso para el salón y la oficina"
+  },
+  "steps": {
+    "auth": {
+      "description": "Iniciá sesión o creá una cuenta para continuar",
+      "title": "Creá Tu Cuenta"
+    }
+  },
+  "authStep": {
+    "description": "Iniciá sesión o creá una cuenta para continuar con el registro.",
+    "cta": "Continuar al Inicio de Sesión",
+    "title": "Creá Tu Cuenta"
+  },
+  "businessInfo": {
+    "description": "Contanos sobre tu negocio",
+    "fields": {
+      "name": {
+        "placeholder": "Ingresá el nombre de tu negocio"
+      },
+      "ownerName": {
+        "placeholder": "Ingresá el nombre completo del propietario"
+      },
+      "description": {
+        "placeholder": "Describí tu negocio (opcional)"
+      },
+      "phone": {
+        "placeholder": "Ingresá número de teléfono (opcional)"
+      },
+      "website": {
+        "placeholder": "Ingresá la URL del sitio web (opcional)"
+      },
+      "customUrl": {
+        "placeholder": "Ingresá el slug de URL personalizada (opcional)"
+      },
+      "country": {
+        "placeholder": "Seleccioná tu país",
+        "required": "Seleccioná tu país: define tu moneda y zona horaria."
+      },
+      "city": {
+        "placeholder": "p. ej. Buenos Aires — completá el perfil de tu negocio"
+      },
+      "businessType": {
+        "placeholder": "Seleccioná un tipo"
+      }
+    },
+    "logo": {
+      "description": "Subí el logo de tu negocio para mejor reconocimiento de marca"
+    },
+    "localeHint": "Te configuramos en {currency}, horario de {timezone} — podés cambiarlo cuando quieras en Configuración."
+  },
+  "location": {
+    "description": "Configurá la dirección de tu negocio y los datos de cobro",
+    "address": {
+      "city": {
+        "placeholder": "Buenos Aires"
+      },
+      "state": {
+        "placeholder": "CABA"
+      },
+      "postalCode": {
+        "placeholder": "C1043"
+      },
+      "country": {
+        "placeholder": "Argentina"
+      }
+    },
+    "wallets": {
+      "settlement": {
+        "placeholder": "Ingresá tu cuenta de cobro"
+      },
+      "tipping": {
+        "placeholder": "Ingresá cuenta de propinas (opcional)"
+      }
+    }
+  },
+  "settings": {
+    "description": "Configurá tarifas y habilitá características"
+  },
+  "errors": {
+    "connectWalletOrSignIn": "Conectá tu billetera o iniciá sesión para registrar un negocio",
+    "invalidEmail": "Por favor ingresá un email válido"
+  },
+  "validation": {},
+  "messages": {
+    "authenticationMessage": "Por favor iniciá sesión para registrar tu negocio en Payverge."
+  }
+}

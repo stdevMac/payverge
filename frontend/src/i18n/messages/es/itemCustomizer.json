@@ -1,0 +1,17 @@
+{
+  "title": "Personalizar Elemento",
+  "basePrice": "Precio Base",
+  "quantity": "Cantidad",
+  "addOnsOptions": "Complementos y Opciones",
+  "required": "Requerido",
+  "requiredMissing": "Elige: {options}",
+  "free": "Gratis",
+  "specialRequests": "Solicitudes Especiales",
+  "specialRequestsPlaceholder": "Cualquier instrucción especial o modificación...",
+  "characters": "caracteres",
+  "basePriceQuantity": "Precio Base",
+  "addOnsQuantity": "Complementos",
+  "total": "Total",
+  "cancel": "Cancelar",
+  "addToCart": "Agregar al Carrito"
+}

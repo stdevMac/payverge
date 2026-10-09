@@ -1,0 +1,13 @@
+{
+  "title": "Se requiere PIN del gerente",
+  "clear": "Borrar",
+  "cancel": "Cancelar",
+  "confirm": "Confirmar",
+  "invalidPin": "PIN inválido",
+  "aria": {
+    "display": "Visualización de entrada del PIN",
+    "clear": "Borrar PIN",
+    "backspace": "Retroceso",
+    "digit": "Dígito {digit}"
+  }
+}

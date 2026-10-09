@@ -1,0 +1,26 @@
+{{ define "subject" }}Your Payverge account has been closed{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Your Payverge account has been closed
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    The Payverge account for <strong>{{ .business_name }}</strong> has been closed.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Reason provided: {{ .reason }}
+</p>
+
+<p style="margin:0 0 18px 0;">
+    If you believe this was made in error or need help recovering business data, reply to this email and our team will review it.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

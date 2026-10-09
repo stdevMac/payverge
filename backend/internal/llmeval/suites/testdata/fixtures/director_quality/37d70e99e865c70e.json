@@ -1,0 +1,13 @@
+{
+  "key": "37d70e99e865c70e",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"La caída del 20% en pedidos de delivery este mes indica un problema significativo que requiere investigación y acción inmediata en múltiples frentes.\",\"actions\":[{\"title\":\"Revisar los tiempos de entrega promedio y las calificaciones de los repartidores para detectar problemas de servicio\",\"priority\":\"high\"},{\"title\":\"Analizar las comisiones de las plataformas de delivery y comparar con la competencia local\",\"priority\":\"high\"},{\"title\":\"Lanzar una promoción exclusiva para delivery el próximo mes para recuperar clientes\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

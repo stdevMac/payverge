@@ -1,0 +1,129 @@
+{
+  "description": "Gestioná el perfil de tu negocio, personalizá tu marca y configurá los ajustes de pago.",
+  "saveBar": {
+    "save": "Guardá los cambios",
+    "unsaved": "Tenés cambios sin guardar"
+  },
+  "messages": {
+    "updateSuccessDescription": "La configuración de tu negocio se guardó correctamente.",
+    "someFieldsNotSavedDescription": "Los campos exclusivos del dueño (billeteras de cobro, configuración de IA) se ignoraron. Pedile al dueño del negocio que los cambie."
+  },
+  "profile": {
+    "guestOrderingDescription": "Desactivá los pedidos de los clientes y dejá de enviar cuentas a la pantalla de cocina. Confirmá antes de cambiarlo: es un interruptor de servicio, no un campo de perfil.",
+    "kitchenOrdersDescription": "Enviá las cuentas aprobadas a una pantalla de cocina para que los cocineros marquen los artículos como en preparación o listos.",
+    "operatingHoursDescription": "Configurá tu horario semanal recurrente. Las horas están en la zona horaria local de tu negocio.",
+    "businessNamePlaceholder": "Ingresá el nombre de tu negocio",
+    "customUrlDescription": "Creá una URL personalizada para la página de tu negocio",
+    "descriptionPlaceholder": "Contales a los clientes sobre tu restaurante, cocina y lo que te hace especial...",
+    "logoDescription": "Subí el logo de tu negocio. Aparece en menús y recibos.",
+    "locationDescription": "Dónde te pueden encontrar los clientes",
+    "businessTypePlaceholder": "Seleccioná un tipo"
+  },
+  "customUrlInput": {
+    "defaultDescription": "Creá una URL personalizada para la página de tu negocio",
+    "openLivePage": "Abrí la página",
+    "tooltips": {
+      "openLivePage": "Abrí tu página en una pestaña nueva"
+    },
+    "validation": {
+      "reserved": "Esta URL está reservada y no está disponible"
+    },
+    "qrModal": {
+      "description": "Escaneá este código QR para visitar la página de tu negocio",
+      "download": "Descargar PNG"
+    }
+  },
+  "businessPage": {
+    "status": {
+      "unknown": "Estado no disponible"
+    },
+    "unknownStatusDescription": "No se pudo cargar si esta página está publicada. Reintentá antes de cambiar el estado.",
+    "customUrlTakenError": "Esa URL de página ya está en uso. Elegí otra antes de guardar.",
+    "enableDescription": "Creá una página pública para tu negocio en /b/tu-slug",
+    "customUrlDescription": "Creá una URL personalizada para la página de tu negocio",
+    "aboutPlaceholder": "Contales a los clientes sobre tu restaurante, cocina, historia y lo que te hace especial...",
+    "essentialsDescription": "URL personalizada y una breve descripción que van a ver tus clientes",
+    "logoTitle": "Logo",
+    "logoDescription": "Subí el logo de tu negocio. Aparece en el hero de la página pública, la barra fija y los recibos.",
+    "bannerDescription": "Subí hasta 3 imágenes de banner para mostrar tu restaurante. Van a aparecer en la parte superior de la página de tu negocio.",
+    "welcomeMessagePlaceholder": "¡Bienvenidos a nuestro restaurante! Estamos contentos de atenderlos...",
+    "showOurStoryDescription": "Compartí la historia de tu negocio y lo que te hace especial",
+    "ourStoryPlaceholder": "Contales a tus clientes sobre tu trayectoria, misión y lo que hace único a tu negocio...",
+    "operatingHoursDescription": "Gestioná los horarios y la zona horaria de tu negocio",
+    "operatingHoursInstructions": "Establecé tus horarios de operación para cada día de la semana.",
+    "specialFeaturesInstructions": "Agregá características y comodidades que hacen especial a tu negocio.",
+    "activationCard": {
+      "description": "Establecé tu presencia digital con una página comercial profesional. Mostrá tu galería, horarios y características para atraer más clientes.",
+      "footnote": "Podés desactivar tu página comercial cuando quieras desde ajustes."
+    },
+    "disableModal": {
+      "description": "Tu página comercial va a dejar de ser accesible públicamente. Los clientes no van a poder ver tus horarios, galería o especiales.",
+      "qrConsequence": "Los códigos QR de las mesas que abren esta página van a dejar de funcionar para los clientes hasta que la publiques de nuevo.",
+      "typeConfirmLabel": "Escribí DISABLE para confirmar",
+      "confirmation": "¿Estás seguro de que la querés deshabilitar?"
+    },
+    "enableModal": {
+      "description": "Esto va a promocionar tu página al público. Podés personalizar el contenido antes de compartir la URL."
+    },
+    "photoGalleryInstructions": "Subí y gestioná fotos para mostrar tu negocio.",
+    "dangerZone": {
+      "title": "Despublicar esta página",
+      "description": "Saca la página pública del aire. Los códigos QR de las mesas que la abren van a dejar de funcionar hasta que la publiques de nuevo."
+    },
+    "button": {
+      "setUrl": "Configurá la URL de tu página"
+    },
+    "timezonePlaceholder": "Elegí una zona horaria…",
+    "toasts": {
+      "loadFailedSaveBlocked": "Los datos de la página no se cargaron, así que guardar está deshabilitado para proteger tu contenido. Reintentá la carga primero."
+    }
+  },
+  "payment": {
+    "walletNotConnectedDescription": "Conectá tu billetera primero y volvé a intentarlo.",
+    "addressInvalid": "Ingresá una dirección de billetera válida (0x seguido de 40 caracteres hexadecimales).",
+    "rateOutOfRange": "Ingresá una tasa entre 0 y 100.",
+    "cryptoAddressesTitle": "Billeteras cripto opcionales",
+    "checkoutRailsNotice": "Los cobros con tarjeta y checkout (como Mercado Pago) se configuran en Plugins. Esta página es solo para tarifas, impuestos y billeteras cripto opcionales.",
+    "settlementAddressLabel": "Billetera de liquidación de ventas",
+    "settlementAddressDescription": "Billetera opcional donde se liquidan las ventas cripto. No es necesaria para Mercado Pago u otros cobros con tarjeta.",
+    "tipWalletMustDiffer": "La billetera de propinas tiene que ser distinta a la de liquidación de ventas para poder pagar las propinas por separado.",
+    "confirmAddressChangeTitle": "Confirmar cambio de billetera de cobro",
+    "confirmAddressChangeTipNotice": "Las propinas van a la billetera de propinas; las ventas a la de liquidación — mantenelas distintas.",
+    "confirmAddressChangeConfirm": "Guardar cambio de billetera",
+    "tippingAddressLabel": "Billetera de propinas del personal",
+    "tippingAddressDescription": "Billetera separada para propinas, aparte de los ingresos por ventas.",
+    "payoutNotice": "Solo hace falta si aceptás cripto. La billetera de propinas tiene que ser distinta a la de ventas.",
+    "sampleCheckDescription": "Vista en vivo para un subtotal de {{amount}} con las tasas de arriba — lo que cobraría una cuenta nueva después de guardar.",
+    "effectiveDateDescription": "Estas tasas aplican a cuentas nuevas en cuanto guardes. Todavía no se puede programar un cambio futuro.",
+    "effectiveDateOpenBillsNote": "Las cuentas abiertas en el piso conservan sus totales actuales; solo las nuevas usan las tasas guardadas."
+  },
+  "design": {
+    "comingSoonDescription": "Personalizá los colores, fuentes y diseño de tu menú"
+  },
+  "timezoneDescription": "Afecta las marcas de tiempo de las cuentas, análisis y horarios de operación",
+  "notifications": {
+    "emailDescription": "Controlá qué emails recibís de Payverge",
+    "ordersAndPaymentsDesc": "Recibí emails cuando se realizan pedidos o se reciben pagos",
+    "telegramNotConnected": "Conectá Telegram en la pestaña de Plugins para configurar notificaciones",
+    "directorDigestDesc": "Recibí un resumen diario por email con información generada por IA sobre tu negocio",
+    "operationalEventsDescription": "Elegí qué flujos crean alertas y cuáles se repiten hasta que el equipo las atienda.",
+    "operationalSoundEnabledDesc": "Reproduce sonidos hasta que una alerta repetitiva se reclame o resuelva. Apagado por defecto: activalo solo si querés alarmas audibles.",
+    "operationalSoundOptInHint": "Activación opcional: dejarlo apagado mantiene el piso en silencio mientras las alertas siguen apareciendo en pantalla.",
+    "operationalRepeatIntervalFloorHint": "Mínimo 30 segundos para que las repeticiones no suenen cada 8s durante el servicio.",
+    "operationalBrowserEnabledDesc": "Muestra notificaciones del navegador cuando llegan nuevas alertas. Requiere permiso en este navegador.",
+    "scopeLegendTitle": "Estos ajustes usan distintos alcances",
+    "scopeLegendDescription": "El email sigue tu sesión, las alertas operativas y Telegram siguen este negocio, los sonidos de chat quedan en este dispositivo y las alertas de escritorio también necesitan permiso en este navegador. Cada sección está etiquetada para que nada se guarde en el lugar equivocado.",
+    "saveModelHint": "Estos interruptores se guardan al toque. Perfil, pagos e idiomas siguen usando Guardá los cambios.",
+    "scope": {
+      "browser": {
+        "label": "Este navegador",
+        "helper": "La preferencia se guarda para este negocio, pero el sistema/navegador también debe permitir notificaciones en esta máquina."
+      }
+    }
+  },
+  "loyalty": {
+    "maxRedemptionPercentage": "Porcentaje máximo de la cuenta",
+    "maxRedemptionPercentageDesc": "Porcentaje máximo de una cuenta que se puede pagar con puntos"
+  },
+  "reopenWizardDescription": "Revisá tu progreso de configuración y completá los pasos pendientes"
+}

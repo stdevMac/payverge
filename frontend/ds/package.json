@@ -1,0 +1,13 @@
+{
+  "name": "@payverge/design-system",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Design-system surface of the Payverge frontend: a barrel over the real shipped components in src/, used by the /design-sync converter to build the claude.ai/design bundle.",
+  "type": "module",
+  "module": "./index.tsx",
+  "types": "./dist/ds/index.d.ts",
+  "scripts": {
+    "build:types": "tsc -p tsconfig.json"
+  }
+}

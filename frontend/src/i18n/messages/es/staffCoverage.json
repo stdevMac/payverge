@@ -1,0 +1,55 @@
+{
+  "menu": {
+    "entry": "Tomar turnos",
+    "hint": "Toma turnos abiertos e intercambia con tu equipo"
+  },
+  "title": "Tomar turnos",
+  "openShifts": "Turnos abiertos",
+  "swapInbox": "Cambios para cubrir",
+  "myRequests": "Mis solicitudes",
+  "claim": "Tomar",
+  "accept": "Aceptar",
+  "cancel": "Cancelar",
+  "loading": "Cargando cobertura…",
+  "positionFallback": "Turno",
+  "claimSuccess": "Turno tomado — pendiente de aprobación del encargado",
+  "acceptSuccess": "Cambio aceptado — pendiente de aprobación del encargado",
+  "cancelSuccess": "Solicitud cancelada",
+  "actionError": "No pudimos completarlo. Vuelve a intentarlo en un momento.",
+  "offerAction": "Pasar turno",
+  "requested": "Solicitado",
+  "offerSuccess": "Enviado — avisamos a tu equipo",
+  "giveUpSuccess": "Turno devuelto — esperando a tu encargado",
+  "offer": {
+    "title": "Pasar este turno",
+    "subtitle": "Dos formas de pasarle este turno a otra persona.",
+    "offerCover": "Que un compañero lo cubra",
+    "offerCoverHint": "Un compañero que pueda tomarlo lo acepta y después tu encargado aprueba.",
+    "giveUp": "Devolver el turno",
+    "giveUpHint": "Tu encargado te saca del turno y busca quién lo cubra.",
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
+  "row": {
+    "swap": "Solicitud de cambio",
+    "giveup": "Solicitud de devolución",
+    "claim": "Toma de turno abierto"
+  },
+  "empty": {
+    "openTitle": "No hay turnos abiertos para tomar",
+    "openSubtitle": "Los turnos abiertos que publique tu encargado aparecerán aquí para que los tomes.",
+    "inboxTitle": "No hay cambios para cubrir",
+    "inboxSubtitle": "Cuando un compañero ofrezca un cambio que puedas cubrir, aparecerá aquí.",
+    "mineTitle": "Todavía no tienes solicitudes de turno",
+    "mineSubtitle": "Los turnos que tomes y los cambios que solicites aparecerán aquí con su estado."
+  },
+  "status": {
+    "pending": "Pendiente",
+    "accepted": "Aceptado",
+    "pendingApproval": "Esperando a tu encargado",
+    "approved": "Aprobado",
+    "denied": "Rechazado",
+    "cancelled": "Cancelado",
+    "withdrawn": "Retirado"
+  }
+}

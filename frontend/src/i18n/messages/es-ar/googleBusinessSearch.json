@@ -1,0 +1,37 @@
+{
+  "errors": {
+    "emptyQuery": "Por favor ingresá un término de búsqueda",
+    "searchFailed": "Error al buscar negocios. Por favor probá de nuevo.",
+    "linkFailed": "Error al vincular Google Business. Por favor probá de nuevo.",
+    "removeFailed": "Error al eliminar la integración con Google Business. Por favor probá de nuevo."
+  },
+  "connected": {
+    "actions": {
+      "manage": {
+        "description": "Actualizá tu perfil y configuración de Google Business"
+      },
+      "review": {
+        "description": "Mirá y respondé las reseñas de los clientes"
+      },
+      "maps": {
+        "description": "Mirá cómo aparece tu negocio en Google Maps"
+      }
+    }
+  },
+  "search": {
+    "description": "Vinculá tu Perfil de Google Business para habilitar solicitudes de reseñas y mejorar tu presencia en línea.",
+    "inputLabel": "Buscá tu negocio",
+    "inputPlaceholder": "Ingresá el nombre de tu negocio y ubicación",
+    "inputDescription": "Probá buscar con el nombre de tu negocio y ciudad para mejores resultados",
+    "selectBusiness": "Seleccioná Tu Negocio",
+    "tips": {
+      "tip1": "Incluí el nombre de tu negocio y ciudad",
+      "tip2": "Probá diferentes variaciones del nombre de tu negocio",
+      "tip3": "Incluí la dirección si es necesario",
+      "tip4": "Asegurate de que tu negocio tenga un Perfil de Google Business"
+    },
+    "noProfile": {
+      "suffix": "antes de poder conectarlo acá."
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "title": "Staff",
+  "greeting": "Hi, {name}",
+  "businessLine": "at {business}",
+  "nav": {
+    "label": "Staff sections",
+    "today": "Today",
+    "schedule": "Schedule",
+    "chat": "Chat",
+    "more": "More"
+  },
+  "today": {
+    "title": "Today",
+    "loading": "Loading your day…"
+  },
+  "comingSoon": {
+    "schedule": "Your schedule lands in the next update.",
+    "chat": "Team chat is coming soon.",
+    "badge": "Coming soon"
+  },
+  "serviceTools": {
+    "title": "Service tools",
+    "description": "Open the tools you use during your shift.",
+    "open": "Open service tools"
+  },
+  "profile": {
+    "title": "Profile",
+    "roleLabel": "Role",
+    "businessLabel": "Business",
+    "emailLabel": "Email",
+    "lastLoginLabel": "Last sign-in",
+    "signOut": "Sign out",
+    "roles": {
+      "manager": "Manager",
+      "server": "Server",
+      "host": "Host",
+      "kitchen": "Kitchen"
+    }
+  },
+  "more": {
+    "title": "More",
+    "comingSoon": "More features are on the way."
+  }
+}

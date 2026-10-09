@@ -1,0 +1,13 @@
+{
+  "title": "Manager PIN required",
+  "clear": "Clear",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "invalidPin": "Invalid PIN",
+  "aria": {
+    "display": "PIN entry display",
+    "clear": "Clear PIN",
+    "backspace": "Backspace",
+    "digit": "Digit {digit}"
+  }
+}

@@ -1,0 +1,374 @@
+{
+  "hero": {
+    "handledRecently": "Gestionadas recientemente"
+  },
+  "example": {
+    "heading": "Mirá cómo podrían verse tus publicaciones",
+    "subtitle": "Publicaciones de ejemplo con los colores de tu marca. Agregá tus platos y ofertas, y publicaciones como estas saldrán de tu propio menú.",
+    "cta": "Hacela tuya",
+    "cards": {
+      "featured": {
+        "title": "Destacá tu plato estrella"
+      },
+      "offer": {
+        "title": "Convertí una oferta en publicación"
+      }
+    }
+  },
+  "feed": {
+    "retry": "Intentar de nuevo",
+    "allHandled": "Ya gestionaste todas las ideas actuales. Las nuevas oportunidades van a aparecer cuando cambien los datos de tu restaurante.",
+    "noEnabledPlays": "No hay tipos de sugerencia activos. Activá al menos uno en Ajustes creativos para reconstruir esta cola.",
+    "readOnly": "Acceso de solo lectura: podés revisar los posts preparados, pero solo un editor de marketing puede cambiar su estado."
+  },
+  "card": {
+    "addPhotoHint": "Agregá una foto para terminar esta publicación",
+    "retryCaption": "Intentá de nuevo",
+    "reviewExport": "Revisar y exportar",
+    "blocked": {
+      "needs_photo": "Agregá una foto antes de compartir o descargar.",
+      "photo_too_dark": "Esta foto está demasiado oscura — tomala de nuevo con más luz o mejorala antes de publicar.",
+      "photo_weak": "Esta foto necesita una nueva toma — arreglala antes de publicar.",
+      "needs_caption": "Agregá un texto antes de compartir o descargar."
+    },
+    "localExportHint": "Exportar y compartir quedan en este dispositivo — Payverge no publica por vos."
+  },
+  "outcome": {
+    "title": "¿Se publicó este post?",
+    "shared": "Tu dispositivo completó el envío para compartir. Confirmá solo si el post realmente se publicó.",
+    "downloaded": "Se descargaron los archivos del post. Confirmá solo después de publicarlos en una red social.",
+    "copied": "Se copió el texto. Confirmá solo después de publicar el post completo.",
+    "downloadedWithDestination": "Descargado — ahora publicalo en {destination} cuando quieras. Payverge no publica por vos.",
+    "sharedWithDestination": "Compartido a tu dispositivo — terminá de publicar en {destination} vos. Confirmá solo cuando esté en vivo.",
+    "copiedWithDestination": "Texto copiado — pegalo al publicar en {destination}. Confirmá solo cuando el post completo esté publicado.",
+    "notYet": "Todavía no",
+    "confirmPublished": "Sí, se publicó",
+    "error": "No pudimos marcar este post como publicado. Sigue en tu cola.",
+    "retry": "Intentar marcarlo de nuevo"
+  },
+  "brand": {
+    "logoLoadFailed": "No se pudo cargar tu logo, así que no va a aparecer en esta publicación. Revisá la URL del logo en los ajustes de diseño del negocio."
+  },
+  "destinations": {
+    "subtitle": "Elegí un destino para obtener el recorte, la longitud del texto y el paquete de exportación correctos. Siempre publicás a mano: no se programa nada.",
+    "motionOptional": "La imagen alcanza para este destino. La exportación de video sigue disponible si querés movimiento.",
+    "captionSoftWarn": "Más largo de lo recomendado: todavía sirve, pero la app puede cortarlo.",
+    "captionHardWarn": "Supera el límite de la plataforma: acortalo antes de pegarlo.",
+    "captionHouseVoiceHint": "Regenerar usa la voz de tu marca, el tono, el idioma, el estilo de CTA y las frases prohibidas de Ajustes creativos.",
+    "captionLength": {
+      "short": "Texto corto",
+      "medium": "Texto medio",
+      "long": "Texto de feed"
+    },
+    "hashtagsOff": "Este destino funciona mejor sin hashtags: se desactivan para este paquete.",
+    "packWithoutCaption": "Agregá un texto para incluir caption.txt en el paquete.",
+    "exportFailed": "No se pudo exportar el paquete. Tu navegador puede estar bloqueando la foto: probá con otra imagen.",
+    "checklist": {
+      "crop": "Revisá el recorte y las zonas seguras en la vista previa",
+      "caption": "Copiá o descargá el texto con el paquete",
+      "download": "Descargá los archivos del paquete a tu dispositivo",
+      "motion": "Opcional: descargá un video corto si querés movimiento",
+      "post_manual": "Abrí la app y publicá cuando quieras: acá no se programa nada",
+      "print_shop": "Imprimí desde el navegador o mandá el archivo a una imprenta"
+    },
+    "ig_feed": {
+      "hint": "Vertical 4:5 (y cuadrado). Texto listo para pegar."
+    },
+    "whatsapp": {
+      "hint": "Cuadrado o feed para compartir. Texto corto, sin hashtags."
+    },
+    "print_tent": {
+      "hint": "Impresión 5×7 con sangrado y marcas de corte (no es ticket térmico)."
+    },
+    "print_window": {
+      "name": "Vinilo de vidriera",
+      "hint": "PNG de alta resolución cuadrado para vinilos y carteles de ventana."
+    }
+  },
+  "attribution": {
+    "promoCodeLabel": "Código promo / seguimiento: {code}",
+    "limitations": "Las páginas de huésped todavía no registran estos códigos — usalos solo para correlación manual o de primera parte en el futuro. No es atribución multi-toque de anuncios."
+  },
+  "printShop": {
+    "title": "Paquete para imprenta",
+    "subtitle": "Archivos listos para una imprenta externa: HTML con marcas de corte o PNG de alta resolución.",
+    "presets": {
+      "flyer_half_letter": {
+        "instructions": "Instrucciones de imprenta — flyer (base media carta apaisada)\n=============================================================\n\nArchivo: PNG ancho de alta resolución (2× 1920×1080 = 3840 × 2160 px).\nEscalá a media carta (5.5 × 8.5 in) o A5; márgenes ≥ 5 mm.\nSangrado: agregá 3 mm en la imprenta si necesitás sangre total (este PNG es seguro al corte).\n\nProporción: 16:9 ancha. Recortá con cuidado si la media carta es vertical.\nColor: PNG sRGB.\n\nNo es un ticket térmico.\nDistribuí los flyers cuando quieras — Payverge no fija un horario de publicación.\n"
+      }
+    }
+  },
+  "motion": {
+    "hint": "Seis segundos, sin sonido. Agregá música en Instagram o TikTok al subirlo.",
+    "failed": "No se pudo exportar el video. Volvé a intentarlo o descargá la imagen fija."
+  },
+  "preview": {
+    "renderError": "No pudimos crear esta vista previa.",
+    "retry": "Intentá la vista previa de nuevo",
+    "rendering": "Creando vista previa…",
+    "generating": "Generando foto…"
+  },
+  "defaults": {
+    "cta": {
+      "default": "VISITANOS",
+      "featured_dish": "PROBALO",
+      "happy_hour": "SUMATE HOY",
+      "move_item": "DESCUBRILO",
+      "combo_deal": "PEDÍ EL COMBO",
+      "offer": "RECLAMÁ LA OFERTA"
+    },
+    "badge": {
+      "move_item": "PROBALO"
+    }
+  },
+  "starterCaption": {
+    "featured_dish": "{name} te está llamando. Vení a probar por qué es un favorito. {handle}",
+    "happy_hour": "¡Llegó el happy hour! Pasá y date un gusto. {handle}",
+    "win_back": "¡Te extrañamos! Volvé por tus favoritos. {handle}",
+    "default": "Recién salido de nuestra cocina. ¡Vení a vernos! {handle}"
+  },
+  "photoSource": {
+    "noneSelected": "Elegí una foto arriba o generá una con IA.",
+    "galleryLoading": "Cargando fotos de la galería…",
+    "galleryFailed": "No pudimos cargar tu galería.",
+    "galleryRetry": "Reintentar galería"
+  },
+  "photoReadiness": {
+    "empty": "Agregá fotos a los platos de tu menú y las revisamos acá.",
+    "openInMenu": "Abrir en el Menú",
+    "replacePhoto": "Reemplazá con una foto más clara"
+  },
+  "provenance": {
+    "free": "{source} · Gratis",
+    "ai": "Foto generada con IA",
+    "none": "Ninguna foto seleccionada",
+    "sources": {
+      "menu": "Foto del menú",
+      "offer": "Foto de la oferta",
+      "bundle": "Foto del combo",
+      "gallery": "Foto de la galería",
+      "upload": "Foto subida"
+    }
+  },
+  "sections": {
+    "image": "Imagen",
+    "layout": "Diseño",
+    "copy": "Texto",
+    "export": "Exportar"
+  },
+  "crop": {
+    "focalX": "Enfoque horizontal",
+    "focalY": "Enfoque vertical",
+    "zoom": "Zoom",
+    "reset": "Restablecer recorte"
+  },
+  "campaignKit": {
+    "printHint": "El cartelito de mesa se imprime a 300 ppp, con sangrado y marcas de corte. Abrí el archivo HTML y usá el diálogo de impresión del navegador, o llevalo a una imprenta.",
+    "empty": "Elegí al menos un formato.",
+    "failed": "No se pudo armar el kit. Tu navegador puede estar bloqueando la foto: probá generando una nueva."
+  },
+  "formats": {
+    "5:7": {
+      "name": "Cartelito de mesa"
+    }
+  },
+  "generationConfirm": {
+    "title": "¿Generar esta foto?",
+    "direction": "Dirección creativa: una foto realista y cuidada de {name}, con espacio libre para el texto.",
+    "ratio": "Formato de salida: {ratio}.",
+    "freeAlternative": "Las fotos del menú, ofertas, combos, galería y subidas son gratis.",
+    "paidRetryWarning": "Esto genera una foto de pago nueva y reemplaza la que ya está guardada. Reintentar la vista previa no gasta otro crédito.",
+    "failedDeliveryWarning": "No se pudo mostrar la última foto generada. Generar otra vez gasta otro crédito.",
+    "confirm": "Generar",
+    "cancel": "Seguir editando"
+  },
+  "manualStudio": {
+    "title": "Creá tu propia publicación",
+    "subtitle": "Empezá desde cero: elegí una foto y agregá tu texto."
+  },
+  "editor": {
+    "subtitle": "Generá una foto, editá el texto y descargá tu publicación.",
+    "noPhoto": "Generá una foto para previsualizar tu publicación",
+    "generationBusy": "Mantené abierto este editor mientras se genera tu imagen de pago.",
+    "promptRejected": "Ese texto no se puede usar para una imagen. Describí el plato.",
+    "captionPlaceholder": "Generá un texto o escribí el tuyo.",
+    "dailyLimit": {
+      "title": "Generaste {limit} imágenes con IA hoy, el límite diario.",
+      "contact": "¿Necesitás más hoy? Escribinos y lo ampliamos."
+    },
+    "sharePost": "Compartir publicación",
+    "exportReady": "Tu publicación está lista para descargar.",
+    "exportNotReady": "Completá todos los pasos antes de descargar.",
+    "checklist": {
+      "preview": "Vista previa"
+    }
+  },
+  "discard": {
+    "body": "Tenés cambios que se van a perder si cerrás esta publicación."
+  },
+  "errors": {
+    "caption_item_required": "Agregá el nombre de un plato u oferta antes de generar el texto.",
+    "caption_failed": "No se pudo generar el texto. Intentá de nuevo.",
+    "caption_unavailable": "Ese plato o combo no se puede vender ahora, así que no escribimos un texto para promocionarlo.",
+    "image_failed": "No se pudo generar la foto. Intentá de nuevo.",
+    "image_decode_failed": "No se pudo decodificar la foto generada. No se guardó nada: intentá de nuevo.",
+    "image_not_hosted": "Esta foto no está alojada en tu galería, así que no se puede mejorar. Subila o elegí una imagen de la galería primero.",
+    "no_photo": "Primero generá una foto.",
+    "download_failed": "No se pudo descargar la publicación. Tu navegador puede estar bloqueando la foto: probá con otra imagen o generá una nueva."
+  },
+  "library": {
+    "unknownPlay": "Otra campaña",
+    "loadingMore": "Cargando más",
+    "loading": "Cargando historial de publicaciones…",
+    "loadFailed": "No pudimos cargar el historial de publicaciones.",
+    "retry": "Intentá de nuevo",
+    "filteredEmpty": "Ninguna actividad coincide con estos filtros.",
+    "capturedPreview": "Creatividad capturada",
+    "reconstructedPreview": "Vista reconstruida · diseño predeterminado, no histórico",
+    "reuse": "Reutilizar",
+    "restoreFailed": "No pudimos restaurar esta idea.",
+    "retryRestore": "Reintentá restaurarla",
+    "exportNarrativeHint": "Descargá teaser, héroe, story, mesa y franja de email en un solo zip — publicá cuando quieras."
+  },
+  "automation": {
+    "button": "Ajustes creativos",
+    "subtitle": "Elegí qué ideas crea Payverge para vos.",
+    "saveError": "No se pudieron guardar los ajustes. Intentá de nuevo."
+  },
+  "settings": {
+    "title": "Ajustes creativos",
+    "subtitle": "Orientá las ideas, los textos y las imágenes que Payverge prepara para que apruebes.",
+    "close": "Listo",
+    "automatic": "Automático",
+    "readOnly": "Podés consultar estos ajustes, pero tu rol no permite modificarlos.",
+    "autonomy": {
+      "title": "Autonomía",
+      "body": "Elegí qué ideas puede preparar Payverge. Nada se publica sin tu aprobación.",
+      "master": "Preparar sugerencias",
+      "masterHint": "Pausá todas las sugerencias nuevas sin perder tu perfil creativo.",
+      "plays": "Tipos de sugerencia"
+    },
+    "brandVoice": {
+      "title": "Voz de marca",
+      "body": "Contá a quién te dirigís y cómo tiene que sonar tu restaurante. Dejá los campos vacíos para que Payverge elija."
+    },
+    "visualDirection": {
+      "title": "Dirección visual",
+      "body": "Definí el clima habitual de las imágenes generadas o dejá que Payverge elija según cada idea."
+    },
+    "copyDefaults": {
+      "title": "Preferencias de texto",
+      "body": "Definí tus preferencias habituales. Los campos vacíos se adaptan automáticamente a cada sugerencia."
+    },
+    "fields": {
+      "audience": {
+        "label": "Público",
+        "placeholder": "Por ejemplo: habitués del barrio y parejas",
+        "helper": "¿Para quién tiene que sentirse escrito el mensaje?"
+      },
+      "voice": {
+        "label": "Voz",
+        "placeholder": "Por ejemplo: cálida, breve y concreta",
+        "helper": "Describí la personalidad y las palabras que representan a tu restaurante."
+      },
+      "visualMood": {
+        "label": "Clima visual",
+        "helper": "El estilo habitual de las imágenes generadas de platos y del local."
+      },
+      "ctaStyle": {
+        "label": "Estilo del llamado a la acción",
+        "helper": "Qué tan directamente deberían invitar los textos a actuar."
+      },
+      "hashtags": {
+        "label": "Hashtags",
+        "helper": "Cuántos hashtags relevantes deberían incluir normalmente los textos."
+      },
+      "avoidPhrases": {
+        "label": "Frases que querés evitar",
+        "placeholder": "el mejor de todos, garantizado",
+        "helper": "Separá hasta 10 frases con comas.",
+        "tooMany": "Usá como máximo {max} frases.",
+        "tooLong": "Cada frase debe tener {max} caracteres o menos."
+      },
+      "language": {
+        "label": "Idioma predeterminado",
+        "helper": "El primer idioma que usa Payverge al escribir un texto."
+      },
+      "tone": {
+        "label": "Tono predeterminado",
+        "helper": "El tono inicial de las nuevas opciones de texto."
+      }
+    },
+    "options": {
+      "visualMood": {
+        "natural": "Natural",
+        "bright": "Luminoso",
+        "moody": "Atmosférico",
+        "editorial": "Editorial",
+        "rustic": "Rústico"
+      },
+      "ctaStyle": {
+        "soft": "Invitación suave",
+        "direct": "Directo",
+        "urgent": "Con límite de tiempo"
+      },
+      "hashtags": {
+        "none": "Ninguno",
+        "light": "Unos pocos",
+        "standard": "Conjunto estándar"
+      },
+      "languages": {
+        "en": "Inglés",
+        "es": "Español",
+        "es-AR": "Español (Argentina)",
+        "pt": "Portugués",
+        "fr": "Francés",
+        "de": "Alemán",
+        "it": "Italiano",
+        "ja": "Japonés",
+        "zh": "Chino",
+        "ar": "Árabe",
+        "da": "Danés",
+        "hi": "Hindi",
+        "ko": "Coreano",
+        "nl": "Neerlandés",
+        "no": "Noruego",
+        "pl": "Polaco",
+        "ru": "Ruso",
+        "sv": "Sueco",
+        "th": "Tailandés",
+        "tr": "Turco",
+        "vi": "Vietnamita"
+      }
+    },
+    "loadError": {
+      "title": "No pudimos cargar los ajustes creativos",
+      "body": "Tus ajustes guardados siguen a salvo. Intentá de nuevo antes de hacer cambios.",
+      "retry": "Volver a cargar"
+    },
+    "status": {
+      "autoSave": "Los cambios se guardan automáticamente.",
+      "readOnly": "Solo lectura. Tu rol no permite hacer cambios.",
+      "saving": "Guardando cambios...",
+      "saved": "Guardado",
+      "error": "No se pudieron guardar los cambios. Restauramos tus ajustes anteriores.",
+      "errorGeneric": "No se pudieron guardar los cambios. Intentá de nuevo.",
+      "retry": "Intentar de nuevo"
+    }
+  },
+  "playTitles": {
+    "featured_dish": "Destacá tu estrella: {name}",
+    "move_item": "Dale un empujón a {name}",
+    "happy_hour": "Llená {daypart} con un happy hour",
+    "happy_hour_generic": "Llená tu franja más lenta",
+    "win_back": "Recuperá a {count} clientes habituales con opt-in",
+    "combo_deal": "Promocioná tu combo \"{name}\"",
+    "offer": "Promocioná tu oferta \"{name}\""
+  },
+  "narrativeKit": {
+    "readyNow": "Los archivos están listos ahora: publicá cuando quieras. Esto no es un calendario.",
+    "readme": "Los archivos están listos ahora: publicá cuando quieras.\nEste zip no es un calendario. No hay fecha de vencimiento ni cola de publicación.\nUsá cada archivo en el canal que corresponde a su rol (héroe, story, mesa, …).",
+    "manifestNote": "Los archivos están listos ahora: publicá cuando quieras.",
+    "failed": "No se pudo armar el pack narrativo. Tu navegador puede estar bloqueando la foto: probá generando una nueva."
+  }
+}

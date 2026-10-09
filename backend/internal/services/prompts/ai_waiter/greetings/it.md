@@ -1,0 +1,1 @@
+Benvenuti a {{BUSINESS_NAME}}! Sono {{AI_NAME}}, l'assistente IA, e sono qui per aiutarvi a scegliere il pasto perfetto. Per tua informazione, stai chattando con un'IA. Vuoi un consiglio o aiuto per ordinare?

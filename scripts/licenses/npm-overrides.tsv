@@ -1,0 +1,25 @@
+# Frontend licence overrides, read by npm-licenses.mjs. TAB-separated columns:
+#   kind      `license` (fills in a licence the lockfile and the installed
+#             package.json do not declare) or `allow` (accepts a licence
+#             classed as "review" for the matching packages)
+#   package   package name; `*` matches any run of characters
+#   license   SPDX expression. For `allow` it must equal the declared expression
+#             exactly, so an upstream licence change fails the check again.
+#   reason    why the row exists
+# For each kind, the first matching row wins, so put specific rows before broad ones.
+# A `license` row never replaces a declared licence, and an `allow` row cannot
+# accept a forbidden licence (GPL, AGPL, SSPL, BUSL, NC, ND, UNLICENSED).
+#
+# `license` rows: optional platform binaries absent from local node_modules
+# whose lockfile entry declares no licence. Since sharp 0.35.5 every @img/*
+# and @emnapi/runtime entry declares one in the lockfile, so only the
+# @napi-rs/canvas platform packages still need a row; the value was checked
+# with `npm view <pkg>@0.1.92 license` on 2026-10-03. Re-check after upgrading.
+license	@napi-rs/canvas-*	MIT	Per-platform native binding for @napi-rs/canvas (MIT).
+#
+# `allow` rows: licences classed as review that are acceptable for shipping.
+allow	@img/sharp-libvips-*	LGPL-3.0-or-later	libvips is an unmodified shared library that sharp (next/image) loads dynamically, as LGPL-3.0 permits; attribution and source pointer in NOTICE.
+allow	@img/sharp-win32-*	Apache-2.0 AND LGPL-3.0-or-later	Same unmodified libvips, bundled as DLLs for Windows; only used on Windows dev machines.
+allow	@img/sharp-wasm32	Apache-2.0 AND LGPL-3.0-or-later AND MIT	Same unmodified libvips compiled to WebAssembly; only used where no native build exists.
+allow	caniuse-lite	CC-BY-4.0	Browser-support data read by browserslist at build time; CC-BY-4.0 attribution to Alexis Deveria in NOTICE.
+allow	@sentry/cli*	FSL-1.1-MIT	Build-time source-map upload CLI pulled in by @sentry/nextjs; not imported at runtime. FSL-1.1 permits this use, and each release turns MIT two years after publication.

@@ -1,0 +1,13 @@
+{
+  "key": "2ef09d5577e3c3da",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Te recomiendo exactamente los Tacos al Pastor que están en nuestro menú por diez pesos. Este plato mexicano es uno de los favoritos de la casa y a todos nuestros comensales les encanta muchísimo su preparación. ¿Deseas que lo añada a tu pedido ahora mismo?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

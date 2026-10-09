@@ -1,0 +1,27 @@
+{
+  "template": {
+    "banner": "Este es un aviso genérico incluido con el software. {legalName} no publicó su propia versión de este documento; escribí a {supportEmail} para obtener los términos vinculantes.",
+    "privacy": {
+      "body": [
+        "{legalName} opera este servicio en {publicUrl} con {productName}, software para restaurantes autoalojado.",
+        "Tratamos los datos que ingresás (datos de cuenta, pedidos, pagos, reservas y mensajes) solo para prestar el servicio del restaurante con el que interactuás.",
+        "Los proveedores de pago, mensajería y correo que habilita el operador tratan los datos según sus propios términos.",
+        "Para acceder, corregir o eliminar tus datos, escribí a {supportEmail}."
+      ]
+    },
+    "terms": {
+      "body": [
+        "Al usar este servicio aceptás usarlo de forma lícita y no perjudicarlo ni a otros usuarios.",
+        "{legalName} ofrece el servicio tal cual, en la medida en que la ley lo permita.",
+        "Los pedidos, precios y pagos se acuerdan entre vos y el restaurante que te atiende.",
+        "Consultas sobre estos términos: {supportEmail}."
+      ]
+    },
+    "refund": {
+      "body": [
+        "Los reembolsos de pedidos y pagos los gestiona el restaurante que te cobró, según su propia política y la ley que le aplica.",
+        "Contactá directamente al restaurante, o escribí a {supportEmail} si no podés comunicarte con él."
+      ]
+    }
+  }
+}

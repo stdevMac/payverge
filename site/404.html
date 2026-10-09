@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | Payverge</title>
+<meta name="description" content="Payverge is now an open-source, self-hostable restaurant operating system. The page you were looking for has moved or no longer exists.">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1413" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+<style>
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("/assets/fonts/dm-serif-display-regular-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/assets/fonts/dm-sans-latin.woff2") format("woff2");
+  font-weight: 100 1000;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans Fallback";
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 106.73%; ascent-override: 92.94%; descent-override: 29.04%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "DM Serif Display Fallback";
+  src: local("Georgia");
+  size-adjust: 101%; ascent-override: 102.58%; descent-override: 33.17%; line-gap-override: 0%;
+}
+:root {
+  --bg: #faf9f6; --surface: #ffffff; --text: #1c1917; --muted: #544d44; --border: #cfc9bd;
+  --primary: #1a6b6a; --primary-hover: #145554; --on-primary: #ffffff; --focus: #1a6b6a;
+  --glow: rgba(26, 107, 106, 0.1); --shadow: 0 12px 24px rgba(26, 107, 106, 0.22);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1413; --surface: #161d1c; --text: #f1ede4; --muted: #b8b2a8; --border: #3a4946;
+    --primary: #6cc3bf; --primary-hover: #8ad3cf; --on-primary: #0b1211; --focus: #8ad3cf;
+    --glow: rgba(108, 195, 191, 0.08); --shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; display: grid; place-items: center; padding: 32px 16px;
+  background: radial-gradient(ellipse 60% 50% at 50% 30%, var(--glow), transparent 70%) var(--bg); color: var(--text);
+  font: 1rem/1.6 "DM Sans", "DM Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { width: 100%; max-width: 34rem; text-align: center; }
+img { display: block; margin: 0 auto 28px; }
+.code { display: inline-flex; align-items: center; gap: 10px; margin: 0; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--primary); }
+.code::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+h1 { margin: 24px 0 0; font: 400 clamp(2.25rem, 1.5rem + 3vw, 3.25rem)/1.05 "DM Serif Display", "DM Serif Display Fallback", Georgia, serif; letter-spacing: -0.03em; text-wrap: balance; }
+h1 span { color: var(--primary); }
+p { margin: 16px 0 0; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
+a.btn {
+  display: inline-flex; align-items: center; min-height: 52px; padding: 0 32px; border-radius: 999px;
+  font-weight: 600; font-size: 0.875rem; text-decoration: none; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+}
+a.btn:hover { border-color: var(--primary); color: var(--primary); }
+a.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); box-shadow: var(--shadow); }
+a.btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: var(--on-primary); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <img src="/assets/logo.svg" width="48" height="48" alt="Payverge">
+  <p class="code">404 &middot; Page not found</p>
+  <h1>Payverge is now <span>open source</span></h1>
+  <p>The page you were looking for has moved or no longer exists. Payverge is now a self-hostable restaurant operating system you can run on your own server.</p>
+  <div class="actions">
+    <a class="btn primary" href="/">Go to the home page</a>
+    <a class="btn" href="https://github.com/stdevMac/payverge">View on GitHub</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,608 @@
+{
+  "title": "Cuentas",
+  "subtitle": "Gestiona y rastrea todas tus cuentas",
+  "loading": "Cargando cuentas...",
+  "billLabel": "cuenta",
+  "preparedUnits": "{count} ítems",
+  "tabs": {
+    "active": "Cuentas Activas",
+    "history": "Historial de Cuentas"
+  },
+  "header": {
+    "eyebrow": "Comando de ingresos",
+    "results": "Resultados",
+    "visibleValue": "Total listado",
+    "pendingOrders": "Pedidos pendientes",
+    "pendingOrder": "Pedido pendiente",
+    "currency": "Moneda",
+    "visualTitle": "Riel de cobro",
+    "visualSubtitle": "Flujo de cuenta a pago",
+    "handoff": "Controla mesas abiertas, pagos parciales y cuentas completadas desde una sola superficie de ingresos."
+  },
+  "buttons": {
+    "createBill": "Crear Cuenta",
+    "resetFilters": "Restablecer Filtros",
+    "closeBill": "Cerrar Cuenta",
+    "closeWithoutPayment": "Cerrar sin cobrar",
+    "close": "Cerrar",
+    "editItems": "Editar Artículos",
+    "addItem": "Agregar Artículo",
+    "launchDisplay": "Pantalla de Cuentas",
+    "viewDetails": "Ver Detalles",
+    "doneEditing": "Listo",
+    "printBill": "Imprimir cuenta",
+    "print": "Imprimir",
+    "moreActions": "Más acciones",
+    "moreActionsAria": "Más acciones para la cuenta {number}"
+  },
+  "print": {
+    "noPrinter": "No hay impresora de cuentas registrada: agrega una en Configuración → Impresoras",
+    "failed": "Error al imprimir: {message}",
+    "queued": "Cuenta enviada a la estación de impresión seleccionada"
+  },
+  "voidRefund": {
+    "reasonLabel": "Motivo",
+    "minChars": "Mínimo 3 caracteres.",
+    "cancel": "Cancelar",
+    "actions": {
+      "voidBill": "Anular cuenta",
+      "refundPayment": "Reembolsar pago"
+    },
+    "paymentMethods": {
+      "unknown": "Desconocido",
+      "crypto": "Cripto",
+      "crossChain": "Cross-chain",
+      "plugin": "Tarjeta / plugin"
+    },
+    "pin": {
+      "confirmVoidTitle": "Confirmar anulación",
+      "voidDescription": "Anular cuenta n.º {billNumber}",
+      "confirmRefundTitle": "Confirmar reembolso",
+      "refundDescription": "Reembolsar pago de la cuenta n.º {billNumber}"
+    },
+    "toasts": {
+      "voided": "Cuenta anulada",
+      "refunded": "Pago reembolsado"
+    },
+    "errors": {
+      "reasonTooShort": "El motivo debe tener al menos 3 caracteres",
+      "selectPayment": "Selecciona un pago para reembolsar",
+      "voidFailed": "No se pudo anular la cuenta",
+      "kitchenTicketsLive": "La cocina todavía está preparando esta cuenta — cierra o cancela los pedidos abiertos antes de anular.",
+      "refundFailed": "No se pudo reembolsar el pago"
+    },
+    "audit": {
+      "title": "Anulaciones y reembolsos",
+      "subtitle": "Acciones aprobadas por el gerente en esta cuenta.",
+      "loading": "Cargando…",
+      "empty": "Aún no hay anulaciones ni reembolsos.",
+      "noPin": "Sin PIN",
+      "refund": "Reembolso",
+      "void": "Anulación",
+      "action": "Acción"
+    },
+    "voidModal": {
+      "title": "Anular cuenta n.º {billNumber}",
+      "warning": "Anular cancela la cuenta y libera la mesa. Esta acción queda auditada y no se puede deshacer.",
+      "reasonPlaceholder": "¿Por qué se anula esta cuenta?"
+    },
+    "refundModal": {
+      "explanation": "Reembolsa el pago seleccionado en su totalidad. El total de la cuenta no cambia; solo se revierte la fila del pago y se reduce el monto pagado de la cuenta. Los reembolsos de proveedores externos (Stripe / on-chain) los inicia el operador y se registran por separado.",
+      "noPayments": "No hay pagos confirmados para reembolsar.",
+      "choosePayment": "Elige un pago",
+      "inclTip": "(incl. propina {amount})",
+      "reasonPlaceholder": "¿Por qué se reembolsa este pago?"
+    }
+  },
+  "recordPayment": {
+    "title": "Pagos",
+    "subtitlePayable": "Quedan {remaining} — registra efectivo, tarjeta u otro medio.",
+    "subtitleReadOnly": "Pagos de clientes en espera de confirmación por mesero o gerente.",
+    "subtitleSettled": "Historial de pagos de esta cuenta.",
+    "empty": "Aún no hay pagos. Usa Registrar pago cuando el cliente pague en caja.",
+    "actions": {
+      "record": "Registrar pago",
+      "openDrawer": "Abrir caja"
+    },
+    "pending": {
+      "title": "Pendiente de confirmación",
+      "confirm": "Confirmar recibido",
+      "reject": "Rechazar",
+      "guest": "Cliente en caja",
+      "awaitingStaff": "Esperando personal",
+      "requestedAt": "Solicitado {time}",
+      "expired": "Vencida — no se puede confirmar"
+    },
+    "ledger": {
+      "title": "Pagos registrados",
+      "tip": "propina"
+    },
+    "status": {
+      "paid": "Pagado por completo"
+    },
+    "methods": {
+      "crypto": "Cripto",
+      "cash": "Efectivo",
+      "card": "Tarjeta",
+      "mercadopago": "Mercado Pago",
+      "venmo": "Venmo",
+      "other": "Otro",
+      "unknown": "Pago"
+    },
+    "modal": {
+      "title": "Registrar pago",
+      "description": "Ingresa el monto recibido. Saldo pendiente: {remaining}.",
+      "amount": "Monto recibido",
+      "tip": "Propina (opcional)",
+      "tipHint": "Se registra aparte del saldo de la cuenta.",
+      "method": "Método de pago",
+      "note": "Nota (opcional)",
+      "notePlaceholder": "Mesa 4, walk-in, etc.",
+      "noteHint": "Para tu registro — no se muestra al cliente.",
+      "cancel": "Cancelar",
+      "submit": "Marcar como recibido"
+    },
+    "toasts": {
+      "recorded": "Pago registrado",
+      "confirmed": "Pago confirmado",
+      "rejected": "Solicitud de pago rechazada",
+      "drawerOpened": "Caja abierta"
+    },
+    "errors": {
+      "amountInvalid": "Ingresa un monto válido mayor que cero.",
+      "amountTooHigh": "El monto supera el saldo pendiente.",
+      "tipInvalid": "Ingresa una propina válida.",
+      "failed": "No se pudo registrar el pago. Intenta de nuevo o consulta al gerente.",
+      "rejectFailed": "No se pudo rechazar la solicitud de pago. Intenta de nuevo o consulta al gerente.",
+      "cashSessionRequired": "Abre una sesión de caja registradora antes de registrar efectivo.",
+      "cashSessionLookupFailed": "No se pudo comprobar la sesión de caja. Abre un cajón e inténtalo de nuevo.",
+      "openDrawerFailed": "No se pudo abrir la caja. Prueba la pestaña Caja registradora.",
+      "requestExpired": "Esta solicitud de pago venció y no se puede confirmar."
+    },
+    "settled": {
+      "title": "Pago registrado — cuenta saldada",
+      "print": "Imprimir recibo",
+      "closeBill": "Cerrar cuenta",
+      "done": "Listo"
+    },
+    "warnings": {
+      "cashSessionRequired": "Abre el cajón de la caja registradora antes de registrar efectivo.",
+      "cashSessionChecking": "Comprobando la sesión de caja registradora…"
+    }
+  },
+  "confirmation": {
+    "closeBillTitle": "¿Cerrar esta cuenta?",
+    "closeBillDescription": "Esto cerrará permanentemente la cuenta. Cualquier saldo impago será dado de baja. Esta acción no se puede deshacer.",
+    "closeBillConfirm": "Sí, Cerrar Cuenta",
+    "closeWithoutPaymentTitle": "¿Cerrar sin registrar el pago?",
+    "closeWithoutPaymentDescription": "Esto cierra la cuenta pero no la marca como pagada. El saldo impago se dará de baja. Para cobrar en efectivo o tarjeta, usa Registrar pago.",
+    "closeWithoutPaymentConfirm": "Sí, cerrar sin cobrar",
+    "closeBillCancel": "Cancelar",
+    "cancelOrderTitle": "¿Cancelar este pedido?",
+    "cancelOrderDescription": "El pedido #{orderNumber} se marcará como cancelado. No se agregará a la cuenta y seguirá visible abajo como referencia para el personal.",
+    "cancelOrderConfirm": "Sí, Cancelar Pedido",
+    "cancelOrderCancel": "Mantener Pedido",
+    "cancelOrderReasonLabel": "Motivo de cancelación",
+    "cancelOrderReasonPlaceholder": "Nota opcional para el personal, cocina o registro del servicio",
+    "cancelOrderReasonHint": "Este motivo se guardará en el pedido y se mostrará en el historial de la cuenta."
+  },
+  "display": {
+    "title": "Pantalla de Cuentas",
+    "subtitle": "Un espacio en vivo para detectar cuentas que requieren atención y resolverlas rápido.",
+    "liveBadge": "Espacio en vivo",
+    "searchPlaceholder": "Buscar por cuenta, mesa, mostrador, nota o total...",
+    "attentionBills": "Requieren atención",
+    "attentionSubtitle": "Cuentas esperando aprobación o que llevan más tiempo del normal.",
+    "openBills": "Cuentas Abiertas",
+    "openSubtitle": "Cuentas activas que avanzan normalmente.",
+    "completedBills": "Cuentas Completadas",
+    "latestCount": "Últimas {count}",
+    "completedSubtitle": "Las cuentas pagadas o cerradas más recientes.",
+    "noBills": "Sin cuentas",
+    "itemCount": "{count} artículos",
+    "itemCountCompact": "{count} artículos",
+    "preparedUnits": "{count} ítems",
+    "pendingTicketsCount": "{count} pendientes",
+    "activeTicketsCount": "{count} activos",
+    "inspectBill": "Revisar",
+    "cardTotal": "Total",
+    "cardTickets": "Tickets",
+    "emptyAttention": "No hay nada urgente en este momento.",
+    "emptyActive": "No hay cuentas abiertas activas para esta vista.",
+    "emptyCompleted": "No hay cuentas completadas recientes para esta vista.",
+    "notesTitle": "Notas de la cuenta",
+    "noNotes": "Esta cuenta no tiene notas.",
+    "ticketSummaryTitle": "Resumen de tickets",
+    "ticketSummarySubtitle": "Actividad actual de pedidos vinculados a esta cuenta.",
+    "ticketMetrics": {
+      "pending": "Pendientes",
+      "active": "Activos",
+      "cancelled": "Cancelados"
+    },
+    "itemsTitle": "Artículos de la cuenta",
+    "itemsSubtitle": "Revisa la cuenta en vivo y edítala solo cuando haga falta.",
+    "historySubtitle": "Cambios recientes en esta cuenta y sus pedidos.",
+    "billTotalsTitle": "Totales de la cuenta",
+    "counterLabel": "Mostrador {counter}",
+    "justNow": "Ahora mismo",
+    "minutesAgo": "Hace {minutes}m",
+    "hoursMinutesAgo": "Hace {hours}h {minutes}m",
+    "elapsedAgo": "Hace {duration}",
+    "metrics": {
+      "items": "Artículos",
+      "total": "Total",
+      "pendingTickets": "Tickets pendientes",
+      "remaining": "Restante"
+    },
+    "stats": {
+      "open": "Abiertas",
+      "attention": "Atención",
+      "pending": "Pendientes",
+      "completed": "Completadas"
+    },
+    "shortcuts": {
+      "search": "Buscar",
+      "navigate": "Navegar",
+      "edit": "Editar",
+      "closeBill": "Cerrar cuenta",
+      "fullscreen": "Pantalla completa",
+      "newBill": "Nueva cuenta",
+      "back": "Volver"
+    },
+    "exitDisplayAria": "Salir de la pantalla de cuentas",
+    "backToBillsAria": "Volver a cuentas",
+    "closeDetailPanelAria": "Cerrar el panel de detalles",
+    "preparedUnitsOne": "{count} ítem",
+    "preparedUnitsOther": "{count} ítems"
+  },
+  "editItems": {
+    "title": "Editar Artículos",
+    "decreaseQuantityAria": "Disminuir cantidad",
+    "increaseQuantityAria": "Aumentar cantidad",
+    "quantityAria": "Cantidad: {quantity}",
+    "voidPinTitle": "Confirmar anulación",
+    "voidPinDescription": "Anular {name}",
+    "searchPlaceholder": "Buscar artículos del menú...",
+    "noMenuItems": "No se encontraron artículos",
+    "currentItemsTitle": "Artículos actuales de la cuenta",
+    "currentItemsSubtitle": "Revisa la cuenta en vivo antes de hacer cambios manuales.",
+    "removalWarning": "Quitar un artículo aquí actualiza la cuenta en vivo de inmediato. Usa la cancelación de pedidos para tickets de cocina.",
+    "itemAdded": "{item} agregado a la cuenta",
+    "itemAddedWithQuantity": "Se agregaron {quantity}x {item} a la cuenta",
+    "itemAddFailed": "No se pudo agregar el artículo a la cuenta",
+    "itemRemoved": "{item} eliminado de la cuenta",
+    "itemRemoveFailed": "No se pudo eliminar el artículo de la cuenta",
+    "itemVoided": "{item} anulado de la cuenta",
+    "itemVoidFailed": "No se pudo anular el artículo de la cuenta",
+    "manualChangesTitle": "Cambios en la cuenta en vivo",
+    "manualChangesDescription": "Los cambios manuales actualizan los totales al instante y quedan visibles en el historial de la cuenta. Cancela pedidos cuando los tickets de cocina o servicio deban conservarse.",
+    "removeItem": "Quitar",
+    "removeItemHelper": "Quita esta línea de la cuenta en vivo de inmediato.",
+    "voidItem": "Anular artículo",
+    "voidItemTitle": "¿Anular este artículo de la cuenta?",
+    "voidItemDescription": "{item} se quitará de la cuenta en vivo, pero el motivo quedará en la línea de tiempo para referencia del personal.",
+    "voidItemConfirm": "Anular artículo",
+    "voidItemCancel": "Mantener artículo",
+    "voidReasonLabel": "Motivo de anulación",
+    "voidReasonPlaceholder": "Explica por qué se anula este artículo",
+    "voidReasonHint": "El motivo es obligatorio y se guardará en el historial de la cuenta.",
+    "removeItemTitle": "¿Quitar este artículo de la cuenta?",
+    "removeItemDescription": "{item} se eliminará permanentemente de la cuenta abierta y los totales se recalcularán.",
+    "removeItemConfirm": "Quitar Artículo",
+    "removeItemCancel": "Mantener Artículo",
+    "quantityUpdated": "La cantidad de {item} cambió de {from} a {to}",
+    "quantityUpdateFailed": "No se pudo actualizar la cantidad del artículo",
+    "quantityHelper": "Usa cambios de cantidad para ajustar conteos. Anular requiere un motivo.",
+    "allCategories": "Todas",
+    "addFromMenu": "Agregar más artículos",
+    "menuSubtitle": "Busca, filtra y agrega artículos del menú sin perder el contexto de la cuenta.",
+    "menuResultsCount": "{count} resultados",
+    "availableNow": "{count} disponibles ahora",
+    "browseHint": "Usa agregar rápido para el camino común, o elige cantidad y opciones cuando haga falta.",
+    "alreadyOnBill": "En cuenta: {count}",
+    "hasOptions": "{count} opciones",
+    "noDescription": "Sin descripción disponible.",
+    "quickAdd": "Agregar 1",
+    "chooseQuantity": "Cant.",
+    "customizeItem": "Personalizar",
+    "addToBill": "Agregar a la cuenta",
+    "results": "resultados",
+    "noCurrentItems": "Todavía no hay artículos en la cuenta",
+    "noCurrentItemsDescription": "Agrega artículos desde el menú para seguir armando esta cuenta.",
+    "menuEmptyDescription": "Prueba otra búsqueda o categoría.",
+    "autoDiscounts": "Descuentos automáticos",
+    "autoDiscountsHint": "Las ofertas se aplican por pedido. Nombres idénticos con montos distintos son descuentos separados — anula uno si no debería aplicar.",
+    "unavailable": "No disponible",
+    "summary": {
+      "lines": "Líneas",
+      "units": "Unidades",
+      "subtotal": "Subtotal en vivo",
+      "discounts": "Descuentos"
+    }
+  },
+  "inventoryWarnings": {
+    "outBadge": "Sin stock",
+    "lowBadge": "Stock bajo",
+    "outDescription": "Alerta de inventario: los requisitos de la receta no están completamente abastecidos.",
+    "lowDescription": "Stock bajo: los ingredientes vinculados están cerca de su umbral."
+  },
+  "billStatuses": {
+    "open": "Abierta",
+    "partial": "Parcial",
+    "paid": "Pagada",
+    "closed": "Cerrada",
+    "voided": "Anulada"
+  },
+  "bills": {
+    "awaitingConfirmation": "Pendiente de confirmación",
+    "copyBillNumber": "Copiar número de cuenta para soporte",
+    "copiedBillNumber": "Copiado"
+  },
+  "pagination": {
+    "totalBills": "{count} cuentas"
+  },
+  "tableAria": "Tabla de cuentas",
+  "tableColumns": {
+    "billNumber": "Número de Cuenta",
+    "table": "Mesa",
+    "total": "Total",
+    "status": "Estado",
+    "created": "Creado",
+    "actions": "Acciones",
+    "items": "Artículos"
+  },
+  "emptyState": {
+    "noActiveBills": "Sin Cuentas Activas",
+    "noMatchingBills": "Sin Cuentas Coincidentes",
+    "createFirstBill": "Crea tu primera cuenta para comenzar",
+    "adjustFilters": "Intenta ajustar tus filtros para ver más resultados",
+    "listLoadFailed": "No se pudieron cargar las cuentas",
+    "listLoadFailedHint": "La lista no cargó, así que no mostramos totales en cero. Inténtalo de nuevo para ver las cuentas abiertas.",
+    "listLoadRetry": "Reintentar"
+  },
+  "search": {
+    "activeBillsPlaceholder": "Buscar cuentas activas...",
+    "billHistoryPlaceholder": "Buscar historial de cuentas..."
+  },
+  "filters": {
+    "to": "hasta",
+    "fromDate": "Fecha desde",
+    "toDate": "Fecha hasta",
+    "filterByStatusAria": "Filtrar por estado",
+    "fromDateAria": "Fecha desde",
+    "toDateAria": "Fecha hasta",
+    "customerFilter": "Mostrando cuentas de un cliente",
+    "clearCustomerFilter": "Quitar filtro de cliente"
+  },
+  "warnings": {
+    "activeBillsCapped": "Mostrando las cuentas abiertas más recientes. Acota el rango de fechas si falta alguna."
+  },
+  "view": "Ver",
+  "close": "Cerrar",
+  "table": "Mesa",
+  "counter": "Mostrador",
+  "delivery": "Delivery",
+  "allStatuses": "Todos los Estados",
+  "paid": "Pagado",
+  "closed": "Cerrado",
+  "voided": "Anulado",
+  "reset": "Restablecer",
+  "billDetails": "Detalles de Cuenta",
+  "billInformation": "Información de Cuenta",
+  "billSummary": "Resumen de Cuenta",
+  "subtotal": "Subtotal",
+  "tax": "Impuesto",
+  "serviceFee": "Tarifa de Servicio",
+  "loyaltyDiscount": "Descuento de fidelidad",
+  "total": "Total",
+  "remaining": "Restante",
+  "overpaid": "Sobrepagado",
+  "tips": "Propinas",
+  "splitBill": "Dividir Cuenta",
+  "noItems": "Sin Artículos",
+  "noItemsDescription": "Esta cuenta no tiene artículos",
+  "unknownItem": "Artículo Desconocido",
+  "orderNotes": "Notas del Pedido",
+  "pendingOrdersTitle": "Pedidos Pendientes",
+  "pendingOrdersCount": "{count} tickets esperando aprobación",
+  "pendingOrdersCountOne": "1 ticket esperando aprobación",
+  "pendingOrdersShowAll": "Mostrar {count} más",
+  "pendingOrdersShowFewer": "Mostrar menos",
+  "pendingOrders": {
+    "deliveryBadge": "Entrega",
+    "awaitingPayment": "Esperando pago del cliente",
+    "expired": "Expirado"
+  },
+  "orderNumber": "Pedido #{orderNumber}",
+  "billNumber": "Cuenta",
+  "pending": "Pendiente",
+  "approve": "Aprobar",
+  "reject": "Rechazar",
+  "notesLabel": "Notas",
+  "additionalItems": "+{count} artículos más",
+  "cancelOrder": "Cancelar Pedido",
+  "cancelled": "Cancelado",
+  "cancelledOrdersTitle": "Pedidos Cancelados Recientes",
+  "cancelledOrdersSubtitle": "Los tickets cancelados siguen visibles para que el personal tenga un registro claro.",
+  "cancelledOrdersNote": "Los pedidos cancelados no se agregan a la cuenta. Se mantienen aquí un momento para que el equipo pueda verificar qué cambió.",
+  "cancelledOrderMeta": "Cancelado {time}",
+  "cancelReasonLabel": "Motivo de cancelación",
+  "cancelledByLabel": "Por {actor}",
+  "messages": {
+    "orderCancelledSuccess": "Pedido #{orderNumber} cancelado",
+    "orderCancelledError": "No se pudo cancelar el pedido",
+    "closeBillError": "No se pudo cerrar la cuenta. Inténtalo de nuevo.",
+    "approveOrderError": "No se pudo aprobar el pedido. Inténtalo de nuevo.",
+    "loadBillsError": "No se pudieron cargar las cuentas. Inténtalo de nuevo.",
+    "viewBillError": "No se pudo abrir la cuenta. Inténtalo de nuevo."
+  },
+  "errors": {
+    "billNotInThisBusiness": "Esa cuenta pertenece a otro negocio."
+  },
+  "history": {
+    "title": "Línea de tiempo de la cuenta",
+    "subtitle": "Registro visible para el personal de los cambios en la cuenta y los pedidos.",
+    "empty": "Todavía no hay historial para esta cuenta.",
+    "byLabel": "Por {actor}",
+    "showingCount": "Mostrando {shown} de {total}",
+    "showOlder": "Ver más antiguos",
+    "reasonLabel": "Motivo: {reason}",
+    "events": {
+      "billCreated": "Cuenta creada",
+      "billCreatedDescription": "{count} artículos abiertos en esta cuenta por {total}.",
+      "billUpdated": "Artículos de la cuenta actualizados",
+      "billUpdatedDescription": "Los artículos cambiaron de {before} a {after}.",
+      "billClosed": "Cuenta cerrada",
+      "billClosedDescription": "La cuenta se cerró con un total de {total}.",
+      "itemAdded": "Se agregó {item}",
+      "itemAddedDescription": "Se agregaron {quantity} artículo(s) por {subtotal}.",
+      "itemRemoved": "Se quitó {item}",
+      "itemRemovedDescription": "Se quitaron {quantity} artículo(s) por {subtotal}.",
+      "itemVoided": "Se anuló {item}",
+      "itemVoidedDescription": "Se quitaron {quantity} artículo(s) de la cuenta en vivo por {subtotal}.",
+      "itemQuantityUpdated": "Cantidad actualizada de {item}",
+      "itemQuantityUpdatedDescription": "La cantidad cambió de {before} a {after}.",
+      "orderApproved": "Pedido #{orderNumber} aprobado",
+      "orderApprovedDescription": "{count} artículo(s) pasaron a la cuenta en vivo.",
+      "orderApprovedAlreadyBilledDescription": "Los artículos ya estaban en la cuenta; la aprobación los envió a cocina.",
+      "orderCancelled": "Pedido #{orderNumber} cancelado",
+      "orderCancelledDescription": "El pedido se marcó como cancelado."
+    }
+  },
+  "splitSummary": {
+    "title": "Progreso de división",
+    "subtitle": "Partes retenidas y pagadas por clientes para esta cuenta.",
+    "shares": "partes",
+    "paidOfTotal": "Pagado del total",
+    "held": "Retenido",
+    "available": "Disponible",
+    "managePayments": "Gestionar pagos",
+    "guestFallback": "Cliente {id}",
+    "mode": {
+      "equal": "División igual",
+      "custom": "Monto personalizado",
+      "items": "Ítems reclamados"
+    },
+    "status": {
+      "held": "Retenida",
+      "settled": "Liquidada",
+      "released": "Liberada",
+      "failed": "Fallida"
+    }
+  },
+  "itemTypes": {
+    "bundle": "Combo",
+    "bundleItem": "Elemento del combo",
+    "discount": "Descuento",
+    "item": "Elemento",
+    "bundleIncluded": "Incluido"
+  },
+  "appliedOffersTitle": "Ofertas aplicadas",
+  "discountLabel": "Descuento",
+  "discountOrderAttribution": "Del pedido #{orderId}",
+  "empty": {
+    "title": "Aún no hay cuentas",
+    "subtitle": "Las cuentas se crean cuando los invitados escanean el QR de la mesa y piden — o crea una tú mismo.",
+    "action": "Crear cuenta",
+    "previewTablesAction": "Ver QR de una mesa"
+  },
+  "fiscalCustomer": {
+    "toggle": "¿Necesitas factura con tus datos?",
+    "hint": "Opcional. Agrega tu identificación fiscal para emitir la factura a tu nombre.",
+    "docTypeLabel": "Tipo de documento",
+    "docTypeNone": "Consumidor Final",
+    "docTypeDni": "DNI",
+    "docTypeCuit": "CUIT",
+    "docTypeCuil": "CUIL",
+    "docNumberLabel": "Número de documento",
+    "docNumberPlaceholder": "ej. 20-12345678-3",
+    "errorCuit": "El CUIT/CUIL debe tener 11 dígitos.",
+    "errorDni": "El DNI debe tener 7 u 8 dígitos.",
+    "cuitHint": "La Factura A requiere un CUIT/CUIL. Sin uno, se emitirá una Factura B.",
+    "taxConditionLabel": "Condición frente al IVA",
+    "taxConsumidorFinal": "Consumidor Final",
+    "taxResponsableInscripto": "Responsable Inscripto",
+    "taxMonotributo": "Monotributo",
+    "taxExento": "Exento",
+    "nameLabel": "Nombre o razón social",
+    "namePlaceholder": "Nombre en la factura",
+    "save": "Guardar datos fiscales",
+    "saved": "Datos fiscales guardados",
+    "saveError": "No se pudieron guardar los datos fiscales",
+    "operatorToggle": "Identidad fiscal del cliente",
+    "operatorHint": "Opcional. Captura el CUIT/DNI del cliente para emitir la factura correctamente.",
+    "emailLabel": "Email para tu factura (opcional)",
+    "emailPlaceholder": "vos@ejemplo.com",
+    "emailHint": "Te enviamos la factura electrónica a esta dirección.",
+    "errorEmail": "Ingresa un email válido."
+  },
+  "cryptoRefund": {
+    "title": "Reembolso crypto en cadena",
+    "subtitle": "No custodial: firmás con la billetera de settlement. Solo las transferencias confirmadas en cadena se marcan como reembolsadas.",
+    "manualSupportRequired": "No hay destino de reembolso verificado para este pago. El reembolso requiere soporte manual — no inventes una dirección.",
+    "mainnetOffNotice": "La firma instantánea en mainnet está desactivada. Usa el flujo manual/testnet y envía el hash de la transacción después de mandar USDC por fuera. No se prometen reembolsos instantáneos.",
+    "irreversibleNotice": "Enviar un hash de transacción es irreversible una vez que la cadena confirma. Verifica el monto y el destino.",
+    "labels": {
+      "destination": "Destino verificado",
+      "network": "Red",
+      "refundable": "Reembolsable",
+      "refunded": "Reembolsado",
+      "explorer": "Ver en el explorador",
+      "txHash": "Hash de transacción",
+      "txHashHint": "Pegá el hash después de que tu billetera de settlement (o Safe) envíe USDC.",
+      "reason": "Motivo",
+      "reasonPlaceholder": "¿Por qué se reembolsa este pago crypto?"
+    },
+    "actions": {
+      "request": "Solicitar reembolso en cadena",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "submitTx": "Enviar hash de transacción"
+    },
+    "pin": {
+      "requestTitle": "Confirmar solicitud de reembolso crypto",
+      "requestDescription": "Solicitar un reembolso durable en cadena para este pago",
+      "approveTitle": "Aprobar reembolso crypto",
+      "approveDescription": "Aprobar y preparar firma / envío manual",
+      "rejectTitle": "Rechazar reembolso crypto",
+      "rejectDescription": "Rechazar esta solicitud (el ledger no cambia)",
+      "submitTitle": "Enviar transacción de reembolso",
+      "submitDescription": "Vincular el hash de la transferencia en cadena para verificación"
+    },
+    "toasts": {
+      "requested": "Reembolso crypto solicitado — pendiente de aprobación",
+      "approved": "Reembolso crypto aprobado — envía un hash de transacción",
+      "rejected": "Reembolso crypto rechazado — ledger sin cambios",
+      "submitted": "Transacción enviada — esperando confirmación en cadena (aún no reembolsado)"
+    },
+    "errors": {
+      "loadFailed": "No se pudo cargar el estado del reembolso crypto",
+      "manualSupport": "El reembolso requiere soporte manual (sin destino verificado)",
+      "reasonTooShort": "El motivo debe tener al menos 3 caracteres",
+      "insufficientBalance": "No queda saldo reembolsable en cadena",
+      "requestFailed": "No se pudo solicitar el reembolso crypto",
+      "approveFailed": "No se pudo aprobar el reembolso crypto",
+      "rejectFailed": "No se pudo rechazar el reembolso crypto",
+      "invalidTxHash": "Ingresa un hash de transacción 0x válido",
+      "submitFailed": "No se pudo enviar el hash de transacción"
+    },
+    "status": {
+      "requested": "Solicitado",
+      "approved": "Aprobado",
+      "awaiting_signature": "Esperando firma",
+      "submitted": "Enviado",
+      "confirming": "Confirmando",
+      "confirmed": "Confirmado",
+      "failed": "Fallido",
+      "rejected": "Rechazado",
+      "cancelled": "Cancelado"
+    },
+    "mainnetOffDisabled": "Firma instantánea en mainnet desactivada",
+    "mainnetOffSettingsLink": "Abrir ajustes de liquidación"
+  },
+  "copyBillNumber": "Copiar número de cuenta para soporte",
+  "copiedBillNumber": "Copiado",
+  "preparedUnitsOne": "{count} ítem",
+  "preparedUnitsOther": "{count} ítems",
+  "bundleIncluded": "Incluido"
+}

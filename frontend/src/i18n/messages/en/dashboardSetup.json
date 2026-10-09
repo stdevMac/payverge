@@ -1,0 +1,13 @@
+{
+  "title": "Let's set up your team",
+  "subtitle": "A few quick steps and you'll be scheduling shifts in minutes.",
+  "positionsTitle": "Add your positions",
+  "positionsDescription": "Define the roles your team works — server, cook, host. Shifts are built around them.",
+  "positionsAction": "Add positions",
+  "inviteTitle": "Invite your team",
+  "inviteDescription": "Send invites so teammates can see their schedule and clock in.",
+  "inviteAction": "Invite people",
+  "scheduleTitle": "Build the week",
+  "scheduleDescription": "Lay out shifts on the weekly grid, then publish so everyone can see them.",
+  "scheduleAction": "Go to schedule"
+}

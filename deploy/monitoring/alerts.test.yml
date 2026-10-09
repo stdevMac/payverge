@@ -1,0 +1,121 @@
+# promtool test rules deploy/monitoring/alerts.test.yml
+rule_files:
+  - alerts.yml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'up{job="payverge-backend", instance="backend:8080"}'
+        values: '1x5 0x10'
+      - series: 'probe_success{job="payverge-ready", instance="https://pay.example.com/api/v1/health/ready"}'
+        values: '1x5 0x10'
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: PayvergeBackendDown
+        exp_alerts: []
+      - eval_time: 12m
+        alertname: PayvergeBackendDown
+        exp_alerts:
+          - exp_labels: {severity: critical, job: payverge-backend, instance: "backend:8080"}
+            exp_annotations:
+              summary: Prometheus cannot scrape the Payverge backend
+              description: >-
+                backend:8080 has not answered /metrics for 5 minutes. Check `docker compose ps backend` and `docker compose logs backend`.
+      - eval_time: 12m
+        alertname: PayvergeNotReady
+        exp_alerts:
+          - exp_labels: {severity: critical, job: payverge-ready, instance: "https://pay.example.com/api/v1/health/ready"}
+            exp_annotations:
+              summary: Payverge readiness check is failing
+              description: >-
+                The readiness probe https://pay.example.com/api/v1/health/ready has failed for 5 minutes: the backend is up but cannot serve (database, migrations or a required dependency). Guests cannot order or pay.
+
+  - interval: 1m
+    input_series:
+      - series: 'payverge_payment_webhook_processing_failures_total{plugin="stripe", reason="settle", instance="backend:8080", job="payverge-backend"}'
+        values: '0x20 1 2 2x20'
+      - series: 'payverge_payment_webhook_processing_failures_total{plugin="mercadopago", reason="parse", instance="backend:8080", job="payverge-backend"}'
+        values: '0x45'
+      - series: 'payverge_payment_webhook_processing_failures_total{plugin="paypal", reason="capture_pending", instance="backend:8080", job="payverge-backend"}'
+        values: '0x20 1 2 3 3x20'
+      - series: 'payverge_payment_webhook_unsupported_actions_total{plugin="paypal", action="capture_pending.expired", instance="backend:8080", job="payverge-backend"}'
+        values: '0x20 1 1x30'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: PayvergePaymentWebhookFailures
+        exp_alerts: []
+      - eval_time: 25m
+        alertname: PayvergePaymentWebhookFailures
+        exp_alerts:
+          - exp_labels: {severity: warning, plugin: stripe, reason: settle}
+            exp_annotations:
+              summary: "stripe payment webhooks are failing (settle)"
+              description: "2 stripe webhook event(s) failed to process in the last 15 minutes (reason settle). Payments may be captured by the provider but not settled on the bill. Check the backend logs and the provider's webhook dashboard."
+      - eval_time: 45m
+        alertname: PayvergePaymentWebhookFailures
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: PayvergePaymentWebhookCapturePendingExpired
+        exp_alerts: []
+      - eval_time: 25m
+        alertname: PayvergePaymentWebhookCapturePendingExpired
+        exp_alerts:
+          - exp_labels: {severity: warning, plugin: paypal}
+            exp_annotations:
+              summary: "paypal refund or dispute acknowledged without its payment"
+              description: "1 paypal refund, dispute or reversal event(s) waited 48 hours for their payment and were acknowledged without touching the ledger. A payment-review alert is in the restaurant's dashboard; reconcile it against the provider's dashboard."
+
+  - interval: 1m
+    input_series:
+      - series: 'payverge_fiscal_orphaned_cae_total{instance="backend:8080", job="payverge-backend"}'
+        values: '0x10 1x80'
+      - series: 'payverge_fiscal_delivery_dead_letters_total{channel="email", instance="backend:8080", job="payverge-backend"}'
+        values: '0x10 3x80'
+      - series: 'payverge_fiscal_delivery_oldest_age_seconds{instance="backend:8080", job="payverge-backend"}'
+        values: '0+60x90'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: PayvergeFiscalOrphanedCAE
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: PayvergeFiscalOrphanedCAE
+        exp_alerts:
+          - exp_labels: {severity: critical, instance: "backend:8080", job: payverge-backend}
+            exp_annotations:
+              summary: "An AFIP CAE was issued but its receipt was not saved"
+              description: "1 authorised invoice number(s) in the last hour have no local receipt row. Each one must be reconciled by hand; do not re-issue the invoice."
+      - eval_time: 20m
+        alertname: PayvergeFiscalDeliveryDeadLetters
+        exp_alerts:
+          - exp_labels: {severity: warning, channel: email}
+            exp_annotations:
+              summary: "Fiscal receipts dead-lettered on email"
+              description: "3 fiscal delivery task(s) on email gave up in the last hour; those guests did not get their receipt."
+      - eval_time: 65m
+        alertname: PayvergeFiscalDeliveryBacklog
+        exp_alerts: []
+      - eval_time: 80m
+        alertname: PayvergeFiscalDeliveryBacklog
+        exp_alerts:
+          - exp_labels: {severity: warning, instance: "backend:8080", job: payverge-backend}
+            exp_annotations:
+              summary: "Fiscal deliveries are stuck"
+              description: "The oldest pending fiscal delivery task is 1h 20m 0s old. The delivery worker is stalled or every attempt is failing."
+
+  - interval: 1m
+    input_series:
+      - series: 'payverge_email_outbox_failed_total{template="receipt", reason="provider_rejected", instance="backend:8080", job="payverge-backend"}'
+        values: '0x10 1x30'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: PayvergeEmailDeadLetters
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: PayvergeEmailDeadLetters
+        exp_alerts:
+          - exp_labels: {severity: warning, template: receipt, reason: provider_rejected}
+            exp_annotations:
+              summary: "Emails dead-lettered (receipt: provider_rejected)"
+              description: "1 receipt email(s) reached the terminal failed state in the last hour (reason provider_rejected). Check EMAIL_PROVIDER, its API key and the sending domain."

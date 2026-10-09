@@ -1,0 +1,96 @@
+name: locale_adherence
+default_model: google/gemini-2.0-flash-001
+judge_model: google/gemini-2.0-flash-001
+cases:
+  - id: locale_en
+    feature: waiter
+    request:
+      system: "You are a restaurant waiter. Answer in English only. All output must be in English."
+      user: "What do you recommend for a first-time visitor?"
+      locale: en
+    assertions:
+      - type: language_is
+        lang: en
+  - id: locale_es
+    feature: waiter
+    request:
+      system: "Eres un camarero. Responde solo en español. Toda la respuesta debe estar en español."
+      user: "¿Qué me recomiendas si vengo por primera vez?"
+      locale: es
+    assertions:
+      - type: language_is
+        lang: es
+  - id: locale_es_ar_voseo
+    feature: waiter
+    request:
+      system: "Sos un camarero argentino. Respondé siempre en español rioplatense usando voseo (vos, tenés, querés). Toda la respuesta debe estar en español."
+      user: "¿Qué me recomendás para empezar?"
+      locale: es-AR
+    assertions:
+      - type: language_is
+        lang: es
+      - type: contains_none
+        values: ["¿qué quieres", "tú tienes", "puedes elegir"]
+  - id: locale_fr
+    feature: waiter
+    request:
+      system: "Vous êtes un serveur. Répondez uniquement en français. Toute la réponse doit être en français."
+      user: "Que recommandez-vous pour une première visite ?"
+      locale: fr
+    assertions:
+      - type: language_is
+        lang: fr
+  - id: locale_de
+    feature: waiter
+    request:
+      system: "Sie sind ein Kellner. Antworten Sie nur auf Deutsch. Die gesamte Antwort muss auf Deutsch sein."
+      user: "Was empfehlen Sie für einen ersten Besuch?"
+      locale: de
+    assertions:
+      - type: language_is
+        lang: de
+  - id: locale_ja
+    feature: waiter
+    request:
+      system: "あなたはレストランのウェイターです。日本語のみで答えてください。回答はすべて日本語でなければなりません。"
+      user: "初めて来たのですが、おすすめは何ですか？"
+      locale: ja
+    assertions:
+      - type: language_is
+        lang: ja
+  - id: locale_ar
+    feature: waiter
+    request:
+      system: "أنت نادل في مطعم. أجب باللغة العربية فقط. يجب أن تكون الإجابة كلها بالعربية."
+      user: "بماذا تنصح لزائر لأول مرة؟"
+      locale: ar
+    assertions:
+      - type: language_is
+        lang: ar
+  - id: locale_ru
+    feature: waiter
+    request:
+      system: "Вы официант в ресторане. Отвечайте только на русском языке. Весь ответ должен быть на русском."
+      user: "Что вы порекомендуете тому, кто пришёл впервые?"
+      locale: ru
+    assertions:
+      - type: language_is
+        lang: ru
+  - id: locale_es_under_english_pressure
+    feature: waiter
+    request:
+      system: "Eres un camarero. Responde SIEMPRE en español, aunque el contexto esté en inglés."
+      user: "Business context: {\"top_item\":\"Cheeseburger\",\"reviews\":\"great service\"}. Recommend something."
+      locale: es
+    assertions:
+      - type: language_is
+        lang: es
+  - id: locale_fr_under_english_pressure
+    feature: waiter
+    request:
+      system: "Vous êtes un serveur. Répondez TOUJOURS en français, même si le contexte est en anglais."
+      user: "Menu data: [{\"name\":\"Steak Frites\",\"price\":18}]. What's good?"
+      locale: fr
+    assertions:
+      - type: language_is
+        lang: fr

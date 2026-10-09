@@ -1,0 +1,13 @@
+{
+  "key": "04c9af0576ac6907",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Ich kann nicht allein anhand des Namens bestätigen, ob das Satay Erdnüsse enthält. Die Allergendaten sind nicht verfügbar. Bitte bestätigen Sie mit dem Personal.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "title": "Create New Bill",
+  "header": {
+    "subtitle": "Pick a service location, add items, and review the draft bill before sending it to the kitchen.",
+    "locationRequired": "Location required",
+    "itemsSelected": "items selected"
+  },
+  "billSummary": {
+    "title": "Bill Summary",
+    "description": "Review the draft before creating the live bill.",
+    "location": "Service Location",
+    "locationPlaceholder": "Choose a table or counter to continue",
+    "locationReady": "Ready to create this bill",
+    "locationHint": "Pick a table or counter so the order goes to the right place.",
+    "subtotal": "Subtotal:",
+    "items": "Items",
+    "selectedItems": "Selected Items",
+    "each": "each",
+    "addOns": "Add-ons",
+    "note": "Note",
+    "autoDiscounts": "Auto Discounts",
+    "totalBeforeTaxService": "Total Before Tax/Service",
+    "tax": "Tax",
+    "serviceFee": "Service fee",
+    "tip": "Tip",
+    "finalTotal": "Total",
+    "noItemsSelected": "No items selected yet",
+    "noItemsDescription": "Search the menu or tap an item on the left to start building this bill."
+  },
+  "menu": {
+    "title": "Menu Items",
+    "description": "Search the menu or jump to a category to add items faster.",
+    "searchPlaceholder": "Search menu items...",
+    "noItemsFound": "No items found",
+    "noMenuItems": "No menu items",
+    "noItemsMatch": "No items match \"{query}\". Try a different search term.",
+    "noItemsAvailable": "No menu items available for this business.",
+    "clearSearch": "Clear search",
+    "allCategories": "All",
+    "item": "item",
+    "items": "items",
+    "addOns": "Add-ons",
+    "bundlesTitle": "Bundles",
+    "bundleBadge": "Bundle",
+    "bundleSave": "Save",
+    "unavailable": "Unavailable"
+  },
+  "form": {
+    "selectTable": "Select Table",
+    "tableLabel": "Table",
+    "chooseTable": "Choose a table",
+    "noTablesAvailable": "No tables available",
+    "allTablesHaveBills": "All active tables currently have open bills. Please close existing bills or add more tables.",
+    "allTablesOccupied": "All tables are occupied. Use a counter below for takeaway orders.",
+    "activeBillsCapped": "Showing the newest open bills — a busy floor may hide older occupied tables until you refresh.",
+    "or": "OR",
+    "selectCounter": "Select Counter",
+    "counterLabel": "Counter",
+    "chooseCounter": "Choose a counter for takeaway/quick service",
+    "noCountersAvailable": "No counters available",
+    "enableCountersMessage": "Enable counters in business settings for takeaway service",
+    "perfectForTakeaway": "Perfect for takeaway orders and quick service",
+    "orderNotes": "Order Notes",
+    "orderNotesPlaceholder": "Add special instructions, customer name, or notes for kitchen/staff...",
+    "orderNotesDescription": "Optional notes that will be visible to kitchen staff and on receipts"
+  },
+  "cart": {
+    "decreaseQuantityAria": "Decrease quantity of {name}",
+    "quantityAria": "Quantity of {name}",
+    "increaseQuantityAria": "Increase quantity of {name}",
+    "removeItemAria": "Remove {name} from bill"
+  },
+  "kitchenNote": {
+    "orderFor": "Order for {location}",
+    "notesLabel": "Notes:"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "createBill": "Create Bill",
+    "retry": "Retry"
+  },
+  "messages": {
+    "billCreated": "Bill created successfully",
+    "billCreateFailed": "Failed to create the bill",
+    "orderCreateFailed": "Bill saved, but the kitchen order failed to send. Open the bill to resend it to the kitchen.",
+    "tableOccupied": "That table already has an open bill. Close it first or choose another table.",
+    "locationOccupied": "That location already has an open bill. Opening it now.",
+    "loadError": "Could not load the menu. Check your connection and try again.",
+    "loadingQuote": "Updating total",
+    "quoteFailed": "Live pricing is temporarily unavailable. The undiscounted subtotal is shown.",
+    "quoteBlocked": "An item in this order is no longer available. Remove it before creating the bill."
+  },
+  "inventoryWarnings": {
+    "outBadge": "Inventory out",
+    "lowBadge": "Low stock",
+    "outDescription": "Inventory warning: recipe requirements are not fully stocked.",
+    "lowDescription": "Low stock: linked ingredients are near their threshold."
+  },
+  "discardOrderTitle": "Discard order?",
+  "discardOrderDescription": "You have items in this order. Closing now will clear them and their customizations. This can't be undone.",
+  "discard": "Discard order",
+  "keepEditing": "Keep editing",
+  "success": {
+    "title": "Bill created for {location}",
+    "subtitle": "What next?",
+    "viewBill": "View bill",
+    "recordPayment": "Record payment",
+    "done": "Done"
+  },
+  "validation": {
+    "selectLocation": "Select a table or counter first",
+    "addItems": "Add at least one item",
+    "quotePending": "Waiting for price quote…",
+    "quoteError": "Price quote failed — adjust items and try again",
+    "quoteInvalid": "Quote is incomplete — check item availability"
+  }
+}

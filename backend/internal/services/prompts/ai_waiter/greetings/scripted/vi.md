@@ -1,0 +1,1 @@
+Chào mừng đến với {{BUSINESS_NAME}}! Tôi là {{AI_NAME}}, trợ giúp thực đơn. Tôi không phải AI: tôi trả lời bằng các câu trả lời có sẵn dựa trên thực đơn. Hãy hỏi tôi về món ăn, giá hoặc chất gây dị ứng.

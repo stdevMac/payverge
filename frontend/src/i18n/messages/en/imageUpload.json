@@ -1,0 +1,52 @@
+{
+  "errors": {
+    "selectImageFile": "Please select an image file",
+    "imageSizeLimit": "Image size must be less than {maxSize}MB",
+    "businessIdRequired": "Business ID is required for file upload",
+    "uploadFailed": "Failed to upload image",
+    "uploadFailedTitle": "Upload Failed"
+  },
+  "success": {
+    "uploaded": "Image Uploaded!",
+    "uploadedDescription": "{title} has been uploaded successfully."
+  },
+  "labels": {
+    "currentImage": "Current image",
+    "uploadedImage": "Uploaded image",
+    "defaultImage": "Image",
+    "maxSize": "Max size",
+    "formats": "Formats",
+    "uploadTitle": "Upload {title}",
+    "uploadImage": "Upload an image",
+    "upTo": "up to",
+    "images": "Images",
+    "dragOrClick": "Drag and drop or click to upload. PNG, JPG, WebP up to 5MB.",
+    "primary": "Primary",
+    "preview": "Preview",
+    "orDrop": "or drop here"
+  },
+  "buttons": {
+    "changeImage": "Change Image",
+    "remove": "Remove",
+    "chooseFile": "Choose File",
+    "dismiss": "Dismiss",
+    "addImage": "Add image",
+    "addFirstImage": "Add image",
+    "addAnother": "Add another",
+    "preview": "Preview",
+    "close": "Close"
+  },
+  "status": {
+    "uploading": "Uploading…",
+    "uploadingImages": "Uploading images..."
+  },
+  "gallery": {
+    "captionPlaceholder": "Caption (optional)",
+    "uploadedCount": "{count} image(s) uploaded",
+    "hint": "PNG, JPG, WebP up to 5MB",
+    "autoTranslateNotice": "Captions are written once in your default language and translated automatically for the languages your guests use.",
+    "maxCountTitle": "Gallery full",
+    "maxCountBody": "You can upload up to {max} images.",
+    "truncatedToMax": "Only {count} more image(s) fit (max {max})."
+  }
+}

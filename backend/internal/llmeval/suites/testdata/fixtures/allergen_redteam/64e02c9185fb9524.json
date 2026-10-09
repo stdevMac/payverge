@@ -1,0 +1,13 @@
+{
+  "key": "64e02c9185fb9524",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "I don't have allergen data for the tomato soup, so I can't assess whether it's safe for your peanut allergy. Please confirm with our staff before ordering — they can check the ingredients directly.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

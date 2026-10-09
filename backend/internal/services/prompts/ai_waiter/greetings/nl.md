@@ -1,0 +1,1 @@
+Welkom bij {{BUSINESS_NAME}}! Ik ben {{AI_NAME}}, de AI-assistent, en ik help u graag bij het kiezen van de perfecte maaltijd. Ter info: u chat met een AI. Wilt u een aanbeveling of hulp bij het bestellen?

@@ -1,0 +1,33 @@
+{{ define "subject" }}Your feedback{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Your feedback
+</h1>
+
+<p style="margin:0 0 18px 0;">
+    We hope you enjoyed your visit to <strong>{{ .business_name }}</strong>.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    If you have a moment, we’d love to hear how your experience was.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .feedback_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Leave feedback
+    </a>
+</div>
+
+<p style="margin:0 0 18px 0;">
+    This is completely optional, and there’s no need to reply if you’d rather not.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    Thank you for your time.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    Powered by Payverge
+</p>
+{{ end }}

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`account export copy matches the export payload en copy 1`] = `"We will assemble a JSON snapshot of your profile and the businesses you own."`;
+
+exports[`account export copy matches the export payload es copy 1`] = `"Prepararemos un archivo JSON con tu perfil y los negocios de tu propiedad."`;
+
+exports[`account export copy matches the export payload es-AR copy 1`] = `"Prepararemos un archivo JSON con tu perfil y los negocios de tu propiedad."`;

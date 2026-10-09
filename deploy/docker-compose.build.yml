@@ -1,0 +1,27 @@
+# Build the backend and frontend from this checkout instead of pulling the
+# published images. Run from deploy/:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+#
+# Setting GO_TAGS to `whatsapp` in .env compiles in the optional WhatsApp channel. That
+# binary links GPL-3.0 code (go.mau.fi/libsignal): fine to run for yourself,
+# never redistribute the image without honouring GPL-3.0. See
+# docs/self-hosting/whatsapp.md.
+#
+# The frontend build needs about 8 GB of RAM (Node alone gets a 4 GB heap) and takes 10-30 minutes.
+services:
+  backend:
+    image: payverge-backend:local
+    pull_policy: build
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        GO_TAGS: ${GO_TAGS:-}
+
+  frontend:
+    image: payverge-frontend:local
+    pull_policy: build
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile

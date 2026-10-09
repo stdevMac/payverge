@@ -1,0 +1,7 @@
+{
+  "_comment": "Per-route raw KiB budgets from app-build-manifest + statSync. Enforced by scripts/check-route-bundle-budget.js. Reseed with --write ONLY after intentional size change. Sibling to scripts/check-bundle-budget.js (gzip totals).",
+  "dashboardRoute": "/(shop)/business/[businessId]/dashboard/page",
+  "dashboardTotalKiB": 3605,
+  "dashboardChunkCountMax": 43,
+  "medianPageKiB": 2560
+}

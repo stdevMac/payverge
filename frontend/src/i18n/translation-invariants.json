@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "invariants": [
+    {
+      "key": "menu.fiscalCustomer.docTypeNone",
+      "locales": ["es", "es-AR"],
+      "reason": "Consumidor Final is the official Argentine fiscal classification."
+    },
+    {
+      "key": "menu.fiscalCustomer.docTypeDni",
+      "locales": ["es", "es-AR"],
+      "reason": "DNI is the official Argentine identity-document acronym."
+    },
+    {
+      "key": "menu.fiscalCustomer.docTypeCuit",
+      "locales": ["es", "es-AR"],
+      "reason": "CUIT is the official Argentine tax-identifier acronym."
+    },
+    {
+      "key": "menu.fiscalCustomer.docTypeCuil",
+      "locales": ["es", "es-AR"],
+      "reason": "CUIL is the official Argentine labor-identifier acronym."
+    },
+    {
+      "key": "menu.fiscalCustomer.taxResponsableInscripto",
+      "locales": ["es", "es-AR"],
+      "reason": "Responsable Inscripto is the official Argentine tax classification."
+    },
+    {
+      "key": "menu.fiscalCustomer.taxMonotributo",
+      "locales": ["es", "es-AR"],
+      "reason": "Monotributo is the official Argentine simplified tax regime name."
+    }
+  ]
+}

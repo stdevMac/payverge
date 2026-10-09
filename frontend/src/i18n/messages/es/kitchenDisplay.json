@@ -1,0 +1,46 @@
+{
+    "title": "Sistema de Pantalla de Cocina",
+    "exitDisplayAria": "Salir de la pantalla de cocina",
+    "muteChimeAria": "Silenciar el aviso de pedidos nuevos",
+    "enableChimeAria": "Activar el aviso de pedidos nuevos",
+    "exitFullscreenAria": "Salir de pantalla completa",
+    "enterFullscreenAria": "Entrar en pantalla completa",
+    "launch": "Iniciar Modo KDS",
+    "exit": "Salir de Modo KDS",
+    "liveUpdates": "Actualizaciones en vivo",
+    "billPrefix": "Cuenta n.º {billId}",
+    "enterFullscreen": "Pantalla Completa",
+    "exitFullscreen": "Salir de Pantalla Completa",
+    "enableSound": "Activar Sonido",
+    "disableSound": "Desactivar Sonido",
+    "noOrders": "No hay pedidos activos",
+    "columns": {
+        "approved": "Por Preparar",
+        "in_kitchen": "Cocinando",
+        "ready": "Listo para Servir"
+    },
+    "location": {
+        "table": "Mesa",
+        "counter": "Barra",
+        "delivery": "Delivery"
+    },
+    "notes": {
+        "additionalItems": "Artículos adicionales",
+        "initialOrder": "Pedido inicial"
+    },
+    "actions": {
+        "start": "Empezar",
+        "ready": "Listo",
+        "serve": "Servir"
+    },
+    "errors": {
+        "updateFailed": "No se pudo actualizar el pedido: {message}",
+        "conflictRefreshed": "Otra persona actualizó este pedido — el tablero se actualizó."
+    },
+    "time": {
+        "justNow": "Ahora",
+        "minutesAgo": "hace {{minutes}}m",
+        "hoursAgo": "hace {{hours}}h",
+        "elapsedAgo": "hace {{duration}}"
+    }
+}

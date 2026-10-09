@@ -1,0 +1,17 @@
+{
+  "connect": "Sign in",
+  "profile": "Menu",
+  "profileActionsAria": "Profile actions",
+  "toggleMenuAria": "Toggle menu",
+  "dashboard": "Dashboard",
+  "staffDashboard": "Staff Dashboard",
+  "home": "Home",
+  "admin": "Admin",
+  "logout": "Logout",
+  "toggleMenu": "Toggle Menu",
+  "profileActions": "Profile Actions",
+  "staffLogin": "Staff Login",
+  "signIn": "Sign in",
+  "account": "Account",
+  "navigation": "Navigation"
+}

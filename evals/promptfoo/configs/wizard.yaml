@@ -1,0 +1,123 @@
+# Menu Wizard — model benchmark
+# Loads backend/.../menu_wizard/<lang>.md via the prod prompt function (static
+# system prompt + the owner's message as a user turn), mirroring
+# menu_ai_service.go. Production: temperature 0.6, max_tokens 4096, strict JSON.
+description: "Menu Wizard — strict JSON, config extraction & conversational quality"
+
+prompts:
+  - file://../lib/prod_prompts.js:wizard
+
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    label: gemini-2.5-flash
+    config:
+      temperature: 0.6
+      max_tokens: 4096
+      response_format: { type: json_object }
+  - id: openrouter:openai/gpt-4o-mini
+    label: gpt-4o-mini
+    config:
+      temperature: 0.6
+      max_tokens: 4096
+      response_format: { type: json_object }
+
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+
+# Reusable JSON-schema check: wizard response shape.
+_schema_assert: &schema_assert
+  type: javascript
+  value: |
+    let t = String(output).replace(/```json\n?|```/g, '').trim();
+    const v = JSON.parse(t);
+    if (typeof v.message !== 'string' || v.message.length === 0) return false;
+    if (typeof v.is_complete !== 'boolean') return false;
+    if (typeof v.extracted_config !== 'object' || v.extracted_config === null) return false;
+    if (v.suggested_options !== undefined && !Array.isArray(v.suggested_options)) return false;
+    return true;
+
+# Asserts extracted_config captured a key whose value contains a substring.
+tests:
+  # ===== Cuisine variety =====
+  - vars: { LANG: en, user_message: "I want to create a menu for a casual Italian restaurant called Trattoria Bella Vita." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English. The message is warm/conversational and extracted_config reflects an Italian restaurant. It asks at most one or two follow-up questions."
+  - vars: { LANG: en, user_message: "Help me build a menu for my Japanese ramen shop called Ramen Tokyo." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures Japanese cuisine (mentioning ramen is a bonus, not required)."
+  - vars: { LANG: en, user_message: "I need a menu for a Mexican food truck called El Camino." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures Mexican cuisine and a Food Truck establishment type."
+  - vars: { LANG: en, user_message: "Creating a menu for a high-end French bistro, Le Petit Jardin." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config reflects French cuisine. Inferring upscale/fine-dining pricing from 'high-end' is a quality bonus, not required (asking for the price range is acceptable)."
+
+  # ===== Pricing intent =====
+  - vars: { LANG: en, user_message: "I run a budget-friendly cafe. Everything under $10." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures a budget price range (~$5-15 / under $10) and a cafe."
+  - vars: { LANG: en, user_message: "Fine dining establishment, $50-80 per plate." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures fine-dining / $50+ pricing."
+
+  # ===== Specific counts (the hard case — must capture exact quantities) =====
+  - vars: { LANG: en, user_message: "I want exactly 5 categories with exactly 5 items each. Italian cuisine, mid-range." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures Italian cuisine, mid-range pricing, and the 5-items-per-category count. The owner did NOT name the 5 categories, so leaving categories null and asking which categories is CORRECT — do not require invented category names."
+  - vars: { LANG: en, user_message: "Make it mid-range, $12-25 per dish. I want 4 appetizers, 6 pizzas, and 5 desserts." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures the exact per-category counts (4 appetizers, 6 pizzas, 5 desserts) and mid-range pricing."
+
+  # ===== Full one-shot spec — should set is_complete true =====
+  - vars: { LANG: en, user_message: "Complete request: BBQ restaurant, budget $10-20, categories Meats/Sides/Drinks/Desserts with 6 meats, 4 sides, 5 drinks, 3 desserts. Signature: Texas Brisket." }
+    assert:
+      - *schema_assert
+      - type: javascript
+        value: |
+          let t = String(output).replace(/```json\n?|```/g, '').trim();
+          const v = JSON.parse(t);
+          // A fully-specified request should be treated as complete.
+          return v.is_complete === true;
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config captures BBQ, the 4 categories, the exact counts, and the Texas Brisket signature dish."
+
+  # ===== Dietary constraints =====
+  - vars: { LANG: en, user_message: "I want an all-vegan menu for a plant-based cafe." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config reflects an all-vegan / plant-based concept."
+  - vars: { LANG: en, user_message: "Gluten-free bakery menu. No gluten in anything. Budget $5-15." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON in English; extracted_config reflects gluten-free, bakery, budget pricing."
+
+  # ===== Spanish wizard prompt =====
+  - vars: { LANG: es, user_message: "Quiero crear un menú para mi restaurante italiano de gama media, Trattoria Bella Vita." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON whose message is entirely in Spanish; extracted_config reflects an Italian, mid-range restaurant."
+  - vars: { LANG: es-AR, user_message: "Necesito un menú para mi parrilla. Quiero 5 entradas, 8 platos principales y 4 postres." }
+    assert:
+      - *schema_assert
+      - type: llm-rubric
+        value: "Valid JSON whose message is entirely in Spanish. Pass as long as extracted_config.items_per_category (or the message) conveys the three counts — 5 starters, 8 mains, 4 desserts. The `categories` field may be null or a string; do NOT require a separate categories list."

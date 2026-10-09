@@ -1,0 +1,56 @@
+{
+  "subtitle": "Las tarjetas muestran hoy y esta semana — abrí un local para el historial, cuentas, reservas, cocina y equipo.",
+  "errors": {
+    "signIn": "Por favor iniciá sesión para continuar.",
+    "connectWallet": "Por favor iniciá sesión para continuar.",
+    "unreachable": "No pudimos contactar a Payverge. Revisá tu conexión y volvé a intentar."
+  },
+  "authentication": {
+    "connectMessage": "Iniciá sesión con Google o tu correo electrónico para acceder al panel de negocios.",
+    "signMessage": "Completá el inicio de sesión para autenticarte."
+  },
+  "businesses": {
+    "noneTitle": "Todavía no tenés negocios",
+    "noneDescription": "Creá tu primer negocio para empezar a tomar pedidos, pagos y reservas desde un solo panel.",
+    "createNewDescription": "Configurá otro local — POS, KDS, reservas y delivery en minutos."
+  },
+  "miniStats": {
+    "tapToManage": "Tocá para administrar"
+  },
+  "stats": {},
+  "overview": {
+    "selectBusinessHint": "Elegí un negocio para ver su tendencia de ingresos, propinas, ticket promedio y cuentas cobradas.",
+    "noActivityToday": "Hoy no hubo actividad",
+    "scope": {
+      "adminHint": "Negocios demo de otras cuentas de administrador. Podés abrirlos, pero no son tuyos ni se suman a tus totales.",
+      "combinedNote": "Los totales incluyen solo tus negocios. Otros {count} aparecen porque sos administrador de plataforma."
+    }
+  },
+  "engagement": {
+    "audience": {
+      "roles": {
+        "server": "Mozos"
+      }
+    },
+    "checklists": {
+      "addItem": "Agregá tarea",
+      "itemPlaceholder": "Describí la tarea",
+      "save": "Guardá la lista",
+      "emptyHint": "Creá tu primera lista de apertura, cierre o incorporación.",
+      "assignStaffPlaceholder": "Elegí a un miembro del equipo"
+    },
+    "documents": {
+      "bodyPlaceholder": "Pegá el texto de la política",
+      "save": "Publicá",
+      "edit": "Editá",
+      "update": "Publicá nueva versión",
+      "cancel": "Cancelá",
+      "emptyHint": "Publicá una política o manual para que lo lea tu equipo."
+    },
+    "polls": {
+      "addOption": "Agregá opción",
+      "save": "Abrí la encuesta",
+      "emptyHint": "Abrí una encuesta rápida para conocer la opinión de tu equipo."
+    }
+  }
+}

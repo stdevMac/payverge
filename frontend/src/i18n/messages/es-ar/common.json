@@ -1,0 +1,41 @@
+{
+  "maintenance": {
+    "visitWebsite": "Visitá nuestro sitio web",
+    "checkDocs": "Consultá nuestra documentación",
+    "exploreLinks": "Contactanos"
+  },
+  "errors": {
+    "network": "No se pudo conectar. Revisá tu conexión a internet e intentá de nuevo.",
+    "server": "Algo salió mal de nuestro lado. Intentá de nuevo más tarde.",
+    "timeout": "La solicitud tardó demasiado. Intentá de nuevo.",
+    "rateLimited": "Demasiadas solicitudes. Esperá un momento e intentá de nuevo.",
+    "validation": "Revisá los datos ingresados e intentá de nuevo.",
+    "authentication": "Iniciá sesión para continuar.",
+    "authorization": "No tenés permiso para realizar esta acción.",
+    "notFound": "No se encontró el recurso solicitado.",
+    "conflict": "Esta acción entra en conflicto con un cambio más reciente. Actualizá la página e intentá de nuevo.",
+    "default": "Ocurrió un error inesperado. Intentá de nuevo.",
+    "rangeTooLarge": "Este rango es demasiado grande para exportar. Elegí un período de 31 días o menos."
+  },
+  "metric": {
+    "empty": "—",
+    "noData": "Todavía no hay datos",
+    "chartEmpty": "Sin datos para graficar"
+  },
+  "sessionCheckFailedHint": "Revisá tu conexión e intentá de nuevo. Es posible que sigas autenticado.",
+  "featureUnavailable": {
+    "docsLink": "Mirá cómo activarlo (documentación de autoalojamiento)",
+    "ai": {
+      "body": "El mozo IA, el director, el asistente de operaciones y el asistente de menú necesitan un proveedor de LLM. El administrador del servidor puede activarlos configurando OPENROUTER_API_KEY, o LLM_BASE_URL (más LLM_API_KEY si el endpoint la requiere)."
+    },
+    "whatsapp": {
+      "body": "Primero el administrador del servidor tiene que activar la integración de WhatsApp."
+    },
+    "telegram": {
+      "body": "Primero el administrador del servidor tiene que configurar el bot de Telegram."
+    },
+    "email": {
+      "body": "Primero el administrador del servidor tiene que configurar un proveedor de correo."
+    }
+  }
+}

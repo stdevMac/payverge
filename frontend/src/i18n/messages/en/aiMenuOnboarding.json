@@ -1,0 +1,137 @@
+{
+  "tabs": {
+    "pdfUpload": "Upload PDF / Images",
+    "aiWizard": "AI Menu Wizard",
+    "mobile": {
+      "pdf": "PDF",
+      "wizard": "AI"
+    }
+  },
+  "generatedMenuName": "Generated Menu",
+  "wizard": {
+    "title": "AI Menu Wizard",
+    "description": "Tell us about your restaurant and let AI generate a complete menu with categories, items, descriptions, and prices tailored to your cuisine!",
+    "descriptionPro": "Have a conversation with our AI to generate a custom menu for your restaurant. Just answer a few questions about your cuisine, style, and preferences.",
+    "startConversation": "Start Conversation",
+    "inputPlaceholder": "Type your response...",
+    "sendAria": "Send message",
+    "generateMenu": "Generate",
+    "cancel": "Cancel",
+    "dismiss": "Dismiss",
+    "retryResponse": "Retry this response",
+    "charCount": "{count}/{max}",
+    "errors": {
+      "startSession": "Failed to start session",
+      "sendMessage": "Failed to send message",
+      "generateMenu": "Failed to generate menu",
+      "generationCancelled": "Generation cancelled. Tap Generate Menu to try again.",
+      "generateRetry": "Generation failed. Tap Generate Menu to try again.",
+      "structuredOutput": "The AI response was incomplete. Your answers are saved; retry this response.",
+      "replyDelayed": "This reply is taking longer than usual. Your message is saved and the reply is still being prepared — retry to fetch it without re-typing."
+    },
+    "generating": {
+      "title": "Generating Your Menu...",
+      "subtitle": "AI is crafting a menu based on your preferences",
+      "cancel": "Cancel generation",
+      "steps": {
+        "analyzing": "Analyzing your preferences",
+        "crafting": "Crafting menu items",
+        "pricing": "Optimizing pricing",
+        "finalizing": "Finalizing your menu"
+      }
+    }
+  },
+  "pdfDigitizer": {
+    "title": "AI Menu Digitizer",
+    "description": "Upload your PDF menu and let AI automatically extract all items, prices, and descriptions. Save hours of manual data entry!",
+    "dropzone": {
+      "title": "Drop your menu PDF or image here",
+      "subtitle": "Supports PDF, PNG, JPG (up to 12 pages)"
+    },
+    "processing": {
+      "loadingPdf": "Loading PDF library...",
+      "converting": "Converting PDF to images...",
+      "uploading": "Uploading pages...",
+      "extracting": "AI is extracting menu data...",
+      "extractingSubtitle": "Processing time varies by file; review the extracted menu before publishing",
+      "finalizing": "Finalizing menu images...",
+      "waiting": "Please wait while we process your menu",
+      "progressLabel": "Progress",
+      "cancel": "Cancel"
+    },
+    "error": {
+      "title": "Processing Failed",
+      "tryAgain": "Try Again",
+      "invalidFile": "Please upload a PDF or image file",
+      "fileTooLarge": "That file is too large. Please upload a menu under {max} MB.",
+      "tooManyPages": "That PDF has too many pages. Please upload a menu with {max} pages or fewer.",
+      "parseExtractedMenu": "Failed to parse extracted menu",
+      "extractionFailed": "Extraction failed",
+      "startExtractionFailed": "Could not start menu extraction. Try again.",
+      "timeout": "Processing timeout. Server took too long to respond.",
+      "processFileFailed": "Failed to process file",
+      "fileUnreadable": "We couldn't read this file. Please select it again from your computer."
+    },
+    "success": {
+      "title": "Menu Extracted Successfully!",
+      "subtitle": "Review and edit the extracted menu below"
+    },
+    "extractButton": "Extract Menu with AI",
+    "readingFile": "Reading your file…"
+  },
+  "reviewEditor": {
+    "title": "Review Extracted Menu",
+    "subtitle": "{{name}} • {{categories}} categories • {{items}} items",
+    "itemPriceAria": "Price for {name}",
+    "categoryNameAria": "Category name for {name}",
+    "itemNameAria": "Item name for {name}",
+    "itemDescriptionAria": "Description for {name}",
+    "unnamedCategory": "unnamed category",
+    "unnamedItem": "unnamed item",
+    "cancel": "Cancel",
+    "import": "Import to Menu",
+    "addItem": "Add Item",
+    "addCategory": "Add Category",
+    "newItem": "New Item",
+    "newCategory": "New Category",
+    "categories": "categories",
+    "items": "items",
+    "descriptionPlaceholder": "Description...",
+    "generateAiImage": "Generate AI Image",
+    "generateAiImageFor": "Generate AI image for {name}",
+    "confirmDelete": "Confirm Delete",
+    "confirmDeleteMessage": "Are you sure you want to delete this {{type}}?",
+    "deleteButton": "Delete",
+    "dismissError": "Dismiss error",
+    "deleteCategory": "Delete category",
+    "deleteItem": "Delete item",
+    "sanitization": {
+      "title": "Review menu changes",
+      "description": "Some unsupported values will be removed. Review every change before importing this menu.",
+      "dropped": "Removed",
+      "normalized": "Kept after normalization",
+      "fields": {
+        "allergens": "Allergen",
+        "dietary_tags": "Dietary tag",
+        "price": "Item"
+      },
+      "reasons": {
+        "unknown_enum_value": "Unsupported value",
+        "price_out_of_range": "Price outside the allowed range",
+        "alias_normalized": "Matched a supported value",
+        "canonical_value": "Supported value"
+      },
+      "confirm": "Confirm and import",
+      "confirming": "Importing...",
+      "back": "Back to editing"
+    },
+    "errors": {
+      "generateImage": "Failed to generate image",
+      "importMenu": "Failed to import menu"
+    },
+    "deleteTypes": {
+      "category": "category",
+      "item": "item"
+    }
+  }
+}

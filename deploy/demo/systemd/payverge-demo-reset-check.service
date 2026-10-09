@@ -1,0 +1,24 @@
+# Payverge public demo: hourly reset watchdog. Fails (and posts to
+# DEMO_ALERT_URL) when the last good nightly reset is older than
+# DEMO_RESET_MAX_AGE_HOURS (default 26), for example because a run was killed
+# or the timer stopped, so visitor content never silently outlives the night.
+# Install next to payverge-demo-reset.{service,timer}:
+#   sudo cp deploy/demo/systemd/payverge-demo-reset-check.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now payverge-demo-reset-check.timer
+[Unit]
+Description=Payverge public demo reset watchdog
+Documentation=https://github.com/stdevMac/payverge/blob/main/docs/self-hosting/public-demo.md
+Requires=docker.service
+After=docker.service
+# Hook an alert unit here if DEMO_ALERT_URL is not enough, e.g.
+# OnFailure=notify-email@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/payverge
+EnvironmentFile=-/opt/payverge/demo/reset.env
+Environment=DEMO_COMPOSE_DIR=/opt/payverge
+ExecStart=/opt/payverge/demo/reset-demo.sh --check
+TimeoutStartSec=5min
+Nice=10

@@ -1,0 +1,56 @@
+{{ define "subject" }}Low stock alert{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Low stock alert
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    The following inventory items are at or below their reorder threshold and may need restocking.
+</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0; font-size:15px; border-collapse:collapse;">
+    <thead>
+        <tr>
+            <th style="padding:8px 0; text-align:left; color:#6b6b6b; border-bottom:1px solid #ece9e2;">Item</th>
+            <th style="padding:8px 0; text-align:right; color:#6b6b6b; border-bottom:1px solid #ece9e2;">Current</th>
+            <th style="padding:8px 0; text-align:right; color:#6b6b6b; border-bottom:1px solid #ece9e2;">Reorder at</th>
+            <th style="padding:8px 0; text-align:right; color:#6b6b6b; border-bottom:1px solid #ece9e2;">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .items }}
+        <tr>
+            <td style="padding:8px 0; border-bottom:1px solid #f3f4f6;">{{ .name }}</td>
+            <td style="padding:8px 0; text-align:right; font-weight:600; border-bottom:1px solid #f3f4f6;">{{ .current_quantity }} {{ .unit }}</td>
+            <td style="padding:8px 0; text-align:right; border-bottom:1px solid #f3f4f6; color:#6b6b6b;">{{ .reorder_threshold }} {{ .unit }}</td>
+            <td style="padding:8px 0; text-align:right; border-bottom:1px solid #f3f4f6; color:{{ if eq .alert_type "out_of_stock" }}#dc2626{{ else }}#d97706{{ end }}; font-weight:600;">
+                {{ if eq .alert_type "out_of_stock" }}Out of stock{{ else }}Low stock{{ end }}
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+
+<p style="margin:0 0 18px 0;">
+    Visit your inventory dashboard to restock or adjust reorder thresholds.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        View inventory
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    You can manage low-stock alert settings from your notification preferences.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

@@ -1,0 +1,13 @@
+{
+  "key": "d009253448045821",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Tuesdays are consistently the slowest day due to post-weekend consumer spending fatigue and lack of midweek promotions.\",\"actions\":[{\"title\":\"Launch a Tuesday-only discount promotion (e.g. 20% off or BOGO)\",\"priority\":\"high\"},{\"title\":\"Partner with local offices for Tuesday corporate lunch deals\",\"priority\":\"medium\"},{\"title\":\"Run targeted social media ads promoting Tuesdays specifically\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

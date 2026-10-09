@@ -1,0 +1,9 @@
+{
+  "title": "Aprobaciones de franco",
+  "subtitle": "Revisá y decidí las solicitudes pendientes",
+  "error": "No pudimos cargar las solicitudes de franco. Volvé a intentarlo en un momento.",
+  "emptySubtitle": "Cuando tu equipo pida franco, va a aparecer acá para que lo apruebes o lo rechaces.",
+  "swapRow": "{name} quiere cambiar {position}",
+  "giveupRow": "{name} quiere dejar {position}",
+  "claimRow": "{name} quiere el {position} libre"
+}

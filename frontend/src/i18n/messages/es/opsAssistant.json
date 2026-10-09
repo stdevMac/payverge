@@ -1,0 +1,57 @@
+{
+  "title": "Asistente Ops",
+  "subtitle": "Ayuda procedural para tu panel",
+  "subtitleStaff": "Ayuda para tu rol",
+  "fabLabel": "Ayuda",
+  "placeholder": "¿Cómo puedo…?",
+  "send": "Enviar",
+  "welcome": "¿Necesitas ayuda con el panel?",
+  "welcomeHint": "Puedo llevarte a la pantalla correcta o explicarte un flujo.",
+  "thinking": "Buscando…",
+  "close": "Cerrar",
+  "newConversation": "Nueva conversación",
+  "feedbackUp": "Útil",
+  "feedbackDown": "No útil",
+  "assistant": {
+    "conversation": "Conversación del Asistente Ops",
+    "jumpToLatest": "Ir a lo más reciente",
+    "completion": "Respuesta completa",
+    "characterCount": "{current} de {maximum} caracteres",
+    "usedSource": "{count} fuente utilizada",
+    "usedSources": "{count} fuentes utilizadas",
+    "sourceRegion": "{count} fuente verificada",
+    "sourcesRegion": "{count} fuentes verificadas",
+    "verifiedSource": "Guía verificada de Payverge",
+    "externalSource": "Fuente externa: {hostname}",
+    "actions": "Acciones",
+    "steps": "Pasos",
+    "entities": "Elementos relacionados",
+    "availability": "Disponibilidad: {availability}",
+    "continuation": "Continuar con",
+    "notices": "Avisos",
+    "notice": "Aviso",
+    "statusComplete": "Completa",
+    "statusNeedsClarification": "Necesita aclaración",
+    "statusBlocked": "Bloqueada",
+    "statusDegraded": "Respuesta limitada",
+    "workflowProgress": "Paso {current} de {total}",
+    "disabledAction": "Esta acción no está disponible",
+    "renderError": "No se pudo mostrar esta respuesta."
+  },
+  "suggestions": [
+    "¿Cómo agrego ítems al menú?",
+    "¿Dónde conecto pagos?",
+    "¿Cómo invito al personal?"
+  ],
+  "errors": {
+    "generic": "No pudimos contactar al asistente. Intenta de nuevo.",
+    "retry": "Reintentar",
+    "contactPrompt": "¿Sigues con dudas?",
+    "contactCta": "Pide ayuda"
+  },
+  "nudge": {
+    "setupIncomplete": "Configuración {completed}/{total} — ¿necesitas ayuda?",
+    "cta": "Abrir asistente",
+    "dismiss": "Ocultar"
+  }
+}

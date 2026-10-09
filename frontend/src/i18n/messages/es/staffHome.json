@@ -1,0 +1,44 @@
+{
+  "title": "Personal",
+  "greeting": "Hola, {name}",
+  "businessLine": "en {business}",
+  "nav": {
+    "label": "Secciones de personal",
+    "today": "Hoy",
+    "schedule": "Horario",
+    "chat": "Chat",
+    "more": "Más"
+  },
+  "today": {
+    "title": "Hoy",
+    "loading": "Cargando tu día…"
+  },
+  "comingSoon": {
+    "schedule": "Tu horario llega en la próxima actualización.",
+    "chat": "El chat del equipo llega pronto.",
+    "badge": "Próximamente"
+  },
+  "serviceTools": {
+    "title": "Herramientas de servicio",
+    "description": "Abre las herramientas que usas durante tu turno.",
+    "open": "Abrir herramientas de servicio"
+  },
+  "profile": {
+    "title": "Perfil",
+    "roleLabel": "Puesto",
+    "businessLabel": "Negocio",
+    "emailLabel": "Correo",
+    "lastLoginLabel": "Último ingreso",
+    "signOut": "Cerrar sesión",
+    "roles": {
+      "manager": "Encargado",
+      "server": "Mesero",
+      "host": "Anfitrión",
+      "kitchen": "Cocina"
+    }
+  },
+  "more": {
+    "title": "Más",
+    "comingSoon": "Más funciones están en camino."
+  }
+}

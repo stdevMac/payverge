@@ -1,0 +1,18 @@
+{
+  "checklists": {
+    "back": "Volvé",
+    "openRun": "Abrí lista",
+    "empty": "No tenés listas asignadas"
+  },
+  "documents": {
+    "acknowledge": "Leí esto"
+  },
+  "recognition": {
+    "send": "Mandá un reconocimiento",
+    "recipientPlaceholder": "Elegí a un compañero",
+    "submit": "Enviá"
+  },
+  "polls": {
+    "vote": "Votá"
+  }
+}

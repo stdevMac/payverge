@@ -1,0 +1,47 @@
+/* Theme CSS Variables */
+:root {
+  /* Guest bottom dock chrome height (no safe-area). Consumers:
+     pb-[calc(var(--guest-nav-height)+env(safe-area-inset-bottom))] */
+  --guest-nav-height: 5.5rem;
+  --cookie-banner-height: 0px;
+  --background: 250 249 246;
+  --foreground: 28 25 23;
+  --card: 255 255 255;
+  --card-foreground: 28 25 23;
+  --popover: 255 255 255;
+  --popover-foreground: 28 25 23;
+  --primary: 26 107 106;           /* brand/600 — deep teal */
+  --primary-foreground: 255 255 255;
+  --secondary: 243 241 236;
+  --secondary-foreground: 28 25 23;
+  --muted: 243 241 236;
+  --muted-foreground: 107 99 88;
+  --accent: 240 247 247;           /* brand/50 */
+  --accent-foreground: 20 85 84;   /* brand/700 */
+  --destructive: 190 52 52;
+  --destructive-foreground: 255 255 255;
+  --border: 228 224 216;
+  --input: 228 224 216;
+  --ring: 26 107 106;
+  --radius: 0.75rem;
+}
+
+/* Light mode scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(241 245 249);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(148 163 184);
+}
+
+/* No dark-mode overrides ship yet; they land with the theme toggle. */

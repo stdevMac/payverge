@@ -1,0 +1,78 @@
+{
+  "subtitle": "Tu gerente, leyendo los números por vos.",
+  "strip": {
+    "askPrompt": "Preguntale lo que quieras a Sage",
+    "pulseToday": "Hoy hasta ahora: {revenue} cobrado en {orders} cuentas cerradas (ticket promedio {avgTicket}).",
+    "pulseRemaining": "{remaining} restante en cuentas abiertas.",
+    "openAnalytics": "Abrí Analítica"
+  },
+  "honesty": {
+    "openAnalytics": "Abrí Analítica"
+  },
+  "preShift": {
+    "cards": {
+      "outOfStock": {
+        "one": "El inventario de {names} está en cero. Revisá su uso y reponé existencias.",
+        "other": "{count} insumos de inventario están en cero: {names}. Revisá su uso y reponé existencias."
+      },
+      "lowStock": "Quedan pocas unidades de {count} productos: {names}. Reponé antes de quedarte sin stock.",
+      "staleBills": {
+        "one": "1 cuenta abierta desde hace más de {duration} — fijate si el cliente se fue.",
+        "other": "{count} cuentas abiertas desde hace más de {duration} — fijate si los clientes se fueron."
+      },
+      "staleBillsOldest": "{count} cuentas abiertas — la más vieja hace {duration}. Fijate si los clientes se fueron.",
+      "wasteHigh": "Tiraste cerca de {amount} de {ingredient} últimamente — ajustá el pedido o la preparación.",
+      "oversold": {
+        "one": "El inventario de {names} está sobrevendido. Contá y corregí el stock antes del próximo servicio.",
+        "other": "{count} insumos de inventario están sobrevendidos: {names}. Contá y corregí el stock antes del próximo servicio."
+      },
+      "outOfStockMixed": "{count} insumos de inventario necesitan atención — sobrevendidos ({oversoldCount}): {oversoldNames}; en cero ({zeroCount}): {zeroNames}. Contá y corregí el stock antes del próximo servicio."
+    },
+    "briefing": {
+      "play": {
+        "cta": {
+          "reprice_up": "Ajustá el precio",
+          "promote": "Destacá este plato"
+        }
+      },
+      "win": {
+        "revenue_up_wow": "Un punto a favor — los ingresos subieron {pct} respecto de la semana pasada. Seguí así."
+      }
+    }
+  },
+  "threads": {
+    "empty": "Hacele tu primera pregunta a Sage para empezar."
+  },
+  "empty": {
+    "subtitle": "Elegí una sugerencia para empezar un hilo nuevo."
+  },
+  "emptyState": {
+    "description": "Elegí una sugerencia para empezar un hilo nuevo."
+  },
+  "chat": {
+    "inputPlaceholder": "Preguntá sobre tendencias, ideas de crecimiento, operaciones o qué mejorar ahora...",
+    "empty": "Empezá con una sugerencia rápida o hacé una pregunta de negocio específica.",
+    "speakerYou": "Vos",
+    "newReply": "Nueva respuesta ↓",
+    "newReplyAria": "Ir a la última respuesta"
+  },
+  "errors": {
+    "askFailed": "No se pudo obtener respuesta. Probá nuevamente.",
+    "undoFailed": "No se pudo deshacer el cambio. Podés deshacer durante {hours} horas después de aplicar."
+  },
+  "proposal": {
+    "disclosure": "Cambio propuesto por la IA — revisalo antes de aplicarlo.",
+    "reconfirmHint": "Es un cambio grande. Presioná de nuevo para confirmar.",
+    "errors": {
+      "menuChanged": "El menú cambió desde la vista previa — volvé a preguntar para obtener una propuesta nueva.",
+      "applyFailed": "No se pudo aplicar el cambio. Intentalo de nuevo.",
+      "undoFailed": "No se pudo deshacer el cambio. Podés deshacer durante {hours} horas después de aplicar."
+    },
+    "warnings": {
+      "generic": "Revisá esta advertencia antes de aplicar."
+    }
+  },
+  "threadActions": {
+    "deleteDescription": "Esto borra permanentemente la conversación y su historial. No se puede deshacer. Si solo querés apartarla pero recuperable, usá Archivar."
+  }
+}

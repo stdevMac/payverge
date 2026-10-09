@@ -1,0 +1,55 @@
+{
+  "menu": {
+    "entry": "Pick up shifts",
+    "hint": "Pick up open shifts and trade with teammates"
+  },
+  "title": "Pick up shifts",
+  "openShifts": "Open shifts",
+  "swapInbox": "Trades to cover",
+  "myRequests": "My requests",
+  "claim": "Claim",
+  "accept": "Accept",
+  "cancel": "Cancel",
+  "loading": "Loading coverage…",
+  "positionFallback": "Shift",
+  "claimSuccess": "Shift claimed — pending manager approval",
+  "acceptSuccess": "Swap accepted — pending manager approval",
+  "cancelSuccess": "Request cancelled",
+  "actionError": "We couldn't complete that. Try again in a moment.",
+  "offerAction": "Hand off shift",
+  "requested": "Requested",
+  "offerSuccess": "Sent — your team was notified",
+  "giveUpSuccess": "Shift handed back — waiting for your manager",
+  "offer": {
+    "title": "Hand off this shift",
+    "subtitle": "Two ways to pass this shift to someone else.",
+    "offerCover": "Have a teammate cover it",
+    "offerCoverHint": "A teammate who can work it accepts, then your manager approves.",
+    "giveUp": "Hand the shift back",
+    "giveUpHint": "Your manager takes you off and finds cover.",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "row": {
+    "swap": "Trade request",
+    "giveup": "Hand-back request",
+    "claim": "Open-shift pickup"
+  },
+  "empty": {
+    "openTitle": "No open shifts to pick up",
+    "openSubtitle": "Open shifts your manager posts will show up here for you to claim.",
+    "inboxTitle": "No trades need covering",
+    "inboxSubtitle": "When a teammate offers a trade you can cover, it'll appear here.",
+    "mineTitle": "No shift requests yet",
+    "mineSubtitle": "Shifts you pick up and trades you request will show up here with their status."
+  },
+  "status": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "pendingApproval": "Waiting for your manager",
+    "approved": "Approved",
+    "denied": "Denied",
+    "cancelled": "Cancelled",
+    "withdrawn": "Withdrawn"
+  }
+}

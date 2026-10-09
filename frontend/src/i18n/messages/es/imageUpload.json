@@ -1,0 +1,52 @@
+{
+  "errors": {
+    "selectImageFile": "Por favor selecciona un archivo de imagen",
+    "imageSizeLimit": "El tamaño de la imagen debe ser menor a {maxSize}MB",
+    "businessIdRequired": "Se requiere el ID del negocio para subir archivos",
+    "uploadFailed": "Error al subir la imagen",
+    "uploadFailedTitle": "Error al Subir"
+  },
+  "success": {
+    "uploaded": "¡Imagen Subida!",
+    "uploadedDescription": "{title} se ha subido exitosamente."
+  },
+  "labels": {
+    "currentImage": "Imagen actual",
+    "uploadedImage": "Imagen subida",
+    "defaultImage": "Imagen",
+    "maxSize": "Tamaño máximo",
+    "formats": "Formatos",
+    "uploadTitle": "Subir {title}",
+    "uploadImage": "Subir una imagen",
+    "upTo": "hasta",
+    "images": "Imágenes",
+    "dragOrClick": "Arrastra y suelta o haz clic para subir. PNG, JPG, WebP hasta 5MB.",
+    "primary": "Principal",
+    "preview": "Vista previa",
+    "orDrop": "o suelta aquí"
+  },
+  "buttons": {
+    "changeImage": "Cambiar Imagen",
+    "remove": "Eliminar",
+    "chooseFile": "Elegir Archivo",
+    "dismiss": "Descartar",
+    "addImage": "Añadir imagen",
+    "addFirstImage": "Añadir imagen",
+    "addAnother": "Añadir otra",
+    "preview": "Vista previa",
+    "close": "Cerrar"
+  },
+  "status": {
+    "uploading": "Subiendo…",
+    "uploadingImages": "Subiendo imágenes..."
+  },
+  "gallery": {
+    "captionPlaceholder": "Leyenda (opcional)",
+    "uploadedCount": "{count} imagen(es) subida(s)",
+    "hint": "PNG, JPG, WebP hasta 5MB",
+    "autoTranslateNotice": "Las leyendas se escriben una vez en tu idioma predeterminado y se traducen automáticamente a los idiomas que usan tus clientes.",
+    "maxCountTitle": "Galería llena",
+    "maxCountBody": "Puedes subir hasta {max} imágenes.",
+    "truncatedToMax": "Solo entran {count} imagen(es) más (máx. {max})."
+  }
+}

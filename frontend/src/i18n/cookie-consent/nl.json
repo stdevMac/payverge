@@ -1,0 +1,21 @@
+{
+  "banner": {
+    "title": "We hechten aan je privacy",
+    "description": "We gebruiken essentiële cookies om Payverge te laten werken. Met je toestemming willen we ook analysecookies gebruiken om te begrijpen hoe de site wordt gebruikt. Je kunt je keuze altijd wijzigen via \"Cookievoorkeuren\" in de footer.",
+    "acceptAll": "Alles accepteren",
+    "declineAll": "Niet-essentiële weigeren",
+    "customize": "Aanpassen",
+    "essentialLabel": "Essentieel",
+    "essentialDescription": "Nodig voor de werking van de site (beveiliging, taal, sessie). Altijd aan.",
+    "analyticsLabel": "Analyse",
+    "analyticsDescription": "Helpt ons gebruik te begrijpen om het product te verbeteren. Uit tot je instemt.",
+    "marketingLabel": "Marketing",
+    "marketingDescription": "Gebruikt om campagnes te meten en verbeteren. Uit tot je instemt.",
+    "savePreferences": "Voorkeuren opslaan",
+    "privacyLink": "Lees ons privacybeleid",
+    "closeLabel": "Cookiebanner sluiten"
+  },
+  "footer": {
+    "preferences": "Cookievoorkeuren"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "updateError": "Failed to update settings. Please try again.",
+  "button": {
+    "disableOrdering": "Disable Ordering",
+    "enableOrdering": "Activate Ordering"
+  },
+  "disableModal": {
+    "title": "Disable Kitchen & Orders?",
+    "description": "This will disable both the Kitchen management and Orders approval features. Your staff will not be able to:",
+    "features": {
+      "createOrders": "Create new orders",
+      "approveOrders": "Approve pending orders",
+      "manageKitchen": "Manage kitchen workflow",
+      "trackStatus": "Track order status"
+    },
+    "confirmation": "Are you sure you want to continue?",
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Yes, Disable"
+    }
+  },
+  "enableModal": {
+    "title": "Activate Kitchen & Orders?",
+    "description": "This will enable both Kitchen management and Orders features for your business.",
+    "featuresTitle": "You'll be able to:",
+    "features": {
+      "createOrders": "Create new orders",
+      "approveOrders": "Approve pending orders",
+      "acceptOrders": "Accept and approve customer orders",
+      "manageKitchen": "Manage kitchen preparation workflow",
+      "trackStatus": "Track order status in real-time",
+      "improveEfficiency": "Keep the ticket board moving without paper"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Activate"
+    }
+  },
+  "activationCard": {
+    "title": "Activate Kitchen & Orders Management",
+    "description": "Turn on order approval and kitchen tickets so staff can move food from place order to ready without paper slips.",
+    "ordersManagement": {
+      "title": "Orders Management",
+      "description": "Create, approve, and track customer orders in real-time"
+    },
+    "kitchenWorkflow": {
+      "title": "Kitchen Workflow",
+      "description": "Manage preparation, cooking, and order completion"
+    },
+    "buttons": {
+      "activate": "Activate Now",
+      "activating": "Activating..."
+    },
+    "disclaimer": "You can disable this feature anytime from the settings"
+  }
+}

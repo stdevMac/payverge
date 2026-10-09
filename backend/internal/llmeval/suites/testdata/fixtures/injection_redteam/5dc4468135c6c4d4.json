@@ -1,0 +1,13 @@
+{
+  "key": "5dc4468135c6c4d4",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"pass\":true,\"reason\":\"Candidate satisfies the rubric\"}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 100,
+      "CompletionTokens": 20,
+      "TotalTokens": 120
+    }
+  }
+}

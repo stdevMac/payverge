@@ -1,0 +1,13 @@
+{
+  "key": "e7fa08f9cbcbd48c",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "The presence of peanuts in Pad Thai doesn't tell us anything about the tomato soup — I don't have allergen data for the soup, so I can't assess it. Please confirm with our staff before ordering the tomato soup.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

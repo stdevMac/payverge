@@ -1,0 +1,548 @@
+{
+  "title": "Delivery Settings",
+  "description": "Configure your delivery options, zones, fees, and timing.",
+  "saveChanges": "Save Changes",
+  "saveSuccess": "Delivery settings saved successfully",
+  "saveError": "Failed to save delivery settings",
+  "loadError": "Failed to load delivery settings",
+  "enableTitle": "Enable Delivery",
+  "enableDescription": "Allow customers to choose delivery at checkout",
+  "coverageTitle": "Delivery Coverage",
+  "coverageDescription": "Define where you deliver",
+  "deliveryZones": "Delivery Zones (Zip Codes/Areas)",
+  "addZonePlaceholder": "e.g., Downtown, 10001",
+  "addZone": "Add Zone",
+  "feesTitle": "Delivery Fees",
+  "feesDescription": "Set your delivery charges",
+  "feeType": "Fee Type",
+  "flatFee": "Flat Fee",
+  "distanceBased": "Distance Based",
+  "freeAboveMinimum": "Free Above Minimum",
+  "flatFeeAmount": "Flat Fee Amount",
+  "ratePerKm": "Rate per km",
+  "freeDeliveryMinimum": "Free Delivery Minimum Order",
+  "minimumOrderAmount": "Minimum Order Amount",
+  "timingTitle": "Delivery Timing",
+  "timingDescription": "Manage preparation and delivery times",
+  "estimatedPrepTime": "Estimated Prep Time",
+  "minutes": "minutes",
+  "maxConcurrentDeliveries": "Max Concurrent Deliveries",
+  "deliveryHours": "Delivery Hours",
+  "sameAsBusinessHours": "Same as Business Hours",
+  "startTime": "Start Time",
+  "endTime": "End Time",
+  "additionalTitle": "Additional Settings",
+  "additionalDescription": "Extra information for your customers",
+  "deliveryInstructions": "Delivery Instructions",
+  "instructionsPlaceholder": "e.g., We deliver to the lobby only...",
+  "infoBanner": "Make sure your delivery settings are accurate to avoid customer confusion.",
+  "partnerLinks": {
+    "title": "External Delivery Partners",
+    "description": "Show delivery apps your business already uses when in-app delivery is turned off.",
+    "addProvider": "Add Provider",
+    "nameLabel": "Provider Name",
+    "urlLabel": "Provider URL",
+    "iconSourceLabel": "Icon Source",
+    "sourcePredefined": "Predefined",
+    "sourceCustom": "Custom",
+    "providerLabel": "Provider Icon",
+    "iconUrlLabel": "Custom Icon URL",
+    "uploadIcon": "Upload Icon",
+    "removeProvider": "Remove",
+    "maxReached": "Maximum {max} providers"
+  },
+  "tabs": {
+    "configuration": "Configuration",
+    "fees": "Fees",
+    "timing": "Timing",
+    "instructions": "Instructions"
+  },
+  "deliveryDisabled": {
+    "title": "Delivery Disabled",
+    "description": "Enable delivery in the Configuration tab to access these settings.",
+    "button": "Go to Configuration"
+  },
+  "drivers": {
+    "title": "Drivers",
+    "addDriver": "Add driver",
+    "empty": "No drivers yet. Add one to start dispatching.",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "busy": "Busy",
+      "on_break": "On Break"
+    },
+    "vehicleTypes": {
+      "bicycle": "Bicycle",
+      "scooter": "Scooter",
+      "motorcycle": "Motorcycle",
+      "car": "Car",
+      "van": "Van"
+    },
+    "fields": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "vehicleType": "Vehicle Type",
+      "vehiclePlate": "Vehicle Plate",
+      "licenseNumber": "License Number",
+      "namePlaceholder": "Driver name",
+      "phonePlaceholder": "+1 555 000 0000",
+      "emailPlaceholder": "driver@example.com",
+      "vehiclePlatePlaceholder": "ABC-123",
+      "licenseNumberPlaceholder": "DL-000000"
+    },
+    "availability": "Available",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "remove": "Remove",
+    "modal": {
+      "createTitle": "Add Driver",
+      "editTitle": "Edit Driver",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "confirm": {
+      "removeTitle": "Remove Driver",
+      "removeDescription": "Are you sure you want to remove {name}? This cannot be undone.",
+      "removeConfirm": "Remove",
+      "removeCancel": "Cancel"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "phoneRequired": "Phone is required",
+      "phoneInvalid": "Enter a valid phone number (digits only, at least 7).",
+      "emailInvalid": "Enter a valid email address"
+    },
+    "toasts": {
+      "saved": "Driver saved",
+      "saveError": "Failed to save driver",
+      "deleted": "Driver removed",
+      "deleteError": "Failed to remove driver",
+      "availabilityError": "Failed to update availability",
+      "loadError": "Failed to load drivers"
+    },
+    "loadError": "Failed to load drivers. Check your connection and try again.",
+    "retry": "Retry"
+  },
+  "dispatch": {
+    "tabsAria": "Delivery sections",
+    "heading": "Dispatch",
+    "orderList": "Delivery orders",
+    "loadError": "Could not load deliveries. Check your connection and try again.",
+    "retry": "Retry",
+    "assignDriver": "Assign driver",
+    "cancelPaidWarning": "This order may already be paid online. Cancelling records it, but any compensation to the guest is handled by you directly — Payverge has no refund flow.",
+    "tabs": {
+      "configuration": "Configuration",
+      "dispatch": "Dispatch",
+      "history": "History",
+      "drivers": "Drivers",
+      "performance": "Performance"
+    },
+    "history": {
+      "title": "Delivery history",
+      "subtitle": "Browse terminal deliveries beyond today — failed, cancelled, and completed.",
+      "from": "From",
+      "to": "To",
+      "statusFilter": "Status filter",
+      "empty": "No deliveries in this range.",
+      "showing": "Showing {count} of {total}",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "columns": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "awaiting_payment": "Awaiting payment",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "assigned": "Assigned",
+      "picked_up": "Picked up",
+      "in_transit": "In transit",
+      "nearby": "Nearby",
+      "delivered": "Delivered",
+      "out_for_delivery": "Out for delivery",
+      "cancelled": "Cancelled",
+      "failed": "Failed"
+    },
+    "card": {
+      "live": "Live",
+      "eta": "ETA",
+      "cancel": "Cancel",
+      "items": "{count} items",
+      "awaitingPayment": "Awaiting guest payment",
+      "awaitingAcceptance": "Awaiting acceptance in Bills"
+    },
+    "filters": {
+      "label": "Filter orders by status",
+      "all": "All",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "awaiting_payment": "Awaiting payment",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "assigned": "Assigned",
+      "picked_up": "Picked up",
+      "in_transit": "In transit",
+      "out_for_delivery": "Out for delivery",
+      "nearby": "Nearby",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "failed": "Failed",
+      "filterByAria": "Filter by {status}"
+    },
+    "emptyBoard": {
+      "title": "No delivery orders yet",
+      "subtitle": "New deliveries appear here as guests check out — including orders still awaiting payment."
+    },
+    "order": {
+      "number": "Order",
+      "customer": "Customer",
+      "eta": "ETA",
+      "cutoff": "Cutoff",
+      "fee": "Fee",
+      "zone": "Zone",
+      "noEta": "No ETA",
+      "noCutoff": "—",
+      "pastCutoff": "Past cutoff",
+      "nearCutoff": "Near cutoff"
+    },
+    "actions": {
+      "advance": "Advance to {next}",
+      "assignDriver": "Assign driver",
+      "assign": "Assign",
+      "cancel": "Cancel",
+      "refresh": "Refresh",
+      "selectDriver": "Select driver",
+      "noDriversAvailable": "No drivers available"
+    },
+    "cancel": {
+      "title": "Cancel Delivery",
+      "description": "This action cannot be undone. Please provide a reason.",
+      "reasonPlaceholder": "Reason for cancellation",
+      "confirm": "Cancel Delivery",
+      "back": "Go Back",
+      "visibleToCustomer": "This reason will be shown to the customer on their tracking page."
+    },
+    "empty": "No deliveries in this filter.",
+    "drivers": {
+      "title": "Drivers",
+      "addDriver": "Add driver",
+      "empty": "No drivers yet. Add one to start dispatching.",
+      "status": {
+        "online": "Online",
+        "offline": "Offline",
+        "busy": "Busy",
+        "on_break": "On Break"
+      },
+      "vehicleTypes": {
+        "bicycle": "Bicycle",
+        "scooter": "Scooter",
+        "motorcycle": "Motorcycle",
+        "car": "Car",
+        "van": "Van"
+      },
+      "fields": {
+        "name": "Name",
+        "phone": "Phone",
+        "email": "Email",
+        "vehicleType": "Vehicle Type",
+        "vehiclePlate": "Vehicle Plate",
+        "licenseNumber": "License Number",
+        "namePlaceholder": "Driver name",
+        "phonePlaceholder": "+1 555 000 0000",
+        "emailPlaceholder": "driver@example.com",
+        "vehiclePlatePlaceholder": "ABC-123",
+        "licenseNumberPlaceholder": "DL-000000"
+      },
+      "availability": "Available",
+      "active": "Active",
+      "inactive": "Inactive",
+      "edit": "Edit",
+      "remove": "Remove",
+      "modal": {
+        "createTitle": "Add Driver",
+        "editTitle": "Edit Driver",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "confirm": {
+        "removeTitle": "Remove Driver",
+        "removeDescription": "Are you sure you want to remove {name}? This cannot be undone.",
+        "removeConfirm": "Remove",
+        "removeCancel": "Cancel"
+      },
+      "validation": {
+        "nameRequired": "Name is required",
+        "phoneRequired": "Phone is required",
+        "phoneInvalid": "Enter a valid phone number (digits only, at least 7).",
+        "emailInvalid": "Enter a valid email address"
+      },
+      "toasts": {
+        "saved": "Driver saved",
+        "saveError": "Failed to save driver",
+        "deleted": "Driver removed",
+        "deleteError": "Failed to remove driver",
+        "availabilityError": "Failed to update availability"
+      }
+    },
+    "header": {
+      "activeOrders": "{count} active order",
+      "activeOrdersPlural": "{count} active orders",
+      "availableDrivers": "{count} available driver",
+      "availableDriversPlural": "{count} available drivers"
+    },
+    "freshness": {
+      "updated": "Updated {seconds}s ago",
+      "updatedAria": "Last updated {seconds} seconds ago"
+    },
+    "toasts": {
+      "statusUpdated": "Order status updated",
+      "statusError": "Failed to update order status",
+      "driverAssigned": "Driver assigned",
+      "driverError": "Failed to assign driver",
+      "cancelled": "Delivery cancelled",
+      "cancelError": "Failed to cancel delivery"
+    },
+    "truncation": {
+      "showing": "Showing {shown} of {total}+ deliveries in this window. Older terminal orders are under History.",
+      "loadMore": "Load more"
+    },
+    "detail": {
+      "title": "Delivery detail",
+      "close": "Close",
+      "loadError": "Could not load this delivery.",
+      "customer": "Customer",
+      "address": "Address",
+      "apartment": "Apt",
+      "contactless": "Contactless",
+      "leaveAtDoor": "Leave at door",
+      "fee": "Delivery fee",
+      "tip": "Tip",
+      "payment": "Payment",
+      "paymentUnknown": "Unknown",
+      "paymentMode": {
+        "online": "Online",
+        "cash_on_delivery": "Cash on delivery"
+      },
+      "viewBill": "View bill #{id}",
+      "driver": "Driver",
+      "driverUnnamed": "Assigned driver",
+      "noDriver": "No driver assigned",
+      "timeline": "Status timeline",
+      "timelineEmpty": "No status history yet.",
+      "edit": "Edit contact / address",
+      "editPhone": "Phone",
+      "editApartment": "Apartment",
+      "editInstructions": "Delivery instructions",
+      "saveEdit": "Save changes",
+      "cancelEdit": "Cancel"
+    },
+    "claim": {
+      "claim": "Claim",
+      "release": "Release",
+      "steal": "Take over",
+      "cancel": "Cancel",
+      "heldBy": "Held by {name}",
+      "heldByYou": "You hold this order",
+      "unclaimed": "Unclaimed",
+      "conflict": "{name} is handling this order",
+      "stealRequired": "{name} is handling this order. Take over?",
+      "claimFailed": "Could not claim this order",
+      "releaseFailed": "Could not release this order",
+      "needClaim": "Claim this order before making changes",
+      "stolenToast": "You took over from {name}"
+    },
+    "scrollHint": "Scroll sideways for Out for delivery and Delivered"
+  },
+  "performance": {
+    "title": "Driver Performance",
+    "subtitle": "Throughput, on-time delivery, and active queues at a glance.",
+    "empty": {
+      "title": "No drivers yet",
+      "subtitle": "Add a driver in the Drivers tab to start tracking performance."
+    },
+    "columns": {
+      "driver": "Driver",
+      "status": "Status",
+      "inProgress": "In progress",
+      "completedToday": "Today",
+      "completedWeek": "Last 7 days",
+      "avgDelivery": "Avg delivery",
+      "onTime": "On time",
+      "rating": "Rating",
+      "issues": "Issues",
+      "actions": "Actions"
+    },
+    "windows": {
+      "allTime": "All time"
+    },
+    "issuesAria": "{failed} failed, {cancelled} cancelled",
+    "actions": {
+      "refresh": "Refresh",
+      "view": "View {name}",
+      "viewLabel": "View",
+      "close": "Close"
+    },
+    "kpi": {
+      "completedToday": "Completed today",
+      "completedWeek": "Completed (last 7 days)",
+      "completedAllTime": "Completed (all time)",
+      "cancelled": "Cancelled (all time)",
+      "failed": "Failed (all time)",
+      "avgPickup": "Avg pickup (all time)",
+      "avgDelivery": "Avg delivery (all time)",
+      "onTime": "On-time rate (all time)",
+      "rating": "Rating (all time)",
+      "grossFees": "Gross delivery fees (all time)",
+      "grossTips": "Gross tips collected (all time)",
+      "readOnly": "Read-only — payouts not included"
+    },
+    "queue": {
+      "title": "Active queue",
+      "empty": "No live deliveries assigned to this driver.",
+      "eta": "ETA",
+      "fee": "Fee",
+      "tip": "Tip"
+    },
+    "scorecard": {
+      "title": "Driver scorecard",
+      "subtitle": "Live KPIs and current assignments"
+    },
+    "placeholders": {
+      "noData": "—"
+    },
+    "units": {
+      "min": "min"
+    },
+    "errors": {
+      "loadDetail": "Failed to load driver details."
+    },
+    "toasts": {
+      "loadError": "Failed to load driver performance."
+    }
+  },
+  "focused": {
+    "headerTitle": "Delivery",
+    "headerDescription": "Configure how your guests get their orders — your own zones and drivers, third-party partners, or both.",
+    "status": {
+      "live": "Live",
+      "on": "Delivery on",
+      "off": "Delivery off",
+      "onTitle": "Delivery is on",
+      "showingProviders": "Showing {count} provider on your business page.",
+      "showingProvidersPlural": "Showing {count} providers on your business page.",
+      "addProviderHint": "Add at least one provider so guests can book delivery.",
+      "activeZones": "{count} active zone",
+      "activeZonesPlural": "{count} active zones"
+    },
+    "providers": {
+      "cardTitle": "Delivery providers",
+      "cardSubtitle": "Choose the partners your guests can hand off to. Up to five.",
+      "connectedTitle": "Connected providers",
+      "connectedDescription": "Each provider appears with its logo on your business page.",
+      "addProvider": "Add provider",
+      "nameLabel": "Provider name",
+      "urlLabel": "Provider URL",
+      "iconSourceLabel": "Icon source",
+      "sourcePredefined": "Predefined",
+      "sourceCustom": "Custom",
+      "providerLabel": "Provider icon",
+      "iconUrlLabel": "Custom icon URL",
+      "uploadIcon": "Upload icon",
+      "removeProvider": "Remove",
+      "maxReached": "Maximum {max} providers"
+    },
+    "note": {
+      "cardTitle": "Customer note",
+      "cardSubtitle": "Optional. Shown above the providers on your business page.",
+      "ariaLabel": "Delivery note",
+      "placeholder": "Example: Most providers deliver until 10 PM. Use the partner you trust the most."
+    },
+    "configuration": {
+      "cardTitle": "Configuration",
+      "cardSubtitle": "Fees, prep time, and capacity for in-house delivery.",
+      "paymentModeTitle": "How guests pay",
+      "paymentModeOnline": "Accept first, then pay online",
+      "paymentModeOnlineHelp": "You accept the order, the guest pays online, then the kitchen starts. Unpaid orders expire after 15 minutes — nothing is charged.",
+      "paymentModeOnlineDisabled": "Connect a payment method to enable online payment.",
+      "paymentModeCOD": "Cash on delivery",
+      "paymentModeCODHelp": "The kitchen starts when you accept; the driver collects cash.",
+      "paymentModeMismatch": "Online payment is selected but no payment method is connected — new orders will fall back to cash on delivery.",
+      "paymentModeInFlightMismatch": "{count} in-progress orders (checked in the most recent 100 deliveries) were placed under a different payment mode — the change only applies to new orders.",
+      "baseFee": "Base delivery fee",
+      "freeAboveMinimum": "Free delivery threshold",
+      "freeAboveHelp": "Set 0 to never waive the fee",
+      "minimumOrder": "Minimum order amount",
+      "invalidMoney": "Enter a valid amount (for example 0 or 12.50).",
+      "estimatedPrep": "Estimated prep time",
+      "maxConcurrent": "Max concurrent deliveries",
+      "minutes": "min"
+    },
+    "zones": {
+      "cardTitle": "Service zones",
+      "cardSubtitle": "Charge by area: add zones for farther neighborhoods with their own fee, minimum, and time.",
+      "overlapHint": "If an address matches several zones, the lowest fee wins and the highest minimum applies.",
+      "addZone": "Add zone",
+      "removeZone": "Remove",
+      "zoneNamePlaceholder": "Downtown",
+      "namePlaceholder": "Zone name",
+      "noZones": "No zones yet. Add one to start accepting in-house deliveries.",
+      "name": "Name",
+      "priority": "Priority",
+      "fee": "Fee",
+      "minimum": "Minimum order",
+      "estimatedTime": "Estimated time",
+      "cutoffBuffer": "Cutoff buffer",
+      "postalCodes": "Postal codes",
+      "postalCodesHelp": "Comma-separated. Example: 10001, 10002",
+      "cities": "Cities",
+      "citiesHelp": "Comma-separated.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "operatingHours": "Operating hours override (optional)",
+      "activationNeedsName": "Name the zone before activating it.",
+      "activationNeedsGeography": "Add postal codes or cities before activating the zone.",
+      "invalidMoney": "Enter a valid amount (for example 0 or 12.50).",
+      "activateConfirmTitle": "Activate this zone?",
+      "activateConfirmBody": "Active zones turn on in-house delivery. Confirm this zone is ready to take orders.",
+      "activateConfirm": "Activate zone",
+      "cancel": "Cancel",
+      "confirm": {
+        "removeTitle": "Remove delivery zone",
+        "removeDescription": "Remove the \"{name}\" zone? Its fee, minimums, and boundaries will be discarded when you save.",
+        "removeConfirm": "Remove zone",
+        "removeCancel": "Keep zone"
+      }
+    },
+    "hours": {
+      "cardTitle": "Delivery hours",
+      "cardSubtitle": "When delivery accepts orders.",
+      "useBusinessHours": "Match business hours",
+      "useBusinessHoursHelp": "Off lets you set a separate delivery window.",
+      "startTime": "Start",
+      "endTime": "End"
+    },
+    "partners": {
+      "cardTitle": "Delivery partners",
+      "cardSubtitle": "Show third-party providers your guests already trust."
+    },
+    "save": {
+      "unsavedChanges": "You have unsaved changes.",
+      "allSaved": "All changes saved.",
+      "button": "Save changes",
+      "saving": "Saving…"
+    },
+    "locked": {
+      "title": "Delivery",
+      "subtitle": "Connect the delivery providers your guests already trust."
+    },
+    "toasts": {
+      "saved": "Delivery settings saved",
+      "saveError": "Failed to save delivery settings",
+      "loadError": "Failed to load delivery settings"
+    }
+  }
+}
