@@ -75,7 +75,7 @@
     "react-markdown": "10.1.0",
     "remark-gfm": "^4.0.1",
     "sharp": "^0.35.5",
-    "tailwind-scrollbar": "^3.1.0",
+    "tailwind-scrollbar": "^4.0.2",
     "viem": "^2.45.3",
     "wagmi": "^3.7.7",
     "zod": "^4.6.5",
