@@ -14,7 +14,12 @@
       "urls": [
         "https://github.com/stdevMac/payverge/releases/latest/download/install.sh"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "Fresh docker:dind host, the exact curl | bash command from the page. Prompts match the copy (domain or localhost, admin email, optional demo data). The served install.sh has the same sha256 as deploy/install.sh at v1.0.0 and as SHA256SUMS. Images pull anonymously, .env secrets are generated, every service turns healthy, /api/v1/health/ready answers 200 through Caddy and the admin signs in. Caddy issued its internal certificate for localhost; automatic HTTPS is configured, but a real Let's Encrypt issuance on a public domain was not exercised."
+      }
     },
     {
       "id": "zero-accounts",
@@ -27,7 +32,12 @@
         "third-party account",
         "outside account"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "Same install, no optional env vars: no Stripe, Resend, S3 or other credential is asked for. An uploaded logo survives docker compose down/up with the same sha256. Password-reset and staff-invite emails appear in the backend log as \"email not sent (EMAIL_PROVIDER=log)\"; the body and links are logged only with EMAIL_LOG_CONTENT=true."
+      }
     },
     {
       "id": "ai-budget",
@@ -41,7 +51,12 @@
         "model key",
         "AI cost"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "backend/cmd/app/oss_sec_ai.go caps every mode once a provider is configured: $5 per business, instance-wide max($20, 2x business), guest pool half of the instance cap; invalid values fall back to the defaults. AI_WAITER_DAILY_MESSAGE_BUDGET (default 2000) still applies. With no key or LLM_BASE_URL, /api/v1/instance reports features.ai=false. On a local LLM_BASE_URL without OPENROUTER_PRICES, unpriced models book $0, so only the message budget bounds them."
+      }
     },
     {
       "id": "licence-files",
@@ -54,7 +69,12 @@
         "TRADEMARKS",
         "code license"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "LICENSE is unmodified Apache-2.0; NOTICE reads \"Payverge / Copyright 2025-2026 Marcos Maceo\" and points the name and logo to TRADEMARKS.md, which lists site/assets/logo.svg, favicon.ico, apple-touch-icon.png and og-image.png. Footer, hero eyebrow and note, meta/OpenGraph/Twitter descriptions, JSON-LD and the og-image eyebrow match."
+      }
     },
     {
       "id": "provenance",
@@ -65,7 +85,12 @@
         "built by",
         "in production"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "Owner approved the byline and the copyright years 2025-2026."
+      }
     },
     {
       "id": "feature-claims",
@@ -77,7 +102,12 @@
         "guest languages",
         "payment rails"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-09",
+        "ref": "v1.0.0",
+        "note": "No platform fee: stripe.go strips application_fee*, MercadoPago orders never send marketplace_fee, PayPal and USDC add none, delivery PlatformFee is 0. locales/registry.json has 21 guest locales (ar is RTL); 18 are machine translations not yet reviewed by a native speaker. Four payment rails plus cash, KDS, 58/80 mm printers, equal/custom/by-item splits, Z report, reservation approval, delivery tracking, Ops/Director, ARCA (beta) and AGENTS.md are on main."
+      }
     },
     {
       "id": "live-demo",
