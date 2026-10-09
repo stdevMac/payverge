@@ -79,7 +79,7 @@
     "viem": "^2.45.3",
     "wagmi": "^3.7.7",
     "zod": "^4.6.5",
-    "zustand": "^4.5.7"
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
