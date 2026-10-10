@@ -120,6 +120,25 @@ func TestPostMessageRoundTrip(t *testing.T) {
 	require.Equal(t, "Alice", page[0].SenderName)
 }
 
+// TestPostMessageContentCap pins the ChatContentMaxRunes boundary in runes (a
+// multibyte rune counts once), so every caller of PostMessage is bounded.
+func TestPostMessageContentCap(t *testing.T) {
+	d, g := newChatTestDB(t)
+	require.NoError(t, g.Create(&Business{ID: 1, BusinessId: "biz-1"}).Error)
+
+	atCap := strings.Repeat("é", ChatContentMaxRunes)
+	msg, err := d.PostMessage(1, 7, 5, "Alice", atCap)
+	require.NoError(t, err, "content at the cap is accepted")
+	require.NotZero(t, msg.ID)
+
+	_, err = d.PostMessage(1, 7, 5, "Alice", atCap+"x")
+	require.ErrorIs(t, err, ErrChatMessageTooLong)
+
+	var n int64
+	require.NoError(t, g.Model(&ChatMessage{}).Where("business_id = ?", 1).Count(&n).Error)
+	require.Equal(t, int64(1), n, "the over-long message is not stored")
+}
+
 // TestDeleteMessageSoftDeleteExcludedFromList proves a moderator delete drops the
 // message from ListMessages but preserves the underlying row (read-ref integrity),
 // and that cross-tenant / missing deletes are not-found.

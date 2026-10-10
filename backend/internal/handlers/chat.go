@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -202,7 +203,7 @@ func (h *ChatHandler) PostMessage(c *gin.Context) {
 	}
 	msg, err := h.db.PostMessage(businessID, channelID, staffID, senderName, in.Content)
 	if err != nil {
-		server.RespondWithError(c, http.StatusInternalServerError, server.ErrCodeInternal, "Failed to post message")
+		respondPostMessageError(c, err)
 		return
 	}
 	// Content-free realtime nudge: ids only, NEVER the message body. chat:read is
@@ -265,6 +266,9 @@ func (h *ChatHandler) announcementError(c *gin.Context, err error) {
 		server.RespondWithError(c, http.StatusNotFound, server.ErrCodeNotFound, "Announcement not found")
 	case errors.Is(err, database.ErrAnnouncementTitleRequired):
 		server.RespondWithError(c, http.StatusBadRequest, server.ErrCodeInvalidInput, "title is required")
+	case errors.Is(err, database.ErrAnnouncementTooLong):
+		server.RespondWithError(c, http.StatusBadRequest, server.ErrCodeInvalidInput,
+			fmt.Sprintf("title must be %d characters or fewer and content %d or fewer", database.AnnouncementTitleMaxRunes, database.ChatContentMaxRunes))
 	case errors.Is(err, database.ErrInvalidAudienceFilter):
 		server.RespondWithError(c, http.StatusBadRequest, server.ErrCodeInvalidInput, "audience_filter must be 'all', 'role:<role>' or 'dept:<dept>'")
 	case errors.Is(err, database.ErrAnnouncementNotEligible):
@@ -542,10 +546,21 @@ func (h *ChatHandler) PostDM(c *gin.Context) {
 	}
 	msg, err := h.db.PostMessage(businessID, ch.ID, staffID, callerSenderName(c), in.Content)
 	if err != nil {
-		server.RespondWithError(c, http.StatusInternalServerError, server.ErrCodeInternal, "Failed to post message")
+		respondPostMessageError(c, err)
 		return
 	}
 	// Content-free realtime nudge (ids only, never the DM body) — see PostMessage.
 	events.GetHub().PublishJSON(businessID, "chat.message", gin.H{"channel_id": ch.ID, "message_id": msg.ID})
 	c.JSON(http.StatusCreated, gin.H{"success": true, "data": gin.H{"channel": ch, "message": msg}})
+}
+
+// respondPostMessageError maps a PostMessage failure: over-long content is the
+// caller's fault (400), anything else is a 500.
+func respondPostMessageError(c *gin.Context, err error) {
+	if errors.Is(err, database.ErrChatMessageTooLong) {
+		server.RespondWithError(c, http.StatusBadRequest, server.ErrCodeInvalidInput,
+			fmt.Sprintf("content must be %d characters or fewer", database.ChatContentMaxRunes))
+		return
+	}
+	server.RespondWithError(c, http.StatusInternalServerError, server.ErrCodeInternal, "Failed to post message")
 }

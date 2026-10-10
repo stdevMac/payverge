@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"unicode/utf8"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,9 +14,19 @@ import (
 // (WHERE id < ?) drives older pages, so callers never need a larger window.
 const chatMessageListMax = 50
 
-// ErrChatMessageNotFound is returned when a message does not exist within the
-// caller's business (tenant-scoped moderation).
-var ErrChatMessageNotFound = errors.New("chat message not found")
+// ChatContentMaxRunes is the free-text ceiling for a chat message and for an
+// announcement body (the same ceiling as shift notes). The column is
+// unbounded text, so this cap is what keeps one write from storing megabytes.
+const ChatContentMaxRunes = 4000
+
+var (
+	// ErrChatMessageNotFound is returned when a message does not exist within the
+	// caller's business (tenant-scoped moderation).
+	ErrChatMessageNotFound = errors.New("chat message not found")
+	// ErrChatMessageTooLong is returned when message content exceeds
+	// ChatContentMaxRunes.
+	ErrChatMessageTooLong = fmt.Errorf("chat message must be %d characters or fewer", ChatContentMaxRunes)
+)
 
 // ListMessages returns a newest-first page of live messages for a channel via a
 // keyset cursor on the monotonic id (id tracks created_at), tenant-scoped. The
@@ -39,9 +50,13 @@ func (d *DB) ListMessages(businessID, channelID, cursorID uint, limit int) ([]Ch
 }
 
 // PostMessage appends a flat message to a channel. Callers must have already
-// passed CanReadChannel; this method does no authorization. CreatedAt is stamped
-// UTC so the keyset cursor (id ↔ created_at) stays monotonic.
+// passed CanReadChannel; this method does no authorization. Content longer than
+// ChatContentMaxRunes is rejected with ErrChatMessageTooLong. CreatedAt is
+// stamped UTC so the keyset cursor (id ↔ created_at) stays monotonic.
 func (d *DB) PostMessage(businessID, channelID, senderStaffID uint, senderName, content string) (*ChatMessage, error) {
+	if utf8.RuneCountInString(content) > ChatContentMaxRunes {
+		return nil, ErrChatMessageTooLong
+	}
 	msg := ChatMessage{
 		BusinessID:    businessID,
 		ChannelID:     channelID,
