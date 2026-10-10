@@ -174,6 +174,13 @@ func TestValidateInstance(t *testing.T) {
 	if errs, _ := ValidateInstance(true); len(errs) != 1 || !strings.Contains(errs[0].Message, "https") {
 		t.Fatalf("production http must fail: %v", errs)
 	}
+	// Loopback http mirrors the preflight exception (.github/e2e/ci.env.fixture).
+	for _, loopback := range []string{"http://localhost:3000", "http://127.0.0.1:3000", "http://[::1]:3000"} {
+		t.Setenv("PUBLIC_URL", loopback)
+		if errs, _ := ValidateInstance(true); len(errs) != 0 {
+			t.Fatalf("production loopback http %s must pass: %v", loopback, errs)
+		}
+	}
 
 	t.Setenv("PUBLIC_URL", "https://pos.example.com/subpath")
 	if errs, _ := ValidateInstance(false); len(errs) != 1 {
