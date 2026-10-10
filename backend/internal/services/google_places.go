@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/stdevmac/payverge/backend/internal/httpclientx"
 )
 
 // placesHTTPClient bounds Google Places API calls so a hung endpoint cannot
@@ -65,7 +67,7 @@ func (g *GooglePlacesService) SearchBusinesses(query string) ([]PlaceSearchResul
 	// Make the HTTP request
 	resp, err := placesHTTPClient.Get(fullURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request to Google Places API: %v", err)
+		return nil, fmt.Errorf("failed to make request to Google Places API: %w", httpclientx.RedactURLError(err))
 	}
 	defer func() { _ = resp.Body.Close() }()
 
@@ -155,7 +157,7 @@ func (g *GooglePlacesService) GetPlaceReviews(placeID string, language ...string
 
 	resp, err := placesHTTPClient.Get(fullURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request to google Places API: %v", err)
+		return nil, fmt.Errorf("failed to make request to google Places API: %w", httpclientx.RedactURLError(err))
 	}
 	defer func() { _ = resp.Body.Close() }()
 
@@ -194,7 +196,7 @@ func (g *GooglePlacesService) GetPlaceDetails(placeID string) (*PlaceDetails, er
 
 	resp, err := placesHTTPClient.Get(fullURL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request to google Places API: %v", err)
+		return nil, fmt.Errorf("failed to make request to google Places API: %w", httpclientx.RedactURLError(err))
 	}
 	defer func() { _ = resp.Body.Close() }()
 
@@ -233,7 +235,7 @@ func (g *GooglePlacesService) ValidatePlaceID(placeID string) (bool, error) {
 
 	resp, err := placesHTTPClient.Get(fullURL)
 	if err != nil {
-		return false, err
+		return false, httpclientx.RedactURLError(err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 

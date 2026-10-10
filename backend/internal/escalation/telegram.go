@@ -11,6 +11,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/stdevmac/payverge/backend/internal/httpclientx"
 )
 
 // TelegramNotifier posts escalation messages to a DEDICATED support-escalation
@@ -56,15 +58,17 @@ func (n *TelegramNotifier) Send(ctx context.Context, text string) error {
 	if err != nil {
 		return err
 	}
+	// The bot token is part of the URL path, so errors that embed the URL go
+	// through RedactURLError before the caller logs them.
 	url := fmt.Sprintf("%s/bot%s/sendMessage", baseURL, n.token)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
-		return err
+		return httpclientx.RedactURLError(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := n.client.Do(req)
 	if err != nil {
-		return err
+		return httpclientx.RedactURLError(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/stdevmac/payverge/backend/internal/database"
+	"github.com/stdevmac/payverge/backend/internal/httpclientx"
 	"github.com/stdevmac/payverge/backend/internal/locales"
 )
 
@@ -313,10 +314,12 @@ func (s *TranslationService) translateTextWithSource(text, sourceLang, targetLan
 		return "", fmt.Errorf("marshal translation request: %w", err)
 	}
 
+	// The API key rides in the query string, so every error that can embed the
+	// URL goes through RedactURLError before it is wrapped or logged.
 	url := fmt.Sprintf("%s?key=%s", s.apiBaseURL, s.apiKey)
 	req, err := http.NewRequestWithContext(context.Background(), "POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", fmt.Errorf("create translation request: %w", err)
+		return "", fmt.Errorf("create translation request: %w", httpclientx.RedactURLError(err))
 	}
 
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
@@ -324,7 +327,7 @@ func (s *TranslationService) translateTextWithSource(text, sourceLang, targetLan
 	client := &http.Client{Timeout: 30 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("call Google Translate API: %w", err)
+		return "", fmt.Errorf("call Google Translate API: %w", httpclientx.RedactURLError(err))
 	}
 	defer func() { _ = resp.Body.Close() }()
 
