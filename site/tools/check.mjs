@@ -50,7 +50,7 @@ const SHOTS_DIR = 'assets/screenshots/';
 const SHOT_MAX_BYTES = 150 * 1024;
 const SHOTS_BUDGET_BYTES = 1536 * 1024;
 // The only top-level entries a host should serve. --stage copies exactly these.
-const DEPLOY = ['index.html', '404.html', 'assets'];
+const DEPLOY = ['index.html', '404.html', 'robots.txt', 'assets'];
 // Top-level entries that live in site/ but must never be served.
 const NOT_DEPLOYED = ['README.md', 'tools', '.gitignore', 'dist'];
 const GATES_FILE = 'tools/launch-gates.json';
@@ -619,7 +619,7 @@ async function selfTest() {
       for (let i = 0; i < k; i++) { writeFileSync(join(d, SHOTS_DIR, `s${i}.webp`), Buffer.alloc(SHOT_MAX_BYTES)); tags += `<img src="assets/screenshots/s${i}.webp" width="1" height="1" alt="" loading="lazy">`; }
       edit(d, 'index.html', beforeMainEnd(tags));
     }, /screenshots total \d+ B exceeds/],
-    ['unclassified top-level file', (d) => writeFileSync(join(d, 'robots.txt'), 'User-agent: *'), /not in the deploy list/],
+    ['unclassified top-level file', (d) => writeFileSync(join(d, 'humans.txt'), 'Payverge'), /not in the deploy list/],
     ['unknown data-gate marker', (d) => edit(d, 'index.html', beforeMainEnd('<p data-gate="no-such-gate">claim</p>')), /unknown launch gate/],
     ['gate without a marker', (d) => edit(d, GATES_FILE, (s) => {
       const j = JSON.parse(s);
@@ -762,7 +762,7 @@ async function selfTest() {
     stage(HERE_SITE, out);
     const top = readdirSync(out).sort();
     const shipped = walk(out).map((f) => relative(out, f).split(sep).join('/'));
-    record('stage: copies only index.html, 404.html, assets/', JSON.stringify(top) === JSON.stringify([...DEPLOY].sort()) && !shipped.some((f) => /tools\/|README\.md|launch-gates/.test(f)), top.join(', '));
+    record('stage: copies only index.html, 404.html, robots.txt, assets/', JSON.stringify(top) === JSON.stringify([...DEPLOY].sort()) && !shipped.some((f) => /tools\/|README\.md|launch-gates/.test(f)), top.join(', '));
     stage(HERE_SITE, out);
     record('stage: re-staging into a previous stage works', readdirSync(out).length === DEPLOY.length);
     const foreign = join(base, 'foreign');

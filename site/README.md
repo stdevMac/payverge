@@ -4,12 +4,15 @@
 
 It has no build step, no framework and no JavaScript dependencies. There is one small inline script, and all it does is copy the install command. Any static host can serve it.
 
-> **Not ready to publish yet.** Several claims on the page (the installer, "no third-party accounts", the AI spend controls, the licence files) must be confirmed against the public repository, and every GitHub link answers 404 until that repository exists. The installer (`deploy/install.sh`) and the release workflow that attaches it to a release are in this tree, but `releases/latest/download/install.sh` only resolves after the first release is published. The code behind the storage, email, billing, AI-cap and licence gates is in this tree too, and each gate's `needs` says what is still missing. `node site/tools/check.mjs --launch` fails until each gate in `tools/launch-gates.json` is confirmed and every outbound link is live, and every deploy recipe below goes through it. See [Launch gates](#launch-gates).
+> **Launch status.** The public repository and the v1.0.0 release are live, and every gate in `tools/launch-gates.json` is confirmed except `live-demo`. That gate waits on v1.0.1 (it contains the staff sign-in fix) being released and deployed to the demo host; its `needs` lists the remaining steps. Until it is confirmed, `node site/tools/check.mjs --launch` fails, and so does every deploy recipe below.
+>
+> Deploy payverge.io only through the gated recipes in this file: `node site/tools/check.mjs --launch --stage <dir>` followed by the upload, or the Cloudflare Pages Git build command, which runs the same check. Do not upload `site/` by hand. On 2026-10-09 the page was deployed before the gates were confirmed; that must not happen again.
 
 ```
 site/
 ├── index.html          the landing page; critical CSS is inline
 ├── 404.html            not-found page, served by the host for unknown paths
+├── robots.txt          allows all crawlers
 ├── .gitignore          ignores dist/, the local staging output
 ├── assets/
 │   ├── logo.svg, favicon.ico, apple-touch-icon.png
@@ -22,7 +25,7 @@ site/
     └── og-image.html       source for assets/og-image.png
 ```
 
-Only `index.html`, `404.html` and `assets/` are served. `README.md`, `tools/` and `.gitignore` stay in the repository; `check.mjs --stage` copies exactly the deployable set, and it fails if a new top-level file is not classified in its `DEPLOY` / `NOT_DEPLOYED` lists.
+Only `index.html`, `404.html`, `robots.txt` and `assets/` are served. `README.md`, `tools/` and `.gitignore` stay in the repository; `check.mjs --stage` copies exactly the deployable set, and it fails if a new top-level file is not classified in its `DEPLOY` / `NOT_DEPLOYED` lists.
 
 The page makes no third-party requests: fonts are self-hosted, it sets no cookies and it runs no analytics. Keep it that way. The Content-Security-Policy in `index.html` blocks anything that is not in this directory.
 
