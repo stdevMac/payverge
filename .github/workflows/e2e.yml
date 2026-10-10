@@ -66,7 +66,17 @@ jobs:
           bash scripts/ci/rotate-ci-secrets.sh .env
           # Fail fast if compose cannot interpolate the env file.
           docker compose --env-file .env config >/dev/null
-          docker compose --env-file .env up -d --build
+          # `up` fails on its own when a service with a depends_on health
+          # condition never turns healthy; print why before giving up.
+          if ! docker compose --env-file .env up -d --build; then
+            echo "::error::docker compose up failed; compose ps and service logs follow."
+            docker compose --env-file .env ps --all || true
+            for service in backend frontend postgres; do
+              echo "--- $service logs (tail 200) ---"
+              docker compose --env-file .env logs --no-color --tail=200 "$service" || true
+            done
+            exit 1
+          fi
           # Independent polls for postgres, backend live/ready and frontend;
           # dumps compose ps and service logs on any timeout.
           bash scripts/ci/wait-for-stack.sh

@@ -21,6 +21,8 @@ make_repo() {
   printf 'import payverge.caddy\n' >"$repo/deploy/Caddyfile"
   printf ':80 {}\n' >"$repo/deploy/payverge.caddy"
   printf 'DOMAIN=localhost\n' >"$repo/deploy/.env.example"
+  printf 'Apache License\n' >"$repo/LICENSE"
+  printf 'Payverge NOTICE\n' >"$repo/NOTICE"
   cat >"$repo/scripts/licenses/generate-third-party.sh" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -64,11 +66,14 @@ done
 [[ -x "$out/install.sh" ]] || fail "install.sh must be executable"
 grep -q 'DOMAIN=localhost' "$out/env.example" || fail "env.example content differs from deploy/.env.example"
 
-# The tarball holds every tracked deploy/ file under one prefix.
+# The tarball holds every tracked deploy/ file, plus LICENSE and NOTICE,
+# under one prefix.
 listing="$(tar -tzf "$out/payverge-deploy-1.2.3-rc.1.tar.gz" | LC_ALL=C sort)"
-for entry in .env.example Caddyfile docker-compose.yml install.sh payverge.caddy; do
+for entry in .env.example Caddyfile LICENSE NOTICE docker-compose.yml install.sh payverge.caddy; do
   grep -qx "payverge-deploy-1.2.3-rc.1/$entry" <<<"$listing" || fail "tarball is missing $entry"
 done
+[[ "$(tar -xzOf "$out/payverge-deploy-1.2.3-rc.1.tar.gz" payverge-deploy-1.2.3-rc.1/NOTICE)" == "Payverge NOTICE" ]] ||
+  fail "tarball NOTICE differs from the repository's NOTICE"
 
 # SHA256SUMS covers every other asset and verifies.
 [[ "$(wc -l <"$out/SHA256SUMS" | tr -d ' ')" == 6 ]] || fail "SHA256SUMS must list 6 assets"
@@ -80,11 +85,15 @@ fi
 
 # Assets come from HEAD: an uncommitted edit never ships.
 printf 'TAMPERED=1\n' >>"$repo/deploy/.env.example"
+printf 'TAMPERED=1\n' >>"$repo/LICENSE"
 run "$repo" 1.2.3 "$tmp/out-head" >/dev/null
 if grep -q TAMPERED "$tmp/out-head/env.example"; then
   fail "a working-tree edit leaked into the release assets"
 fi
-git -C "$repo" checkout -q -- deploy/.env.example
+if tar -xzOf "$tmp/out-head/payverge-deploy-1.2.3.tar.gz" payverge-deploy-1.2.3/LICENSE | grep -q TAMPERED; then
+  fail "a working-tree edit of LICENSE leaked into the deploy tarball"
+fi
+git -C "$repo" checkout -q -- deploy/.env.example LICENSE
 
 # A missing deploy file fails closed.
 git -C "$repo" rm -q deploy/Caddyfile
@@ -92,6 +101,16 @@ git -C "$repo" -c user.name=test -c user.email=test@example.invalid -c commit.gp
   commit -q -m "drop Caddyfile"
 if run "$repo" 1.2.3 "$tmp/out-missing" >/dev/null 2>&1; then
   fail "staged assets without deploy/Caddyfile"
+fi
+
+# A missing NOTICE fails closed.
+repo3="$tmp/repo3"
+make_repo "$repo3"
+git -C "$repo3" rm -q NOTICE
+git -C "$repo3" -c user.name=test -c user.email=test@example.invalid -c commit.gpgsign=false \
+  commit -q -m "drop NOTICE"
+if run "$repo3" 1.2.3 "$tmp/out-nonotice" >/dev/null 2>&1; then
+  fail "staged assets without NOTICE"
 fi
 
 # A generator that writes nothing fails closed.

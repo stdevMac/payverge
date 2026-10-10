@@ -3,7 +3,7 @@
 # Every push to main runs release-please (configuration in
 # .github/release-please-config.json and .github/.release-please-manifest.json).
 # It keeps a release pull request up to date; merging that pull request creates
-# the vX.Y.Z tag and GitHub release, and the jobs below then publish:
+# the vX.Y.Z tag and a draft GitHub release, and the jobs below then publish:
 #
 #   ghcr.io/stdevmac/payverge-backend   linux/amd64 + linux/arm64
 #   ghcr.io/stdevmac/payverge-frontend  linux/amd64 + linux/arm64
@@ -15,6 +15,14 @@
 #     and SHA256SUMS (scripts/ci/release-assets.sh), plus
 #     SHA256SUMS.sigstore.json, a keyless cosign bundle for SHA256SUMS that
 #     deploy/install.sh verifies when cosign is installed.
+#
+# The release stays a draft until the assets job has uploaded its files:
+# release-please creates it with draft: true and force-tag-creation: true
+# (GitHub tags a draft only when it is published, and resolve needs the tag),
+# and the push-triggered assets job publishes it, as Latest for a stable
+# release and as a prerelease otherwise. So releases/latest/download/install.sh
+# never points at a release without assets. A dispatched run attaches the
+# files but leaves a draft a draft; it prints the command that publishes it.
 #
 # Nothing is built until ci.yml has passed on the release commit (job
 # ci-verdict, scripts/ci/wait-for-ci.sh): a release pull request merged while
@@ -28,10 +36,13 @@
 # --release check on the release-please pull request (contracts job, part of
 # ci-ok): keep ci-ok a required check so the release PR cannot merge while
 # KNOWN_DEBT is non-empty. That PR check only runs if ci.yml runs on the
-# release PR: set the RELEASE_PLEASE_TOKEN secret in the `release`
-# environment (see the release-please step), or close and reopen the release PR, because a PR opened with
-# GITHUB_TOKEN triggers no workflows. If a tag exists without images anyway,
-# clean the debt, then dispatch this workflow with the tag.
+# release PR. On a release PR that release-please opened with GITHUB_TOKEN
+# (author github-actions[bot]), the runs wait until someone with write access
+# clicks "Approve workflows to run" on the PR. With the RELEASE_PLEASE_TOKEN
+# secret set in the `release` environment (see the release-please step), the
+# PR's author is the token's owner and the runs start on their own. If a tag
+# exists without images anyway, clean the debt, then dispatch this workflow
+# with the tag.
 #
 # release-please skips its job on workflow_dispatch, and GitHub skips every
 # job downstream of a skipped job unless the job has its own status check, so
@@ -53,9 +64,10 @@
 # the tagged commit is an ancestor of main (git merge-base --is-ancestor), so
 # a tag pushed on a side branch never ships. build, publish and assets also
 # re-check github.ref. release-please, publish and assets run in the
-# `release` environment: restrict its deployment branches to main (Settings >
-# Environments > release) so no other ref can reach RELEASE_PLEASE_TOKEN, the
-# signing identity or release write access. The cosign certificate identity is therefore exactly
+# `release` environment, whose only deployment policy is the main branch (no
+# tag patterns; Settings > Environments > release), so no other ref can reach
+# RELEASE_PLEASE_TOKEN, the signing identity or release write access. The
+# cosign certificate identity is therefore exactly
 #   https://github.com/stdevMac/payverge/.github/workflows/release.yml@refs/heads/main
 #
 # The images carry no deployment-specific settings. The frontend gets only
@@ -113,11 +125,12 @@ jobs:
       - id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
-          # Pull requests opened with GITHUB_TOKEN do not trigger workflows, so
-          # the release PR would get no CI. An optional fine-grained token
-          # (contents + pull requests: write on this repository) fixes that;
-          # without it, close and reopen the release PR to start CI. It is a
-          # secret of the `release` environment, so only main can read it.
+          # CI on a release PR opened with GITHUB_TOKEN waits for a maintainer
+          # to approve the runs ("Approve workflows to run" on the PR). An
+          # optional fine-grained token (this repository only; contents and
+          # pull requests: write) opens the PR as its owner instead, so CI
+          # starts on its own. It is a secret of the `release` environment, so
+          # only main can read it.
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
@@ -437,7 +450,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
-      contents: write # upload files to (or draft) the GitHub release
+      contents: write # upload files to, create and publish the draft GitHub release
       id-token: write # keyless cosign signature on SHA256SUMS
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -490,3 +503,50 @@ jobs:
               --notes "See docs/CHANGELOG.md for the changes in $TAG."
           fi
           gh release upload "$TAG" "$RUNNER_TEMP"/release-assets/* --clobber
+
+      # release-please creates the release as a draft (with its tag), so the
+      # release, and releases/latest/download/install.sh, go public only here,
+      # once every asset is attached.
+      - name: Publish the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+          STABLE: ${{ needs.resolve.outputs.stable }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ "$(gh release view "$TAG" --json isDraft --jq .isDraft)" != true ]]; then
+            echo "$TAG is already published; its assets were replaced."
+            exit 0
+          fi
+          # Latest only for the newest stable tag, so publishing an older
+          # release never takes Latest from a newer one.
+          flags=(--prerelease=true --latest=false)
+          if [[ "$STABLE" == true ]]; then
+            newest="$(gh api "repos/$GH_REPO/git/matching-refs/tags/v" --paginate \
+              --jq '.[].ref | ltrimstr("refs/tags/")' |
+              grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"
+            if [[ "$newest" == "$TAG" ]]; then
+              flags=(--prerelease=false --latest=true)
+            else
+              flags=(--prerelease=false --latest=false)
+            fi
+          fi
+          if [[ "$EVENT_NAME" != push ]]; then
+            # A dispatched run is a recovery or a hand-made tag whose draft
+            # still has placeholder notes: a maintainer reviews and publishes.
+            command="gh release edit $TAG --repo $GH_REPO --draft=false ${flags[*]}"
+            echo "::notice::$TAG is a draft with every asset attached. Review its notes, then publish it: $command"
+            {
+              echo "### $TAG is still a draft"
+              echo
+              echo "Review the release notes, then publish it:"
+              echo
+              echo '```sh'
+              echo "$command"
+              echo '```'
+            } >>"$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh release edit "$TAG" --draft=false "${flags[@]}"
+          echo "Published $TAG (${flags[*]})"
