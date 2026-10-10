@@ -44,8 +44,9 @@ npm run format       # Prettier
 cd backend
 make build           # Build binary to bin/app
 make run             # Run dev server on :8080
-make test            # All tests with race detection
-make quick-test      # All tests without race detection
+make test            # CI suite: -short with race detection (no Docker)
+make test-docker     # Every test with race detection, incl. Testcontainers (needs Docker)
+make quick-test      # -short suite without race detection
 make test-unit       # -short suite, no Docker
 make test-integration # Postgres-backed suites from scripts/ci/go-pg-packages.sh; needs Docker or TEST_DATABASE_URL
 make test-coverage   # Coverage report via scripts/test-coverage.sh
@@ -77,8 +78,8 @@ Required workflow for these changes:
 7. Commit the slice as its own rollback point. Do not merge or mark the task done while benchmark-required work is unmeasured or test evidence is missing.
 
 ### Docs (`/docs`)
-Plain Markdown tree (no build step, no package.json) — runbooks, codemaps,
-plans, audits. Edit files directly; no dev server exists.
+Plain Markdown tree (no build step, no package.json) — self-hosting guides,
+architecture, ADRs, runbooks, codemaps. Edit files directly; no dev server exists.
 
 ### Docker (full stack)
 ```bash
@@ -99,8 +100,8 @@ Production self-hosting is a separate compose file under `deploy/` (Caddy, relea
 - **Layered architecture**: Handlers (`internal/server/` is the larger home — about 130 non-test files, business/auth/RBAC/AI/director live here; `internal/handlers/` about 80 non-test files carries payments, analytics, accounting, fiscal, telegram webhooks) → Services (`internal/services/`) → Database (`internal/database/`).
 - **Framework**: Gin web framework with GORM ORM on PostgreSQL 18. Go 1.26 language target (`go 1.26.0` in backend/go.mod); repository and CI use Go 1.27.2.
 - **Migrations / schema ownership**: Source of truth is the **genesis baseline** (`backend/schema/genesis/current_schema.sql`) plus **versioned SQL** in `backend/migrations/` (zero-padded `NNNNNN_*.up.sql`/`.down.sql`; numbering restarted at the open-source squash, where the baseline is version 0; no numbered migration yet, so the next migration is `000001`). Empty DBs bootstrap from the genesis baseline then apply only pending numbered migrations; production startup does not run GORM AutoMigrate or schema-changing `RunEnsure*` helpers. **Do not add new `.AutoMigrate(` call sites** (enforced by `TestProductionStartupHasNoAdHocDDL` / `TestAutoMigrateSourceGate`). All new schema changes must be a numbered migration in `backend/migrations/`. Fatal startup paths: genesis bootstrap (empty DB), `RunMigrations`, schema verification.
-- **Plugin system**: Payment integrations (Stripe, PayPal, MercadoPago) and the Telegram and Trustpilot integrations live in `internal/plugins/` and register via a **deferred initializer**: each plugin's `init()` calls `plugins.RegisterPluginInitializer(func(svc *services.PluginService) { ... })`, then `main.go` runs all initializers once `PluginService` is ready.
-- **Auth**: JWT tokens with SIWE (Sign-In with Ethereum) and OAuth support in `internal/auth/`.
+- **Plugin system**: Payment integrations (Stripe, PayPal, MercadoPago) and the Telegram and Trustpilot integrations live in `internal/plugins/` and register via a **deferred initializer**: each plugin's `init()` calls `plugins.RegisterPluginInitializer("<name>", func(svc *services.PluginService) { ... })`, then `main.go` runs all initializers once `PluginService` is ready.
+- **Auth**: short-lived JWTs backed by revocable server-side sessions; email/password, Google OAuth and SIWE wallet sign-in in `internal/auth/` and `internal/server/`, staff and customer tokens alongside. See `docs/AUTH_SYSTEM.md`.
 - **RBAC**: Role-based access control for admin/staff/user permissions per business.
 - **Middleware chain**: Security → Auth → Business Validation → Handler (defined in `internal/server/`).
 - **Blockchain service**: Initialized non-fatally (warns but doesn't crash if RPC unavailable).
@@ -113,8 +114,8 @@ Production self-hosting is a separate compose file under `deploy/` (Caddy, relea
 - **URL map**: `/` serves the published venue (`PRIMARY_VENUE`, else the only published one, else a directory of `/b/<slug>` links, else a redirect to `/dashboard`; see `docs/api/home.md`). `/b/<slug>` is a venue page, `/t/<code>` a table (with `/menu`, `/bill`, `/signin`, `/profile`), `/dashboard` the operator sign-in and venue list, `/business/<id>/dashboard` a venue's dashboard, `/admin` the platform admin. The project's landing page (payverge.io) is the separate static site in `site/`, not part of the app.
 - **API client layer**: Typed API functions in `src/api/` (one file per domain, paired `*.test.ts`).
 - **State**: Zustand stores (`src/store/`) for global state, React Query for server state.
-- **Web3**: Wagmi 2 + Viem for wallet + ERC-20 reads (USDC balance/allowance); no custom Payverge contract ABIs are vendored. `ethers` is not a direct dependency — references to "Ethers 6" in older docs are stale.
-- **UI**: NextUI components + Tailwind CSS 3.4.
+- **Web3**: Wagmi 3 + Viem 2 for wallet + ERC-20 reads (USDC balance/allowance); no custom Payverge contract ABIs are vendored. `ethers` is not a direct dependency — references to "Ethers 6" in older docs are stale.
+- **UI**: NextUI 2.4 components + Tailwind CSS 3.4.
 - **i18n**: Custom translation system in `src/i18n/` (`GuestTranslationProvider` + `guest-messages/*.json` for the 21-locale guest tier; `SimpleTranslationProvider` for the en/es operator tier). `next-intl` has been removed from `package.json` — it is **not** the runtime. Editing translations means editing the providers and message files directly.
 - **Auth context**: `src/providers/HybridAuthProvider.tsx` (operator sessions: email, Google, wallet via Wagmi); `src/contexts/CustomerAuthContext.tsx` for guests.
 - **Runtime config**: browser-visible settings come from `window.__PAYVERGE_ENV__`, rendered per request from the container environment by `src/config/publicConfig.ts` (whitelist `PUBLIC_ENV_KEYS`); server-only values live in `src/config/serverConfig.ts`. One image serves any domain. See `docs/self-hosting/frontend-config.md`.
@@ -156,8 +157,9 @@ GitHub Actions under `.github/workflows/`:
 **The repo root is a closed set — do not add files to it.** The complete list of
 tracked root files is an allow-list enforced by
 `scripts/ci/d10_hygiene_contract.test.mjs`; `git ls-files -- ':(glob)*' | grep -v /`
-must return only these, plus the community files that allow-list names (such
-as `CONTRIBUTING.md` and `SECURITY.md`):
+must return only these. Community files (`CONTRIBUTING.md`, `SECURITY.md`,
+`SUPPORT.md`, `CODE_OF_CONDUCT.md`) live in `.github/`, and the changelog is
+`docs/CHANGELOG.md`:
 
 ```
 .env.example  .gitignore  .nvmrc  AGENTS.md  CLAUDE.md  LICENSE  NOTICE
@@ -184,7 +186,7 @@ Everything else has a home. `AGENTS.md` §3.1 has the full table; the short form
 | Benchmark evidence | `summary.md`, or `docs/performance/` for a scoped stream |
 | UI/design standard | `docs/design/` |
 | Product or feature note | `docs/product/` |
-| Backlog item | A GitHub issue (`docs/improvements/` is a private-repo backlog and is not exported) |
+| Backlog item | A GitHub issue |
 | Scratch notes / TODO dumps | Not in the repo — use the session scratchpad |
 | Any video, audio, render, screenshot | `videos/` (gitignored, local-only) |
 

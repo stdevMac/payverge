@@ -19,12 +19,22 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const SCOPE = [
+  "README.md",
+  "AGENTS.md",
+  "CLAUDE.md",
+  "deploy/README.md",
   "docs/README.md",
+  "docs/AUTH_SYSTEM.md",
+  "docs/ONBOARDING.md",
   "docs/code-tour.md",
   "docs/telegram-plugin-runbook.md",
+  "docs/CODEMAPS",
+  "docs/agents",
   "docs/ai",
+  "docs/api",
   "docs/architecture",
   "docs/adr",
+  "docs/runbooks",
   "docs/self-hosting",
   "evals/promptfoo/README.md",
 ];

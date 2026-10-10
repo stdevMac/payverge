@@ -39,9 +39,9 @@ cd payverge
 make install-hooks          # repo-tracked git hooks: secret scan + i18n parity
 ```
 
-Then bring up the stack with the **Quick start** in the [README](../README.md).
-The README and the root `Makefile` are the source of truth for setup commands;
-if they disagree with this file, they win, and a PR fixing this file is welcome.
+Then bring up the stack with the [Development](../README.md#development)
+section of the README. If it disagrees with this file, the README wins, and a
+PR fixing this file is welcome.
 
 ### Working on one side at a time
 
@@ -50,8 +50,9 @@ if they disagree with this file, they win, and a PR fixing this file is welcome.
 cd backend
 go mod download
 make run            # API on :8080
-make quick-test     # all tests, no race detector (fast loop)
-make test           # all tests with -race
+make quick-test     # -short suite, no race detector (fast loop)
+make test           # -short suite with -race, as CI runs it (no Docker)
+make test-docker    # every test, including Testcontainers suites (needs Docker)
 
 # Frontend (Next.js 15)
 cd frontend
@@ -89,7 +90,9 @@ before you ask for a final review, not on every save.
 4. Use [Conventional Commits](#commit-messages) and **sign off every commit**
    ([DCO](#developer-certificate-of-origin-dco)).
 5. Open the PR and fill in the template. CI must be green before review starts
-   in earnest.
+   in earnest. CI runs on a first-time contributor's PR wait until a maintainer
+   approves them. The PR workflows use no repository secrets, so CI on a fork
+   PR runs the same checks as on a maintainer's branch.
 
 ### Commit messages
 

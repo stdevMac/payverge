@@ -95,7 +95,6 @@ payverge/
 │   │   ├── health/              # Health check endpoints
 │   │   ├── jobs/                # Background job schedulers
 │   │   ├── logger/              # Structured logging (logrus)
-│   │   ├── management/          # Admin management utilities
 │   │   ├── metrics/             # Prometheus + PostHog
 │   │   ├── middleware/          # CORS, rate limiting, validation, security headers, RBAC
 │   │   ├── models/              # Shared data structures (legacy, prefer database/)
@@ -127,7 +126,6 @@ payverge/
 │   │   ├── lib/                 # Shared libraries
 │   │   ├── config/              # Frontend configuration
 │   │   ├── constants/           # Constant values
-│   │   ├── schemas/             # Zod/Yup validation schemas
 │   │   ├── styles/              # Global styles
 │   │   ├── __tests__/           # Jest tests (component-level)
 │   │   └── middleware.ts        # Next.js middleware: locale prefixes, CSP, guest table/storefront lookups, invite links on / → /dashboard, bare-path redirects
@@ -144,10 +142,8 @@ payverge/
 │   ├── CODEMAPS/                # Token-lean architecture refs (maintained by hand)
 │   ├── design/                  # UI standards (sidebar standard / gap list)
 │   ├── fiscal/                  # AFIP-ARCA + e-invoicing architecture
-│   ├── improvements/            # Numbered improvement backlog + README index
 │   ├── performance/             # Per-stream perf-gate evidence
 │   ├── product/                 # Product/feature notes
-│   ├── plans/                   # Design specs and implementation plans
 │   └── runbooks/                # Operational runbooks (indexed by catalog.json)
 ├── evals/                       # Prompt/AI evaluation harnesses
 ├── scripts/                     # Repo-level scripts (incl. hooks/, ci/)
@@ -171,8 +167,9 @@ payverge/
 The repository root is a **closed set** of tracked files. The list is
 exhaustive and verifiable — `git ls-files -- ':(glob)*' | grep -v /` must
 return only these, and `scripts/ci/d10_hygiene_contract.test.mjs` enforces the
-allow-list (which also names the community files such as `CONTRIBUTING.md`,
-`SECURITY.md` and `CHANGELOG.md`):
+allow-list. Community files (`CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`,
+`CODE_OF_CONDUCT.md`) live in `.github/`, and the changelog is
+`docs/CHANGELOG.md`:
 
 | Root file | Why it is allowed to be here |
 |---|---|
@@ -201,7 +198,7 @@ belongs in one of these:
 | Perf-gate evidence (benchmarks) | `summary.md`, or `docs/performance/` for a scoped stream |
 | UI/design standard | `docs/design/` |
 | Product or feature write-up | `docs/product/` |
-| Backlog item | A GitHub issue (`docs/improvements/` is a private-repo backlog and is not exported) |
+| Backlog item | A GitHub issue |
 | Scratch notes, TODO lists, dumps | Nowhere in the repo — use the session scratchpad |
 | Screenshots, renders, video, audio | `videos/` (gitignored); never the repo root |
 | Generated tool output | A gitignored path, and add the ignore rule in the same commit |
@@ -225,8 +222,7 @@ Rules that keep it that way:
    operator playbooks; see `docs/agents/README.md`). Never commit a symlink
    into an ignored directory; it is broken for every other clone.
 5. **Moving a document means fixing its inbound links.** Grep for the old
-   basename before you finish. Leave historical plans and specs pointing at the
-   old names — they are a record of what was true then.
+   basename before you finish.
 6. **Delete by moving, not by erasing.** Media goes under `videos/`; documents
    go into `docs/`. Only genuine artifacts (tool dumps, render
    byproducts) get removed outright.
@@ -247,11 +243,12 @@ make run                    # go run ./cmd/app
 make build                  # go build -o bin/app ./cmd/app
 
 # Test
-make test                   # go test -v -race ./...
+make test                   # go test -short -race ./... (the CI suite; no Docker)
+make test-docker            # go test -race ./... (every test, incl. Testcontainers; needs Docker)
 make test-unit              # -short suite, no Docker
 make test-integration       # Postgres-backed suites from scripts/ci/go-pg-packages.sh; needs Docker or TEST_DATABASE_URL
 make test-coverage          # Coverage report via scripts/test-coverage.sh
-make quick-test             # go test ./... (no race detector)
+make quick-test             # go test -short ./... (no race detector)
 
 # Dev helpers
 make fmt                    # go fmt ./...
@@ -405,15 +402,15 @@ The project's landing page (payverge.io) is the separate static site in `site/` 
 - `Business.KitchenEnabled` + `Business.OrdersEnabled` gate **guest** ordering endpoints only (`guestOrderingEnabled` in `internal/server/guest_handlers.go`). Operator order routes intentionally ignore the toggle — staff can always enter orders (phone orders, corrections) while guest self-ordering is off.
 - `ToggleKitchenAndOrders` (`internal/database/business.go`) always writes both flags to one value; the columns are separate for historical reasons but cannot diverge through the API. Treat them as a single switch.
 
-### Thermal printer subsystem (Sprint 1)
+### Thermal printer subsystem
 
 - **Tables** (genesis baseline): `printers`, `print_jobs`, `print_audit_log`.
 - **Service** `backend/internal/services/print/` composes `Router` (role-based printer lookup), `Queue` (persistence + status transitions), `Service.Enqueue/MarkPrinted/Cancel/Reprint`, plus `formatters/{bill,receipt}.go` with 80mm/58mm `html/template` output and golden tests under `testdata/`.
 - **Handlers** `backend/internal/handlers/printer_handlers.go` (CRUD + test-print) and `print_job_handlers.go` (list / create / mark-printed / cancel / reprint) mounted under `/api/v1/inside/businesses/:id/printers` and `.../print/jobs`.
-- **RBAC perms** (`backend/internal/server/rbac.go`): `printers:read`, `printers:write`, `print:bill`, `print:receipt`. Defaults — Manager: all four; Server: print:bill + print:receipt; Host: print:bill; Kitchen: none (kitchen tickets auto-fire and are out of Sprint 1 scope).
+- **RBAC perms** (`backend/internal/server/rbac.go`): `printers:read`, `printers:write`, `print:bill`, `print:receipt`. Defaults — Manager: all four; Server: print:bill + print:receipt; Host: print:bill; Kitchen: none (kitchen tickets are not implemented, so kitchen staff get no print permission).
 - **Auto-receipt**: `enqueueReceiptForPaidBill` in `plugin_handlers.go` fires at every `BillStatusPaid` transition (PayPal return, webhook, internal markTrackedPluginPaymentConfirmed). Failures log and continue — printing must not block payment settlement.
 - **Frontend** lives at `frontend/src/components/business/printers/` (`PrintersSettings`, `AddPrinterWizard`, `useIframePrint`). Page route: `/business/[businessId]/settings/printers`. API client: `src/api/print.ts` (raw fetch, not axios). **No feature flag** — visibility is permission-gated: settings link requires `printers:read` (owners always); print actions require `print:bill` (owners always). Operator copy lives in `frontend/src/i18n/messages/{en,es}/printers.json`.
-- **Sprint 2 scope** (deferred): CloudPRNT transport + ESC/POS builder, kitchen/bar/void/modify formatters, `menu_categories.printer_role`, fallback chains, audit-log UI.
+- **Not yet implemented**: CloudPRNT transport + ESC/POS builder, kitchen/bar/void/modify formatters, `menu_categories.printer_role`, fallback chains, audit-log UI.
 
 ### Fiscal compliance subsystem (foundation)
 
@@ -465,8 +462,11 @@ The project's landing page (payverge.io) is the separate static site in `site/` 
 ```bash
 cd backend
 
-# All tests with race detection
+# CI suite: -short with race detection (no Docker)
 make test
+
+# Every test, including Testcontainers suites (needs Docker)
+make test-docker
 
 # -short suite, no Docker
 make test-unit
@@ -512,7 +512,7 @@ npx jest --watchman=false --runInBand
 ## 9. Security Considerations
 
 ### Authentication & Authorization
-- **Hybrid auth**: Wallet (SIWE/JWT), Email/Password (bcrypt), OAuth (Google), Staff tokens
+- **Hybrid auth**: Wallet (SIWE/JWT), Email/Password (bcrypt), OAuth (Google), Staff tokens, customer JWTs; sessions, refresh and revocation are described in `docs/AUTH_SYSTEM.md`
 - **Token revocation**: Session store in PostgreSQL (`session.GlobalStore`) with hourly cleanup
 - **RBAC**: Granular permission keys (e.g., `menu:write`, `bills:close`, `staff:invite`). The business owner has every permission. Staff roles are `manager` > `server` > `host` > `kitchen`, each with default permission keys in `StaffRolePermissions` (`backend/internal/server/rbac.go`). Platform admin (`/api/v1/admin`) is separate from business roles.
 - **Business lock**: there are no plans. `RequireOperationalBusiness()` returns `403 {"code":"business_suspended"}` or `403 {"code":"business_closed"}` when the server administrator suspended or closed the business; guest routes answer `403 business_unavailable`
@@ -738,4 +738,4 @@ package), `ReportingPlugin`, `MarketingPlugin`.
 
 ---
 
-*Last updated: 2026-10-06. If you change build commands, routing patterns, auth flows, or deployment configs, update this file.*
+*Last updated: 2026-10-10. If you change build commands, routing patterns, auth flows, or deployment configs, update this file.*
