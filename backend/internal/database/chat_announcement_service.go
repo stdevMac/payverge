@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -30,6 +31,10 @@ const (
 	// roster is bounded by chatAnnouncementAudienceMax (perf gate).
 	chatAnnouncementListMax     = 200
 	chatAnnouncementAudienceMax = 1000
+
+	// AnnouncementTitleMaxRunes caps an announcement title. The body shares
+	// ChatContentMaxRunes with chat messages.
+	AnnouncementTitleMaxRunes = 200
 )
 
 var (
@@ -38,6 +43,9 @@ var (
 	ErrAnnouncementNotFound = errors.New("announcement not found")
 	// ErrAnnouncementTitleRequired is a validation error for an empty title.
 	ErrAnnouncementTitleRequired = errors.New("announcement title is required")
+	// ErrAnnouncementTooLong is a validation error for a title over
+	// AnnouncementTitleMaxRunes or content over ChatContentMaxRunes.
+	ErrAnnouncementTooLong = fmt.Errorf("announcement title must be %d characters or fewer and content %d or fewer", AnnouncementTitleMaxRunes, ChatContentMaxRunes)
 	// ErrAnnouncementNotEligible is returned when a staff member tries to ack an
 	// announcement whose audience does not include them.
 	ErrAnnouncementNotEligible = errors.New("staff is not in the announcement audience")
@@ -45,6 +53,19 @@ var (
 	// "all", "role:<role>" or "dept:<dept>".
 	ErrInvalidAudienceFilter = errors.New("invalid announcement audience filter")
 )
+
+// validateAnnouncementText trims the title and enforces the required title and
+// the title/content length caps shared by create and update.
+func validateAnnouncementText(title, content string) (string, error) {
+	title = strings.TrimSpace(title)
+	if title == "" {
+		return "", ErrAnnouncementTitleRequired
+	}
+	if utf8.RuneCountInString(title) > AnnouncementTitleMaxRunes || utf8.RuneCountInString(content) > ChatContentMaxRunes {
+		return "", ErrAnnouncementTooLong
+	}
+	return title, nil
+}
 
 // normalizeAudienceFilter validates and canonicalizes the audience tag. Empty
 // defaults to "all". A bare "role:"/"dept:" (no suffix) is rejected.
@@ -80,14 +101,15 @@ type AnnouncementAckStatus struct {
 
 // CreateAnnouncement persists a broadcast. AuthorStaffID may be 0 for a business
 // owner (who authenticates by wallet and has no staff row). The audience filter is
-// validated; an empty title or malformed audience is rejected. CreatedAt is UTC.
+// validated; an empty title, an over-long title or content, or a malformed
+// audience is rejected. CreatedAt is UTC.
 func (d *DB) CreateAnnouncement(businessID, authorStaffID uint, title, content string, requireAck bool, audienceFilter string) (*Announcement, error) {
 	if businessID == 0 {
 		return nil, ErrAnnouncementNotFound
 	}
-	title = strings.TrimSpace(title)
-	if title == "" {
-		return nil, ErrAnnouncementTitleRequired
+	title, err := validateAnnouncementText(title, content)
+	if err != nil {
+		return nil, err
 	}
 	filter, err := normalizeAudienceFilter(audienceFilter)
 	if err != nil {
@@ -112,15 +134,16 @@ func (d *DB) CreateAnnouncement(businessID, authorStaffID uint, title, content s
 // audience are replaced, UpdatedAt bumps, and the row id + its ack rows are
 // preserved (unlike a delete+recreate, an edit does NOT reset who has already
 // confirmed). The announcement must exist in the caller's business
-// (ErrAnnouncementNotFound), the title must be non-empty, and the audience is
+// (ErrAnnouncementNotFound), the title must be non-empty, title and content
+// must fit the length caps (ErrAnnouncementTooLong), and the audience is
 // validated/canonicalized (empty → "all", malformed → ErrInvalidAudienceFilter).
 func (d *DB) UpdateAnnouncement(businessID, announcementID uint, title, content string, requireAck bool, audienceFilter string) (*Announcement, error) {
 	if businessID == 0 || announcementID == 0 {
 		return nil, ErrAnnouncementNotFound
 	}
-	title = strings.TrimSpace(title)
-	if title == "" {
-		return nil, ErrAnnouncementTitleRequired
+	title, err := validateAnnouncementText(title, content)
+	if err != nil {
+		return nil, err
 	}
 	filter, err := normalizeAudienceFilter(audienceFilter)
 	if err != nil {

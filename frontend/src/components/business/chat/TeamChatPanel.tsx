@@ -24,6 +24,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { intlLocaleFor } from "@/utils/intlLocale";
 import { PremiumPanel } from "../premium";
 import ConfirmationModal from "../modals/ConfirmationModal";
+import { CHAT_CONTENT_MAX_LENGTH } from "./chatFieldLimits";
 
 // Operator team-chat surface (mounted in the Schedule tab alongside Approvals /
 // Timesheet review). Managers/owners read role + department channels and post to
@@ -484,6 +485,7 @@ function OperatorThread({
         >
           <textarea
             value={draft}
+            maxLength={CHAT_CONTENT_MAX_LENGTH}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {

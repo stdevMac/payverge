@@ -19,6 +19,10 @@ import { intlLocaleFor } from "@/utils/intlLocale";
 import ConfirmationModal from "@/components/business/modals/ConfirmationModal";
 import { PremiumPanel } from "../premium";
 import { AudienceSelect } from "../engagement/AudienceSelect";
+import {
+  ANNOUNCEMENT_TITLE_MAX_LENGTH,
+  CHAT_CONTENT_MAX_LENGTH,
+} from "./chatFieldLimits";
 
 // Operator announcement composer (mounted in the Schedule tab). Posts a broadcast
 // (chat:announce — manager/owner) targeting everyone, a role, or a department, and
@@ -263,6 +267,7 @@ export default function AnnouncementComposer({ businessId }: AnnouncementCompose
           label={t("announce.titleLabel")}
           placeholder={t("announce.titlePlaceholder")}
           value={title}
+          maxLength={ANNOUNCEMENT_TITLE_MAX_LENGTH}
           onValueChange={(v) => {
             setTitle(v);
             if (titleError && v.trim() !== "") setTitleError(false);
@@ -281,6 +286,7 @@ export default function AnnouncementComposer({ businessId }: AnnouncementCompose
           <textarea
             id="announcement-content"
             value={content}
+            maxLength={CHAT_CONTENT_MAX_LENGTH}
             onChange={(e) => setContent(e.target.value)}
             rows={3}
             placeholder={t("announce.contentPlaceholder")}

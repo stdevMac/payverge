@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -295,6 +296,35 @@ func TestUpdateAnnouncement(t *testing.T) {
 	// Cross-tenant edit is not-found.
 	_, err = d.UpdateAnnouncement(2, ann.ID, "T", "x", false, "all")
 	require.ErrorIs(t, err, ErrAnnouncementNotFound)
+}
+
+// TestAnnouncementLengthCaps pins the title (AnnouncementTitleMaxRunes) and
+// content (ChatContentMaxRunes) boundaries in runes on both create and update.
+func TestAnnouncementLengthCaps(t *testing.T) {
+	d, g := newChatTestDB(t)
+	require.NoError(t, g.Create(&Business{ID: 1, BusinessId: "biz-1"}).Error)
+
+	titleAtCap := strings.Repeat("ñ", AnnouncementTitleMaxRunes)
+	contentAtCap := strings.Repeat("ñ", ChatContentMaxRunes)
+
+	ann, err := d.CreateAnnouncement(1, 1, titleAtCap, contentAtCap, false, "all")
+	require.NoError(t, err, "title and content at the caps are accepted")
+
+	_, err = d.CreateAnnouncement(1, 1, titleAtCap+"x", "x", false, "all")
+	require.ErrorIs(t, err, ErrAnnouncementTooLong)
+	_, err = d.CreateAnnouncement(1, 1, "T", contentAtCap+"x", false, "all")
+	require.ErrorIs(t, err, ErrAnnouncementTooLong)
+
+	_, err = d.UpdateAnnouncement(1, ann.ID, titleAtCap, contentAtCap, false, "all")
+	require.NoError(t, err)
+	_, err = d.UpdateAnnouncement(1, ann.ID, titleAtCap+"x", "x", false, "all")
+	require.ErrorIs(t, err, ErrAnnouncementTooLong)
+	_, err = d.UpdateAnnouncement(1, ann.ID, "T", contentAtCap+"x", false, "all")
+	require.ErrorIs(t, err, ErrAnnouncementTooLong)
+
+	var stored Announcement
+	require.NoError(t, g.First(&stored, ann.ID).Error)
+	require.Equal(t, titleAtCap, stored.Title, "a rejected update leaves the row untouched")
 }
 
 // TestDeleteAnnouncement proves a hard delete removes the announcement AND its

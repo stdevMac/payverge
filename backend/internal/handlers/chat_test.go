@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"time"
@@ -13,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stdevmac/payverge/backend/internal/database"
 	"github.com/stdevmac/payverge/backend/internal/events"
+	"github.com/stdevmac/payverge/backend/internal/server"
 	"github.com/stretchr/testify/require"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -161,6 +163,37 @@ func TestChatDMCreateAndReadHTTP(t *testing.T) {
 	// A no-content DM call just returns the (same) channel with 200.
 	w = do(http.MethodPost, "/b/1/chat/dm/6", nil)
 	require.Equal(t, http.StatusOK, w.Code)
+}
+
+// TestChatContentCapsHTTP proves the service-layer length caps surface as 400
+// invalid input on every write path: channel post, DM post, and announcements.
+func TestChatContentCapsHTTP(t *testing.T) {
+	do, g, cleanup := newChatTestServer(t, 5, "server") // caller staff 5
+	defer cleanup()
+	require.NoError(t, g.Create(&database.Business{ID: 1, BusinessId: "biz-1"}).Error)
+	require.NoError(t, g.Create(&database.ChatChannel{ID: 40, BusinessID: 1, Type: database.ChatChannelTypeRole, RefKey: "role:server"}).Error)
+
+	atCap := strings.Repeat("a", database.ChatContentMaxRunes)
+	requireInvalidInput := func(w *httptest.ResponseRecorder, what string) {
+		t.Helper()
+		require.Equal(t, http.StatusBadRequest, w.Code, what)
+		require.Contains(t, w.Body.String(), server.ErrCodeInvalidInput, what)
+	}
+
+	w := do(http.MethodPost, "/b/1/chat/channels/40/messages", map[string]interface{}{"content": atCap})
+	require.Equal(t, http.StatusCreated, w.Code, "channel post at the cap")
+	requireInvalidInput(do(http.MethodPost, "/b/1/chat/channels/40/messages", map[string]interface{}{"content": atCap + "a"}), "channel post over the cap")
+
+	w = do(http.MethodPost, "/b/1/chat/dm/6", map[string]interface{}{"content": atCap})
+	require.Equal(t, http.StatusCreated, w.Code, "DM at the cap")
+	requireInvalidInput(do(http.MethodPost, "/b/1/chat/dm/6", map[string]interface{}{"content": atCap + "a"}), "DM over the cap")
+
+	requireInvalidInput(do(http.MethodPost, "/b/1/announcements", map[string]interface{}{
+		"title": strings.Repeat("t", database.AnnouncementTitleMaxRunes+1), "content": "x",
+	}), "announcement title over the cap")
+	requireInvalidInput(do(http.MethodPost, "/b/1/announcements", map[string]interface{}{
+		"title": "T", "content": atCap + "a",
+	}), "announcement content over the cap")
 }
 
 // TestChatDMNonMemberForbiddenHTTP: a staff member outside a DM pair cannot read it.

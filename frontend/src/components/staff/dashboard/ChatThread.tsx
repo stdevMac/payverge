@@ -9,6 +9,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SkeletonList } from "@/components/ui/skeletons";
 import { intlLocaleFor } from "@/utils/intlLocale";
+import { CHAT_CONTENT_MAX_LENGTH } from "@/components/business/chat/chatFieldLimits";
 
 // Staff chat thread: a flat, keyset-paginated message list ("load older") plus a
 // composer. Fully labels-driven (the container resolves every string) and money
@@ -241,6 +242,7 @@ export default function ChatThread({
       >
         <textarea
           value={draft}
+          maxLength={CHAT_CONTENT_MAX_LENGTH}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             // Enter sends; Shift+Enter inserts a newline.
