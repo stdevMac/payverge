@@ -143,3 +143,24 @@ test("root NOTICE names every directory licence in LICENSES/go-subpackages.txt",
   );
   assert.equal(names(trimmed, "github.com/ethereum/go-ethereum/metrics"), false);
 });
+
+test("lic_mpl_modules maps MPL packages to their longest module and dedupes", () => {
+  const mods = path.join(work, "mpl-modules.txt");
+  writeFileSync(mods, ["github.com/hashicorp/golang-lru/v2", "github.com/hashicorp", "github.com/a/b", ""].join("\n"));
+  const report = [
+    "github.com/hashicorp/golang-lru/v2/simplelru,https://example.test,MPL-2.0",
+    "github.com/hashicorp/golang-lru/v2/internal,https://example.test,MPL-2.0",
+    "github.com/a/b/c,https://example.test,MIT",
+    "github.com/a/bc,https://example.test,MPL-2.0",
+    "",
+  ].join("\n");
+  const r = spawnSync("bash", ["-c", 'source "$0"; lic_mpl_modules "$1"', LIB, mods], { input: report, encoding: "utf8" });
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(r.stdout.trim().split("\n"), ["github.com/a/bc", "github.com/hashicorp/golang-lru/v2"]);
+});
+
+test("root NOTICE names golang-lru/v2 (MPL-2.0) with its source", () => {
+  const notice = readFileSync(path.join(HERE, "..", "..", "NOTICE"), "utf8");
+  assert.match(notice, /golang-lru \(github\.com\/hashicorp\/golang-lru\/v2\)/);
+  assert.match(notice, /https:\/\/github\.com\/hashicorp\/golang-lru\/tree\/v2\.0\.7/);
+});

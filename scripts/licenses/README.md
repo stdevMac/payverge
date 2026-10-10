@@ -44,8 +44,11 @@ over `./cmd/app ./cmd/email-smoke ./cmd/healthcheck`, the three binaries in
 the backend image. The run matches the image build: `GOOS=linux`,
 `CGO_ENABLED=0`, and no build tags. Caller `GOFLAGS` are dropped. A package
 with no licence file, or with a licence go-licenses cannot classify, fails
-too. Reciprocal licences such as MPL-2.0 pass: they are file-level, and the
-full source ships with the project.
+too. Reciprocal licences such as MPL-2.0 pass: they are file-level and
+Payverge does not modify the files. MPL-2.0 still requires telling users of
+the binary where the source is, so every MPL module in the default build
+must be named in the root NOTICE with a source link for the pinned version;
+check.sh fails otherwise.
 
 - **WhatsApp is out of scope.** `whatsmeow` pulls in `go.mau.fi/libsignal`
   (GPL-3.0), so that channel sits behind the opt-in `whatsapp` build tag. Run

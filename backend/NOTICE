@@ -42,6 +42,13 @@ Freetype-Go (github.com/golang/freetype: raster, truetype)
   Portions of this software are copyright (c) 2010 The FreeType Project
   (www.freetype.org). All rights reserved.
 
+golang-lru (github.com/hashicorp/golang-lru/v2)
+  Copyright (c) 2014 HashiCorp, Inc.
+  Licensed under the Mozilla Public License, Version 2.0 (MPL-2.0),
+  https://mozilla.org/MPL/2.0/. Payverge uses it unmodified. The source of
+  the version linked into the backend (v2.0.7, pinned in backend/go.sum) is
+  available at https://github.com/hashicorp/golang-lru/tree/v2.0.7.
+
 Code under its own licence inside linked modules. The full licence texts are
 reproduced verbatim in LICENSES/go-subpackages.txt.
 
