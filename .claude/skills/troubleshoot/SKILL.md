@@ -35,10 +35,10 @@ docker compose logs --since 30m backend | tail -n 200
 
   Each entry has a `component`, a `status` of `ok` or `failed`, and for a
   failure a `code`. The first failed component is the cause (the database
-  is checked first). The variable must reach the backend container, and
-  neither the root `docker-compose.yml` nor `deploy/docker-compose.yml`
-  names it today. See "Forward a variable the compose file does not name"
-  below; until then the log is your source.
+  is checked first). The variable must reach the backend container:
+  `deploy/docker-compose.yml` forwards it, the root `docker-compose.yml`
+  does not. On a stack started from the root file, see "Forward a variable
+  the compose file does not name" below; until then the log is your source.
 - `docker compose ps` shows `Restarting` when the backend exits at startup.
   Go to "The backend will not start" below.
 - The backend image has no shell. Do not try `docker compose exec backend sh`.
@@ -58,8 +58,10 @@ docker compose config --format json \
 
 If it prints `false`, add the variable in a `docker-compose.override.yml`
 next to the compose file. Compose merges that file automatically, and the
-installer never overwrites it. The variables below are the ones a
-self-hoster most often needs:
+installer never overwrites it. `deploy/docker-compose.yml` already forwards
+the variables below; the root `docker-compose.yml` (a stack run from a
+source checkout) does not, and these are the ones a self-hoster most often
+needs there:
 
 ```yaml
 services:
@@ -124,7 +126,7 @@ docker compose logs --tail 100 backend
 | `PRODUCTION PREFLIGHT — proxy.platform.unexpected` | `TRUSTED_PLATFORM` is set on a default install (`EDGE=none`, no CDN in front). Anyone could forge the client-IP header it trusts. | Leave `TRUSTED_PLATFORM` blank. The backend trusts the reverse proxy through `TRUSTED_PROXIES`. |
 | `PRODUCTION PREFLIGHT — cloudflare.platform.unexpected` | `TRUSTED_PLATFORM` is set with `EDGE=cloudflare` | Leave it blank here too. Caddy checks Cloudflare's addresses and forwards the client IP, and the backend trusts only Caddy. |
 | `PRODUCTION PREFLIGHT — edge.invalid` | `EDGE` is something other than `none` or `cloudflare` | Use `EDGE=none` (the default) unless Cloudflare proxies your domain, then `EDGE=cloudflare`. |
-| `PRODUCTION PREFLIGHT — cloudflare.proxies.invalid` or `cloudflare.proxies.public` | `TRUSTED_PROXIES` has a malformed entry, or a public or unbounded range | Use only private or loopback CIDRs, or remove it from `.env`. Then `deploy/docker-compose.yml` passes its default `10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fc00::/7,127.0.0.1` (the root `docker-compose.yml` passes `172.16.0.0/12,127.0.0.1`). A backend started outside Compose with it unset trusts loopback only (`127.0.0.0/8,::1`). |
+| `PRODUCTION PREFLIGHT — cloudflare.proxies.invalid` or `cloudflare.proxies.public` | `TRUSTED_PROXIES` has a malformed entry, or a public or unbounded range | Use only private or loopback CIDRs, or remove it from `.env`. Then `deploy/docker-compose.yml` passes its default `${EDGE_SUBNET:-172.30.0.0/24},127.0.0.1` (the edge network's subnet plus loopback; the root `docker-compose.yml` passes `172.16.0.0/12,127.0.0.1`). A backend started outside Compose with it unset trusts loopback only (`127.0.0.0/8,::1`). |
 | `PRODUCTION PREFLIGHT — ai_budget.daily.invalid` | `AI_DAILY_BUDGET_USD` is set but not a positive decimal | Fix the value, or unset it to use the default daily cap of $5 per business. |
 | `PRODUCTION PREFLIGHT — ai_budget.global.invalid`, `ai_budget.guest_pool.invalid` or `ai_budget.guest_pool.above_global` | `AI_BUDGET_GLOBAL_USD_DAY` or `AI_BUDGET_GUEST_POOL_USD_DAY` is set but not a positive decimal, or the guest pool is larger than the global cap | Fix the value, or unset both: the global cap then defaults to the larger of $20 and twice the per-business cap, and the guest pool to half of it. |
 | `PRODUCTION PREFLIGHT WARNING — <code> [<component>]: <message>` | A risky but allowed setting, for example `ai_budget.owner_reserve.empty` (the guest pool uses up the whole global AI cap) | The backend still starts. Fix the setting when you can. |
@@ -173,7 +175,7 @@ returns `{error, code}`. Match either one here.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| A payment provider is missing for guests in production | Production keeps each provider closed until `PAYMENT_PROVIDER_<NAME>_ENABLED=true` | Set the variable in `.env`, then check that it reaches the backend: see "Forward a variable the compose file does not name" in section 1. A value that sits only in `.env` never reaches the container. `payverge_payment_plugin_status` shows what the owner still has to configure. |
+| A payment provider is missing for guests in production | Production keeps each provider closed until `PAYMENT_PROVIDER_<NAME>_ENABLED=true` | Set the variable in `.env`, then `docker compose up -d`. `deploy/docker-compose.yml` forwards all three switches; the root `docker-compose.yml` does not, so on that stack add them as in "Forward a variable the compose file does not name" in section 1. `payverge_payment_plugin_status` shows what the owner still has to configure. |
 | Provider webhooks get `503 Secure webhook verification unavailable for this payment provider` | The same switch is off, or the provider is not a supported first-party provider | As above. For a new provider, see `.claude/skills/add-payment-integration/SKILL.md`. |
 | Payments marked paid at the provider stay open in Payverge | Webhooks failed | `payverge_list_failed_webhooks` shows the failed events and their errors. Fix the cause (often the webhook secret or URL), then resend the event from the provider's dashboard or wait for its automatic retry. A failed event is processed again on redelivery. Use `payverge_ack_failed_webhook`, with a `reason`, only for events that need no action. Admin writes preview first (`dry_run`). |
 | Invoices are not issued | Fiscal jobs are stuck or failing | `payverge_fiscal_summary`, `payverge_list_fiscal_jobs`, then `payverge_requeue_fiscal_job` after fixing the cause. Check that the `fiscal_enabled` launch control is on. |

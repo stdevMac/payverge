@@ -39,8 +39,9 @@ Nothing is mocked. The only addition is a label on the staff AI screens saying n
 
 ```sh
 cd frontend && npm ci && cd ..          # playwright and sharp come from here
-# an install made with `deploy/install.sh --demo` already serves the demo
-# grill's storefront on "/" (PRIMARY_VENUE=parrilla-quebracho-azul)
+# an install made with `deploy/install.sh --demo` serves Bodegón Mesa Larga on
+# "/" (PRIMARY_VENUE=bodegon-mesa-larga); the script shoots the demo grill,
+# parrilla-quebracho-azul, unless PAYVERGE_VENUE names another slug
 # compose also reads OPENROUTER_API_KEY, LLM_BASE_URL and LLM_API_KEY from your
 # shell: unset them before installing or the "no model" shots will have one
 PAYVERGE_URL=https://localhost PAYVERGE_EMAIL=you@example.com PAYVERGE_PASSWORD=... \

@@ -143,11 +143,14 @@ email goes to the backend log, and AI stays off until a provider is set.
 
 ## Path C: older checkout without `deploy/`
 
-The root `docker-compose.yml` builds from source and starts the backend with
-`--production`. Production preflight then refuses to start until the values
-it checks are set: at least the JWT secret, the plugin key and the email
-settings. Releases before the self-host preflight also require `RPC_URL`,
-`TRUSTED_PROXIES` and the AI budgets.
+The root `docker-compose.yml` builds from source and runs the backend in
+development mode: it passes no `--production` flag and defaults
+`APP_ENV=development`. To serve a restaurant from it, set
+`APP_ENV=production` (or `ENV=production`) in `.env`. Production preflight
+then refuses to start until the values it checks are set: at least the JWT
+secret, the plugin key and the email settings. Releases before the
+self-host preflight also require `RPC_URL`, `TRUSTED_PROXIES` and the AI
+budgets.
 
 ```bash
 cp .env.example .env && chmod 600 .env    # then fill every value marked replace_with_*
@@ -191,10 +194,10 @@ curl -fsS https://pos.example.com/api/v1/instance | jq '.features'
 - `ready` answers `{"status":"ready"}` (HTTP 200) or `{"status":"not ready"}`
   (HTTP 503). The per-component breakdown is returned only with
   `Authorization: Bearer $HEALTH_DETAIL_TOKEN`, and only when that variable
-  reaches the backend container. The compose files do not forward it yet:
-  see "Forward a variable the compose file does not name" in
-  `.claude/skills/troubleshoot/SKILL.md`. Otherwise, read
-  `docker compose logs backend`.
+  reaches the backend container. `deploy/docker-compose.yml` forwards it;
+  the root `docker-compose.yml` does not (see "Forward a variable the
+  compose file does not name" in `.claude/skills/troubleshoot/SKILL.md`).
+  Without it, read `docker compose logs backend`.
 - `features` shows what is switched on (AI, email, and so on).
 - Sign in at `https://pos.example.com/dashboard` with the admin email.
   `https://pos.example.com/` redirects there until a venue is published,
