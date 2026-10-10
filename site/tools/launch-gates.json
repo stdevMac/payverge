@@ -4,7 +4,7 @@
     {
       "id": "install",
       "claim": "A one-command installer: `curl -fsSL https://github.com/stdevMac/payverge/releases/latest/download/install.sh | bash` on a Linux server with Docker asks for the domain and an admin email, generates the secrets, starts PostgreSQL, the API, the web app and Caddy from public container images, issues HTTPS certificates automatically and creates the admin account. Made by the hero 'Deploy in one command' button, the facts strip '1 command to deploy', How it works step 1 and the #deploy section (heading, lead, checklist, terminal).",
-      "needs": "Merged on the integration branch: deploy/install.sh, deploy/docker-compose.yml, deploy/Caddyfile with automatic ACME, and .github/workflows/release.yml, which builds multi-arch GHCR images (SBOM, provenance, cosign) and attaches install.sh to a draft release. Still needed: the v1.0.0 tag on the public main branch, a successful release run, the GHCR packages made public, and the draft release published so releases/latest/download/install.sh resolves (docs/governance/RELEASING.md, First release).",
+      "needs": "deploy/install.sh, deploy/docker-compose.yml, deploy/Caddyfile and .github/workflows/release.yml at v1.0.0. The release workflow builds multi-arch GHCR images (SBOM, provenance, cosign) and attaches install.sh, so releases/latest/download/install.sh resolves (docs/governance/RELEASING.md).",
       "verify": "Run the plan's headline acceptance test on a fresh VM with the exact command shown on the page. Confirm the prompts match the page copy and that the release asset is the reviewed deploy/install.sh of that tag.",
       "phrases": [
         "one command",
@@ -24,7 +24,7 @@
     {
       "id": "zero-accounts",
       "claim": "No third-party accounts are needed to start: files stay on a local volume and email goes to the logs until S3 or a mail provider is connected. Made by the hero note ('No sign-up, no account'), the facts strip '0 third-party accounts required' and the #deploy checklist.",
-      "needs": "The defaults are on the integration branch: STORAGE_DRIVER defaults to local (the backend_storage volume in docker-compose.yml), EMAIL_PROVIDER resolves to log when no key is set, and production preflight passes with only PUBLIC_URL, DB_PASSWORD, JWT_SECRET_KEY, PLUGIN_SECRET_KEY and the admin credentials (backend/internal/config/oss_preflight_matrix_test.go). Still needed: those defaults on the public main branch and in the images the installer pulls.",
+      "needs": "The defaults at v1.0.0: STORAGE_DRIVER defaults to local (the backend_storage volume in deploy/docker-compose.yml), EMAIL_PROVIDER resolves to log when no key is set, and production preflight passes with only PUBLIC_URL, DB_PASSWORD, JWT_SECRET_KEY, PLUGIN_SECRET_KEY and the admin credentials (backend/internal/config/oss_preflight_matrix_test.go).",
       "verify": "On the acceptance-test install with no optional env vars set: upload a menu photo and restart (the file survives on the volume); trigger an invite or password-reset email and find it in the backend logs; confirm no Stripe, Resend, S3 or other external credential is asked for.",
       "phrases": [
         "sign-up",
@@ -42,7 +42,7 @@
     {
       "id": "ai-budget",
       "claim": "AI spend is tracked in a ledger. Daily dollar caps per venue and for the whole server are on by default whenever a model is configured, the amounts are configurable, and the guest waiter has a daily message limit. AI answers from your data and is off until a model is connected: an OpenRouter key, or an LLM_BASE_URL such as a self-hosted Ollama or vLLM server. Made by the AI band lead, the 'Spend you control' and 'Off until you turn it on' cards.",
-      "needs": "On the integration branch: backend/cmd/app/oss_sec_ai.go enforces per-business ($5), instance-wide ($20) and guest-pool daily caps in every mode whenever a provider is configured (an unset or invalid value falls back to the default, never to no cap), AI_WAITER_DAILY_MESSAGE_BUDGET caps guest waiter messages, and LLM_BASE_URL selects any OpenAI-compatible endpoint (docs/self-hosting/ai.md). Still needed: the same on the public main branch.",
+      "needs": "backend/cmd/app/oss_sec_ai.go at v1.0.0 enforces per-business ($5), instance-wide ($20) and guest-pool daily caps in every mode whenever a provider is configured (an unset or invalid value falls back to the default, never to no cap), AI_WAITER_DAILY_MESSAGE_BUDGET caps guest waiter messages, and LLM_BASE_URL selects any OpenAI-compatible endpoint (docs/self-hosting/ai.md).",
       "verify": "On the public main branch, check that backend/cmd/app/oss_sec_ai.go (or its replacement) still enforces the per-business and instance-wide daily caps in every mode, that AI_WAITER_DAILY_MESSAGE_BUDGET still applies, and that with no OPENROUTER_API_KEY, LLM_API_KEY or LLM_BASE_URL set GET /api/v1/instance reports features.ai=false. Reword the 'Spend you control' and 'Off until you turn it on' cards if the knobs changed.",
       "phrases": [
         "spend",
@@ -61,7 +61,7 @@
     {
       "id": "licence-files",
       "claim": "Apache License 2.0, (c) 2025-2026 Marcos Maceo, and a TRADEMARKS.md that keeps the Payverge name and logo outside the code licence. Made by the footer, the hero eyebrow ('Apache-2.0') and hero note ('Free to use, change and host'), the meta/OpenGraph/Twitter descriptions, and the eyebrow baked into assets/og-image.png.",
-      "needs": "LICENSE, NOTICE ('Payverge, Copyright 2025-2026 Marcos Maceo') and TRADEMARKS.md are on the integration branch, and TRADEMARKS.md lists this page's logo, icons and social image. Still needed: the same files on the public main branch.",
+      "needs": "LICENSE, NOTICE ('Payverge, Copyright 2025-2026 Marcos Maceo') and TRADEMARKS.md at v1.0.0; TRADEMARKS.md lists this page's logo, icons and social image.",
       "verify": "Read LICENSE, NOTICE and TRADEMARKS.md on the public main branch and confirm the footer wording, the hero eyebrow and note, the meta/OpenGraph/Twitter descriptions and the social image (assets/og-image.png, source tools/og-image.html) match them. The URL probe already checks that the linked files exist.",
       "phrases": [
         "Apache",
@@ -95,7 +95,7 @@
     {
       "id": "feature-claims",
       "claim": "The hero lead (QR ordering, a kitchen display, bills and payments, reservations and delivery, on your own server, with no platform fees), the facts strip (21 guest languages, 4 online payment rails plus cash), the eight feature cards, the 'Configure with the AI' step, the optional integrations list (payment providers, a model via an OpenRouter key or a self-hosted Ollama or vLLM server, Telegram alerts), the meta/OpenGraph/Twitter descriptions and the subtitle baked into assets/og-image.png describe the public tree.",
-      "needs": "Every open-source workstream (prune, runtime config, storage, email, security fixes) merged, so the public tree is final.",
+      "needs": "The public tree at v1.0.0: locales/registry.json, the payment plugins under backend/internal/plugins, docs/self-hosting/ai.md and AGENTS.md.",
       "verify": "Re-check each claim against the public main branch: the hero lead, including 'no platform fees' (no payment plugin attaches an application, marketplace or platform fee: stripe.go strips application_fee_amount, MercadoPago never sends marketplace_fee, PayPal and USDC add none, delivery PlatformFee is 0); guest locales in locales/registry.json; payment plugins; KDS + printers; bill splits and Z report; reservations and delivery tracking; Ops assistant and Director; the optional integrations line (payment plugins under backend/internal/plugins, LLM_BASE_URL per docs/self-hosting/ai.md, the Telegram plugin); back office modules; ARCA still labelled beta unless homologation has passed; AGENTS.md present; the meta/OpenGraph/Twitter descriptions; and the subtitle in assets/og-image.png (source tools/og-image.html).",
       "phrases": [
         "platform fee",
@@ -112,7 +112,7 @@
     {
       "id": "live-demo",
       "claim": "A public demo at https://demo.payverge.io/ where anyone can enter a seeded restaurant as owner, staff or guest without signing up, and which resets every night at 03:00 UTC. It runs with no AI model connected and online payments (cards and USDC) off; guests pay at the counter. Made by the hero and closing 'Try the live demo' buttons, the nav 'Live demo' button, the closing heading and the 'Can I try it before installing?' answer.",
-      "needs": "The demo bundle (deploy/demo/, docs/self-hosting/public-demo.md) and DEMO_MODE are in the repository. Still needed: a server, DNS for demo.payverge.io, the install with the demo overlay, the pristine snapshot and the nightly timer enabled.",
+      "needs": "The demo bundle (deploy/demo/, docs/self-hosting/public-demo.md) and DEMO_MODE are in the repository. Still needed: release v1.0.1, which contains the staff sign-in fix (cabe42e); upgrade the demo host to it; re-take the pristine snapshot; and prove the nightly reset timer by watching one 03:00 UTC run succeed.",
       "verify": "Open https://demo.payverge.io/, enter as Owner, as Staff (kitchen) and as a guest from the banner's table links; confirm the banner shows the 03:00 UTC reset, that the AI waiter answers as a menu helper (no model connected) and checkout offers only paying at the counter, and that `systemctl list-timers payverge-demo-reset.timer` on the demo host shows the next run. The URL probe checks that the demo answers.",
       "urls": [
         "https://demo.payverge.io/"
