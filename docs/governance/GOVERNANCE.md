@@ -51,10 +51,10 @@ where the work happens.
    - changes to how the AI features use tools, guardrails or budgets;
    - removing a feature or a supported locale.
 
-   Significant architectural decisions will be recorded as short architecture
-   decision records (ADRs) under `docs/adr/` once that directory is started.
-   Until then, the reasoning lives in the issue, Discussion or PR where the
-   decision was made.
+   Significant architectural decisions are recorded as short architecture
+   decision records (ADRs) in [`docs/adr/`](../adr/README.md); the PR that
+   makes the decision adds the ADR. Smaller decisions keep their reasoning in
+   the issue, Discussion or PR where they were made.
 3. **The project lead decides when consensus does not emerge.** The lead
    explains the reasoning in public, on the issue or PR. The explanation can
    be brief, but it is always given.

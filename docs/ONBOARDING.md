@@ -10,7 +10,7 @@ AI-powered restaurant management platform with Web3 (USDC) payment support. Mono
 |---|---|---|
 | Frontend | Next.js 15.5 (App Router) + React 19 | package name `payverge-frontend` |
 | UI | NextUI 2.4 + Tailwind 3.4 + lucide-react | DM Serif Display headings, DM Sans body |
-| Web3 | Wagmi 2 + Viem | USDC reads only; `ethers` is **not** a direct dependency |
+| Web3 | Wagmi 3 + Viem 2 | USDC reads only; `ethers` is **not** a direct dependency |
 | State | Zustand + TanStack Query | |
 | Backend | Go 1.26 + Gin + GORM | Repository and CI pin Go 1.27.2 |
 | DB | PostgreSQL 18 | Production schema SoT: genesis baseline (`backend/schema/genesis/`) + versioned SQL (`backend/migrations/`); startup performs no GORM AutoMigrate or ad-hoc schema ensures |
@@ -83,7 +83,7 @@ Backend is a layered monolith (handlers → services → database). Frontend tal
 
 ## Conventions
 - **Commits**: Conventional Commits (`feat(frontend): …`, `fix(frontend): …`). Most current scope: `frontend`.
-- **Backend tests**: unit `*_test.go` paired with source under `internal/<pkg>/`; integration under `internal/tests/`. Run with `make test` (race) or `make quick-test`.
+- **Backend tests**: unit `*_test.go` paired with source under `internal/<pkg>/`; integration under `internal/tests/`. Run with `make test` (the CI suite: `-short`, race detector, no Docker), `make quick-test` (`-short` without the race detector) or `make test-docker` (every test, including Testcontainers suites; needs Docker).
 - **Frontend tests**: `*.test.ts` paired with source (Jest); Playwright E2E under `frontend/tests/`.
 - **Migrations**: paired `up`/`down` SQL with zero-padded sequence in `backend/migrations/`. SQL migration failure aborts startup. Genesis bootstrap, schema verification, auth schema work, and required data repairs also fail fast; production startup runs no GORM AutoMigrate safety net.
 - **Plugins**: register via `init()` + `plugins.RegisterPluginInitializer(...)` + blank-import in `cmd/app/main.go`.
@@ -101,7 +101,7 @@ cp .env.example .env
 cd frontend && npm run dev | typecheck | lint | test | test:e2e:staff
 
 # Backend (port 8080)
-cd backend && make run | test | quick-test | test-integration | lint | fmt
+cd backend && make run | test | quick-test | test-docker | test-integration | lint | fmt
 go test -v -race ./internal/services/... -run TestSpecificName
 
 # Docs — plain Markdown; edit files in docs/ directly (no npm start / no package.json)

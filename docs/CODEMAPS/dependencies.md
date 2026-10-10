@@ -1,4 +1,4 @@
-<!-- Generated: 2026-05-22 | Files scanned: ~10 manifests | Token estimate: ~600 -->
+<!-- Generated: 2026-10-10 | Files scanned: ~10 manifests | Token estimate: ~600 -->
 
 # Dependencies
 
@@ -26,7 +26,8 @@ gorm.io/gorm + driver/postgres
 golang-migrate/migrate/v4  SQL migrations
 golang-jwt/jwt/v4          JWT
 ethereum/go-ethereum       EVM client
-mattevans/postmark-go      Email
+resend/resend-go/v3        Email (Resend)
+mattevans/postmark-go      Email (Postmark)
 go-telegram-bot-api/v5     Telegram
 go.mau.fi/whatsmeow        WhatsApp
 aws-sdk-go-v2/...          AWS S3
@@ -41,7 +42,7 @@ skip2/go-qrcode + fogleman/gg + golang/freetype  QR + image gen
 ## Frontend (Node 26.10.0 release toolchain; Node 20.18+ package minimum) — key libs
 ```
 next 15.5                  App Router
-react 18.3
+react 19.3
 @nextui-org/react 2.4      UI
 tailwindcss 3.4
 lucide-react               Icons
@@ -55,7 +56,7 @@ date-fns 3                 Dates
 react-hot-toast            Notifications
 @lifi/sdk                  Cross-chain (LiFi)
 @dnd-kit/*                 Drag-and-drop
-jspdf + html2canvas + pdfjs-dist  PDF gen + parse
+jspdf 4 + html2canvas + pdfjs-dist 4  PDF gen + parse
 qrcode                     QR generation
 dompurify 3                Sanitization
 react-markdown + remark-gfm  Assistant rich text
@@ -68,8 +69,8 @@ axios 1.x                  HTTP (client only — SSR-unsafe)
 ## Infra / Tooling
 - **Docker Compose** (`docker-compose.yml` local stack; self-host production files under `deploy/`)
 - **Caddy** TLS + reverse proxy: stock `caddy:2` with the checked-in config in `deploy/` (`Caddyfile`, `Caddyfile.cloudflare`, `payverge.caddy`, `cloudflare-cidrs.caddy`)
-- **GitHub Actions**: `ci.yml` (pull request and main gate, aggregated by `ci-ok`), `e2e.yml` (compose Playwright journeys, label `e2e` and nightly), `codeql.yml`, `scorecard.yml` and `release.yml` (release-please, signed multi-arch images, release assets). CI reads Go from `backend/go.mod` and Node from `.nvmrc`.
-- **Pre-commit hook**: guest-locale validator (`make install-hooks`)
+- **GitHub Actions**: `ci.yml` (pull request and main gate, aggregated by `ci-ok`), `e2e.yml` (compose Playwright journeys, label `e2e` and nightly), `acceptance.yml` (weekly one-click self-host acceptance), `codeql.yml`, `scorecard.yml` and `release.yml` (release-please, signed multi-arch images, release assets). CI reads Go from `backend/go.mod` and Node from `.nvmrc`.
+- **Pre-commit hook**: guest and operator locale-parity validators plus `i18n:check` (`make install-hooks`)
 
 ## Env Source of Truth
 Root `.env` only. Compose only forwards vars referenced in `docker-compose.yml`. Per-service `backend/.env.example` and `frontend/.env.example` are stubs.

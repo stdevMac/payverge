@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/stdevMac/payverge/actions/workflows/ci.yml/badge.svg)](https://github.com/stdevMac/payverge/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/stdevMac/payverge/actions/workflows/codeql.yml/badge.svg)](https://github.com/stdevMac/payverge/actions/workflows/codeql.yml)
+[![License](https://img.shields.io/github/license/stdevMac/payverge)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/stdevMac/payverge)](https://github.com/stdevMac/payverge/releases/latest)
 
 Payverge is a self-hostable restaurant system with AI built into real
 operations. Guests scan a QR code, order, split the bill and pay. Staff run
@@ -13,6 +15,12 @@ fiscal receipts.
 
 It is a Go/Gin + PostgreSQL 18 backend and a Next.js 15 frontend, shipped as
 Docker images with a one-command installer.
+
+To try it without installing anything, use the **[live demo](https://demo.payverge.io/)**:
+enter a seeded restaurant as the owner, as kitchen or waiter staff, or as a
+guest at a table, no sign-up. Anyone can see what you change there, and it all
+resets every night at 03:00 UTC. To run a public demo of your own, see
+[docs/self-hosting/public-demo.md](docs/self-hosting/public-demo.md).
 
 ## Screenshots
 
@@ -65,12 +73,6 @@ AI, on an install without a model key:
 <td width="33%" valign="top"><a href="docs/assets/screenshots/director-console.png"><img src="docs/assets/screenshots/director-console.png" alt="Director console answering that it lacks the data, stamped as no model configured"></a><br><sub><b>Director console, no model key.</b> It says what data it lacks instead of making up an answer.</sub></td>
 </tr>
 </table>
-
-To click through it yourself, use the **[live demo](https://demo.payverge.io/)**:
-enter a seeded restaurant as the owner, as kitchen or waiter staff, or as a
-guest at a table, no sign-up. Anyone can see what you change there, and it all
-resets every night at 03:00 UTC. To run a public demo of your own, see
-[docs/self-hosting/public-demo.md](docs/self-hosting/public-demo.md).
 
 ## Features
 
@@ -252,8 +254,9 @@ Backend (`backend/`):
 
 ```sh
 make run          # dev server on :8080
-make quick-test   # all tests, no race detector
-make test         # all tests with -race
+make quick-test   # -short suite, no race detector (fast loop)
+make test         # -short suite with -race, as CI runs it (no Docker)
+make test-docker  # every test, including the Testcontainers suites (needs Docker)
 make lint         # golangci-lint
 make fmt          # gofmt
 make eval-offline # offline AI evaluation suites
@@ -282,6 +285,10 @@ It is now community-maintained, with no SLA and no hosted service. Fixes and
 releases happen when maintainers have time. Plan your deployment accordingly:
 you own its backups, upgrades and security.
 
+Questions and help: [GitHub Discussions](https://github.com/stdevMac/payverge/discussions).
+Bugs go to [issues](https://github.com/stdevMac/payverge/issues/new/choose);
+[.github/SUPPORT.md](.github/SUPPORT.md) says what to include.
+
 ## License
 
 [Apache-2.0](LICENSE). See [NOTICE](NOTICE) and
@@ -298,6 +305,13 @@ WhatsApp channel is a separate build (`-tags whatsapp`) that links a
 GPL-licensed library, so that binary is GPL-3.0-encumbered and you are
 responsible for compliance; see [docs/self-hosting/whatsapp.md](docs/self-hosting/whatsapp.md)
 and [ADR 0008](docs/adr/0008-apache-2-with-whatsapp-behind-gpl-build-tag.md).
+
+The images also link two libraries licensed under LGPL-3.0-or-later: the
+backend uses go-ethereum's library packages (none of its GPL-3.0 `cmd/`
+packages), and the frontend's image optimisation loads the prebuilt libvips
+libraries from sharp-libvips. [NOTICE](NOTICE) gives their source locations
+and how to substitute your own build; the licence texts are in
+[LICENSES/](LICENSES/).
 
 "Payverge" and the logo are trademarks; the code licence does not grant them.
 Forks should rebrand. See [TRADEMARKS.md](TRADEMARKS.md).

@@ -52,6 +52,8 @@ Other operator topics, and where they are covered:
 - [CODEMAPS/](CODEMAPS/): compact maps of the backend, frontend, data model
   and dependencies, for finding your way in the tree.
 - [ONBOARDING.md](ONBOARDING.md): a task-to-file map for new contributors.
+- [AUTH_SYSTEM.md](AUTH_SYSTEM.md): sign-in methods, tokens, sessions and
+  revocation, and who may sign up.
 
 ## AI
 
@@ -92,7 +94,6 @@ disagree, the code is right.
 
 | Topic | Notes |
 |---|---|
-| Authentication | [AUTH_SYSTEM.md](AUTH_SYSTEM.md) |
 | Floor plan | [spaces-and-tables.md](spaces-and-tables.md) |
 | Fiscal receipts | [fiscal/fiscal-architecture.md](fiscal/fiscal-architecture.md), [fiscal/argentina-afip.md](fiscal/argentina-afip.md) |
 | Languages | [language-support-playbook.md](language-support-playbook.md), [i18n/](i18n/) |
@@ -101,7 +102,7 @@ disagree, the code is right.
 | Performance evidence | [performance/](performance/) |
 | Design | [design/](design/) |
 | Product | [product/](product/) |
-| Improvement backlog | [BACKLOG.md](BACKLOG.md) |
+| Improvement backlog | [GitHub issues](https://github.com/stdevMac/payverge/issues) |
 
 ## Directory map
 
