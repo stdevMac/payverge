@@ -315,7 +315,7 @@ function loadLock(frontendDir) {
 }
 
 function escapeCell(text) {
-  return String(text).replace(/\|/g, "\\|");
+  return String(text).replace(/\\/g, "\\\\").replace(/\|/g, "\\|");
 }
 
 export function renderReport(results) {

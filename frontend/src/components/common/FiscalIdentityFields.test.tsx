@@ -345,6 +345,26 @@ describe("fiscal email capture", () => {
     expect(validateFiscalIdentity(v)).toBeNull();
   });
 
+  it.each(["guest@example", "guest@.com", "guest@example.", "a@b@c.com", "gu est@example.com"])(
+    "rejects %s",
+    (email) => {
+      expect(validateFiscalIdentity({ ...emptyFiscalIdentity(), email })).toBe("email");
+    },
+  );
+
+  it("accepts a short domain with an inner dot", () => {
+    expect(
+      validateFiscalIdentity({ ...emptyFiscalIdentity(), email: "a@b.co" }),
+    ).toBeNull();
+  });
+
+  it("rejects a long dotted string without backtracking", () => {
+    const email = `a@${".".repeat(50_000)}@`;
+    const started = Date.now();
+    expect(validateFiscalIdentity({ ...emptyFiscalIdentity(), email })).toBe("email");
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
+
   it("maps email into the wire payload, trimmed", () => {
     const v = { ...emptyFiscalIdentity(), email: "  guest@example.com  " };
     expect(fiscalIdentityToPayload(v).fiscal_customer_email).toBe(

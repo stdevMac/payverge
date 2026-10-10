@@ -148,6 +148,7 @@ import {
   type PendingCartTarget,
   undoPendingCartDelta,
 } from "./_pendingCartRoute";
+import { randomUUID } from "@/lib/randomUUID";
 
 /** Thumbnail that hides itself when the source fails to load. */
 function FailsafeImage({
@@ -1825,10 +1826,7 @@ function GuestMenuPageContent() {
         return ref.current.key;
       }
 
-      const generatedKey =
-        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-          ? crypto.randomUUID()
-          : `guest-order-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      const generatedKey = randomUUID();
 
       ref.current = {
         signature,

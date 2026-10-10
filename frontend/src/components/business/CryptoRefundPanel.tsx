@@ -35,6 +35,7 @@ import {
   getTranslation,
 } from "@/i18n/SimpleTranslationProvider";
 import { getSafeApiErrorMessage } from "@/utils/apiError";
+import { randomUUID } from "@/lib/randomUUID";
 
 interface CryptoRefundPanelProps {
   businessId: number;
@@ -42,13 +43,6 @@ interface CryptoRefundPanelProps {
   payment: Payment;
   onRefresh: () => void;
 }
-
-const generateIdempotencyKey = (): string => {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `cr-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-};
 
 const formatUsdc = (baseUnits: number): string => {
   // USDC 6 decimals — integer base units only.
@@ -184,7 +178,7 @@ export const CryptoRefundPanel: React.FC<CryptoRefundPanelProps> = ({
       toast.error(t("errors.insufficientBalance"));
       return;
     }
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setBusy(true);
     try {
       await withManagerPin(
@@ -216,7 +210,7 @@ export const CryptoRefundPanel: React.FC<CryptoRefundPanelProps> = ({
   };
 
   const handleApprove = async (refundId: number) => {
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setBusy(true);
     try {
       await withManagerPin(
@@ -238,7 +232,7 @@ export const CryptoRefundPanel: React.FC<CryptoRefundPanelProps> = ({
   };
 
   const handleReject = async (refundId: number) => {
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setBusy(true);
     try {
       await withManagerPin(
@@ -266,7 +260,7 @@ export const CryptoRefundPanel: React.FC<CryptoRefundPanelProps> = ({
       toast.error(t("errors.invalidTxHash"));
       return;
     }
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setBusy(true);
     try {
       await withManagerPin(

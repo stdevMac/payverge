@@ -2,18 +2,7 @@ import { getPublicConfig } from "@/config/publicConfig";
 import axios, { AxiosError, Cancel, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { isAbortError } from "@/api/tools/abort";
 import toast from "react-hot-toast";
-
-function generateRequestId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  // Fallback for environments without crypto.randomUUID (SSR / older runtimes).
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
+import { randomUUID } from "@/lib/randomUUID";
 import { sanitizeError } from "@/utils/errorMessages";
 import { isNonSessionAuthFailure } from "@/utils/apiError";
 import { apiCache } from "@/utils/cache";
@@ -425,7 +414,7 @@ axiosInstance.interceptors.request.use(
         const existingRequestId =
           (config.headers as Record<string, unknown> | undefined)?.["X-Request-Id"];
         if (!existingRequestId) {
-          config.headers['X-Request-Id'] = generateRequestId();
+          config.headers['X-Request-Id'] = randomUUID();
         }
 
         return config;

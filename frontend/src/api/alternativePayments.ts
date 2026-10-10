@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/api/tools/instance";
 import { logError } from "@/utils/errorLogger";
 import { sanitizeError } from "@/utils/errorMessages";
+import { randomUUID } from "@/lib/randomUUID";
 import {
   AlternativePaymentRequest,
   AlternativePaymentResponse,
@@ -72,11 +73,7 @@ import { dollarsToAmountMicro } from "@/types/alternativePayments";
 const guestAlternativePaymentAttempts = new Map<string, string>();
 
 function randomAlternativePaymentKey(prefix: string): string {
-  const suffix =
-    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  return `${prefix}-${suffix}`;
+  return `${prefix}-${randomUUID()}`;
 }
 
 function randomGuestAlternativePaymentKey(): string {

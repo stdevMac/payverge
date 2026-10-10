@@ -2,6 +2,7 @@ import { getPublicConfig } from "@/config/publicConfig";
 import { axiosInstance as apiClient } from './tools/instance';
 import { logError } from '@/utils/errorLogger';
 import { asDollars, type Dollars } from '@/types/money';
+import { randomUUID } from '@/lib/randomUUID';
 
 // Split API money fields are in DOLLARS (see internal/handlers/splitting.go).
 export interface SplitOptions {
@@ -187,10 +188,7 @@ function formatDollarsForSplit(amount: Dollars): string {
 }
 
 function newSplitRequestId(): string {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID();
-  }
-  return `split-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return randomUUID();
 }
 
 export function getSplitEventsURL(billToken: string): string {

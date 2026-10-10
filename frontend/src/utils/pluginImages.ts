@@ -17,9 +17,22 @@ interface PluginImageSource {
   image?: string | null;
 }
 
+// Seeded catalog rows used dummyimage.com placeholders; treat those as missing
+// so the bundled logo shows instead. Match the parsed host, not a substring,
+// so a path or query that merely mentions the domain is left alone.
+function isPlaceholderImage(image: string): boolean {
+  let host: string;
+  try {
+    host = new URL(image, "http://localhost").hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  return host === "dummyimage.com" || host.endsWith(".dummyimage.com");
+}
+
 export function resolvePluginImageSrc(plugin: PluginImageSource): string | null {
   const image = plugin.image?.trim();
-  if (image && !image.includes("dummyimage.com")) {
+  if (image && !isPlaceholderImage(image)) {
     return image;
   }
 

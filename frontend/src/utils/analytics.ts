@@ -1,17 +1,10 @@
 import { axiosInstance } from '@/api/index';
 import { hasAnalyticsConsent, onConsentChange } from '@/lib/analytics/consentGate';
+import { randomUUID } from '@/lib/randomUUID';
 
 // Session management
 const SESSION_KEY = 'analytics_session_id';
 const SESSION_DURATION = 30 * 60 * 1000; // 30 minutes
-
-function createSessionId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-
-  return `session-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-}
 
 interface PageViewData {
   session_id: string;
@@ -146,7 +139,7 @@ class AnalyticsTracker {
   /** Creates or slides the stored session. Called only after consent passes. */
   private getSessionId(): string {
     if (typeof window === 'undefined') {
-      if (!this.sessionId) this.sessionId = createSessionId();
+      if (!this.sessionId) this.sessionId = randomUUID();
       return this.sessionId;
     }
 
@@ -183,7 +176,7 @@ class AnalyticsTracker {
       }
     }
 
-    const newId = createSessionId();
+    const newId = randomUUID();
     try {
       sessionStorage.setItem(
         SESSION_KEY,

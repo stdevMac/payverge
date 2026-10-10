@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type MutableRefObject } from "react";
+import { randomUUID } from "@/lib/randomUUID";
 
 const BC_PREFIX = "payverge-print-leader-";
 const LOCK_PREFIX = "payverge-print-leader-";
@@ -144,14 +145,7 @@ export function getOrCreatePrintClientId(): string {
   try {
     const existing = window.localStorage.getItem(CLIENT_ID_KEY);
     if (existing && /^[0-9a-f-]{36}$/i.test(existing)) return existing;
-    const id =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`.replace(/[xy]/g, (c) => {
-            const r = (Math.random() * 16) | 0;
-            const v = c === "x" ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-          });
+    const id = randomUUID();
     window.localStorage.setItem(CLIENT_ID_KEY, id);
     return id;
   } catch {
