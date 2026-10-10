@@ -5,6 +5,7 @@
 #      whatsapp tag). Modules in go-overrides.tsv are ignored there and
 #      checked by their guards. Licences in subdirectories of linked modules
 #      must be named in NOTICE and reproduced in LICENSES/go-subpackages.txt.
+#      MPL-licensed modules must be named in NOTICE with their source.
 #   2. Fonts: every tracked font directory carries its licence text.
 #   3. Frontend: production npm dependencies via npm-licenses.mjs (fails on GPL,
 #      AGPL, SSPL, BUSL, NC/ND, and on unreviewed weak copyleft or missing data).
@@ -24,7 +25,7 @@ for arg in "$@"; do
     --skip-go) run_go=0 ;;
     --skip-npm) run_npm=0 ;;
     -h | --help)
-      sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+      sed -n '2,15p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *) lic_die "unknown argument $arg" ;;
@@ -81,6 +82,25 @@ check_go() {
     fi
   done <<<"$deps"
   [[ $notice_missing -eq 0 ]] || lic_die "root NOTICE is missing dependency notices"
+
+  # MPL-2.0 3.2(a): recipients of the binary must be told where the source of
+  # the MPL files is. Each MPL module must be named in the root NOTICE with its
+  # source location.
+  local modfile report mpl mpl_missing=0
+  modfile="$(mktemp)"
+  sed 's/|.*//' <<<"$deps" >"$modfile"
+  report="$("$golic" report "${ignores[@]}" "${LIC_GO_TARGETS[@]}" 2>/dev/null)" ||
+    { rm -f "$modfile"; lic_die "go-licenses report failed"; }
+  mpl="$(lic_mpl_modules "$modfile" <<<"$report")"
+  rm -f "$modfile"
+  while IFS= read -r module; do
+    [[ -n "$module" ]] || continue
+    if ! lic_notice_names "$LIC_ROOT/NOTICE" "$module"; then
+      lic_log "$module is MPL-licensed and the root NOTICE does not name it with its source"
+      mpl_missing=1
+    fi
+  done <<<"$mpl"
+  [[ $mpl_missing -eq 0 ]] || lic_die "root NOTICE is missing MPL source notices"
 
   # Licences in subdirectories of a linked module (vendored or forked code under
   # its own BSD/MIT terms) bind the binary too, and go-licenses only reports the

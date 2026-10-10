@@ -61,6 +61,14 @@ combined with GPL-3.0 code, so building the tagged binary is allowed.
 The **tagged binary**, and any image that contains it, is a combined work that
 includes GPL-3.0 code. Distributing it brings the GPL-3.0 obligations with it.
 
+### WhatsApp Terms of Service
+
+whatsmeow is an unofficial client for the WhatsApp Web protocol. It is not
+affiliated with, endorsed by, or supported by WhatsApp or Meta. Connecting a
+number through it may violate WhatsApp's Terms of Service, and WhatsApp can
+ban the number. Use a dedicated number for the bot, never the restaurant's
+main line or a personal number.
+
 ### Distribution caveat
 
 The obligations attach when you **convey** (distribute) the tagged binary or an

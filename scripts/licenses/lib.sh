@@ -156,3 +156,20 @@ lic_licence_reproduced() {
   agg="$(tr -s '[:space:]' ' ' <"$2")"
   [[ -n "$text" && "$agg" == *"$text"* ]]
 }
+
+# lic_mpl_modules MODULES_FILE: reads `go-licenses report` CSV
+# (package,url,licence) on stdin and prints, deduplicated, the module (from
+# MODULES_FILE, one path per line; longest prefix wins) of every package whose
+# licence is MPL-*. MPL-2.0 3.2(a) requires telling recipients of the binary
+# where the source of those files is, so check.sh requires each one in NOTICE.
+lic_mpl_modules() {
+  awk -F, -v mods="$1" '
+    BEGIN { while ((getline m < mods) > 0) if (m != "") list[m] = 1 }
+    $3 ~ /^MPL-/ {
+      best = ""
+      for (m in list)
+        if (($1 == m || index($1, m "/") == 1) && length(m) > length(best)) best = m
+      print (best != "" ? best : $1)
+    }
+  ' | sort -u
+}
