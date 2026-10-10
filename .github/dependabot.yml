@@ -64,6 +64,15 @@ updates:
       prefix: fix
       prefix-development: chore
       include: scope
+    ignore:
+      # Tailwind 4 is a manual migration (new config format and PostCSS
+      # plugin), and tailwind-scrollbar 4 needs Tailwind 4, so both majors
+      # must move together in one hand-made PR. Either bump alone fails
+      # npm ci.
+      - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
+      - dependency-name: tailwind-scrollbar
+        update-types: ["version-update:semver-major"]
     groups:
       frontend-minor-patch:
         patterns:
@@ -173,13 +182,16 @@ updates:
           - patch
 
   # Third-party images of the self-host stack (Postgres, Caddy, rclone), pinned
-  # by tag and digest in deploy/docker-compose.yml, and of the source-build
-  # compose files at the root (Postgres, Go). One group spans both
-  # directories, so a Postgres bump lands in both in one pull request.
+  # by tag and digest in deploy/docker-compose.yml and in the Coolify template
+  # (deploy/platforms/coolify, same Postgres digest), and of the source-build
+  # compose files at the root (Postgres, Go). Directories do not recurse, so
+  # each is listed. One group spans them all, so a Postgres bump lands
+  # everywhere in one pull request.
   - package-ecosystem: docker-compose
     directories:
       - /deploy
       - /
+      - /deploy/platforms/coolify
     schedule:
       interval: weekly
       day: wednesday

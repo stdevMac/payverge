@@ -46,11 +46,12 @@ Rules that follow from this:
 ## Tags and branches
 
 - Releases are cut from `main`. There are no long-lived release branches.
-- Tags are annotated and named `vMAJOR.MINOR.PATCH` (for example `v1.0.0`).
-  They are created only by the release workflow or by a maintainer following
-  this document, and are never moved or deleted once pushed.
-- A tag ruleset on `v*` lets only maintainers create tags and nobody update or
-  delete them (set it up as described under
+- Tags are named `vMAJOR.MINOR.PATCH` (for example `v1.0.0`). release-please
+  creates them when a release PR merges; v1.0.0, the first release, was
+  tagged by hand (annotated and signed). A tag is never moved or deleted once
+  pushed.
+- The `release tags` ruleset on `refs/tags/v*` blocks updating and deleting
+  those tags (see
   [Repository settings](#repository-settings-the-workflow-needs)).
 - If a security fix has to reach an older minor while `main` holds unreleased
   breaking work, cut a short-lived `release/vX.Y` branch from the last `vX.Y.Z`
@@ -64,7 +65,7 @@ Rules that follow from this:
 | Git tag and GitHub Release with release notes | `https://github.com/stdevMac/payverge/releases` |
 | `ghcr.io/stdevmac/payverge-backend` and `ghcr.io/stdevmac/payverge-frontend`, multi-arch (`linux/amd64`, `linux/arm64`) | GitHub Container Registry, tagged `X.Y.Z`, `vX.Y.Z`, `X.Y`, `X` and, for stable releases only, `latest`. Pre-releases get only `X.Y.Z-pre` and `vX.Y.Z-pre` |
 | SBOM and SLSA provenance attestations per platform, and a keyless cosign signature on each multi-arch index | Attached to the images in the registry |
-| `install.sh`, `docker-compose.yml`, `Caddyfile`, `env.example` and `payverge-deploy-X.Y.Z.tar.gz` (every tracked file under `deploy/`) | Release assets, staged by `scripts/ci/release-assets.sh` |
+| `install.sh`, `docker-compose.yml`, `Caddyfile`, `env.example` and `payverge-deploy-X.Y.Z.tar.gz` (every tracked file under `deploy/`, plus `LICENSE` and `NOTICE`) | Release assets, staged by `scripts/ci/release-assets.sh` |
 | `THIRD_PARTY_LICENSES.md` and `SHA256SUMS` | Release assets. The installer checks the deploy files against `SHA256SUMS` |
 
 Release images are built without optional build tags. In particular, **never
@@ -116,8 +117,8 @@ Every push to `main` runs the release workflow:
    section (the upgrade notes in particular), checks that it passes the
    [release-notes check](#release-notes-check), and merges it once `ci-ok`
    is green.
-3. The merge creates the `vX.Y.Z` tag and the GitHub Release. The same
-   workflow run then:
+3. The merge creates the `vX.Y.Z` tag and a **draft** GitHub Release. The
+   same workflow run then:
    - waits for a green `ci.yml` run on the release commit
      (`scripts/ci/wait-for-ci.sh`) and fails if the commit still names the
      upstream domain (`scripts/check-hardcoded-domain.sh --release`);
@@ -126,17 +127,20 @@ Every push to `main` runs the release workflow:
      build);
    - merges the per-platform digests into one index per image, tags it and
      signs it with cosign (keyless, the workflow's OIDC identity);
-   - uploads the release assets.
+   - uploads the release assets and publishes the draft: as the latest
+     release for a stable version (unless a newer stable tag exists), as a
+     pre-release for `X.Y.Z-pre`.
 
    This all happens in one workflow because a tag created with the default
    `GITHUB_TOKEN` does not trigger other workflows.
 
-   release-please publishes the GitHub Release when the PR merges, before the
-   images and assets exist. For the length of the workflow run, which builds
-   both images on two platforms, `releases/latest/download/install.sh` returns 404 and
-   `PAYVERGE_VERSION=X.Y.Z` cannot be pulled. A draft release would avoid
-   that window, but release-please creates no tag for a draft, and the
-   publish jobs need the tag, so the configuration does not use drafts. Do
+   The release stays a draft until its assets and images exist, so
+   `releases/latest/download/install.sh` keeps pointing at the previous
+   release while the workflow runs. GitHub creates the tag of a draft only
+   when the draft is published, so `.github/release-please-config.json` sets
+   `force-tag-creation` next to `draft`: release-please creates the tag
+   itself, the publish jobs build from it, and the next release PR counts
+   from it. Do not publish the draft by hand while the workflow runs, and do
    not announce a release until the workflow is green.
 4. Run the [post-release checks](#post-release-checks).
 
@@ -144,23 +148,30 @@ If a run fails after the tag exists (CI was red, a build broke, the registry
 was down), fix the cause on `main` if needed, make CI green on the tagged
 commit (re-run its `push` run of CI; dispatched CI runs do not count), then
 run **Actions > Release > Run workflow** from `main` with the existing tag
-(for example `v1.2.3`). A dispatch only publishes; it never creates a tag.
+(for example `v1.2.3`). A dispatch only publishes images and assets; it never
+creates a tag and never publishes a draft release. When it is green, review
+the draft's notes and publish it with the `gh release edit` command the run
+prints in its summary.
 
 ### Repository settings the workflow needs
 
 None of these exist in a fresh repository. Set the first four up before the
-first release, and the rulesets right after it:
+first release, and the rulesets right after it.
 
 - **`release` environment** (Settings > Environments > New environment):
-  deployment branches limited to `main`. The release-please, publish and
-  assets jobs run in it, and the workflow refuses to run from any other ref
-  or for a tag not reachable from `main`.
+  deployment branches limited to `main`, with no tag patterns, so a run on
+  any other branch or on a tag cannot enter it. The release-please, publish
+  and assets jobs run in it, and the workflow refuses to run from any other
+  ref or for a tag not reachable from `main`.
 - **`RELEASE_PLEASE_TOKEN`**, a secret of the `release` environment (not a
-  repository secret): a fine-grained token with contents and pull-request
-  write access on this repository only. Without it, release-please falls
-  back to `GITHUB_TOKEN`, and a release PR opened with `GITHUB_TOKEN` does
-  not trigger `ci.yml`. Then `ci-ok` never reports on the release PR; close
-  and reopen the PR to get a run.
+  repository secret): a fine-grained personal access token for this
+  repository only, with Contents and Pull requests set to read and write.
+  release-please then opens and updates the release PR as the token's owner,
+  and CI starts on it by itself. Without it, release-please falls back to
+  `GITHUB_TOKEN`, the release PR's author is `github-actions[bot]`, and its
+  workflow runs (`ci.yml`, CodeQL) wait until someone with write access
+  clicks **Approve workflows to run** on the PR. `ci-ok` stays pending until
+  then, and the `main` ruleset requires it.
 - **Actions permissions** (Settings > Actions > General): workflows have
   read and write permissions and may create pull requests, and GitHub
   Packages accepts pushes from this repository's workflows (the first push
@@ -171,10 +182,14 @@ first release, and the rulesets right after it:
 - **Packages visibility**: after the first release, make both packages
   public (each package's settings > Danger zone > Change visibility), or
   anonymous `docker compose pull` fails.
-- **Rulesets** (Settings > Rules > Rulesets), once the release exists:
-  `main` requires `ci-ok` and CodeQL and blocks force pushes and deletion;
-  a tag ruleset on `v*` lets only maintainers and the release workflow
-  create tags, and nobody move or delete them.
+- **Rulesets** (Settings > Rules > Rulesets):
+  - `main`, on the default branch: blocks deletion and force pushes,
+    requires linear history and a pull request, and requires the status
+    checks `ci-ok`, `Analyze (go)` and `Analyze (javascript-typescript)`.
+    Repository admins may bypass it, through a pull request only.
+  - `release tags`, on `refs/tags/v*`: blocks updating and deleting tags.
+    Creating them is not restricted, because release-please creates each
+    release tag.
 
 ## First release (v1.0.0)
 
@@ -254,6 +269,10 @@ release:
   genesis `PostgresMajor` check refuses it, so it is a MAJOR release prepared
   by hand with a `!` or `BREAKING CHANGE:` commit, never a `fix(deps)` patch.
   If such a Dependabot PR appears anyway, close it.
+- Major versions of `tailwindcss` and `tailwind-scrollbar` are ignored too.
+  Tailwind 4 is a manual migration, and tailwind-scrollbar 4 needs it, so
+  both majors move together in one hand-made PR; either Dependabot bump
+  alone fails `npm ci`.
 
 Every PR that changes a Go module or an npm lockfile fails the `licenses`
 job (and with it `ci-ok`), because

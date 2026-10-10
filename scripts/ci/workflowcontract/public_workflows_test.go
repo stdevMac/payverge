@@ -879,9 +879,11 @@ func TestReleasePleaseUsesConfigUnderGitHubDir(t *testing.T) {
 	}
 
 	var config struct {
-		IncludeVInTag bool                      `json:"include-v-in-tag"`
-		ChangelogPath string                    `json:"changelog-path"`
-		Packages      map[string]map[string]any `json:"packages"`
+		IncludeVInTag    bool                      `json:"include-v-in-tag"`
+		Draft            bool                      `json:"draft"`
+		ForceTagCreation bool                      `json:"force-tag-creation"`
+		ChangelogPath    string                    `json:"changelog-path"`
+		Packages         map[string]map[string]any `json:"packages"`
 	}
 	if err := json.Unmarshal([]byte(readRepoFile(t, ".github", "release-please-config.json")), &config); err != nil {
 		t.Fatalf("parse .github/release-please-config.json: %v", err)
@@ -891,6 +893,19 @@ func TestReleasePleaseUsesConfigUnderGitHubDir(t *testing.T) {
 	}
 	if _, ok := config.Packages["."]; !ok {
 		t.Error("release-please-config.json must release the repository root package \".\"")
+	}
+	// The release stays a draft until the assets job has uploaded the install
+	// files, so releases/latest/download/install.sh never 404s. GitHub tags a
+	// draft only when it is published, and resolve needs the tag right away.
+	if !config.Draft || !config.ForceTagCreation {
+		t.Errorf("release-please-config.json draft = %v, force-tag-creation = %v; want both true", config.Draft, config.ForceTagCreation)
+	}
+	for name, pkg := range config.Packages {
+		for _, key := range []string{"draft", "force-tag-creation"} {
+			if v, ok := pkg[key]; ok && v != true {
+				t.Errorf("release-please-config.json package %q overrides %s = %v", name, key, v)
+			}
+		}
 	}
 	if !strings.Contains(config.ChangelogPath, "/") {
 		t.Errorf("changelog-path = %q; the root is a closed set, keep the changelog under docs/", config.ChangelogPath)
@@ -1026,11 +1041,19 @@ func TestReleaseAssetsShipDeployFilesAndLicences(t *testing.T) {
 	if !slices.Equal(needs, []string{"publish", "resolve"}) {
 		t.Errorf("assets.needs = %v, want [publish resolve]: assets never point at unpublished images", needs)
 	}
-	requireContainsAll(t, "release.yml assets", runScript(assets),
+	run := runScript(assets)
+	requireContainsAll(t, "release.yml assets", run,
 		`bash scripts/ci/release-assets.sh "$VERSION" "$RUNNER_TEMP/release-assets"`,
 		`gh release upload "$TAG"`,
 		"--verify-tag --draft",
+		// release-please drafts the release; only a push-triggered run, after
+		// the upload, publishes it.
+		`gh release edit "$TAG" --draft=false`,
+		`if [[ "$EVENT_NAME" != push ]]; then`,
 	)
+	if strings.Index(run, `gh release edit "$TAG" --draft=false`) < strings.Index(run, `gh release upload "$TAG"`) {
+		t.Error("release.yml assets must publish the draft release only after uploading the assets")
+	}
 
 	script := readRepoFile(t, "scripts", "ci", "release-assets.sh")
 	requireContainsAll(t, "scripts/ci/release-assets.sh", script,
@@ -1038,6 +1061,9 @@ func TestReleaseAssetsShipDeployFilesAndLicences(t *testing.T) {
 		"bash scripts/licenses/generate-third-party.sh",
 		"THIRD_PARTY_LICENSES.md",
 		"SHA256SUMS",
+		// The deploy tarball carries the licence and NOTICE (Apache-2.0, 4(a)/(d)).
+		"legal=(LICENSE NOTICE)",
+		"--add-file=",
 	)
 }
 
