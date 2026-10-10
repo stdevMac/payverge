@@ -317,6 +317,9 @@ func CreateOffer(c *gin.Context) {
 		writeOfferValidationError(c, err)
 		return
 	}
+	if refuseDemoImage(c, req.Image, "") {
+		return
+	}
 
 	businessID, err := parseBusinessIDParam(c)
 	if err != nil {
@@ -505,6 +508,9 @@ func UpdateOffer(c *gin.Context) {
 		writeOfferValidationError(c, err)
 		return
 	}
+	if refuseDemoImage(c, req.Image, existing.Image) {
+		return
+	}
 
 	startDate, _ := parseOptionalDate(req.StartDate)
 	endDate, _ := parseOptionalDate(req.EndDate)
@@ -607,6 +613,9 @@ func CreateBundle(c *gin.Context) {
 	}
 	if req.Price <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "price must be greater than 0"})
+		return
+	}
+	if refuseDemoImage(c, req.Image, "") {
 		return
 	}
 
@@ -732,6 +741,9 @@ func UpdateBundle(c *gin.Context) {
 	}
 	if req.Price <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "price must be greater than 0"})
+		return
+	}
+	if refuseDemoImage(c, req.Image, existing.Image) {
 		return
 	}
 

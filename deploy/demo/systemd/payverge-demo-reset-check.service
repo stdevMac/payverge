@@ -16,9 +16,9 @@ After=docker.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/opt/payverge
-EnvironmentFile=-/opt/payverge/demo/reset.env
-Environment=DEMO_COMPOSE_DIR=/opt/payverge
-ExecStart=/opt/payverge/demo/reset-demo.sh --check
+WorkingDirectory=/opt/payverge/deploy
+EnvironmentFile=-/opt/payverge/deploy/demo/reset.env
+Environment=DEMO_COMPOSE_DIR=/opt/payverge/deploy
+ExecStart=/opt/payverge/deploy/demo/reset-demo.sh --check
 TimeoutStartSec=5min
 Nice=10

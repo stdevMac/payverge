@@ -51,20 +51,21 @@ type InstanceInfo struct {
 // configured. Every flag is a boolean; no configuration value is exposed.
 // docs/api/instance.md documents what each flag means.
 //
-// FiscalAR is a capability, not an activation: it is always true because the
-// ARCA (AFIP) e-invoicing module has no build tag or instance switch, so every
-// install can offer it. A venue invoices only after it opts in (fiscal
-// settings plus its own ARCA certificate), and the UI shows ARCA surfaces only
-// to businesses whose country is AR. It never means "this instance is in
-// Argentina".
+// FiscalAR is a capability, not an activation: it is true on every install
+// because the ARCA (AFIP) e-invoicing module has no build tag or instance
+// switch. A venue invoices only after it opts in (fiscal settings plus its own
+// ARCA certificate), and the UI shows ARCA surfaces only to businesses whose
+// country is AR. It never means "this instance is in Argentina". The one
+// exception is DEMO_MODE, where it is false because the demo guard refuses
+// every fiscal write.
 type InstanceFeatures struct {
 	AI          bool `json:"ai"`
 	WhatsApp    bool `json:"whatsapp"`
 	Telegram    bool `json:"telegram"`
 	Email       bool `json:"email"`
 	GoogleOAuth bool `json:"google_oauth"`
-	Crypto      bool `json:"crypto"` // false under DEMO_MODE (crypto routes are refused there)
-	FiscalAR    bool `json:"fiscal_ar"`
+	Crypto      bool `json:"crypto"`    // false under DEMO_MODE (crypto routes are refused there)
+	FiscalAR    bool `json:"fiscal_ar"` // false under DEMO_MODE (fiscal writes are refused there)
 }
 
 // InstanceDemo reports whether the install was seeded with demo data.
@@ -152,10 +153,12 @@ func BuildInstanceInfo() InstanceInfo {
 		crypto = rt.CryptoEnabled
 		telegram = rt.TelegramEnabled
 	}
-	// The public demo refuses every crypto payment/quote route
-	// (internal/demomode), so advertising the rail would only lead guests to a
-	// 403. Report it off so the guest UI hides the crypto tender.
-	if config.DemoModeEnabled() {
+	// The public demo refuses every crypto payment/quote route and every
+	// fiscal (ARCA) write (internal/demomode), so advertising either would
+	// only lead to a 403. Report both off so the guest UI hides the crypto
+	// tender and the dashboard hides the fiscal tab.
+	demoMode := config.DemoModeEnabled()
+	if demoMode {
 		crypto = false
 	}
 
@@ -179,7 +182,7 @@ func BuildInstanceInfo() InstanceInfo {
 			Email:       emailProvider != config.EmailProviderLog,
 			GoogleOAuth: strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_ID")) != "" && strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_SECRET")) != "",
 			Crypto:      crypto,
-			FiscalAR:    true, // capability, not activation (see InstanceFeatures)
+			FiscalAR:    !demoMode, // capability, not activation (see InstanceFeatures)
 		},
 		Demo: instanceDemo(),
 	}
