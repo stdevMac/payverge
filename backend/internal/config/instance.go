@@ -12,7 +12,8 @@ package config
 // Env contract (all optional outside production):
 //
 //	PUBLIC_URL         canonical same-origin URL (API at /api/v1, media at /media/*).
-//	                   Required (https) in production. The CORS and redirect
+//	                   Required in production: https, or http on a loopback
+//	                   host only. The CORS and redirect
 //	                   allow-list defaults trust exactly the PUBLIC_URL origin,
 //	                   never APP_BASE_URL and never an implicit www./apex twin.
 //	PRODUCT_NAME       display name (default "Payverge").
@@ -317,8 +318,8 @@ func ValidateInstance(productionFlag bool) (errs []ValidationError, warnings []V
 		switch {
 		case err != nil:
 			errs = append(errs, ValidationError{Field: key, Message: err.Error()})
-		case production && !strings.HasPrefix(normalized, "https://"):
-			errs = append(errs, ValidationError{Field: key, Message: "must use https in production"})
+		case production && !productionPublicScheme(normalized):
+			errs = append(errs, ValidationError{Field: key, Message: "must use https in production (http is accepted only for localhost)"})
 		}
 	} else if production {
 		errs = append(errs, ValidationError{Field: "PUBLIC_URL", Message: "is required in production (the https origin guests and staff use, e.g. https://pos.example.com)"})
@@ -344,6 +345,18 @@ func ValidateInstance(productionFlag bool) (errs []ValidationError, warnings []V
 		warnings = append(warnings, ValidationError{Field: "SUPPORT_EMAIL", Message: "not set; emails and error pages will not show a support contact"})
 	}
 	return errs, warnings
+}
+
+// productionPublicScheme applies the production scheme rule to a normalized
+// public origin: https, or plain http on a loopback host. It is the same
+// exception parsePublicOrigin grants the production preflight, so the
+// production-mode CI stack and laptop rehearsals boot on http://localhost.
+func productionPublicScheme(normalized string) bool {
+	if strings.HasPrefix(normalized, "https://") {
+		return true
+	}
+	u, err := url.Parse(normalized)
+	return err == nil && u.Scheme == "http" && isLoopbackHost(u.Hostname())
 }
 
 func firstSetEnv(keys []string) (value, key string, ok bool) {
