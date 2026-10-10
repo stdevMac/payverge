@@ -1,21 +1,20 @@
-# Frontend route-bundle performance gate — baseline (Session Q / Root A)
+# Frontend route-bundle performance gate: baseline
 
 **Date:** 2026-08-06  
-**Branch:** `audit/r3-perf`  
 **Metric owner:** `frontend/scripts/check-route-bundle-budget.js`  
 **Budgets file:** `frontend/route-bundle-budget.json`
 
 ## Why this exists
 
 `CLAUDE.md` defines a **Backend** Performance Gate only (`testing.B`, `-benchmem`,
-`-count=3`, results in `summary.md`). Ledger rows L3-1 / L3-12 / L6-8 were parked
-at "PENDING (perf gate)" behind a gate that did not exist. This document is the
+`-count=3`, results in `summary.md`). Frontend changes that only move bundle
+weight (dashboard code splitting, polling changes) had no gate to report against. This document is the
 FE sibling: **per-route raw on-disk KiB** from `.next/app-build-manifest.json` +
 `statSync` on each listed chunk. FE numbers live here under `docs/performance/`;
 do **not** append them to `summary.md`.
 
 Sibling (different metric): `frontend/scripts/check-bundle-budget.js` measures
-**gzipped** shared-root + total client JS. Both gates are useful; L3-1 uses the
+**gzipped** shared-root + total client JS. Both gates are useful; the dashboard split uses the
 route graph gate because the dashboard's static-import wall shows up as a fat
 page-route sum.
 
@@ -45,7 +44,7 @@ Unit tests (no build required):
 npx jest --watchman=false --runInBand scripts/__tests__/check-route-bundle-budget.test.js
 ```
 
-## Baseline measured 2026-08-06 (pre L3-1)
+## Baseline measured 2026-08-06 (before the dashboard split)
 
 | Metric | Value |
 |--------|-------|
@@ -77,9 +76,9 @@ Gate budgets seeded with +10% headroom:
 
 ## Notes
 
-- Raw sums over-count shared chunks that appear in multiple routes — same as the
-  scout metric. Regression signal for the dashboard graph, not true network cost.
-- For L3-12 / L6-8 use **network call-count** Jest gates (fake timers), not this
-  bundle harness.
-- After L3-1 (`dynamic()` splits), re-run the same commands and record after
-  numbers in `docs/performance/frontend-route-bundle-l3-1.md`.
+- Raw sums over-count shared chunks that appear in multiple routes. This is a
+  regression signal for the dashboard graph, not true network cost.
+- For polling or request-count changes use **network call-count** Jest gates
+  (fake timers), not this bundle harness.
+- After the dashboard `dynamic()` split, the same commands were re-run; the
+  after numbers are in `docs/performance/frontend-route-bundle-dashboard-split.md`.

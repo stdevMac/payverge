@@ -1,8 +1,7 @@
-# Frontend route-bundle — L3-1 after `dynamic()` rail split
+# Frontend route-bundle: after the dashboard `dynamic()` rail split
 
 **Date:** 2026-08-06  
-**Branch:** `audit/r3-perf`  
-**Baseline:** `docs/performance/frontend-route-bundle-baseline.md` (pre-L3-1)
+**Baseline:** `docs/performance/frontend-route-bundle-baseline.md` (before the split)
 
 ## Commands (exact; three clean builds)
 
@@ -26,7 +25,7 @@ done
 
 ## Before / after (gate metric: app-build-manifest + statSync)
 
-| Metric | Baseline (pre L3-1) | After L3-1 (×3 builds) | Delta |
+| Metric | Baseline (before the split) | After the split (×3 builds) | Delta |
 |--------|---------------------|------------------------|-------|
 | Dashboard total KiB | **5920.7** | **3394.3** | **−2526.4 KiB (−42.7%)** |
 | Dashboard chunks | **46** | **39** | **−7** |
@@ -47,4 +46,4 @@ All ~20 statically imported dashboard rails converted to `dynamic(..., { ssr: fa
 ## Notes
 
 - Shared `lazyRail` options object is **rejected** by Next (`dynamic options must be an object literal`) — options inlined per call.
-- Budgets were intentionally **not** reseeded tighter yet so residual headroom remains for adjacent sessions; coordinator may reseed after merge.
+- Budgets were intentionally **not** reseeded tighter, so the headroom above the new size remains; a later change can reseed them with `--write`.

@@ -1,6 +1,6 @@
-# OSS follow-ups (backend) — benchmark log
+# Pre-release backend follow-ups: benchmark log
 
-## Basic-mode waiter menu-listing intents (boot finding F6)
+## Basic-mode waiter menu-listing intents
 
 Change: `classifyWaiterV2Intent` recognises more full-menu phrasings
 ("show me the menu", "what's on the menu", "what do you have", ...) and

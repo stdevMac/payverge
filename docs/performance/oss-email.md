@@ -1,18 +1,20 @@
-# OSS email workstream: perf-gate evidence
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# Email verification mode: perf-gate evidence
 
 > Point-in-time evidence. Migration numbers cited here (0002xx) predate the
 > squash into `backend/schema/genesis/current_schema.sql`; that schema now
 > lives in the genesis baseline, and numbered migrations restart at 000001.
 
 Machine: Apple M3, darwin/arm64, go1.26.2. SQLite in-memory microbenchmarks.
-Base commit: e26f72b6d (`oss/main` at dispatch; migration head 000222).
-No migrations, indexes or new tables in this workstream.
+Base commit: e26f72b6d (pre-release main; migration head 000222).
+No migrations, indexes or new tables in this change.
 
 ## Hot path: `verification.IsOperatorVerified`
 
 `verifyPersistedOperatorSession`
 (backend/internal/server/verified_email_session_boundary.go) calls it on every
-authenticated email/register request. The email workstream made it
+authenticated email/register request. This change made it
 mode-aware:
 
 - `EMAIL_VERIFICATION=required` keeps the base predicates (both

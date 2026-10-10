@@ -1,16 +1,19 @@
-# Open-source release: AI cost and abuse hardening (sec-ai), 2026-10-03
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# AI cost and abuse hardening before the open-source release, 2026-10-03
 
 > Point-in-time evidence. Migration numbers cited here (0002xx) predate the
 > squash into `backend/schema/genesis/current_schema.sql`; that schema now
 > lives in the genesis baseline, and numbered migrations restart at 000001.
 
-This is the Backend Performance Gate record for the `oss/sec-ai` workstream.
-It covers plan section 5 items H-ai-cost, M-ai01, H-places and the concierge
-lead flood. The baseline is `oss/main` at `e26f72b6d`, exported to a scratch
+This is the Backend Performance Gate record for the pre-release AI cost and
+abuse hardening: the AI cost budget, guest AI message limits, Google Places
+caching and the concierge lead flood. The baseline is the pre-release main
+branch at `e26f72b6d`, exported to a scratch
 directory and benchmarked from there. Before and after runs were interleaved
 on one machine (Apple M3, 8 cores).
 
-The machine was shared with other workstreams during these runs (load average
+The machine was shared with other builds during these runs (load average
 5.7 to 6.3), so latency figures vary a lot between runs. The B/op, allocs/op
 and upstream-calls/op figures are deterministic, and the conclusions below
 rest on them.
@@ -86,7 +89,7 @@ temporary probe:
   session reach 65 stored messages against a cap of 60.
 - After the change, a refused turn writes nothing.
 
-## 3. Google Places reads (H-places)
+## 3. Google Places reads
 
 `BenchmarkPlacesDetailsRead` in `backend/internal/server/places_cache_test.go`
 measures one storefront render's Places reads, which is one details call
@@ -129,7 +132,7 @@ cd ../frontend && npx jest src/components/concierge src/lib/storefront/serverDat
 
 - **Postgres-backed reservation tests** (`budget_scopes_test.go`): these need
   `TEST_DATABASE_URL`. They ran green against a throwaway Postgres 15
-  container during this stream. Without that variable set they skip.
+  container during this work. Without that variable set they skip.
 - **Multi-replica behaviour**: the in-memory quota counters, the Places cache
   and the concierge lead counters are per process. N replicas multiply each
   ceiling by N, while the durable USD ledger stays the shared backstop.
@@ -156,7 +159,7 @@ read to the guest pre-check. Two optimizations pay for most of it:
 
 `BenchmarkAICostGateOverBudget` and `BenchmarkCallBudgetReserveFinalize`
 (`backend/internal/llm/budget_bench_test.go`), Postgres 15. The before tree
-is `9b382b40f` (this stream before the fix round) with the new benchmark
+is `9b382b40f` (this change before the fix round) with the new benchmark
 file added. The table shows the final interleaved set, three runs per binary:
 
 ```bash

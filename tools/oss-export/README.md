@@ -2,21 +2,27 @@
 
 This tool builds the public `stdevMac/payverge` repository from a ref of the private repository. The result is a fresh repository with a single commit. It never pushes; the push is a manual step only the owner runs (see the end of this file).
 
-> **Maintainer tool.** It is in the public tree only so the release process can be read and audited. It cannot run from a clone of the public repository: it refuses to export without `forbidden.txt`, and that file and the other lists are private by design (they name the strings that must not ship; see [Configuration (private)](#configuration-private)). Their in-repository copy lives under `docs/superpowers/oss-export/`, which the export itself removes. Contributors do not need this tool.
+> **Maintainer tool.** It is in the public tree only so the release process can be read and audited. It cannot run from a clone of the public repository: it refuses to export without `forbidden.txt`, and that file and the other lists are private by design (they name the strings that must not ship; see [Configuration (private)](#configuration-private)). Their in-repository copy lives in the private repository's planning tree, which the export itself removes. Contributors do not need this tool.
 
 ```
 tools/oss-export/export.sh [<ref>] <outdir> --author-email <email> [options]
 ```
 
-- `<ref>` is any commit-ish. The default is `oss/main`.
+- `<ref>` is any commit-ish. The default is `oss/main`, the release branch of the private repository.
 - `<outdir>` must be a new or empty directory **outside** the repository.
 - `--author-email` is required and has no default. It sets the author and committer email of the public commit. The name defaults to `Marcos Maceo`.
 - The tool is plain bash (it also runs on macOS `/bin/bash` 3.2) plus Node 20 or newer. It needs no npm packages.
 
+## After v1.0.0
+
+The exporter was a one-shot. It builds a fresh repository whose single root commit has no history in common with anything already published, and it produced the v1.0.0 release.
+
+Public `main` is now the source of truth. Changes land there by pull request; security fixes are developed in the private fork of a GitHub Security Advisory, as described in [Security releases](../../docs/governance/RELEASING.md#security-releases). Publishing a new export would mean replacing `main` with an unrelated root commit, which needs a force push, and the `main` ruleset blocks force pushes. The rest of this file documents how the v1.0.0 export was built.
+
 ## What it does
 
 1. **Archive.** It runs `git archive <ref> | tar -x` into `<outdir>`. Only the ref's tracked content is used. The working tree, including untracked files such as `frontend/.env`, is never read. Your global and system git config and attributes are ignored here too (no `core.autocrlf`, no `core.eol`, no global `export-ignore` or filter), so they cannot change which bytes are exported. The private repository's own `.gitattributes`, `.git/config` and `.git/info/attributes` still apply.
-2. **Drop.** It removes every `docs/superpowers/` directory, at any depth (always), and every path in `drop.txt`. Directories left empty are removed too. Entries that match nothing only print a warning.
+2. **Drop.** It removes the private planning tree at any depth (always; see `BUILTIN_DROPS` in `lib/steps.mjs`), and every path in `drop.txt`. Directories left empty are removed too. Entries that match nothing only print a warning.
 3. **Scrub.** It applies the rules in `scrub.rules` to every UTF-8 text file. Binary files are skipped.
 4. **Gates.** It runs every gate listed below. If any gate fails, the script exits with status 1. The tree is left in place for inspection, and no repository is created. If the script stops before the drop and scrub steps have finished (for example on a configuration error), it deletes the raw archive from `<outdir>`, so an unsanitized tree is never left behind.
 5. **Stats.** It prints the file count, the total size, the size of each top-level entry and the largest files.
@@ -57,7 +63,7 @@ Reports are written to `<outdir>.export-report/`, or to the directory given by `
 | f | `env-files` | A file named `.env`, `.env` followed by `.`, `-` or `_` and anything (`.env.local`, `.env-production`, `.env_local`), `*.env`, `.envrc` or `.envrc.*` is present, or any file sits under a `.envs/` directory (`.envs/.production/.django`). Names are compared case-insensitively. Only names ending in `.example` are exempt. `--allow-env-file <path>` exempts one file, and needs the owner's sign-off. |
 | g | `gitignore-clean` | `git check-ignore --no-index` reports a file as ignored by the exported `.gitignore` files. Your global excludes are not consulted. |
 | h | `license` | `LICENSE` is missing, is not a regular file, or is not the Apache-2.0 text. The whole file is compared with the canonical text in `lib/apache-2.0.txt`, with whitespace collapsed: the terms must match word for word (`not-apache-2.0`), and nothing may follow them except the stock appendix (`text-after-apache-terms`), so the Apache text with an added restriction such as a Commons Clause fails. The appendix's copyright line may keep its placeholder, or name years and exactly the `--copyright-holder` (default: the author name, `Marcos Maceo`), optionally with `(c)` or `©` and a final period. Anything else on that line fails as `copyright-holder-mismatch`, so a restriction cannot ride in on it (`Copyright 2026 Marcos Maceo. Commercial use is not permitted ...`). A missing `NOTICE` only produces a note. |
-| i | `private-paths` | A `docs/superpowers` directory exists at any depth (`frontend/docs/superpowers/` counts, and so does any letter case), or any path still matches a drop entry. |
+| i | `private-paths` | The private planning tree (`BUILTIN_DROPS` in `lib/steps.mjs`) exists at any depth, in any letter case, or any path still matches a drop entry. |
 | j | `doc-links` | A relative link (inline, image or reference definition, outside code) in `README.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md` or `docs/agents/README.md` points at a path that is not in the exported tree (`link-target-missing`), or climbs above the tree root (`link-leaves-tree`). Fragments and queries are ignored; a leading `/` resolves from the tree root. This catches a drop entry that removes something the entry-point docs promise, such as `.claude/skills/`. |
 
 ### What gate (c) reads
@@ -94,7 +100,7 @@ The lists name the very strings that must not ship, so none of them may be in th
 1. The explicit flag: `--forbidden`, `--drop`, `--scrub` or `--secrets-allow`.
 2. `--config-dir DIR`. When this is given, the script reads all four files from `DIR` only.
 3. `<parent of the main checkout>/oss-private/<name>`. For `/Users/x/payverge` that is `/Users/x/oss-private/`.
-4. `<ref>:docs/superpowers/oss-export/<name>`. The script copies the file out of the archive before the drop step, which then removes it.
+4. `<ref>:<CONFIG_SUBDIR>/<name>`, where `CONFIG_SUBDIR` (set in `export.sh`) is a directory inside the private planning tree. The script copies the file out of the archive before the drop step, which then removes it.
 
 `forbidden.txt` is mandatory: the script refuses to export without it. The other three files are optional. A config file that resolves to a path inside the outdir is rejected.
 
@@ -155,7 +161,6 @@ Each line is a reviewed synthetic fixture, pinned by the hash of its value, so c
 
 ```bash
 # 0. The licence branch must be merged so LICENSE exists (gate h).
-#    oss/main must contain the upstream Phase A fixes.
 
 # 1. Dry run. Nothing is committed and the gates report what still leaks.
 tools/oss-export/export.sh oss/main /tmp/payverge-public \

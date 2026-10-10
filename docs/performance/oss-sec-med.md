@@ -1,20 +1,22 @@
-# oss/sec-med performance evidence (2026-10-03)
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# Pre-release security fixes (medium severity): performance evidence (2026-10-03)
 
 > Point-in-time evidence. Migration numbers cited here (0002xx) predate the
 > squash into `backend/schema/genesis/current_schema.sql`; that schema now
 > lives in the genesis baseline, and numbered migrations restart at 000001.
 
-Benchmark log for the open-source-release security workstream "sec-med"
-(plan §5 S-Medium + selected S-Low). Every change below touches a hot path
+Benchmark log for the medium- and selected low-severity security fixes made
+before the open-source release. Every change below touches a hot path
 named by the Backend Performance Gate (many-route middleware, public guest
 routes), so each one records a before/after run.
 
 Environment: Apple M3, darwin/arm64, in-memory SQLite fixtures, hermetic test
 env (`PLUGIN_SECRET_KEY=payverge-hermetic-test-key-00000 GO_ENV=test`, URL and
-provider env vars unset). Other workstreams were building on the same machine,
+provider env vars unset). Other builds were running on the same machine,
 so ns/op carries noise; B/op and allocs/op are the stable signal.
 
-## M-role: HybridAuthenticationMiddleware live admin role
+## HybridAuthenticationMiddleware live admin role
 
 `BenchmarkHybridAuthUserToken` (`backend/internal/server/hybrid_live_role_test.go`)
 drives `HybridAuthenticationMiddleware` with a bearer user token backed by a
@@ -35,7 +37,7 @@ read. Admin-claim tokens pay one narrow `SELECT id, role, address FROM users`
 by primary key (about +5 us, +76 allocs), the same shape
 `AuthenticationAdminMiddleware` already uses.
 
-## IPv6 /64 limiter keying + M-track per-client fallback
+## IPv6 /64 limiter keying + per-client fallback
 
 `BenchmarkIPKeyedRateLimit` (`backend/internal/middleware/client_key_test.go`)
 drives `RateLimit` and `AuthRateLimiter` on the allow path. The change routes
@@ -66,7 +68,7 @@ The delivery tracking route gains a dedicated `AuthRateLimiter(120, 20)`
 `TrackDelivery` only adds `public_token` to the bill summary when the order is
 awaiting payment; its query shape is unchanged.
 
-## M-sse: separate guest SSE pool
+## Separate guest SSE pool
 
 `Hub.SubscribeGuestLimited` counts public guest streams in their own
 per-business / per-IP counters (`SSE_MAX_GUEST_SUBSCRIBERS_PER_BUSINESS`,
@@ -77,7 +79,7 @@ single-lock check-and-register runs against a different pair of maps, and
 `Publish` (the fan-out hot path) is untouched, so no benchmark delta applies.
 Both SSE handlers now pass the /64-bucketed client key to the per-IP caps.
 
-## M-pin: keyed demo staff PINs
+## Keyed demo staff PINs
 
 Demo staff PINs are now HMAC-SHA256(HMAC(PLUGIN_SECRET_KEY, label), email)
 instead of sha256(constant + email); the derivation cost is unchanged (one
@@ -97,7 +99,7 @@ About 0.9 ms per seeded staff member, so roughly 5 ms per demo business on
 the admin-only, non-polled `SummaryForAdmin` read. No guest or operator hot
 path is affected.
 
-## M-siwe: SIWE message validation and nonce-keyed challenges
+## SIWE message validation and nonce-keyed challenges
 
 Wallet sign-in (`POST /auth/challenge`, `/auth/signin`, `/auth/wallet/link`)
 is behind `authLimiter` (10/min per client) and is not one of the gate's hot
@@ -124,7 +126,7 @@ go test -short -count=3 -run '^$' -bench 'BenchmarkRequireTrustedOriginForMutati
 | no_origin_bearer    | 167.7 / 152.9 / 144.0 | 436.5 / 378.9 / 287.2 | 208 | 208 | 4 | 4 |
 | no_origin_no_cookie | 132.6 / 128.8 / 131.1 | 200.2 / 174.7 / 199.5 | 208 | 208 | 4 | 4 |
 
-The after run overlapped heavy builds from sibling workstreams (the
+The after run overlapped heavy builds on the same machine (the
 trusted-Origin path executes byte-identical code before and after, yet moved
 by +80..230 ns), so ns/op here is load, not the change. B/op and allocs/op
 are identical on every path. The browser path never reaches the new code; the
@@ -176,11 +178,11 @@ round trip are about 1.5 us, against a wallet signature check that costs much
 more.
 
 `demo.RotateLegacyDemoStaffPINs` (a boot-time re-key of demo staff seeded
-with the pre-M-pin derivation) was removed before the open-source release: no
+with the earlier unkeyed PIN derivation) was removed before the open-source release: no
 instance ever held such rows. `BenchmarkDemoPINMatchesHash` still covers the
 Demo Center hint check.
 
-## Fix round 2: M-545 guest fiscal identity bound to the paying session
+## Fix round 2: guest fiscal identity bound to the paying session
 
 `POST /guest/bill/:bill_token/fiscal-customer` now records the caller's guest
 session fingerprint as the setter (migration 000226), lets a different guest

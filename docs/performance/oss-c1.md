@@ -1,10 +1,12 @@
-# OSS C1 — Guest USDC payer binding: Perf Gate Evidence
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# Guest USDC payer binding: perf-gate evidence
 
 > Point-in-time evidence. Migration numbers cited here (0002xx) predate the
 > squash into `backend/schema/genesis/current_schema.sql`; that schema now
 > lives in the genesis baseline, and numbered migrations restart at 000001.
 
-Workstream C1 of the open-source release plan (§3.1, §5 C1) fixes S-Critical
+This change, made before the open-source release, fixes a critical
 USDC payment replay. Every guest USDC quote now reserves a unique exact amount in
 `crypto_payment_quotes` (migration 000223). Settlement loads that row and consumes
 it in the same transaction as the payment insert. This file records what that
@@ -17,7 +19,7 @@ in-memory microbenchmarks with a silent GORM logger.
   the routes behave as they did before binding. It was exported with
   `git archive` into a scratch directory and the new issuance benchmark copied
   in, so both sides ran on the same host in alternating rounds.
-- **After:** branch `oss/c1` at the handler-binding commit plus this perf slice.
+- **After:** the handler-binding commit plus the benchmarks recorded here.
 
 ## What the binding adds to the database path
 
@@ -106,9 +108,9 @@ statements in the table above.
 
 The literal-status change cut 2 allocs/op (910 → 908).
 
-### Per-client quote cap (review c1 L3)
+### Per-client quote cap
 
-Before L3, anyone holding a bill link could take the bill's 40 live-quote slots
+Before this cap, anyone holding a bill link could take the bill's 40 live-quote slots
 in seconds and lock every other payer out for a quote TTL. Each quote now
 carries a `client_key`, an HMAC of the client IP keyed with the quote secret.
 The IP itself is never stored, and the key is cleared on consume and on expiry.
@@ -121,7 +123,7 @@ One client may hold at most 12 live quotes per bill.
 - **Run:** `BenchmarkIssueCryptoQuoteSQLite`, `-benchmem -count=3`, alternating
   on the same host.
   - **Before:** committed `9901305bc`, exported with `git archive`.
-  - **After:** the L3 working tree.
+  - **After:** the working tree with the per-client cap.
   - **Load:** 19–36, so ns/op is noise again.
 
 | Run | ns/op (3 runs) | B/op | allocs/op |

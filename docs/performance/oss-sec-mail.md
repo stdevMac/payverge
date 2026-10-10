@@ -1,17 +1,19 @@
-# oss-sec-mail: outbound mail budget performance
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# Outbound mail budget: performance evidence
 
 > Point-in-time evidence. Migration numbers cited here (0002xx) predate the
 > squash into `backend/schema/genesis/current_schema.sql`; that schema now
 > lives in the genesis baseline, and numbered migrations restart at 000001.
 
 Date: 2026-10-03
-Branch: `oss/sec-mail` (base `e26f72b6d`)
+Base: pre-release main at `e26f72b6d`
 
-This stream adds a per-tenant outbound email budget to the email dispatch
+This change adds a per-tenant outbound email budget to the email dispatch
 choke point (`emails.EmailServer.dispatch` → `claimTenantMail`). Tenant-
 triggered sends now touch the database before they are queued or sent, so the
 Backend Performance Gate applies to that path. No other hot path gained
-queries; the remaining changes in the stream are listed under "Query shape" below.
+queries; the remaining changes are listed under "Query shape" below.
 
 ## Query shape
 
@@ -42,7 +44,7 @@ window opens with the counter's first counted send and resets 24 hours later.
 It is not a UTC calendar day and not a sliding window
 (`TestTenantMailBudget_WindowIsNotACalendarDay`).
 
-The stream adds no table. The ledger reuses `auth_attempts`, whose unique
+The change adds no table. The ledger reuses `auth_attempts`, whose unique
 `(principal, kind)` index comes from migration 000091. A janitor deletes
 expired rows every hour.
 
@@ -59,7 +61,7 @@ wait on an owner decision. Since FIX round 2, the staff, wallet and
 booking-approval notices to that address are stamped, and so is all delivery
 mail to the guest (see below).
 
-The other changes in this stream add no query on a hot path:
+The other changes add no query on a hot path:
 
 - **Reservation field caps:** CPU-only rune checks.
 - **Guest-text scrub in the reservation senders:** fewer template keys.
@@ -79,7 +81,7 @@ iteration:
 - **`with`:** the real `GormTenantMailBudget`, with caps set to `1<<30`, on a receipt (`ForBill`) send. Every iteration performs the dedupe, tier, business and per-business recipient sequence and never refuses.
 - **`with-booking-lane`** (added in FIX round 1): the same budget on a public booking-form (`ForReservationRequest`) send, which also takes the lane day, cross-tenant recipient and lane recipient keys.
 
-Command (hermetic env prefix from the workstream brief):
+Command (hermetic test env prefix):
 
 ```bash
 cd backend
@@ -97,7 +99,7 @@ The delta is about 109 µs, 43 KB and 597 allocations per budgeted send on
 SQLite.
 
 FIX round 1 rerun (same command, same machine, 2026-10-03, after the
-guest-booking lane split). The machine was shared with other workstreams at a
+guest-booking lane split). The machine was shared with other builds at a
 load average near 30 on 8 cores, so ns/op is inflated across the board: the
 unchanged `without` baseline itself ran 2.5–6x slower than above. B/op and
 allocs/op do not depend on load and are the comparable numbers.
@@ -128,7 +130,7 @@ Follow-up F-1 (2026-10-04) puts back an all-purpose cross-tenant recipient key
 send, so sybil businesses cannot each mail one victim up to the per-business
 recipient cap through invites or receipts. The lane keeps its own, stricter
 key (`EMAIL_TENANT_RECIPIENT_GLOBAL_DAILY_CAP`, default 10). Same command,
-quiet host, before = oss/main 14ff9974c, after = oss/followups-be:
+quiet host, before = pre-release main at `14ff9974c`, after = the follow-up change:
 
 | Variant | before ns/op (3 runs) | before B/op, allocs | after ns/op (3 runs) | after B/op, allocs |
 | --- | --- | --- | --- | --- |
@@ -144,7 +146,7 @@ sits in front of an outbox insert or a provider HTTP call.
 Not done: the Postgres (Testcontainers) variant of this benchmark. Possible
 follow-up: cache the business tier per process for a short TTL, which saves
 the one select in every claim. The tier changes rarely, and it would need invalidation
-on subscription change. This is listed in the workstream backlog.
+on subscription change. It was not implemented.
 
 FIX round 2 (2026-10-03) stamps four more call sites: staff added
 (`ForBusiness`), staff removed (`ForBusiness`), wallet changed (`ForBusiness`)
@@ -255,4 +257,4 @@ environment prefix.
 - the static shape of migration 000224;
 - with `-tags integration_postgres` and Docker:
   - `TestRollbackRehearsal_EachMigration` passed, including the 000224 down then up;
-  - `TestSchemaFingerprint_*` passed only with a regenerated genesis snapshot (see the integrator notes).
+  - `TestSchemaFingerprint_*` passed only with a regenerated genesis snapshot.
