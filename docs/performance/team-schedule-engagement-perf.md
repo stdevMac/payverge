@@ -1,8 +1,10 @@
-# Stream 5 — Team + Schedule + Communication/Engagement — Perf Notes
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
 
-Base commit: 7feaee760 (origin/main)
+# Team, schedule and communication: perf notes
 
-Backend perf gate applies to list-shape/query changes in this stream:
+Base commit: 7feaee760 (pre-release main)
+
+Backend perf gate applies to these list-shape/query changes:
 - Fix 1: batch ack-summary endpoint (new query shape)
 - Fix 6: timesheet review pagination + window (new params on ListForReview)
 

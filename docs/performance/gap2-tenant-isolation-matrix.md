@@ -1,4 +1,4 @@
-# GAP-2 tenant isolation matrix (Session Q)
+# Tenant isolation matrix
 
 **Generated:** 2026-08-06T05:08:09.512490Z
 

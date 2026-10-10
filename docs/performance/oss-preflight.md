@@ -1,4 +1,4 @@
-# OSS preflight — performance evidence (2026-10-03)
+# Self-host production preflight: performance evidence (2026-10-03)
 
 Scope: the self-host production preflight change. Only one part of it
 touches a request hot path: the guest crypto settlement chain gate that refuses

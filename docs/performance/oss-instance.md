@@ -1,6 +1,7 @@
-# OSS instance workstream — performance evidence (2026-10-03)
+# Instance runtime config: performance evidence (2026-10-03)
 
-Scope: the open-source "instance" slice (plan items A1.2, A1.9–A1.11). The
+Scope: the self-host "instance" change (runtime instance config, LLM provider
+wiring, guest order request-id validation). The
 only new hot path is the public `GET /api/v1/instance` probe, which the
 frontend reads on SSR and client boot. Other changes in this slice are
 startup-only (env resolution, LLM provider wiring) or replace string
@@ -72,7 +73,7 @@ Their callers are a few low-frequency paths:
 None of them is on a per-request guest or dashboard polling path, so no
 benchmark was needed.
 
-## Guest order `X-Request-Id` validation (A1.11)
+## Guest order `X-Request-Id` validation
 
 `POST /api/v1/guest/table/{code}/order` now rejects an over-long
 `X-Request-Id` in the handler (`guestOrderRequestID`), before checkout, with a

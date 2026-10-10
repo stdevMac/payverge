@@ -27,7 +27,6 @@ export const fixtureAllowlist = new Set([
   "private-key:backend/internal/observability/scrub_test.go:ea8696da0734af5173edae257b040d52281cb29f422cb1a2192e269cdc58b9ed",
   "stripe-live-secret:backend/internal/security/config_secrets_test.go:fe709a5f81decd30cc2c07e5aa7c3a0e8027e127da9c0dfabd80f38ea8aa50d8",
   "stripe-live-secret:backend/internal/services/menu_ai_diagnostics_test.go:c71dc50c6d0af42b23a5ff24d7885193ce30ab962a1e412441ff90058c9383da",
-  "stripe-live-secret:docs/superpowers/plans/2026-07-18-production-qa-lane2-ai-media-reliability.md:c71dc50c6d0af42b23a5ff24d7885193ce30ab962a1e412441ff90058c9383da",
   "aws-access-key:frontend/src/components/business/Marketing/templates/renderPost.test.ts:1a5d44a2dca19669d72edf4c4f1c27c4c1ca4b4408fbb17f6ce4ad452d78ddb3",
   "stripe-live-secret:frontend/src/components/business/plugins/__tests__/StripeConfig.live-key.test.tsx:fb2dd2a4e0ea901871b91990a8ae6da8b3c72dc07a3316829d79a0649e268cb4",
 ]);

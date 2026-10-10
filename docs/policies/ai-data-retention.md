@@ -1,6 +1,6 @@
 # AI Data Retention & Privacy Policy
 
-_Last updated: 2026-07-18 (AI system completion Wave 5)._
+_Last updated: 2026-07-18._
 
 This document describes how Payverge stores, retains, and deletes data produced
 by its AI features, and the legal basis for those choices. It is the source of

@@ -398,7 +398,7 @@ test("shipped guides never route new files into a denied planning tree", () => {
     const probe = target.endsWith("/") ? `${target}x.md` : target;
     return EXPORT_DENIED.some((re) => re.test(probe));
   };
-  const guides = ["AGENTS.md", "CLAUDE.md", "README.md", "docs/ONBOARDING.md", "docs/BACKLOG.md", ".github/CONTRIBUTING.md"];
+  const guides = ["AGENTS.md", "CLAUDE.md", "README.md", "docs/ONBOARDING.md", ".github/CONTRIBUTING.md"];
   const routed = [];
   for (const relative of guides) {
     if (!existsSync(path.join(ROOT, relative))) continue;
@@ -414,8 +414,12 @@ test("shipped guides never route new files into a denied planning tree", () => {
   assert.deepEqual(routed, [], "guides must not direct new files into a tree the export denies");
   assert.equal(isDenied("docs/plans/"), true, "probe self-check");
 
-  // Benchmark logs ship publicly: they must not cite private planning paths.
-  for (const relative of ["summary.md", "backend/summary.md"]) {
+  // Benchmark logs and the secret scanner's fixture allowlist ship publicly:
+  // they must not cite private planning paths.
+  const performanceLogs = readdirSync(path.join(ROOT, "docs", "performance"))
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => `docs/performance/${name}`);
+  for (const relative of ["summary.md", "backend/summary.md", "scripts/scan-secrets.mjs", ...performanceLogs]) {
     assert.doesNotMatch(read(...relative.split("/")), /docs\/superpowers\//, `${relative} cites a private plan path`);
   }
 });

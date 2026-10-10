@@ -1,6 +1,6 @@
-# Stream 6 — Bills / Kitchen / Tables / Counter perf notes
+# Bills, kitchen, tables and counter: perf notes
 
-Backend perf-gate evidence for list-shape/query changes made in this stream.
+Backend perf-gate evidence for list-shape/query changes to these areas.
 Format per change: bench name, command, before/after (ns/op, B/op, allocs/op).
 
 ## Finding 2 — Tables include_inactive param (GetTablesWithStatus)

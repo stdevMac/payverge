@@ -1,7 +1,6 @@
-# GAP-1 responsive owner rails — findings (Session Q)
+# Responsive owner rails: findings
 
 **Date:** 2026-08-06  
-**Branch:** `audit/r3-perf`  
 **Stack:** local docker compose stack with demo data · `admin@local.test`  
 **Harness:** `frontend/tests/qa-pipeline/responsive-owner-tabs.spec.ts`
 

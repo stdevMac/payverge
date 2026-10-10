@@ -1,7 +1,9 @@
-# Stream 7 (Inventory + CRM) — Perf Gate Evidence
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
+
+# Inventory and CRM: perf-gate evidence
 
 Machine: Apple M3, darwin/arm64. SQLite in-memory microbenchmarks.
-Base commit: c6ebdb940 (origin/main at dispatch; migration tail 000159).
+Base commit: c6ebdb940 (pre-release main; migration tail 000159).
 
 ---
 

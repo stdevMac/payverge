@@ -1,6 +1,8 @@
-# OSS storage driver: performance evidence (2026-10-03)
+> Short commit SHAs and branch names in this log refer to pre-release private history. They do not resolve in the public repository.
 
-This covers the `oss/storage` workstream: the pluggable object store, the local
+# Storage driver: performance evidence (2026-10-03)
+
+This covers the storage change: the pluggable object store, the local
 driver, `GET /media/*key`, and the rate-limiter exemption for `/media`. The
 Backend Performance Gate applies for two reasons. `/media` is a new public
 route that loads many times per menu page, and the change touches the
