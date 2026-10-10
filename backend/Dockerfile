@@ -9,10 +9,12 @@ RUN go mod download
 
 COPY . .
 
-# Go build tags. Empty by default: the published image is Apache-2.0 and links
-# no GPL code. GO_TAGS=whatsapp compiles in the WhatsApp channel, which pulls
-# go.mau.fi/libsignal (GPL-3.0) into /app/server; never publish such an image
-# without honouring GPL-3.0. See docs/self-hosting/whatsapp.md.
+# Go build tags. Empty by default: the published image is Apache-2.0 code plus
+# the LGPL-3.0-or-later go-ethereum library packages it links (see the license
+# label below), and it links no GPL code. GO_TAGS=whatsapp compiles in the
+# WhatsApp channel, which pulls go.mau.fi/libsignal (GPL-3.0) into /app/server;
+# never publish such an image without honouring GPL-3.0. See
+# docs/self-hosting/whatsapp.md.
 ARG GO_TAGS=""
 
 # Static, stripped binaries for distroless runtime.
@@ -68,7 +70,10 @@ USER nonroot:nonroot
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+# --start-period covers genesis bootstrap and migrations on first boot: failed
+# probes in that window do not count toward --retries. --start-interval is not
+# used because it needs Docker Engine 25 or newer.
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=90s \
   CMD ["/app/healthcheck"]
 
 ENTRYPOINT ["/app/server"]
