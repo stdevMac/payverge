@@ -203,7 +203,7 @@ written to the backend log.
 | `EMAIL_TENANT_RESERVATION_DAILY_CAP` | `200` | | yes | Reservation mail per restaurant per day. |
 | `EMAIL_TENANT_RESERVATION_RECIPIENT_DAILY_CAP` | `3` | | yes | Reservation mail per recipient per restaurant per day. |
 | `EMAIL_TENANT_DEDUPE_MINUTES` | `10` | | yes | Identical tenant messages to one recipient inside this window are sent once. |
-| `UNSUBSCRIBE_TOKEN_SECRET` | derived from `JWT_SECRET_KEY` | | no | Separate HMAC key for unsubscribe links. Changing it (or `JWT_SECRET_KEY` when unset) invalidates links already sent. |
+| `UNSUBSCRIBE_TOKEN_SECRET` | derived from `JWT_SECRET_KEY` | | yes | Separate HMAC key for unsubscribe links. Changing it (or `JWT_SECRET_KEY` when unset) invalidates links already sent. |
 
 ## File storage
 
@@ -253,7 +253,7 @@ platform-level values. Guide: [payments.md](payments.md).
 | `MERCADOPAGO_WEBHOOK_SECRET` | none | | yes | Signature secret for MercadoPago webhooks. |
 | `MERCADOPAGO_WEBHOOK_SECRET_PREVIOUS` | none | | yes | Previous secret, also accepted during a rotation. |
 | `MAX_PAYMENT_AMOUNT_CENTS` | `100000000` (1,000,000.00) | | yes | Hard ceiling on one payment. Invalid values fall back to the default. |
-| `CRYPTO_QUOTE_SECRET` | derived from `JWT_SECRET_KEY` | | no | Signs locked crypto price quotes. |
+| `CRYPTO_QUOTE_SECRET` | derived from `JWT_SECRET_KEY` | | yes | Signs locked crypto price quotes. |
 | `QUOTE_RATE_MAX_AGE_MINUTES` | `360` | | yes | Oldest exchange rate a quote may lock. |
 | `EXCHANGE_RATE_MAX_STEP_FACTOR` | `10` | | no | A new rate more than this factor away from the last one is rejected as corrupt. |
 
@@ -387,7 +387,7 @@ All off by default; nothing leaves the server. See
 | Variable | Default | Req. | Compose | Effect |
 |---|---|---|---|---|
 | `METRICS_TOKEN` | none | prod | yes | Bearer token for `GET /metrics`. In production `/metrics` stays closed without one. |
-| `METRICS_TOKENS` | none | | no | Comma-separated list, for rotating tokens. |
+| `METRICS_TOKENS` | none | | yes | Comma-separated list, for rotating tokens. |
 | `HEALTH_DETAIL_TOKEN` | none | | yes | Token that unlocks the detailed `/api/v1/health/ready` body. |
 | `SENTRY_DSN` | none | | yes | Backend Sentry DSN (also the frontend's server-side fallback). |
 | `SENTRY_ENABLED` | on when a DSN is set | | no | `false` keeps Sentry off with a DSN set. |

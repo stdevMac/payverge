@@ -20,8 +20,9 @@
 // must never be replaced by pasted or invented model output.
 //
 // Writes PNGs to docs/assets/screenshots/ and a lighter WebP subset to
-// site/assets/screenshots/. An install made with --demo serves the venue
-// storefront on "/" (PRIMARY_VENUE=parrilla-quebracho-azul).
+// site/assets/screenshots/. An install made with --demo serves Bodegón Mesa
+// Larga on "/" (PRIMARY_VENUE=bodegon-mesa-larga); these shots default to the
+// parrilla-quebracho-azul venue instead (PAYVERGE_VENUE below).
 //
 // Env: PAYVERGE_URL (default https://localhost:18443), PAYVERGE_EMAIL,
 // PAYVERGE_PASSWORD (owner/admin of the demo), PAYVERGE_VENUE (slug, default

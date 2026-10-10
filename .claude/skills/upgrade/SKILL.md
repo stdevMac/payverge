@@ -81,11 +81,12 @@ the file literally.
   `docs/self-hosting/storage.md`. Database rows point at stored objects, so
   keep the two backups together. With S3 storage, the bucket keeps the
   files.
-- If `docker compose config --profiles` lists `backup` (the `deploy/`
-  compose file has one), its nightly sets in `./backups` are useful, and
-  `docker compose run --rm backup once` takes a fresh set that includes the
-  uploaded files; see "Backups" in `deploy/README.md`. Either way, make sure
-  a backup exists from just before the upgrade.
+- **Image-based install (`deploy/`): also take a backup set.** Run
+  `docker compose run --rm backup once` and write down the set it prints
+  (`set complete: daily/<stamp>`). The set holds the database and the
+  uploaded files, and the rollback in step 6 restores it with the
+  `restore` job; see "Backups" in `deploy/README.md`. `install.sh` takes
+  this set itself before an upgrade and prints its name.
 - Copy the backup off the host if you can. For automated off-host dumps, see
   `backend/scripts/backup-db.sh` and `infra/backup/README.md`.
 
@@ -227,20 +228,36 @@ upgrade. Say this plainly before you start.
    If the upgrade crossed PostgreSQL 15 to 18, do not restore into 18:
    follow the rollback in "Crossing PostgreSQL 15 to 18" instead.
 3. Restore the database from the backup taken in step 2. Ask the operator
-   to confirm the exact file name first (`ls -l backups/`), and put it in
-   the command below. Do not rely on a `$BACKUP` variable from an earlier
-   command: if it is empty, the database is dropped and nothing is restored.
-   Run the whole block as one command. It checks the file before it drops
-   anything:
+   to confirm the exact backup name first, and put it in the command below.
+   Do not rely on a variable from an earlier command.
+
+   Image-based install (`deploy/`): restore the pre-upgrade set with the
+   `restore` job (`deploy/backup/restore.sh`). List the sets with
+   `ls backups/daily` and name the one taken before the upgrade: a nightly
+   set taken after it already has the new schema. The job checks the set's
+   checksums, restores into a temporary database, and swaps it in only when
+   the database and the uploads both restored, so a bad set leaves the live
+   data as it was. It also restores the uploaded files; add
+   `--skip-storage` to restore only the database.
+
+   ```bash
+   docker compose --profile restore run --rm restore daily/YYYYMMDDTHHMMSSZ --yes
+   ```
+
+   Source checkout (root `docker-compose.yml`, which has no `restore` job):
+   restore the `.sql.gz` from step 2 (`ls -l backups/`). If `$BACKUP` is
+   empty, the database is dropped and nothing is restored, so name the file
+   literally. Run the whole block as one command. It checks the file before
+   it drops anything:
 
    ```bash
    set -o pipefail
    BACKUP=backups/payverge_YYYYMMDD_HHMMSS.sql.gz   # the file from step 2
    test -s "$BACKUP" && gunzip -t "$BACKUP" \
      && [ "$(gunzip -c "$BACKUP" | grep -c '^CREATE TABLE')" -gt 0 ] \
-     && docker compose exec -T postgres sh -c \
+     && docker compose --env-file .env exec -T postgres sh -c \
        'dropdb -U "$POSTGRES_USER" --force "$POSTGRES_DB" && createdb -U "$POSTGRES_USER" "$POSTGRES_DB"' \
-     && gunzip -c "$BACKUP" | docker compose exec -T postgres sh -c \
+     && gunzip -c "$BACKUP" | docker compose --env-file .env exec -T postgres sh -c \
        'psql -v ON_ERROR_STOP=1 -q -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
      && echo "RESTORE OK" \
      || echo "RESTORE FAILED: do not start the backend"
@@ -250,8 +267,9 @@ upgrade. Say this plainly before you start.
    partly restored. Do not start the backend, because it would create a
    fresh empty schema. Fix the cause and run the block again.
 
-4. Restore the storage volume if you backed it up (see
-   `docs/self-hosting/storage.md`).
+4. Source checkout: restore the storage volume if you backed it up (see
+   `docs/self-hosting/storage.md`). The `restore` job already did this on
+   an image-based install, unless you passed `--skip-storage`.
 5. Start the stack with `docker compose up -d` (with a source checkout, add
    `--env-file .env --build`). Then verify as in step 5.
 
@@ -266,5 +284,7 @@ database on a loopback address.
   command. Name the backup file in the same command.
 - Edit `schema_migrations` by hand, except as the dirty-state runbook
   describes.
-- Run `docker compose down -v`, or delete the `postgres` volume.
+- Run `docker compose down -v`, or delete the database volume (`pgdata`
+  with `deploy/docker-compose.yml`, `postgres_data` with the root
+  `docker-compose.yml`).
 - Print `.env`, or paste its contents into the conversation.

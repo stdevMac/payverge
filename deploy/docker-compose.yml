@@ -185,6 +185,8 @@ services:
       - SMTP_TLS=${SMTP_TLS:-}
       - RESEND_API_KEY=${RESEND_API_KEY:-}
       - RESEND_WEBHOOK_SECRET=${RESEND_WEBHOOK_SECRET:-}
+      # Empty = derived from JWT_SECRET_KEY.
+      - UNSUBSCRIBE_TOKEN_SECRET=${UNSUBSCRIBE_TOKEN_SECRET:-}
       - EMAIL_API_KEY=${EMAIL_API_KEY:-}
       - EMAIL_ALLOWED_FROM_DOMAINS=${EMAIL_ALLOWED_FROM_DOMAINS:-}
       - EMAIL_SPF_DOMAIN=${EMAIL_SPF_DOMAIN:-}
@@ -271,6 +273,8 @@ services:
       - USDC_MIN_CONFIRMATIONS=${USDC_MIN_CONFIRMATIONS:-}
       - QUOTE_RATE_MAX_AGE_MINUTES=${QUOTE_RATE_MAX_AGE_MINUTES:-}
       - CRYPTO_REFUND_MAINNET_ENABLED=${CRYPTO_REFUND_MAINNET_ENABLED:-}
+      # Signs locked crypto quotes; empty = derived from JWT_SECRET_KEY.
+      - CRYPTO_QUOTE_SECRET=${CRYPTO_QUOTE_SECRET:-}
 
       # --- Sign-in with Google (optional) ------------------------------------
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
@@ -301,6 +305,8 @@ services:
       - POSTHOG_API_KEY=${POSTHOG_API_KEY:-}
       - POSTHOG_HOST=${POSTHOG_HOST:-}
       - METRICS_TOKEN=${METRICS_TOKEN:-}
+      # Comma-separated list for rotation; joins METRICS_TOKEN.
+      - METRICS_TOKENS=${METRICS_TOKENS:-}
       # Bearer token that unlocks the detailed /api/v1/health/ready body;
       # unset = binary ready/not-ready only.
       - HEALTH_DETAIL_TOKEN=${HEALTH_DETAIL_TOKEN:-}
