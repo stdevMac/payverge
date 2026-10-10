@@ -38,6 +38,10 @@ services:
       # effective config says what runs.
       - REGISTRATION_MODE=closed
       - EMAIL_PROVIDER=log
+      # The log provider writes metadata only (template, a recipient hash).
+      # Container logs outlive the nightly reset, so never log the addresses,
+      # subjects and bodies visitors trigger, whatever .env says.
+      - EMAIL_LOG_CONTENT=false
       # Stricter edge-wide limits than a private install.
       - GLOBAL_RATE_LIMIT_REQUESTS_PER_MINUTE=${DEMO_GLOBAL_RATE_LIMIT_PER_MIN:-240}
       - AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE=${DEMO_AUTH_RATE_LIMIT_PER_MIN:-6}

@@ -1,5 +1,6 @@
 # Payverge public demo: one reset to the pristine snapshot.
-# Install (paths assume the demo lives in /opt/payverge; edit if not):
+# Install (paths assume the clone is /opt/payverge, so the deploy directory is
+# /opt/payverge/deploy, as in docs/self-hosting/public-demo.md; edit if not):
 #   sudo cp deploy/demo/systemd/payverge-demo-reset.{service,timer} /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now payverge-demo-reset.timer
@@ -20,11 +21,11 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-WorkingDirectory=/opt/payverge
+WorkingDirectory=/opt/payverge/deploy
 # Optional: DEMO_HEALTH_URL, DEMO_ALERT_URL, DEMO_HEALTH_TIMEOUT, ...
-EnvironmentFile=-/opt/payverge/demo/reset.env
-Environment=DEMO_COMPOSE_DIR=/opt/payverge
-ExecStart=/opt/payverge/demo/reset-demo.sh
+EnvironmentFile=-/opt/payverge/deploy/demo/reset.env
+Environment=DEMO_COMPOSE_DIR=/opt/payverge/deploy
+ExecStart=/opt/payverge/deploy/demo/reset-demo.sh
 TimeoutStartSec=20min
 # Never overlap: a second start while one runs waits, the script's lock is
 # the second guard.

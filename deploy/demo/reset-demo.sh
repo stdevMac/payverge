@@ -43,7 +43,9 @@
 #
 # Staleness: every good reset or snapshot stamps demo/pristine/last-ok. --check
 # (run hourly by the -check timer) and a run that finds the lock held alert and
-# fail when that stamp is older than DEMO_RESET_MAX_AGE_HOURS.
+# fail when that stamp is older than DEMO_RESET_MAX_AGE_HOURS. With no stamp
+# they use the snapshot's age instead, so a lost or unwritable stamp cannot
+# silence the watchdog.
 #
 # Exit codes: 0 ok, 1 reset failed and the previous state is back (or --check
 # found the last good reset too old), 2 reset AND rollback failed (the demo may
@@ -153,21 +155,41 @@ mark_ok() {
 	date +%s >"$last_ok_file" 2>/dev/null || log "warning: could not write $last_ok_file"
 }
 
+# file_mtime prints a file's modification time in epoch seconds (GNU or BSD
+# stat), or nothing if it cannot be read.
+file_mtime() {
+	stat -c %Y "$1" 2>/dev/null || stat -f %m "$1" 2>/dev/null || true
+}
+
 # stale_reset prints a reason and succeeds when the last good reset or
 # snapshot is older than max_age_hours. --snapshot stamps too, so a fresh
 # snapshot counts as a good starting point for the watchdog. Without a stamp
-# (nothing set up yet) it is not stale.
+# it falls back to the snapshot's age (SHA256SUMS is written last): a stamp
+# that was deleted, or that mark_ok could not write, must not read as fresh
+# forever. With neither (nothing set up yet) it is not stale; --check then
+# fails on the missing snapshot instead.
 stale_reset() {
-	local last now
-	[[ -s $last_ok_file ]] || return 1
-	last=$(head -n 1 "$last_ok_file")
-	[[ $last =~ ^[0-9]+$ ]] || {
-		printf 'unreadable %s' "$last_ok_file"
-		return 0
-	}
+	local last now what
+	if [[ -s $last_ok_file ]]; then
+		last=$(head -n 1 "$last_ok_file")
+		what="the last good reset or snapshot"
+		[[ $last =~ ^[0-9]+$ ]] || {
+			printf 'unreadable %s' "$last_ok_file"
+			return 0
+		}
+	elif [[ -s $snapshot_dir/SHA256SUMS ]]; then
+		last=$(file_mtime "$snapshot_dir/SHA256SUMS")
+		what="the snapshot (there is no $last_ok_file stamp)"
+		[[ $last =~ ^[0-9]+$ ]] || {
+			printf 'no %s stamp and the snapshot age is unreadable' "$last_ok_file"
+			return 0
+		}
+	else
+		return 1
+	fi
 	now=$(date +%s)
 	if ((now - last > max_age_hours * 3600)); then
-		printf 'the last good reset or snapshot was %s hours ago (limit %s)' "$(((now - last) / 3600))" "$max_age_hours"
+		printf '%s was %s hours ago (limit %s)' "$what" "$(((now - last) / 3600))" "$max_age_hours"
 		return 0
 	fi
 	return 1

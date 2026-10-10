@@ -8,14 +8,14 @@ install, rotation, AI budget, teardown) is
 
 | File | What it does |
 |---|---|
-| `docker-compose.demo.yml` | Overlay: `DEMO_MODE`, `DEMO_DATA`, closed signup, email to the log, no outbound channels or card providers, AI off unless `DEMO_AI_API_KEY` (AI image generation stays refused either way), resource limits, Caddy `site.d` mount. |
+| `docker-compose.demo.yml` | Overlay: `DEMO_MODE`, `DEMO_DATA`, closed signup, email to the log (metadata only, `EMAIL_LOG_CONTENT=false`), no outbound channels or card providers, AI off unless `DEMO_AI_API_KEY` (AI image generation stays refused either way), resource limits, Caddy `site.d` mount. |
 | `caddy/demo.caddy` | Imported inside the site block: `X-Robots-Tag: noindex`. |
 | `reset-demo.sh` | `--snapshot` once, then nightly: restore into a scratch DB, swap, restore uploads and space-scan artifacts, health-check, roll back on failure. `--maintenance` resets and keeps the site offline for a re-snapshot. `--check` is a dry preflight and staleness watchdog. |
-| `systemd/payverge-demo-reset.{service,timer}` | Runs the reset at 03:00 UTC. |
-| `systemd/payverge-demo-reset-check.{service,timer}` | Hourly watchdog: fails when the last good reset (or the snapshot, before the first reset) is over 26 hours old. |
+| `systemd/payverge-demo-reset.{service,timer}` | Runs the reset at 03:00 UTC. The units assume the clone is `/opt/payverge` (deploy directory `/opt/payverge/deploy`) and read optional settings from `demo/reset.env` there. |
+| `systemd/payverge-demo-reset-check.{service,timer}` | Hourly watchdog: fails when the last good reset or snapshot (`demo/pristine/last-ok`, or the snapshot's age when that stamp is missing) is over 26 hours old. |
 | `cron.example` | The same with cron. |
 
-Quick start, from `deploy/` in a clone:
+Quick start, from `deploy/` in a clone (`/opt/payverge/deploy` in the runbook):
 
 ```bash
 COMPOSE_PROJECT_NAME=payverge-demo ./install.sh --domain demo.payverge.io --demo --no-start

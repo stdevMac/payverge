@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -337,9 +336,11 @@ func CleanupMenuExtractionAssetsForWorker(images []database.MenuExtractionImage)
 	cleanupMenuExtractionAssets(images)
 }
 
-// loadMenuExtractionInputs materializes verified page bytes for the extractor.
-// Prefer protected StorageKey; fall back to legacy local FilePath. MIME is the
-// stored verified type or content-sniffed for pre-000153 rows.
+// loadMenuExtractionInputs materializes verified page bytes for the extractor
+// from the protected StorageKey. Rows without one (the legacy local FilePath
+// column, never written by this codebase) are refused rather than read from an
+// arbitrary local path. MIME is the stored verified type or content-sniffed for
+// pre-000153 rows.
 func loadMenuExtractionInputs(images []database.MenuExtractionImage) ([]services.MenuExtractionInput, error) {
 	out := make([]services.MenuExtractionInput, 0, len(images))
 	for _, img := range images {
@@ -350,11 +351,6 @@ func loadMenuExtractionInputs(images []database.MenuExtractionImage) ([]services
 			data, err = downloadExtractionObject(img.StorageKey)
 			if err != nil {
 				return nil, fmt.Errorf("download page %d: %w", img.PageOrder, err)
-			}
-		} else if strings.TrimSpace(img.FilePath) != "" {
-			data, err = os.ReadFile(img.FilePath)
-			if err != nil {
-				return nil, fmt.Errorf("read legacy page %d: %w", img.PageOrder, err)
 			}
 		} else {
 			return nil, fmt.Errorf("page %d has no storage identity", img.PageOrder)
@@ -378,22 +374,12 @@ func loadMenuExtractionInputs(images []database.MenuExtractionImage) ([]services
 }
 
 func cleanupMenuExtractionAssets(images []database.MenuExtractionImage) {
-	var legacyDir string
 	for _, img := range images {
 		if key := strings.TrimSpace(img.StorageKey); key != "" {
 			if err := deleteExtractionObject(key); err != nil {
 				log.Printf("WARNING: failed to delete protected extraction object %s: %v", key, err)
 			}
 		}
-		if path := strings.TrimSpace(img.FilePath); path != "" {
-			_ = os.Remove(path)
-			if legacyDir == "" {
-				legacyDir = filepath.Dir(path)
-			}
-		}
-	}
-	if legacyDir != "" {
-		_ = os.RemoveAll(legacyDir)
 	}
 }
 
@@ -526,6 +512,9 @@ func ImportExtractedMenu(c *gin.Context) {
 	}
 
 	sanitized, report := services.SanitizeMenuCategories(req.Categories)
+	if refuseDemoMenuImages(c, business.ID, sanitized) {
+		return
+	}
 	if report.HasDrops() && !req.ConfirmSanitization {
 		c.JSON(http.StatusOK, gin.H{
 			"message":               "Review menu sanitization before import",
@@ -793,6 +782,9 @@ func ImportWizardMenu(c *gin.Context) {
 	}
 
 	sanitized, report := services.SanitizeMenuCategories(generatedMenu.Categories)
+	if refuseDemoMenuImages(c, business.ID, sanitized) {
+		return
+	}
 	if report.HasDrops() && !req.ConfirmSanitization {
 		c.JSON(http.StatusOK, gin.H{
 			"message":               "Review menu sanitization before import",

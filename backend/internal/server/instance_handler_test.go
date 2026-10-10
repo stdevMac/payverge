@@ -330,3 +330,20 @@ func TestInstanceInfoDemoModeHidesCrypto(t *testing.T) {
 		t.Fatal("demo.mode = false, want true")
 	}
 }
+
+// TestInstanceInfoDemoModeHidesFiscalAR: the demo guard refuses every fiscal
+// (ARCA) write, so /instance reports fiscal_ar=false there and the dashboard
+// hides the fiscal tab instead of offering settings that answer 403.
+func TestInstanceInfoDemoModeHidesFiscalAR(t *testing.T) {
+	clearInstanceTestEnv(t)
+
+	config.SetDemoModeForTesting(t, false)
+	if !BuildInstanceInfo().Features.FiscalAR {
+		t.Fatal("features.fiscal_ar = false outside demo mode, want true (capability)")
+	}
+
+	config.SetDemoModeForTesting(t, true)
+	if BuildInstanceInfo().Features.FiscalAR {
+		t.Fatal("features.fiscal_ar = true under DEMO_MODE, want false (fiscal writes are refused)")
+	}
+}

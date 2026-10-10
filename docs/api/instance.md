@@ -76,7 +76,7 @@ A flag is `true` when this install can serve the feature. Hide the UI for a
 | `email` | The email provider wired at boot can deliver mail, which means any provider except `log`. Resend or Postmark without an API key is downgraded to `log` in development and refused at startup in production. |
 | `google_oauth` | Both `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set. |
 | `crypto` | A settlement RPC endpoint is resolved at boot. `RPC_URL` or `--rpc-url` wins, and when neither is set the backend uses the public Base mainnet RPC, so this is `true` on every running backend except the public demo: under `DEMO_MODE` it is `false`, because the demo refuses every guest crypto payment and quote route. |
-| `fiscal_ar` | Always. See below. |
+| `fiscal_ar` | Always, except on the public demo: under `DEMO_MODE` it is `false`, because the demo refuses every fiscal (ARCA) write. See below. |
 
 `demo.enabled` is `true` when `DEMO_DATA` is `true`, `1`, `yes` or `on`.
 `demo.mode` is `true` when `DEMO_MODE` is on: the install is a public demo
@@ -88,9 +88,10 @@ displayed nightly reset time (`DEMO_RESET_UTC`, default `03:00`), empty unless
 #### `fiscal_ar` is a capability, not an activation
 
 ARCA (formerly AFIP) e-invoicing for Argentina is built into every binary, and
-no build tag or instance setting turns it off. That is why `fiscal_ar` is always
-`true`. The flag means "this install can offer ARCA". It does not mean that
-anyone on the install uses ARCA, or that the install is in Argentina.
+no build tag or instance setting turns it off. That is why `fiscal_ar` is `true`
+on every install except the public demo (`DEMO_MODE`). The flag means "this
+install can offer ARCA". It does not mean that anyone on the install uses ARCA,
+or that the install is in Argentina.
 
 Fiscal behaviour is decided per business, never per instance:
 

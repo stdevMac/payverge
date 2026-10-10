@@ -45,7 +45,9 @@ session to anyone who asks.
 - **`/admin` is unreachable** for demo sessions. The platform admin
   (`ADMIN_EMAIL`) is a separate account, and only you know its password.
 - **`/api/v1/instance`** reports `demo: {enabled, mode, reset_utc}`, and
-  `registration_mode: "closed"`.
+  `registration_mode: "closed"`. It also reports `features.crypto` and
+  `features.fiscal_ar` as `false`, because the demo refuses those routes, so
+  the guest UI hides the crypto tender and the dashboard hides the fiscal tab.
 
 ## What the demo refuses
 
@@ -77,7 +79,7 @@ honest:
 | Account | Any `/auth/` write except demo login, login, logout and refresh (wallet sign-in creates users), changing passwords or email addresses, the demo profile, deleting the account, exporting data, email preferences, wallet linking, creating accounts or venues |
 | Staff access | Inviting users, managing and accepting invitations, staff roles, permissions, PINs and access, staff email sign-in |
 | Venue | Deleting the venue |
-| Storefront | Changing the venue name, logo, address, phone, website, social links, `custom_url`, banner and gallery images, the QR logo (venue default, per table and "apply to all") and the settlement and tipping wallets. `UpdateBusiness` is an allowlist: only rates, toggles, currency and time zone, AI settings, QR colors, and the description, welcome, about and AI-instruction texts may change. A field added later is refused until someone reviews it. Free text is capped at 500 characters, on every route that writes it: business settings, hospitality, the "Why choose us" features and menu translation overrides |
+| Storefront | Changing the venue name, logo, address, phone, website, social links, `custom_url`, banner and gallery images, the QR logo (venue default, per table and "apply to all") and the settlement and tipping wallets. `UpdateBusiness` is an allowlist: only rates, toggles, currency and time zone, AI settings, QR colors, and the description, welcome, about and AI-instruction texts may change. A field added later is refused until someone reviews it. Free text is capped at 500 characters, on every route that writes it: business settings, hospitality, the "Why choose us" features and menu translation overrides. Menu item, offer and bundle images must be on the demo's own media storage (its `/media` path, or the configured public bucket host); a visitor can clear or reuse the seeded photos, or keep an image already stored, but cannot link an outside image. That covers the whole-menu save, category and item writes, AI menu imports, offers and bundles |
 | Admin | Every `/admin/` write |
 | CRM | Guest customer-account signup |
 | AI images | AI image generation and enhancement |
@@ -110,11 +112,10 @@ so do not enter real personal data.
 
 ### Not covered (known gaps)
 
-- **Menu content.** Menu item names and descriptions, and menu item image
-  URLs, are free text. Only the 256 KB body cap bounds them, and they show
-  on the public storefront until the next reset. Watch it, and run the
-  reset by hand if you need to (or more often than nightly, with the
-  timer's `OnCalendar=`).
+- **Menu text.** Menu item names and descriptions are free text. Only the
+  256 KB body cap bounds them, and they show on the public storefront until
+  the next reset. Watch it, and run the reset by hand if you need to (or
+  more often than nightly, with the timer's `OnCalendar=`).
 - **Table names** are free text, up to 64 characters.
 - **Space-scan** connect, status and apply-review, and the AI chat routes
   stay open. They do nothing harmful without uploads or an AI key.
@@ -147,11 +148,13 @@ demo is meant to be poked at.
 ## Install
 
 Run this from a clone of the repository. The downloaded installer does not
-ship `deploy/demo/`.
+ship `deploy/demo/`. This page and the units in `deploy/demo/systemd/`
+assume the clone is `/opt/payverge`, so the deploy directory is
+`/opt/payverge/deploy`. Every later command runs from there.
 
 ```bash
-git clone https://github.com/stdevMac/payverge.git /opt/payverge-src
-cd /opt/payverge-src/deploy
+git clone https://github.com/stdevMac/payverge.git /opt/payverge
+cd /opt/payverge/deploy
 
 COMPOSE_PROJECT_NAME=payverge-demo \
   ./install.sh --domain demo.payverge.io --admin-email you@example.com --demo --no-start
@@ -191,9 +194,9 @@ snapshot goes through `--maintenance`; see
 
 ## Enable the nightly reset
 
-The units assume the deploy directory is `/opt/payverge`. If yours is
+The units assume the deploy directory is `/opt/payverge/deploy`. If yours is
 somewhere else, edit `WorkingDirectory`, `EnvironmentFile`,
-`DEMO_COMPOSE_DIR` and `ExecStart` first.
+`DEMO_COMPOSE_DIR` and `ExecStart` in both `.service` files first.
 
 ```bash
 sudo cp demo/systemd/payverge-demo-reset*.service demo/systemd/payverge-demo-reset*.timer /etc/systemd/system/
@@ -208,9 +211,15 @@ The watchdog (`payverge-demo-reset-check`) runs `reset-demo.sh --check`
 every hour. It fails, and posts to `DEMO_ALERT_URL`, when the last good
 reset is older than `DEMO_RESET_MAX_AGE_HOURS` (default 26). That catches a
 stopped timer, a run killed halfway, or a reset that keeps failing, so
-visitor content never silently outlives the night.
+visitor content never silently outlives the night. Every good reset and
+every snapshot stamps `demo/pristine/last-ok`. When that stamp is missing
+(deleted, or the script could not write it) the watchdog uses the
+snapshot's age instead, so a lost stamp raises an alert rather than hiding
+a stopped reset.
 
-Optional settings go in `/opt/payverge/demo/reset.env`:
+Optional settings go in `demo/reset.env` in the deploy directory
+(`/opt/payverge/deploy/demo/reset.env`; `*.env` files are gitignored). Both
+units read it:
 
 ```bash
 DEMO_HEALTH_URL=https://demo.payverge.io/api/v1/health/ready   # also check through the edge
@@ -220,7 +229,8 @@ DEMO_RESET_MAX_AGE_HOURS=26                                    # watchdog thresh
 ```
 
 If you do not use systemd, use cron instead:
-[`demo/cron.example`](../../deploy/demo/cron.example).
+[`demo/cron.example`](../../deploy/demo/cron.example). Cron does not read
+`demo/reset.env`; set the same variables in the crontab.
 
 ### What a reset does
 
@@ -259,6 +269,35 @@ Out of scope: the generated plugin key in the backend data volume (it must
 survive, or stored plugin secrets become unreadable) and object storage. The
 overlay forces `STORAGE_DRIVER=local`, so the demo writes nothing to MinIO
 or S3. If you change that, those writes outlive every reset.
+
+### What survives a reset
+
+A reset puts back what visitors see. It does not erase every trace of the
+day straight away:
+
+- **The previous database.** Step 3 renames the day's database to
+  `<db>_previous` and keeps it until the next reset, for forensics. So what
+  visitors entered on one day (reservations, orders, CRM entries, menu
+  edits) stays on the host for one more night, in a database nothing
+  serves, and is dropped at the following reset.
+- **Container logs.** The reset stops and starts the containers. Unless the
+  compose config changed, it does not recreate them, so their logs carry
+  over. Docker keeps up to five 10 MB files per container (`x-logging` in
+  `docker-compose.yml`). They hold access-log lines with client IP addresses
+  and request paths, and one line per email the demo would have sent. The
+  overlay sets `EMAIL_LOG_CONTENT=false`, so those email lines carry only
+  the template name and a hash of the recipients, never addresses, subjects
+  or bodies.
+- **The snapshot's previous copy.** `--snapshot` moves the old snapshot to
+  `demo/pristine/previous/`. It holds no visitor content as long as every
+  snapshot was taken right after the first boot or after `--maintenance`
+  (not with `DEMO_SNAPSHOT_FROM_LIVE=1`).
+
+The guest forms tell visitors not to enter real personal data, and that
+anyone can see what they enter until the nightly reset. If you publish a
+privacy notice for the demo, state the retention above: visitor data up to
+about 48 hours (the day it was entered plus one night as `<db>_previous`),
+and container logs until Docker rotates them.
 
 ### Uptime
 
@@ -373,8 +412,8 @@ on `127.0.0.1`:
 - the lock: a dead holder's lock and a reused PID's lock are broken; a live
   holder makes a second run exit 75, with an `ALERT` once the last good
   reset is older than 26 hours
-- `--check`: passes while a run is in progress, fails on a stale
-  `last-ok`, and falls back to the snapshot's age when there is no stamp
+- `--check`: passes while a run is in progress and fails on a stale
+  `last-ok`
 
 The systemd units, DNS, ACME and the Cloudflare edge were not run. They
 need a server and a domain.

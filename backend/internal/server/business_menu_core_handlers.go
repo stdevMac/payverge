@@ -77,6 +77,9 @@ func CreateMenu(c *gin.Context) {
 		return
 	}
 	sanitized, sanitization := services.SanitizeMenuCategories(req.Categories)
+	if refuseDemoMenuImages(c, business.ID, sanitized) {
+		return
+	}
 	if sanitization.HasDrops() && !req.ConfirmSanitization {
 		respondMenuSanitizationReview(c, sanitization)
 		return
@@ -715,6 +718,9 @@ func AddMenuCategory(c *gin.Context) {
 	}
 	sanitizedCategories, sanitization := services.SanitizeMenuCategories([]database.MenuCategory{category})
 	category = sanitizedCategories[0]
+	if refuseDemoMenuImages(c, business.ID, sanitizedCategories) {
+		return
+	}
 	if sanitization.HasDrops() && !req.ConfirmSanitization {
 		respondMenuSanitizationReview(c, sanitization)
 		return
@@ -792,6 +798,9 @@ func UpdateMenuCategory(c *gin.Context) {
 	}
 	sanitizedCategories, sanitization := services.SanitizeMenuCategories([]database.MenuCategory{category})
 	category = sanitizedCategories[0]
+	if refuseDemoMenuImages(c, business.ID, sanitizedCategories) {
+		return
+	}
 	if sanitization.HasDrops() && !req.ConfirmSanitization {
 		respondMenuSanitizationReview(c, sanitization)
 		return
@@ -995,6 +1004,9 @@ func AddMenuItem(c *gin.Context) {
 	var sanitization services.GeneratedMenuSanitizeReport
 	var retained bool
 	req.Item, sanitization, retained = sanitizeMenuItemWrite(req.Item)
+	if refuseDemoMenuImages(c, business.ID, []database.MenuCategory{{Items: []database.MenuItem{req.Item}}}) {
+		return
+	}
 	if sanitization.HasDrops() && !req.ConfirmSanitization {
 		respondMenuSanitizationReview(c, sanitization)
 		return
@@ -1098,6 +1110,9 @@ func UpdateMenuItem(c *gin.Context) {
 	var sanitization services.GeneratedMenuSanitizeReport
 	var retained bool
 	req.Item, sanitization, retained = sanitizeMenuItemWrite(req.Item)
+	if refuseDemoMenuImages(c, business.ID, []database.MenuCategory{{Items: []database.MenuItem{req.Item}}}) {
+		return
+	}
 	if sanitization.HasDrops() && !req.ConfirmSanitization {
 		respondMenuSanitizationReview(c, sanitization)
 		return
