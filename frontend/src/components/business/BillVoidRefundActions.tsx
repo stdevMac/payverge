@@ -27,6 +27,7 @@ import {
 import { formatCurrency as formatCurrencyIntl } from "@/api/currency";
 import { useWithManagerPin } from "@/components/business/managerPin/ManagerPinProvider";
 import { CryptoRefundPanel } from "@/components/business/CryptoRefundPanel";
+import { randomUUID } from "@/lib/randomUUID";
 import {
   useSimpleLocale,
   getTranslation,
@@ -71,20 +72,6 @@ function voidErrorMessage(err: unknown, t: (key: string) => string): string {
   }
   return getSafeApiErrorMessage(err, t("voidRefund.errors.voidFailed"));
 }
-
-const generateIdempotencyKey = (): string => {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  // Fallback for older browsers — RFC 4122-ish v4 from Math.random. Good
-  // enough for an idempotency key, which only needs uniqueness within the
-  // server's TTL.
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-};
 
 const formatPaymentMethod = (
   payment: Pick<Payment, "payment_method"> | Pick<AlternativeBillPayment, "payment_method">,
@@ -204,7 +191,7 @@ export const BillVoidRefundActions: React.FC<BillVoidRefundActionsProps> = ({
       toast.error(t("voidRefund.errors.reasonTooShort"));
       return;
     }
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setVoidSubmitting(true);
     try {
       await withManagerPin(
@@ -257,7 +244,7 @@ export const BillVoidRefundActions: React.FC<BillVoidRefundActionsProps> = ({
       toast.error(t("voidRefund.errors.selectPayment"));
       return;
     }
-    const idempotencyKey = generateIdempotencyKey();
+    const idempotencyKey = randomUUID();
     setRefundSubmitting(true);
     try {
       await withManagerPin(

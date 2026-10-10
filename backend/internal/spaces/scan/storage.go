@@ -48,8 +48,13 @@ func (s S3ArtifactStore) Delete(keyOrLocation string) error {
 
 // LocalArtifactStore stores files under a root directory (default
 // <DATA_DIR>/space-scans, see DefaultLocalArtifactDir).
+//
+// Every file operation goes through an os.Root opened on Root, so neither a
+// crafted key nor a symlink planted in the directory can read, write or delete
+// outside it.
 type LocalArtifactStore struct {
 	Root string
+	fsys *os.Root
 	mu   sync.Mutex
 }
 
@@ -63,6 +68,7 @@ func DefaultLocalArtifactDir() string {
 }
 
 // NewLocalArtifactStore creates a store rooted at dir (created if missing).
+// The store keeps the directory open for the life of the process.
 func NewLocalArtifactStore(dir string) (*LocalArtifactStore, error) {
 	if dir == "" {
 		dir = DefaultLocalArtifactDir()
@@ -70,7 +76,11 @@ func NewLocalArtifactStore(dir string) (*LocalArtifactStore, error) {
 	if err := os.MkdirAll(dir, 0o750); err != nil {
 		return nil, fmt.Errorf("create local space-scan dir: %w", err)
 	}
-	return &LocalArtifactStore{Root: dir}, nil
+	fsys, err := os.OpenRoot(dir)
+	if err != nil {
+		return nil, fmt.Errorf("open local space-scan dir: %w", err)
+	}
+	return &LocalArtifactStore{Root: dir, fsys: fsys}, nil
 }
 
 // Put implements ArtifactStore.
@@ -79,11 +89,10 @@ func (l *LocalArtifactStore) Put(key string, data []byte, contentType string) (s
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	clean := sanitizeLocalKey(key)
-	full := filepath.Join(l.Root, clean)
-	if err := os.MkdirAll(filepath.Dir(full), 0o750); err != nil {
+	if err := l.fsys.MkdirAll(filepath.Dir(clean), 0o750); err != nil {
 		return "", err
 	}
-	if err := os.WriteFile(full, data, 0o640); err != nil {
+	if err := l.fsys.WriteFile(clean, data, 0o640); err != nil {
 		return "", err
 	}
 	// Prefix so Get/Delete can detect local paths.
@@ -92,36 +101,16 @@ func (l *LocalArtifactStore) Put(key string, data []byte, contentType string) (s
 
 // Get implements ArtifactStore.
 func (l *LocalArtifactStore) Get(keyOrLocation string) ([]byte, error) {
-	path, err := l.resolvePath(keyOrLocation)
-	if err != nil {
-		return nil, err
-	}
-	return os.ReadFile(path)
+	return l.fsys.ReadFile(sanitizeLocalKey(strings.TrimPrefix(keyOrLocation, "local://")))
 }
 
-// Delete implements ArtifactStore.
+// Delete implements ArtifactStore. A missing file is not an error.
 func (l *LocalArtifactStore) Delete(keyOrLocation string) error {
-	path, err := l.resolvePath(keyOrLocation)
-	if err != nil {
-		return nil // treat resolve errors as missing
-	}
-	err = os.Remove(path)
+	err := l.fsys.Remove(sanitizeLocalKey(strings.TrimPrefix(keyOrLocation, "local://")))
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
 	return nil
-}
-
-func (l *LocalArtifactStore) resolvePath(keyOrLocation string) (string, error) {
-	key := strings.TrimPrefix(keyOrLocation, "local://")
-	clean := sanitizeLocalKey(key)
-	full := filepath.Join(l.Root, clean)
-	// Ensure path stays under Root.
-	rel, err := filepath.Rel(l.Root, full)
-	if err != nil || strings.HasPrefix(rel, "..") {
-		return "", fmt.Errorf("invalid local scan key")
-	}
-	return full, nil
 }
 
 func sanitizeLocalKey(key string) string {

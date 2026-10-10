@@ -11,18 +11,13 @@
  *
  * Mirrors newSplitRequestId in api/splitting.ts.
  */
+import { randomUUID } from "@/lib/randomUUID";
+
 const KEY_PREFIX = "payverge_delivery_checkout_rid:";
 
 interface StoredRequestId {
   id: string;
   fingerprint: string;
-}
-
-function newRequestId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  return `delivery-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 /** JSON.stringify with object keys sorted so key order can't change the hash. */
@@ -77,13 +72,13 @@ export function getOrCreateCheckoutRequestId(
         // Legacy plain-string or corrupt value: fall through and re-mint.
       }
     }
-    const pair: StoredRequestId = { id: newRequestId(), fingerprint };
+    const pair: StoredRequestId = { id: randomUUID(), fingerprint };
     sessionStorage.setItem(key, JSON.stringify(pair));
     return pair.id;
   } catch {
     // Storage unavailable (private mode quota, SSR guard): fall back to a
     // per-call id — no dedupe across retries, but checkout still works.
-    return newRequestId();
+    return randomUUID();
   }
 }
 

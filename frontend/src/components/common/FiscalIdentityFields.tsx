@@ -53,7 +53,14 @@ export function validateFiscalIdentity(
   value: FiscalIdentityValue,
 ): "docType" | "docNumber" | "email" | null {
   const email = (value.email ?? "").trim();
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  // Same shape as /^[^\s@]+@[^\s@]+\.[^\s@]+$/ without the overlapping
+  // quantifiers that backtrack polynomially: one "@" with non-blank sides, and
+  // a "." in the domain that is neither its first nor its last character.
+  if (
+    email &&
+    !(/^[^\s@]+@[^\s@]+$/.test(email) &&
+      email.slice(email.indexOf("@") + 2, -1).includes("."))
+  ) {
     return "email";
   }
   const docNumber = value.docNumber.trim();

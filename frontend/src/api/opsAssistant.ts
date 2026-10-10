@@ -9,6 +9,7 @@ import {
   parseAssistantResponse,
   type AssistantResponse,
 } from "@/types/assistant";
+import { randomUUID } from "@/lib/randomUUID";
 
 export interface OpsAskResponse {
   thread: { id: number; title: string };
@@ -265,10 +266,7 @@ export function writeOpsSession(
 }
 
 export function newClientRequestId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  return `ops_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  return randomUUID();
 }
 
 function directorHandoffKey(businessId: number) {

@@ -63,6 +63,7 @@ import {
   safeActivationToken,
   trackOptionalActivationEvent,
 } from "@/lib/analytics/activationEvents";
+import { randomUUID } from "@/lib/randomUUID";
 
 // Account/workspace setup: the venue basics, then sign-in when needed.
 type FormStep = "business" | "auth";
@@ -79,17 +80,14 @@ function workspaceIdempotencyKeyForPayload(payload: CreateBusinessRequest): stri
       const parsed = JSON.parse(saved) as { key?: string; payload?: string };
       if (parsed.key && parsed.payload === canonicalPayload) return parsed.key;
     }
-    const key =
-      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-        ? crypto.randomUUID()
-        : `workspace-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const key = randomUUID();
     localStorage.setItem(
       WORKSPACE_IDEMPOTENCY_STORAGE_KEY,
       JSON.stringify({ key, payload: canonicalPayload }),
     );
     return key;
   } catch {
-    return `workspace-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    return randomUUID();
   }
 }
 
