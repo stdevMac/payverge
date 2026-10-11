@@ -154,7 +154,9 @@ assume the clone is `/opt/payverge`, so the deploy directory is
 
 ```bash
 git clone https://github.com/stdevMac/payverge.git /opt/payverge
-cd /opt/payverge/deploy
+cd /opt/payverge
+git checkout v1.2.3   # the newest release; main can be ahead of it
+cd deploy
 
 COMPOSE_PROJECT_NAME=payverge-demo \
   ./install.sh --domain demo.payverge.io --admin-email you@example.com --demo --no-start

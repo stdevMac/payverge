@@ -153,8 +153,10 @@ Encrypt certificate, and prints the admin password once. Everything else
 ### Manual compose
 
 The installer only automates [`deploy/docker-compose.yml`](deploy/docker-compose.yml).
-To do it by hand, copy `deploy/` to the server, fill in `deploy/.env.example`
-as `.env`, and run `docker compose up -d`. See
+To do it by hand, take `deploy/` from a release (the
+`payverge-deploy-<version>.tar.gz` asset, or a clone checked out at its tag;
+`main` can be ahead of the newest release), fill in `.env.example` as `.env`,
+and run `docker compose up -d`. See
 [deploy/README.md § Configuration](deploy/README.md#configuration).
 
 ### Managed platforms

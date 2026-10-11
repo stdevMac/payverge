@@ -108,8 +108,8 @@ What `/media` does:
     the defaults.
   - The limit keys on the client IP, so `TRUSTED_PROXIES` must cover your
     proxy and the frontend container. Otherwise every relayed guest shares the
-    frontend's per-IP bucket. The compose default `172.16.0.0/12,127.0.0.1`
-    covers the default Docker networks.
+    frontend's per-IP bucket. The deploy compose default
+    (`EDGE_SUBNET`, `172.30.0.0/24`, plus `127.0.0.1`) covers both.
   - Sizing for image-heavy menus: one cold menu page costs the frontend about
     dishes x image widths optimizer misses, and each miss is one `/media`
     request. Raise `MEDIA_RATE_LIMIT_BURST` if you serve menus with several

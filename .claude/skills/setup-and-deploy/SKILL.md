@@ -70,9 +70,14 @@ copy it into the conversation or into a file.
 
 ```bash
 git clone https://github.com/stdevMac/payverge.git
-cd payverge/deploy
+cd payverge
+git checkout v1.2.3   # the newest tag on https://github.com/stdevMac/payverge/releases/latest
+cd deploy
 cp .env.example .env && chmod 600 .env
 ```
+
+Always check out a release tag: `main` can carry deploy changes that have not
+shipped yet.
 
 1. Fill the required block at the top of `deploy/.env.example`: the domain,
    `ADMIN_EMAIL`, `ADMIN_PASSWORD` and the three generated secrets. Each

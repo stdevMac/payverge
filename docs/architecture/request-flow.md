@@ -61,7 +61,7 @@ Registered in [main.go](../../backend/cmd/app/main.go) (search
 | Step | Middleware | Purpose |
 |---|---|---|
 | 1 | `AccessLogger` | One structured line per request. |
-| 2 | Trusted proxies | `TRUSTED_PROXIES` decides whose `X-Forwarded-For` is believed. Unset, it is loopback only; the bundled compose stack sets the private ranges, where Caddy and the frontend connect from. See [Known limitations](#known-limitations). |
+| 2 | Trusted proxies | `TRUSTED_PROXIES` decides whose `X-Forwarded-For` is believed. Unset, it is loopback only; the bundled compose stack sets its edge network's subnet (`EDGE_SUBNET`, default `172.30.0.0/24`) plus loopback, where Caddy and the frontend connect from. See [Known limitations](#known-limitations). |
 | 3 | `gin.Recovery` | A panic becomes a `500`, not a crash. |
 | 4 | Sentry | Error reporting, a no-op without a DSN. |
 | 5 | `ErrorSanitizer` | Replaces every `5xx` body with a stable code and a safe message. The detail goes to the log, keyed by request ID. |
@@ -191,10 +191,11 @@ as integer cents; see [money-flow.md](money-flow.md).
   budget.
 - **Proxy trust is explicit in the bundled stack.** An unset
   `TRUSTED_PROXIES` trusts loopback only. `deploy/docker-compose.yml`
-  sets it, and the frontend's `FRONTEND_TRUSTED_PROXIES`, to the private
-  ranges, because there only Caddy and the frontend's proxy reach the
-  backend and both set `X-Forwarded-For` themselves instead of passing on
-  what the client sent. If other hosts or containers on a private
+  sets it, and the frontend's `FRONTEND_TRUSTED_PROXIES`, to the subnet of
+  its edge network (`EDGE_SUBNET`, default `172.30.0.0/24`; the backend
+  also trusts loopback), because there only Caddy and the frontend's proxy
+  reach the backend and both set `X-Forwarded-For` themselves instead of
+  passing on what the client sent. If other hosts or containers on that
   network can reach the backend port directly, they can forge client
   addresses and slip past the IP-keyed limiters. Set `TRUSTED_PROXIES` to
   the proxy's own address there. Production startup refuses public ranges

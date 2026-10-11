@@ -70,24 +70,22 @@ while `TRUSTED_PROXIES` is unset, the backend logs a `[SECURITY]` warning once,
 naming the variable to set; until you set it, every client behind that proxy
 shares the proxy's address for rate limiting.
 
-**Bundled stack.** `deploy/docker-compose.yml` sets
-`TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fc00::/7,127.0.0.1`,
-that is every RFC 1918 range, IPv6 unique-local addresses and loopback. This
-is safe in the default layout because the backend publishes no host port and
-its only peers are Caddy and the frontend, which both overwrite
-`X-Forwarded-For` with the client address they verified. On a host where
-other containers share private networks with the backend, narrow it to the
-edge network:
+**Bundled stack.** `deploy/docker-compose.yml` gives the edge network a fixed
+subnet, `EDGE_SUBNET` (default `172.30.0.0/24`), and sets
+`TRUSTED_PROXIES=${EDGE_SUBNET},127.0.0.1`: that subnet plus loopback, and no
+other private range. This is safe because the backend publishes no host port
+and its only peers on that network are Caddy and the frontend, which both
+overwrite `X-Forwarded-For` with the client address they verified. If the
+range is taken on the host, set another one before the first start:
 
 ```sh
-docker network inspect payverge_edge --format '{{range .IPAM.Config}}{{.Subnet}}{{end}}'
-# for example 172.18.0.0/16; then in .env:
-TRUSTED_PROXIES=172.18.0.0/16
+# in .env
+EDGE_SUBNET=172.31.0.0/24
 docker compose up -d
 ```
 
-Docker can give the network another range after `docker compose down`, so
-check again after recreating it.
+`TRUSTED_PROXIES` and `FRONTEND_TRUSTED_PROXIES` follow it unless you set them
+yourself.
 
 `TRUSTED_PLATFORM=cloudflare` makes Gin read `CF-Connecting-IP` directly. The
 deploy compose forces it empty because Caddy already resolved the address;
@@ -100,7 +98,7 @@ peer it received the request from is in `FRONTEND_TRUSTED_PROXIES`, it drops
 every client identity header and sends exactly that peer's address, so a
 browser cannot choose its IP. In the deploy stack the peer is Caddy, so
 `FRONTEND_TRUSTED_PROXIES` must cover Caddy's address. The bundled compose
-sets it to the same private ranges as the backend (without loopback); narrow
+sets it to the same `EDGE_SUBNET` as the backend (without loopback); change
 both together. Left empty, the frontend trusts no one and these requests are
 limited per Caddy address, which errs toward a shared limit rather than a
 forged one.
