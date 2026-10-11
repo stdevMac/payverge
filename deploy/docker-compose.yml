@@ -322,6 +322,13 @@ services:
       - AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE=${AUTH_RATE_LIMIT_REQUESTS_PER_MINUTE:-}
       - AUTH_RATE_LIMIT_BURST=${AUTH_RATE_LIMIT_BURST:-}
       - REGISTRATION_RATE_LIMIT_PER_HOUR=${REGISTRATION_RATE_LIMIT_PER_HOUR:-}
+      # /media has its own per-IP bucket (0 disables; docs/self-hosting/storage.md).
+      - MEDIA_RATE_LIMIT_REQUESTS_PER_MINUTE=${MEDIA_RATE_LIMIT_REQUESTS_PER_MINUTE:-}
+      - MEDIA_RATE_LIMIT_BURST=${MEDIA_RATE_LIMIT_BURST:-}
+
+      # --- AI retention (empty = built-in defaults; 0 keeps forever) ---------
+      - AI_TRANSCRIPT_RETENTION_DAYS=${AI_TRANSCRIPT_RETENTION_DAYS:-}
+      - OPS_ASSISTANT_RETENTION_DAYS=${OPS_ASSISTANT_RETENTION_DAYS:-}
     volumes:
       - storage:/data/storage
       - backend_data:/app/data
