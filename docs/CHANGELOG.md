@@ -13,6 +13,7 @@ follows [Semantic Versioning](https://semver.org/).
 
 * **deploy:** forward media rate limits and AI retention settings to the backend ([c13a9c9](https://github.com/stdevMac/payverge/commit/c13a9c9cc938320de3196f44d687e46f8d326b22))
 * **deploy:** require a domain at the installer prompt, withdraw HSTS on trial names and flag an unreachable install ([a291d0c](https://github.com/stdevMac/payverge/commit/a291d0c4afc50dadaf468f8fb4d66f4c935bc636))
+* **deps:** Caddy 2.11.7, and the October minor and patch dependency updates for the backend and frontend, including fast-copy 4.1.2 ([GHSA-jggr-w7fw-pc2j](https://github.com/advisories/GHSA-jggr-w7fw-pc2j)) ([#37](https://github.com/stdevMac/payverge/pull/37), [#45](https://github.com/stdevMac/payverge/pull/45))
 
 
 ### Other changes
