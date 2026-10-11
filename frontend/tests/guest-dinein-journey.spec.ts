@@ -46,15 +46,17 @@ test.describe("QR dine-in journey", () => {
     test.setTimeout(90_000);
     await prepareGuestPage(page);
 
-    // 1. Table landing (QR target) → open the menu.
+    // 1. Table landing (QR target) → open the menu. The landing re-renders
+    // while hydrating and when the current-bill card loads above the link, so
+    // a first click can be lost; retry until the menu route is reached.
     await page.goto(`/t/${TABLE_CODE}`);
-    await page
-      .getByRole("link", { name: /browse menu/i })
-      .first()
-      .click();
-    await expect(page).toHaveURL(new RegExp(`/t/${TABLE_CODE}/menu`), {
-      timeout: 15_000,
-    });
+    const browseMenu = page.getByRole("link", { name: /browse menu/i }).first();
+    await expect(async () => {
+      await browseMenu.click({ timeout: 5_000 });
+      await expect(page).toHaveURL(new RegExp(`/t/${TABLE_CODE}/menu`), {
+        timeout: 5_000,
+      });
+    }).toPass({ timeout: 30_000 });
 
     // 2. Add the first available menu item, then open the cart.
     const addButton = page
