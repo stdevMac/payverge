@@ -622,7 +622,7 @@ the lockfile, then the installed `package.json`, then
 | [electron-to-chromium](https://www.npmjs.com/package/electron-to-chromium/v/1.5.444) | 1.5.444 | ISC |
 | [emoji-regex](https://www.npmjs.com/package/emoji-regex/v/8.0.0) | 8.0.0 | MIT |
 | [encoding](https://www.npmjs.com/package/encoding/v/0.1.13) | 0.1.13 | MIT |
-| [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.4) | 1.4.4 | MIT |
+| [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.5) | 1.4.5 | MIT |
 | [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve/v/5.22.0) | 5.22.0 | MIT |
 | [entities](https://www.npmjs.com/package/entities/v/4.5.0) | 4.5.0 | BSD-2-Clause |
 | [es-define-property](https://www.npmjs.com/package/es-define-property/v/1.0.1) | 1.0.1 | MIT |
@@ -815,7 +815,7 @@ the lockfile, then the installed `package.json`, then
 | [picomatch](https://www.npmjs.com/package/picomatch/v/4.0.4) | 4.0.4 | MIT |
 | [pify](https://www.npmjs.com/package/pify/v/2.3.0) | 2.3.0 | MIT |
 | [pino-abstract-transport](https://www.npmjs.com/package/pino-abstract-transport/v/3.0.0) | 3.0.0 | MIT |
-| [pino-pretty](https://www.npmjs.com/package/pino-pretty/v/13.1.3) | 13.1.3 | MIT |
+| [pino-pretty](https://www.npmjs.com/package/pino-pretty/v/13.2.0) | 13.2.0 | MIT |
 | [pirates](https://www.npmjs.com/package/pirates/v/4.0.7) | 4.0.7 | MIT |
 | [pngjs](https://www.npmjs.com/package/pngjs/v/5.0.0) | 5.0.0 | MIT |
 | [postcss](https://www.npmjs.com/package/postcss/v/8.5.23) | 8.5.23 | MIT |
@@ -831,7 +831,7 @@ the lockfile, then the installed `package.json`, then
 | [property-information](https://www.npmjs.com/package/property-information/v/7.1.0) | 7.1.0 | MIT |
 | [proxy-from-env](https://www.npmjs.com/package/proxy-from-env/v/1.1.0) | 1.1.0 | MIT |
 | [proxy-from-env](https://www.npmjs.com/package/proxy-from-env/v/2.1.0) | 2.1.0 | MIT |
-| [pump](https://www.npmjs.com/package/pump/v/3.0.2) | 3.0.2 | MIT |
+| [pump](https://www.npmjs.com/package/pump/v/3.0.4) | 3.0.4 | MIT |
 | [qrcode](https://www.npmjs.com/package/qrcode/v/1.5.4) | 1.5.4 | MIT |
 | [queue-microtask](https://www.npmjs.com/package/queue-microtask/v/1.2.3) | 1.2.3 | MIT |
 | [raf](https://www.npmjs.com/package/raf/v/3.4.1) | 3.4.1 | MIT |
@@ -874,7 +874,7 @@ the lockfile, then the installed `package.json`, then
 | [set-blocking](https://www.npmjs.com/package/set-blocking/v/2.0.0) | 2.0.0 | ISC |
 | [sharp](https://www.npmjs.com/package/sharp/v/0.35.5) | 0.35.5 | Apache-2.0 |
 | [simple-swizzle](https://www.npmjs.com/package/simple-swizzle/v/0.2.2) | 0.2.2 | MIT |
-| [sonic-boom](https://www.npmjs.com/package/sonic-boom/v/4.2.0) | 4.2.0 | MIT |
+| [sonic-boom](https://www.npmjs.com/package/sonic-boom/v/5.0.2) | 5.0.2 | MIT |
 | [source-map](https://www.npmjs.com/package/source-map/v/0.6.1) | 0.6.1 | BSD-3-Clause |
 | [source-map-js](https://www.npmjs.com/package/source-map-js/v/1.2.2) | 1.2.2 | BSD-3-Clause |
 | [source-map-support](https://www.npmjs.com/package/source-map-support/v/0.5.21) | 0.5.21 | MIT |
