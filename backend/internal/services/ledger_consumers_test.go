@@ -46,9 +46,15 @@ func TestDirectorContextActiveBillsIncludePartialBills(t *testing.T) {
 	now := time.Now().UTC()
 	business := createServicesLedgerBusiness(t, db, "Director Active Ledger Restaurant")
 
-	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-OPEN", 1000, 0, database.BillStatusOpen, now.Add(-30*time.Minute))
-	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-PARTIAL", 1000, 500, database.BillStatusPartial, now.Add(-20*time.Minute))
-	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-PAID", 1000, 1000, database.BillStatusPaid, now.Add(-10*time.Minute))
+	// Place fixtures inside the current service day: fixed offsets like
+	// now-30m straddle the day boundary just after midnight and drop the
+	// earlier bills out of "today".
+	dayStart := database.ServiceDayStart(now, database.ResolveBusinessLocation(&business), business.ServiceDayStartMinute).UTC()
+	elapsed := now.Sub(dayStart)
+	at := func(quarter int) time.Time { return dayStart.Add(elapsed * time.Duration(quarter) / 4) }
+	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-OPEN", 1000, 0, database.BillStatusOpen, at(1))
+	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-PARTIAL", 1000, 500, database.BillStatusPartial, at(2))
+	createServicesLedgerBill(t, db, business.ID, "DIRECTOR-PAID", 1000, 1000, database.BillStatusPaid, at(3))
 
 	ctx, err := service.buildContext(DirectorAskRequest{
 		BusinessID: business.ID,
