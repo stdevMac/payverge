@@ -23,6 +23,7 @@ import {
   MARKETING_BUSINESS_SLUG,
   MARKETING_MANAGER_EMAIL,
   resolveBusinessId,
+  seededTableCode,
 } from "./helpers/journeys";
 import { prepareGuestPage } from "./helpers/guest-page";
 import { ensureBusinessOpenForJourney } from "./helpers/delivery-test-setup";
@@ -30,8 +31,9 @@ import { ensureBusinessOpenForJourney } from "./helpers/delivery-test-setup";
 const ENABLED = process.env.PLAYWRIGHT_RUN_ASSISTANT_V2_E2E === "1";
 const APP_BASE_URL =
   process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3001";
+// "Main Room 2" on demo-ai-lounge — the table verify_demo_seed.sql asserts.
 const WAITER_TABLE_CODE =
-  process.env.PLAYWRIGHT_AI_TABLE_CODE || "demo-2-ai-pro-table-02";
+  process.env.PLAYWRIGHT_AI_TABLE_CODE || seededTableCode("ai-pro", 2);
 const RESTRICTED_STAFF_EMAIL =
   process.env.PLAYWRIGHT_AI_RESTRICTED_EMAIL || "host@ai-demo.payverge.example";
 const UNAVAILABLE_MENU_ITEM_ID = "ffffffff-ffff-4fff-8fff-ffffffffffff";
@@ -161,6 +163,15 @@ async function interceptOpsAsk(
   );
 }
 
+/**
+ * The dashboard hides the Ops Assistant FAB (DashboardLayout `hideFab`); its
+ * entry point is "Ask assistant" inside the sidebar Help menu.
+ */
+async function openOpsAssistant(page: Page) {
+  await page.getByRole("button", { name: "Help", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Ask assistant" }).click();
+}
+
 async function sendInChat(page: Page, dialogName: RegExp, text: string) {
   const dialog = page.getByRole("dialog", { name: dialogName });
   const composer = dialog.getByRole("textbox");
@@ -217,7 +228,7 @@ test.describe("Assistant V2 seeded product journeys", () => {
     await interceptOpsAsk(page, businessID, response);
 
     await page.goto(`/business/${businessID}/dashboard?tab=overview`);
-    await page.getByRole("button", { name: "Help", exact: true }).click();
+    await openOpsAssistant(page);
     const dialog = await sendInChat(
       page,
       /Ops Assistant/i,
@@ -254,7 +265,7 @@ test.describe("Assistant V2 seeded product journeys", () => {
     await interceptOpsAsk(page, businessID, response);
 
     await page.goto(`/business/${businessID}/dashboard?tab=overview`);
-    await page.getByRole("button", { name: "Help", exact: true }).click();
+    await openOpsAssistant(page);
     const dialog = await sendInChat(
       page,
       /Ops Assistant/i,

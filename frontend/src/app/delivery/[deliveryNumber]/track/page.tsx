@@ -154,7 +154,12 @@ function StageLadder({ activeStage, tString }: StageLadderProps) {
           const isLast = idx === STAGES.length - 1;
 
           return (
-            <div key={stage} className="flex items-stretch" role="listitem">
+            <div
+              key={stage}
+              className="flex items-stretch"
+              role="listitem"
+              aria-current={isCurrent ? "step" : undefined}
+            >
               {/* Left: icon + connector */}
               <div className="flex flex-col items-center w-10 shrink-0">
                 <div

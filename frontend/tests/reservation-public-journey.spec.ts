@@ -13,10 +13,13 @@
  * ADAPTATIONS vs the wave-5 plan draft:
  * - A hardcoded now+26h reservation_time can violate operating hours
  *   (validateReservationWindow rejects closed days / out-of-window slots).
- *   Instead we ask the public availability endpoint
+ *   Instead findBookableReservationSlot asks the public availability endpoint
  *   (GET /business/:customUrl/reservations/availability) for a real slot on a
  *   day ≥2 days out — slot times are RFC3339 UTC and feed straight into
  *   `reservation_time`; ≥2 days also clears the 24h cancellation deadline.
+ * - Online bookings may not set `duration` (400 duration_not_allowed —
+ *   ErrGuestDurationNotAllowed); the server applies settings.default_duration,
+ *   the same duration availability used to validate the slot.
  * - The details page renders its NextUI navigation CTA with button semantics;
  *   it opens /reservations/[code]/cancel, where a second danger button performs
  *   the cancel (guard against strict-mode double-fire requires the click).
@@ -28,43 +31,13 @@
  * Run: PLAYWRIGHT_RUN_JOURNEYS_E2E=1 npx playwright test reservation-public-journey
  */
 import { test, expect, request as apiRequestFactory } from "@playwright/test";
-import { journeysEnabled, API_BASE, BUSINESS_SLUG } from "./helpers/journeys";
+import {
+  journeysEnabled,
+  API_BASE,
+  BUSINESS_SLUG,
+  findBookableReservationSlot,
+} from "./helpers/journeys";
 import { prepareGuestPage } from "./helpers/guest-page";
-
-type AvailabilitySlot = {
-  time: string; // RFC3339 UTC
-  available_tables: number;
-  recommended: boolean;
-};
-
-/**
- * Find a bookable slot on the earliest day that is at least `minDaysAhead`
- * out (clears the seeded 24h cancellation deadline with margin). Scans up to
- * a week of days to survive closed days in the demo business hours.
- */
-async function findBookableSlot(
-  api: import("@playwright/test").APIRequestContext,
-  partySize: number,
-  minDaysAhead = 2,
-): Promise<string> {
-  for (let ahead = minDaysAhead; ahead < minDaysAhead + 7; ahead++) {
-    const day = new Date(Date.now() + ahead * 24 * 60 * 60 * 1000);
-    const date = day.toISOString().slice(0, 10); // YYYY-MM-DD
-    const resp = await api.get(
-      `${API_BASE}/business/${BUSINESS_SLUG}/reservations/availability?date=${date}&party_size=${partySize}`,
-    );
-    if (!resp.ok()) continue; // e.g. closed day handled as no slots
-    const body = await resp.json();
-    const slots: AvailabilitySlot[] = body.available_slots ?? [];
-    const usable = slots.filter((s) => s.available_tables > 0);
-    if (usable.length === 0) continue;
-    const pick = usable.find((s) => s.recommended) ?? usable[0];
-    return pick.time;
-  }
-  throw new Error(
-    `no available reservation slot found for ${BUSINESS_SLUG} within a week — is the demo seed loaded?`,
-  );
-}
 
 test.describe("Public reservation journey", () => {
   test.skip(
@@ -84,25 +57,29 @@ test.describe("Public reservation journey", () => {
     const api = await apiRequestFactory.newContext();
     let confirmationCode: string;
     try {
-      const slotTime = await findBookableSlot(api, 2);
+      const slotTime = await findBookableReservationSlot(api, {
+        partySize: 2,
+        minDaysAhead: 2,
+      });
       const resp = await api.post(
         `${API_BASE}/business/${BUSINESS_SLUG}/reservations`,
         {
           data: {
             customer_name: customerName,
             customer_phone: "+1 555-000-0042",
-          customer_email: "e2e-reservation@payverge.test",
-          party_size: 2,
-          reservation_time: slotTime,
-            duration: 90,
+            customer_email: "e2e-reservation@payverge.test",
+            party_size: 2,
+            reservation_time: slotTime,
             language: "en",
           },
         },
       );
-      expect(
-        resp.status(),
-        `public reservation create failed: ${resp.status()}`,
-      ).toBe(201);
+      if (resp.status() !== 201) {
+        expect(
+          resp.status(),
+          `public reservation create failed with ${resp.status()}: ${await resp.text()}`,
+        ).toBe(201);
+      }
       const body = await resp.json();
       confirmationCode = body.confirmation_code;
       expect(

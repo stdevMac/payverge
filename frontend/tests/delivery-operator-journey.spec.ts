@@ -22,7 +22,7 @@
  *     (services.DeliveryListResult), not a bare array.
  *   - Wave 3 removed the live driver map from the tracking page. The honest
  *     surfaces are the 5-stage ladder (data-testid="status-timeline",
- *     track/page.tsx:639) and the ETADisplay card ("Estimated Arrival").
+ *     StageLadder in track/page.tsx) and the ETADisplay card ("Estimated Arrival").
  *     "confirmed" maps to the "Accepted" ladder stage (STAGE_BY_STATUS).
  *
  * SEED DEPENDENCY: backend/scripts/demo_seed.sql — delivery_enabled=true with
@@ -254,15 +254,20 @@ test.describe("Delivery journey with operator acceptance", () => {
     // ── Step 12: tracking page reflects acceptance ─────────────────────────
     // Install the fake clock BEFORE the reload so page timers (15s polling,
     // ETA math) run under it. Then verify the 5-stage ladder renders with
-    // "Accepted" as the ACTIVE stage (amber text-amber-500 = current).
+    // "Accepted" as the CURRENT stage. The ladder exposes the current stage
+    // semantically (aria-current="step" on its listitem); the label colour is
+    // a contrast detail pinned by page.contrast.test.tsx, not asserted here.
     await page.clock.install();
     await page.reload();
 
     const timeline = page.getByTestId("status-timeline");
     await expect(timeline).toBeVisible({ timeout: 15_000 });
-    const acceptedStage = timeline.getByText(/^accepted$/i);
-    await expect(acceptedStage).toBeVisible();
-    await expect(acceptedStage).toHaveClass(/text-amber-500/);
+    await expect(timeline.getByText(/^accepted$/i)).toBeVisible();
+    const currentStage = timeline.locator(
+      '[role="listitem"][aria-current="step"]',
+    );
+    await expect(currentStage).toHaveCount(1);
+    await expect(currentStage).toHaveText(/^\s*accepted\s*$/i);
 
     // ── Step 13: countdown-expiry regression guard (Wave 4 TDZ fix) ────────
     // Fast-forward an hour so any ETA/payment countdown runs past zero and the

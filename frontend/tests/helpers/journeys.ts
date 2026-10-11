@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import {
   request as apiRequestFactory,
@@ -20,7 +21,24 @@ export const API_BASE =
   process.env.PLAYWRIGHT_API_BASE || "http://localhost:8080/api/v1";
 export const BUSINESS_SLUG =
   process.env.PLAYWRIGHT_DEMO_SLUG || "demo-core-kitchen";
-export const TABLE_CODE = process.env.PLAYWRIGHT_TABLE_CODE || "CORE-T01";
+/**
+ * Table code minted by backend/scripts/demo_seed.sql for table `n` of a seeded
+ * profile: upper(substr(md5('payverge-fixture-<profile>-table-' || n), 1, 10)).
+ * Codes are high-entropy on purpose (#293); legacy enumerable codes such as
+ * CORE-T01 or demo-2-ai-pro-table-02 are never seeded and 404 by design.
+ */
+export function seededTableCode(profile: "core" | "ai-pro", n: number): string {
+  return createHash("md5")
+    .update(`payverge-fixture-${profile}-table-${n}`)
+    .digest("hex")
+    .slice(0, 10)
+    .toUpperCase();
+}
+
+/** Seeded core-business table "Indoor 1". */
+export const TABLE_CODE =
+  process.env.PLAYWRIGHT_TABLE_CODE || seededTableCode("core", 1);
+
 /**
  * Seeded core-business manager (backend/scripts/demo_seed.sql). Overridable so
  * later journeys can log in as a different seeded staff role.
@@ -48,6 +66,55 @@ export async function resolveBusinessId(
   } finally {
     await ctx.dispose();
   }
+}
+
+type ReservationAvailabilitySlot = {
+  time: string; // RFC3339 UTC
+  available_tables: number;
+};
+
+/**
+ * Earliest bookable reservation slot (RFC3339 UTC) for `partySize`, taken from
+ * the public availability endpoint
+ * (GET /business/:customUrl/reservations/availability).
+ *
+ * The server builds slots from the venue's operating hours in the business
+ * timezone and only marks a slot available when it clears min-advance and a
+ * full `settings.default_duration` + service buffer fits before closing. So a
+ * reservation created at the returned time WITHOUT an explicit `duration` is
+ * accepted regardless of the UTC run time, the seeded hours, or whether an
+ * earlier spec widened them (ensureBusinessOpenForJourney). Scans a week of
+ * day keys from `minDaysAhead` to survive closed days.
+ */
+export async function findBookableReservationSlot(
+  api: APIRequestContext,
+  options: { partySize: number; minDaysAhead?: number; slug?: string },
+): Promise<string> {
+  const { partySize, minDaysAhead = 0, slug = BUSINESS_SLUG } = options;
+  const failures: string[] = [];
+  for (let ahead = minDaysAhead; ahead < minDaysAhead + 7; ahead++) {
+    const date = new Date(Date.now() + ahead * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10); // YYYY-MM-DD, read as a civil day in the business timezone
+    const resp = await api.get(
+      `${API_BASE}/business/${slug}/reservations/availability?date=${date}&party_size=${partySize}`,
+    );
+    if (!resp.ok()) {
+      failures.push(`${date}: ${resp.status()} ${await resp.text()}`);
+      continue;
+    }
+    const body = (await resp.json()) as {
+      available_slots?: ReservationAvailabilitySlot[];
+    };
+    const slot = (body.available_slots ?? []).find(
+      (s) => s.available_tables > 0,
+    );
+    if (slot) return slot.time;
+  }
+  throw new Error(
+    `no available reservation slot for ${slug} within a week — is the demo seed loaded?` +
+      (failures.length ? ` Availability errors: ${failures.join("; ")}` : ""),
+  );
 }
 
 /**
