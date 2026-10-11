@@ -128,7 +128,9 @@ Usage: install.sh [options]
   --domain NAME        public host name (DNS must point here), or localhost
                        for a local trial                    [PAYVERGE_DOMAIN]
   --admin-email EMAIL  first platform admin                 [PAYVERGE_ADMIN_EMAIL]
-  --acme-email EMAIL   Let's Encrypt account email (optional) [PAYVERGE_ACME_EMAIL]
+  --acme-email EMAIL   Let's Encrypt account email (optional; must be a real,
+                       deliverable address or Let's Encrypt refuses it)
+                                                            [PAYVERGE_ACME_EMAIL]
   --demo / --no-demo   seed demo restaurants on first boot   [PAYVERGE_DEMO=1|0]
   --dir DIR            install directory (default: /opt/payverge as root,
                        ~/payverge otherwise; in place when run from a
@@ -711,6 +713,12 @@ write_env() {
 		if [[ -n $https_port && ${https_port##*:} != 443 ]]; then
 			printf 'PUBLIC_URL=https://%s:%s\n' "$domain" "${https_port##*:}"
 		fi
+		# HSTS on a trial or internal-CA name would pin the name to HTTPS for a
+		# year: other dev servers on localhost break, and browsers then refuse
+		# to click through the local-CA certificate warning.
+		if internal_tls_name "$domain"; then
+			printf 'HSTS_POLICY=max-age=0\n'
+		fi
 		if is_true "$demo"; then
 			printf 'DEMO_DATA=true\n'
 			# Serve the core showroom venue's storefront at "/" (the same slug
@@ -1176,9 +1184,13 @@ main() {
 		https_port=$(env_get HTTPS_PORT "$env_file")
 		[[ -n $domain ]] || die "$env_file has no DOMAIN; fill it in, or re-run with --force"
 	else
-		if [[ -z $domain ]] && interactive; then
-			ask domain "Domain name (its DNS pointing at this server), or localhost for a trial" "localhost"
-		fi
+		# No default: pressing Enter on a server must not silently make an
+		# install only that server can reach.
+		local tries=0
+		while [[ -z $domain ]] && interactive && ((tries++ < 3)); do
+			ask domain "Domain name (its DNS pointing at this server), or localhost for a trial"
+			[[ -n $domain ]] || note "a domain is required; type localhost to try Payverge on this machine only"
+		done
 		[[ -n $domain ]] || die "no domain: pass --domain NAME (or --domain localhost for a trial)"
 		normalize_domain
 		if loopback_name "$domain"; then
@@ -1364,7 +1376,11 @@ main() {
 	[[ -n $public_url ]] || public_url="https://$domain"
 
 	say ""
-	say "${green}${bold}Payverge is running.${reset}"
+	if [[ $probe_failed == 1 ]]; then
+		say "${yellow}${bold}Payverge started, but $public_url is not answering yet (see the warnings below).${reset}"
+	else
+		say "${green}${bold}Payverge is running.${reset}"
+	fi
 	say ""
 	say "  URL          $public_url"
 	say "  Admin email  $admin_email"

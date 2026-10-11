@@ -40,9 +40,12 @@
 #     a clone is told to use --build or --version (not to clone again), and
 #     --dry-run warns that a real run would stop;
 #   - the public check probes the frontend (/) through Caddy as well as
-#     /api/v1/health/live. A failing frontend probe still prints the
-#     "Payverge is running" summary and the admin password, then exits
-#     non-zero. Probes that pass leave the fresh-install cases at exit 0;
+#     /api/v1/health/live. A failing frontend probe still prints the summary
+#     and the admin password under a "not answering yet" heading (never
+#     "Payverge is running"), then exits non-zero. Probes that pass leave the
+#     fresh-install cases at exit 0;
+#   - a trial or internal-CA name withdraws HSTS (HSTS_POLICY=max-age=0); a
+#     public domain keeps the compose default;
 #   - a release download (install.sh outside a checkout) verifies SHA256SUMS
 #     with cosign when the stub is on PATH: a passing verify-blob proceeds,
 #     a failing one installs nothing, and --require-signature with no cosign
@@ -556,6 +559,7 @@ STUB_BACKEND_LOG=/dev/null install "$dir" --yes --domain localhost --admin-email
 [[ $status -eq 0 ]] && pass "trial: installs" || { fail "trial: exit $status"; printf '%s\n' "$out" >&2; }
 [[ $(env_value HTTP_PORT "$dir/.env") == 127.0.0.1:80 ]] && pass "trial: HTTP on loopback" || fail "trial: HTTP_PORT=$(env_value HTTP_PORT "$dir/.env")"
 [[ $(env_value HTTPS_PORT "$dir/.env") == 127.0.0.1:443 ]] && pass "trial: HTTPS on loopback" || fail "trial: HTTPS_PORT=$(env_value HTTPS_PORT "$dir/.env")"
+[[ $(env_value HSTS_POLICY "$dir/.env") == max-age=0 ]] && pass "trial: HSTS withdrawn" || fail "trial: HSTS_POLICY=$(env_value HSTS_POLICY "$dir/.env")"
 [[ -z $(env_value PUBLIC_URL "$dir/.env") ]] && pass "trial: default port needs no PUBLIC_URL" || fail "trial: PUBLIC_URL set"
 
 dir=$(new_checkout trial-ports)
@@ -580,6 +584,7 @@ STUB_BACKEND_LOG=/dev/null install "$dir" "${FRESH[@]}" --http-port 127.0.0.1:80
 dir=$(new_checkout public-default)
 STUB_BACKEND_LOG=/dev/null install "$dir" "${FRESH[@]}"
 [[ -z $(env_value HTTP_PORT "$dir/.env")$(env_value HTTPS_PORT "$dir/.env") ]] && pass "public domain: ports left at the compose default" || fail "public domain: bind written"
+[[ -z $(env_value HSTS_POLICY "$dir/.env") ]] && pass "public domain: HSTS left at the compose default" || fail "public domain: HSTS_POLICY=$(env_value HSTS_POLICY "$dir/.env")"
 for bad in 'abc' '0' '70000' 'localhost:8080' '1.2.3.4:' ':8080'; do
 	dir=$(new_checkout "bad-port-${bad//[^a-z0-9]/_}")
 	install "$dir" "${FRESH[@]}" --https-port "$bad"
@@ -655,7 +660,8 @@ printf '%s\n' "$(log_line info 'Bootstrap admin o***@example.com created (user i
 # The root URL fails; /api/v1/health/live does not. One try, no 2-minute wait.
 PAYVERGE_PROBE_ATTEMPTS=1 STUB_BACKEND_LOG="$WORK/probe-frontend.log" STUB_CURL_FAIL='https://pos.example.invalid:443/' install "$dir" "${FRESH[@]}"
 [[ $status -ne 0 ]] && pass "frontend probe: non-zero exit ($status)" || fail "frontend probe: exit 0"
-expect_contains "frontend probe: summary still printed" "$out" "Payverge is running"
+expect_contains "frontend probe: summary still printed" "$out" "is not answering yet"
+expect_absent "frontend probe: no success banner" "$out" "Payverge is running"
 pw=$(sed -n 's/^  Password     \([A-Za-z0-9-]*\)$/\1/p' <<<"$out")
 [[ $pw =~ ^[A-Za-z0-9]{5}(-[A-Za-z0-9]{5}){3}$ ]] && pass "frontend probe: admin password shown" || fail "frontend probe: admin password not shown"
 expect_contains "frontend probe: names the frontend" "$out" "frontend /"
