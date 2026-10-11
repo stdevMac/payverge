@@ -1,7 +1,10 @@
 import { test, expect, type BrowserContext } from "@playwright/test";
 import { loginStaff } from "./helpers/staff-login";
 import { prepareGuestPage } from "./helpers/guest-page";
-import { resolveBusinessId } from "./helpers/journeys";
+import {
+  findBookableReservationSlot,
+  resolveBusinessId,
+} from "./helpers/journeys";
 
 const STAFF_EMAILS = {
   manager: "manager@core-demo.payverge.example",
@@ -310,9 +313,15 @@ test.describe.serial("staff dashboard fixes", () => {
       const state = await apiRequest.storageState();
       await ctx.addCookies(state.cookies);
 
-      const reservationTime = new Date(
-        Date.now() + 4 * 60 * 60 * 1000,
-      ).toISOString();
+      // A fixed now+N offset lands outside the venue's operating hours at
+      // some UTC run times (business hours are evaluated in the business
+      // timezone, and earlier specs may widen them). Book the earliest slot
+      // the public availability endpoint reports as open; it was validated
+      // with settings.default_duration, so the create omits `duration` and
+      // the server applies that same default.
+      const reservationTime = await findBookableReservationSlot(apiRequest, {
+        partySize: 2,
+      });
       const createResponse = await apiRequest.post(
         `${API_BASE}/inside/businesses/${BUSINESS_ID}/reservations`,
         {
@@ -323,7 +332,6 @@ test.describe.serial("staff dashboard fixes", () => {
             customer_email: "readonly@example.com",
             party_size: 2,
             reservation_time: reservationTime,
-            duration: 120,
             source: "manual",
           },
         },
@@ -361,6 +369,15 @@ test.describe.serial("staff dashboard fixes", () => {
         .or(page.getByRole("button", { name: /^Reservations$/i }))
         .first()
         .click();
+
+      // The list defaults to "Today" in the business timezone; the earliest
+      // open slot may be on a later day, so widen to "Upcoming"
+      // (today → +30 days) and narrow by the unique guest name.
+      await page.getByRole("button", { name: /Date Range/i }).click();
+      await page.getByRole("option", { name: "Upcoming", exact: true }).click();
+      await page
+        .getByRole("textbox", { name: /Search by customer name/i })
+        .fill(customerName);
 
       const reservationContainer = page
         .getByRole("row")

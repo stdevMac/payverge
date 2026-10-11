@@ -119,6 +119,10 @@ describe("5-stage ladder", () => {
 
     // Stage label key for preparing is deliveryTracking.stages.preparing
     expect(screen.getByText("deliveryTracking.stages.preparing")).toBeInTheDocument();
+    // Exactly one stage is exposed as the current step to assistive tech.
+    const current = timeline.querySelectorAll('[role="listitem"][aria-current="step"]');
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveTextContent("deliveryTracking.stages.preparing");
     // No negative terminal card
     expect(screen.queryByTestId("terminal-card")).not.toBeInTheDocument();
   });

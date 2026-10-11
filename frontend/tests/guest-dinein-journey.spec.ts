@@ -5,7 +5,8 @@
  * POST /api/v1/inside/bills/:bill_id/alternative-payment) — no card/crypto provider is
  * touched. Demo crypto would be Base Sepolia; deliberately out of scope.
  *
- * SEED: backend/scripts/demo_seed.sql (table CORE-T01 on demo-core-kitchen).
+ * SEED: backend/scripts/demo_seed.sql (table "Indoor 1" on demo-core-kitchen;
+ * its high-entropy code is derived in helpers/journeys.ts TABLE_CODE).
  * Run: PLAYWRIGHT_RUN_JOURNEYS_E2E=1 npx playwright test guest-dinein-journey
  *
  * NOTE ON CURRENT UI (differs from the wave-5 plan draft): the guest ordering
