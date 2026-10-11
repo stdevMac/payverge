@@ -6,6 +6,22 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.2](https://github.com/stdevMac/payverge/compare/v1.0.1...v1.0.2) (2026-10-11)
+
+
+### Fixes
+
+* **deps:** bump caddy ([568632b](https://github.com/stdevMac/payverge/commit/568632bb4505a7ba274ff0c1c5edb54e04716fc5))
+* **deps:** bump caddy from 2.11.6-alpine to 2.11.7-alpine in /deploy in the caddy-images-minor-patch group across 1 directory ([#37](https://github.com/stdevMac/payverge/issues/37)) ([568632b](https://github.com/stdevMac/payverge/commit/568632bb4505a7ba274ff0c1c5edb54e04716fc5))
+* **deps:** bump fast-copy from 4.0.2 to 4.1.2 in /frontend ([f633a9c](https://github.com/stdevMac/payverge/commit/f633a9cd175f4e2874e35e4902e6de6034f8095b))
+* **deps:** bump pino-pretty ([155ed2c](https://github.com/stdevMac/payverge/commit/155ed2c8e5edd9ecd0001472f8ab0605a65ab946))
+* **deps:** bump the go-minor-patch group in /backend with 9 updates ([ce46d2f](https://github.com/stdevMac/payverge/commit/ce46d2f62a8c894b316db857ad92dcc1b59ae59c))
+
+
+### Other changes
+
+* **site:** confirm the live-demo launch gate against v1.0.1 ([b7ecebc](https://github.com/stdevMac/payverge/commit/b7ecebc101c39fde94cf1c6565b674c319ad81f8))
+
 ## [1.0.1](https://github.com/stdevMac/payverge/compare/v1.0.0...v1.0.1) (2026-10-11)
 
 
