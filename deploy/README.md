@@ -72,7 +72,7 @@ bash install.sh --yes --domain pos.example.com --admin-email you@example.com \
 |---|---|
 | `--domain NAME` | Public host name, or `localhost` for a trial. |
 | `--admin-email EMAIL` | The first platform admin. |
-| `--acme-email EMAIL` | Contact address for the Let's Encrypt account (optional). |
+| `--acme-email EMAIL` | Contact address for the Let's Encrypt account (optional). It must be a real, deliverable address: Let's Encrypt rejects placeholder domains such as `example.com`, and Caddy then falls back to ZeroSSL. |
 | `--demo` / `--no-demo` | Seed demo restaurants owned by the admin on the first start. |
 | `--dir DIR` | Install directory. |
 | `--version V` | Release to install or upgrade to (`1.2.3`, `v1.2.3` or `latest`). The installer pins the exact version in `.env`. |
@@ -115,8 +115,12 @@ only while `COMPOSE_FILE` is unset. When `.env` sets `COMPOSE_FILE` (as
 ```sh
 git clone https://github.com/stdevMac/payverge.git
 cd payverge
+git checkout v1.2.3   # the newest release: https://github.com/stdevMac/payverge/releases/latest
 ./deploy/install.sh
 ```
+
+Check out a release tag first. `main` can be ahead of the newest release, and
+its deploy files (the Caddy version, for one) have not shipped yet.
 
 Run from a clone, the installer works in place in `deploy/`. With no
 `--version` and no `--build`, it pins `PAYVERGE_VERSION` to the newest
@@ -128,11 +132,13 @@ being built, which is resolved to a release. With `--dir` it copies the
 deploy files somewhere else first. To upgrade a release install, run its own
 copy: `bash /opt/payverge/install.sh --version 1.3.0` (an install from before
 the first public release fetches the new installer first; see
-[PostgreSQL 15 to 18](#postgresql-15-to-18)). Before the first release is
-published, there is nothing to pin: the installer says so and points at
-`--build` or `--version`.
+[PostgreSQL 15 to 18](#postgresql-15-to-18)).
 
 ### By hand
+
+In the unpacked release tarball (`payverge-deploy-<version>.tar.gz` on the
+[release page](https://github.com/stdevMac/payverge/releases/latest)), or in
+`deploy/` of a clone checked out at a release tag:
 
 ```sh
 cp .env.example .env
@@ -663,6 +669,11 @@ itself and replaces the value the apps send. It does not add
 `includeSubDomains`, because that would force HTTPS on every other host under
 your domain. Once all of them serve HTTPS, opt in with
 `HSTS_POLICY=max-age=31536000; includeSubDomains` in `.env`.
+
+For `localhost`, an IP address or a `.local`, `.internal` or `.home.arpa`
+name, the installer writes `HSTS_POLICY=max-age=0`. A year of HSTS there would
+force HTTPS on every other local server under that name, and browsers would
+refuse to click through the local-CA certificate warning.
 
 ### Rate limiting
 

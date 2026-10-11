@@ -96,10 +96,10 @@ work. [reverse-proxies.md](reverse-proxies.md) walks through each setup.
 | `TRUSTED_PROXY_CIDRS` | none (trust no one) | | yes (Caddy) | Space-separated CIDRs of proxies in front of Caddy. Caddy then reads `X-Forwarded-For` right to left in strict mode and skips only those hops. |
 | `TRUSTED_PROXIES` | see below | | yes | Comma-separated CIDRs or IPs whose `X-Forwarded-For` the backend believes. |
 | `TRUSTED_PLATFORM` | empty | | forced empty | `cloudflare` makes Gin read `CF-Connecting-IP` directly. The deploy compose blanks it because Caddy already resolved the IP; only for running the backend bare behind Cloudflare. |
-| `FRONTEND_TRUSTED_PROXIES` | empty (trust no one); compose: private ranges | | yes (frontend) | CIDRs whose `X-Forwarded-For` the frontend's same-origin proxy keeps. See [frontend-config.md](frontend-config.md#client-ip-trust). |
-| `HSTS_POLICY` | `max-age=31536000` | | yes (Caddy) | `Strict-Transport-Security` that Caddy sends for `DOMAIN`. |
+| `FRONTEND_TRUSTED_PROXIES` | empty (trust no one); compose: `EDGE_SUBNET` (`172.30.0.0/24`) | | yes (frontend) | CIDRs whose `X-Forwarded-For` the frontend's same-origin proxy keeps. See [frontend-config.md](frontend-config.md#client-ip-trust). |
+| `HSTS_POLICY` | `max-age=31536000`; the installer writes `max-age=0` for `localhost`, an IP or a `.local`/`.internal`/`.home.arpa` name | | yes (Caddy) | `Strict-Transport-Security` that Caddy sends for `DOMAIN`. |
 | `FORCE_HSTS` | `false` | | yes | `true` makes the backend send HSTS itself; only matters when the backend is reached without Caddy. |
-| `ACME_EMAIL` | none | | yes (Caddy) | Let's Encrypt account email for expiry notices. |
+| `ACME_EMAIL` | none | | yes (Caddy) | Let's Encrypt account email for expiry notices. Must be a real, deliverable address; Let's Encrypt rejects placeholder domains such as `example.com`. |
 | `HTTP_PORT` | `80` | | yes (Caddy) | Host port (or `127.0.0.1:port`) Caddy publishes for HTTP. |
 | `HTTPS_PORT` | `443` | | yes (Caddy) | Host port Caddy publishes for HTTPS. |
 | `EDGE_SUBNET` | `172.30.0.0/24` | | yes (compose) | Subnet of the deploy stack's edge network; the default for `TRUSTED_PROXIES` and `FRONTEND_TRUSTED_PROXIES`. |
@@ -226,8 +226,8 @@ Full guide: [storage.md](storage.md).
 | `S3_PUBLIC_BASE_URL` | `PUBLIC_URL/media` | | yes | Public URL (or CDN) of the public bucket. |
 | `S3_PROTECTED_BASE_URL` | none | | via flag | Base URL for protected objects when served through a signed CDN. |
 | `MEDIA_ORIGINS` | none | | yes (frontend) | Origins of `S3_PUBLIC_BASE_URL`, for the frontend's CSP and image optimizer. |
-| `MEDIA_RATE_LIMIT_REQUESTS_PER_MINUTE` | built-in | | no | Per-IP limit on `/media/*`. |
-| `MEDIA_RATE_LIMIT_BURST` | built-in | | no | Burst for the limit above. |
+| `MEDIA_RATE_LIMIT_REQUESTS_PER_MINUTE` | built-in | | yes | Per-IP limit on `/media/*`. |
+| `MEDIA_RATE_LIMIT_BURST` | built-in | | yes | Burst for the limit above. |
 | `MINIO_ROOT_USER` | `payverge-root` | | yes (minio) | Root user of the bundled MinIO (profile `minio`). |
 | `MINIO_ROOT_PASSWORD` | none | minio | yes (minio) | Root password of the bundled MinIO. |
 | `MINIO_IMAGE` | Chainguard MinIO, pinned | | yes (minio) | Another MinIO image. |
@@ -371,8 +371,8 @@ quotas and the email caps are in their own sections.
 
 | Variable | Default | Req. | Compose | Effect |
 |---|---|---|---|---|
-| `AI_TRANSCRIPT_RETENTION_DAYS` | `90` | | no | AI waiter transcripts are deleted after this. |
-| `OPS_ASSISTANT_RETENTION_DAYS` | `30` | | no | Ops assistant threads with no new message for this long are deleted. |
+| `AI_TRANSCRIPT_RETENTION_DAYS` | `90` | | yes | AI waiter transcripts are deleted after this. |
+| `OPS_ASSISTANT_RETENTION_DAYS` | `30` | | yes | Ops assistant threads with no new message for this long are deleted. |
 | `SPACE_SCAN_RAW_RETENTION_DAYS` | `7` | | no | Raw floor-plan scan frames. |
 | `WEBHOOK_EVENT_RETENTION_DAYS` | `60` | | no | Stored provider webhook events. |
 | `PLUGIN_NOTIFICATION_TTL_HOURS` | `24` | | no | Plugin notifications. |
