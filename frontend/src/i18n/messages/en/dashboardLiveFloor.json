@@ -1,0 +1,11 @@
+{
+  "title": "On the floor today",
+  "chipOnClock": "on the clock",
+  "chipLate": "late",
+  "chipNoShow": "no-show",
+  "since": "Since {time}",
+  "minLate": "{minutes} min late",
+  "footerScheduled": "{count} scheduled",
+  "footerDone": "{count} done",
+  "unknownStaff": "Team member"
+}

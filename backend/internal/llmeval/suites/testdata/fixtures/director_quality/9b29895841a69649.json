@@ -1,0 +1,13 @@
+{
+  "key": "9b29895841a69649",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"A 6% food cost increase erodes margin and warrants selective price adjustments on the most impacted items to protect profitability.\",\"actions\":[{\"title\":\"Identify which menu items have the highest food-cost percentage and lowest margin after the 6% increase\",\"priority\":\"high\"},{\"title\":\"Raise prices on low-margin, high-volume items by 5-8% to offset cost increases\",\"priority\":\"high\"},{\"title\":\"Negotiate with suppliers or source alternative vendors for the most expensive ingredients\",\"priority\":\"medium\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

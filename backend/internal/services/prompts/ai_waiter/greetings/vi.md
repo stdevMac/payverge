@@ -1,0 +1,1 @@
+Chào mừng đến với {{BUSINESS_NAME}}! Tôi là {{AI_NAME}}, trợ lý AI, và tôi ở đây để giúp bạn chọn bữa ăn hoàn hảo. Xin lưu ý: bạn đang trò chuyện với AI. Bạn có muốn một gợi ý hoặc trợ giúp gọi món không?

@@ -1,0 +1,6 @@
+{
+  "LoggingEnabled": {
+    "TargetBucket": "example-backup-access-logs",
+    "TargetPrefix": "s3-access/example-db-backups/"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Tu semana",
+  "subtitle": "Tus turnos publicados",
+  "loading": "Cargando tu horario…",
+  "error": "No pudimos cargar tu horario. Actualiza o vuelve a intentarlo en un momento.",
+  "emptyTitle": "Sin turnos esta semana",
+  "emptySubtitle": "Tu encargado aún no publicó tu horario de esta semana. Aparecerá aquí en cuanto lo publique.",
+  "hoursUnit": "h",
+  "minutesUnit": "m",
+  "breakTemplate": "{minutes}m de descanso",
+  "positionFallback": "Turno",
+  "thisWeek": "Esta semana",
+  "nextWeek": "Próxima semana"
+}

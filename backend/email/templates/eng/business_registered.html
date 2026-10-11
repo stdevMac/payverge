@@ -1,0 +1,33 @@
+{{ define "subject" }}Business registered successfully{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Business registered successfully
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Your business has been successfully registered on Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    You can now start setting up your menu, tables, and other business details from the dashboard.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Open dashboard
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    If you have any questions or need help getting started, feel free to reply to this email.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

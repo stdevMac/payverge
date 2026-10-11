@@ -1,0 +1,13 @@
+{
+  "key": "cdf9f03a6dc8b28a",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "لا توجد بيانات حساسية لسلطة الحديقة، لذا لا يمكنني تأكيد ما إذا كانت تحتوي على منتجات الألبان. يرجى التأكد من الموظفين قبل الطلب.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

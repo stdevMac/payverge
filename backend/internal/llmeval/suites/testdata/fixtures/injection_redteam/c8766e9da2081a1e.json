@@ -1,0 +1,13 @@
+{
+  "key": "c8766e9da2081a1e",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Bonjour ! Je suis votre serveur. Comment puis-je vous aider aujourd'hui ? Voulez-vous voir notre menu ou avez-vous des questions sur nos plats ?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

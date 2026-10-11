@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Pre-commit hook: scan for credential signatures and validate i18n locale-tree parity.
+#   - guest tier   (frontend/src/i18n/guest-messages/)         -> check-guest-locales.js
+#   - operator tier (frontend/src/i18n/messages/ or .../locales/) -> check-operator-locales.js
+# Each validator runs only when a staged path touches its tree.
+#
+# Install via: make install-hooks  (or `npm run install-hooks` from frontend/)
+# Bypass (discouraged): git commit --no-verify
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+staged="$(git diff --cached --name-only --diff-filter=ACM)"
+failed=0
+
+# Staged blobs only: the next commit's content, in well under a second. The
+# full worktree scan (--all) and --history run in CI (ci.yml audit job).
+echo "pre-commit: scanning staged content for credential signatures..."
+if ! node "$repo_root/scripts/scan-secrets.mjs" --staged; then
+  echo "Secret scan failed. Remove the credential and rotate it before committing."
+  failed=1
+fi
+
+# i18n codegen + structural check: locales/registry.json is the single source of
+# truth for both the frontend (src/i18n/generated/locales.ts) and the backend
+# (internal/locales/registry_generated.go) generated files. Run whenever any
+# i18n source or generated artifact is staged so registry drift and message
+# hygiene cannot ship silently.
+if echo "$staged" | grep -qE "^(locales/registry\.json|frontend/src/i18n/|backend/internal/locales/registry_generated\.go)"; then
+  echo "pre-commit: i18n change detected; running i18n:check..."
+  if ! ( cd "$repo_root/frontend" && npm run --silent i18n:check ); then
+    echo ""
+    echo "i18n:check failed. Either:"
+    echo "  - Run: (cd frontend && npm run i18n:generate) and stage the regenerated files"
+    echo "  - Fix structural parity (see npm run i18n:check output)"
+    echo "  - Bypass with --no-verify (only for true emergencies)"
+    failed=1
+  fi
+fi
+
+if echo "$staged" | grep -q "^frontend/src/i18n/guest-messages/"; then
+  echo "pre-commit: guest-message change detected; running guest validator..."
+  if ! node "$repo_root/frontend/scripts/check-guest-locales.js"; then
+    echo ""
+    echo "Guest-locale validator failed. Either:"
+    echo "  - Fix the errors above (run node frontend/scripts/check-guest-locales.js --report)"
+    echo "  - Bypass with --no-verify (only for true emergencies)"
+    failed=1
+  fi
+  # REV-8: cookies + viewMode English-copy gate (also run by the i18n job in .github/workflows/ci.yml).
+  if ! node "$repo_root/frontend/scripts/check-guest-locales.js" --cookies; then
+    echo ""
+    echo "Guest cookies/viewMode locale gate failed. Either:"
+    echo "  - Fix the errors above (run node frontend/scripts/check-guest-locales.js --cookies)"
+    echo "  - Bypass with --no-verify (only for true emergencies)"
+    failed=1
+  fi
+fi
+
+if echo "$staged" | grep -qE "^frontend/src/i18n/(messages|locales)/"; then
+  echo "pre-commit: operator-message change detected; running operator validator..."
+  if ! node "$repo_root/frontend/scripts/check-operator-locales.js"; then
+    echo ""
+    echo "Operator-locale validator failed. Either:"
+    echo "  - Fix the errors above (run node frontend/scripts/check-operator-locales.js --report)"
+    echo "    (en is source of truth: es/es-AR must have every en key and no extras)"
+    echo "  - Bypass with --no-verify (only for true emergencies)"
+    failed=1
+  fi
+fi
+
+if echo "$staged" | grep -qE "^frontend/src/.*\.(ts|tsx)$"; then
+  echo "pre-commit: frontend TS change; running guard scripts..."
+  if ! node "$repo_root/frontend/scripts/check-utc-datekeys.js"; then
+    echo ""
+    echo "UTC date-key guard failed. Use localDateKey()/localDateTimeInputValue() from src/lib/localDate.ts."
+    failed=1
+  fi
+  if ! node "$repo_root/frontend/scripts/check-dynamic-tailwind.js"; then
+    echo ""
+    echo "Dynamic-Tailwind guard failed. Interpolate complete class strings from static literals."
+    failed=1
+  fi
+fi
+
+exit "$failed"

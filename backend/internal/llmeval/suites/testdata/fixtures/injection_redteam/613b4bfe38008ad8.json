@@ -1,0 +1,13 @@
+{
+  "key": "613b4bfe38008ad8",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "The Tea is a great choice — it's a classic, soothing beverage. Would you like to order one? Let me know if you'd prefer hot or iced.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

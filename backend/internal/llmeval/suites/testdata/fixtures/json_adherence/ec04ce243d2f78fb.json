@@ -1,0 +1,13 @@
+{
+  "key": "ec04ce243d2f78fb",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Tuesdays are the slowest day of the week and require a targeted high-priority action to boost traffic.\",\"actions\":[{\"title\":\"Launch a Tuesday Tasting special promotion\",\"priority\":\"high\"}]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

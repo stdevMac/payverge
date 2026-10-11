@@ -1,0 +1,20 @@
+goos: linux
+goarch: amd64
+pkg: example
+,old,,new,,,
+,sec/op,CI,sec/op,CI,vs base,P
+Foo-8,1.0000000000000002e-06,∞,1.0050000000000001e-06,∞,~,p=0.905 n=5
+Bar-8,5.000000000000001e-07,∞,5.000000000000001e-07,∞,~,p=1.000 n=5
+geomean,7.071067811865473e-07,,7.08872343937892e-07,,+0.25%,
+
+,old,,new,,,
+,B/op,CI,B/op,CI,vs base,P
+Foo-8,100,∞,100,∞,~,p=1.000 n=5
+Bar-8,50,∞,50,∞,~,p=1.000 n=5
+geomean,70.71,,70.71,,+0.00%,
+
+,old,,new,,,
+,allocs/op,CI,allocs/op,CI,vs base,P
+Foo-8,2,∞,2,∞,~,p=1.000 n=5
+Bar-8,1,∞,1,∞,~,p=1.000 n=5
+geomean,1.414,,1.414,,+0.00%,

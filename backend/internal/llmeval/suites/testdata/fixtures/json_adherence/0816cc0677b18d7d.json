@@ -1,0 +1,13 @@
+{
+  "key": "0816cc0677b18d7d",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "{\"summary\":\"Revenue grew 12% from 2026-05-30 to 2026-06-06 while order #100234567 was delayed, indicating mixed operational health.\",\"diagnosis\":\"Revenue growth is positive but the delayed order suggests fulfillment or capacity issues that could undermine future growth.\",\"evidence\":[\"Revenue increased 12% in the 2026-05-30 to 2026-06-06 period\",\"Order #100234567 experienced a delay\"],\"actions\":[{\"title\":\"Audit delayed order #100234567 root cause\",\"description\":\"Trace order #100234567 from placement to delivery to identify where the delay occurred and prevent recurrence.\",\"deep_link\":\"/orders/100234567\",\"priority\":\"high\"}],\"expected_impact\":\"Addressing the fulfillment bottleneck could sustain the revenue growth trajectory and improve customer satisfaction.\",\"follow_ups\":[\"Monitor fulfillment times over the next two weeks\",\"Review staffing during peak order periods\"]}",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 80,
+      "TotalTokens": 280
+    }
+  }
+}

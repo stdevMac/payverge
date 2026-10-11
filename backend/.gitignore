@@ -1,0 +1,5 @@
+# Compiled binaries — standardize on the Makefile bin/app output (already ignored
+# by the root .gitignore). Never commit a stray `go build -o payverge` artifact.
+/payverge
+/payverge-backend
+/bin/

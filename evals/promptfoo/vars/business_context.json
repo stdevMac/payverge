@@ -1,0 +1,43 @@
+{
+  "business_id": 1,
+  "business_name": "Trattoria Bella Vita",
+  "currency": "USD",
+  "weekly_metrics": {
+    "revenue": 28450.75,
+    "transactions": 1247,
+    "average_ticket": 22.80,
+    "tips": 4267.61,
+    "active_bills": 8
+  },
+  "order_status": {
+    "pending": 3,
+    "confirmed": 12,
+    "preparing": 5,
+    "ready": 2,
+    "delivered": 1203
+  },
+  "reservations": {
+    "total_this_week": 87,
+    "average_party_size": 3.2,
+    "peak_times": ["19:00", "20:00", "20:30"]
+  },
+  "top_items": [
+    {"name": "Margherita", "orders": 245, "revenue": 3430.00},
+    {"name": "Pepperoni", "orders": 198, "revenue": 3168.00},
+    {"name": "Caprese Salad", "orders": 156, "revenue": 1638.00},
+    {"name": "Diavola", "orders": 142, "revenue": 2343.00},
+    {"name": "Calamari Fritti", "orders": 134, "revenue": 1608.00}
+  ],
+  "crm_stats": {
+    "total_customers": 1240,
+    "new_this_week": 47,
+    "returning_rate": "62%"
+  },
+  "ai_waiter_stats": {
+    "conversations_this_week": 312,
+    "avg_messages_per_conversation": 5.3,
+    "upsell_success_rate": "18%"
+  },
+  "plugins": ["Stripe", "Postmark"],
+  "report_schedules": ["weekly-summary-monday"]
+}

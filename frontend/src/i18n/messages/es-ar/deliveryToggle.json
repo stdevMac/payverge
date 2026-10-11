@@ -1,0 +1,23 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Intentá de nuevo.",
+  "activationCard": {
+    "description": "Conectá los proveedores de entrega que tus clientes ya conocen. Aparecerán en tu página de negocio en un solo lugar.",
+    "features": {
+      "zones": {
+        "description": "Elegí los proveedores visibles para tus clientes"
+      },
+      "management": {
+        "description": "Pausá la entrega sin perder tus proveedores"
+      }
+    }
+  },
+  "enableModal": {
+    "features": {
+      "zones": "Ver los proveedores que elegiste"
+    }
+  },
+  "disableModal": {
+    "description": "¿Seguro que querés desactivar la entrega? Tus clientes ya no van a ver:",
+    "confirmation": "Podés volver a activarla cuando quieras sin perder tus proveedores."
+  }
+}

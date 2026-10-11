@@ -1,0 +1,38 @@
+{{ define "subject" }}Staff member added{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Staff member added
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    A new staff member has been added to your business on Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    They’ve been assigned the <strong>{{ .staff_role }}</strong> role and can now access the parts of the dashboard
+    related to their responsibilities.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    You can manage staff access and roles at any time from the dashboard.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Manage staff
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    If this wasn’t expected or you need to make changes, you can update staff access directly in the dashboard.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

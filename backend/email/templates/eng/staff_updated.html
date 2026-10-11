@@ -1,0 +1,39 @@
+{{ define "subject" }}Staff role updated{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Staff role updated
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hi {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    A staff member’s role has been updated for your business on Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Their role is now set to <strong>{{ .staff_role }}</strong>, which determines what parts of the dashboard they can
+    access.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    You can review and adjust staff roles at any time from the dashboard.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Manage staff
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    If this change wasn’t expected or needs correction, you can update it directly in the dashboard or reply to this
+    email.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    The Payverge team
+</p>
+{{ end }}

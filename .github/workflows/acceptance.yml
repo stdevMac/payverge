@@ -1,0 +1,38 @@
+# Weekly 1-click self-host acceptance: builds the images from source, boots
+# deploy/ with DOMAIN=localhost and zero third-party accounts, runs a
+# restaurant end to end (admin login, menu with a photo, table, guest order
+# seen live over SSE, cash settlement, email to the log provider), checks the
+# frontend's runtime config, then proves `docker compose up -d` and a restart
+# keep every row and the photo. See scripts/acceptance/README.md.
+#
+# Hardening follows the rules at the top of ci.yml (enforced by
+# scripts/ci/d10_hygiene_contract.test.mjs and scripts/ci/workflowcontract).
+name: Acceptance
+
+on:
+  schedule:
+    - cron: "41 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  zero-accounts:
+    name: Self-host stack, zero accounts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run the acceptance script
+        env:
+          # First boot includes building both images from source.
+          ACCEPTANCE_READY_TIMEOUT: "2400"
+        run: scripts/acceptance/zero-accounts.sh

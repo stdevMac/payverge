@@ -1,0 +1,33 @@
+{{ define "subject" }}Solicitud de reservación recibida{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Solicitud de reservación recibida
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola,
+</p>
+
+<p>
+    Recibimos tu solicitud de reservación en {{ .business_name }} para el {{ .reservation_date }} a las {{ .reservation_time }}.
+</p>
+
+<p>
+    Personas: {{ .party_size }}<br>
+    Mesa: {{ .table_name }}
+</p>
+
+<p>
+    {{ if .respond_by }}El restaurante revisa cada solicitud — recibirás una respuesta antes del {{ .respond_by }}.{{ else }}El restaurante revisa cada solicitud y te enviará un correo en breve.{{ end }}
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    {{ if .cancellation_url }}
+    <a href="{{ .cancellation_url }}">Cancelar solicitud</a>
+    {{ end }}
+</div>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

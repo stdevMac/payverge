@@ -1,0 +1,12 @@
+# Payverge public demo: run the reset watchdog every hour.
+[Unit]
+Description=Payverge public demo reset watchdog, hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+Unit=payverge-demo-reset-check.service
+
+[Install]
+WantedBy=timers.target

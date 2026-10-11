@@ -1,0 +1,146 @@
+# Payverge site definition, shared by deploy/Caddyfile (EDGE=none) and
+# deploy/Caddyfile.cloudflare (EDGE=cloudflare). Both files import it after
+# their own global options block, so the routing below exists exactly once.
+#
+# Topology (one origin, no CORS):
+#   https://{$DOMAIN}/api/v1/*  -> backend:8080   (JSON API, SSE streams)
+#   https://{$DOMAIN}/media/*   -> backend:8080   (uploads, STORAGE_DRIVER=local)
+#   everything else             -> frontend:3000  (Next.js, incl. /api/health,
+#                                                  /.well-known/security.txt)
+#
+# TLS: Caddy terminates it and redirects HTTP to HTTPS. With
+# TLS_TERMINATION=proxy (docker-compose.yml sets CADDY_SITE_SCHEME=http://)
+# another web server in front terminates TLS instead, and the site below is
+# http://{$DOMAIN}: no certificate, no redirect. Visitors still use HTTPS, so
+# the apps are always told X-Forwarded-Proto: https.
+#
+# Client IP: Caddy REPLACES X-Forwarded-For with {client_ip} on every proxied
+# request. {client_ip} is the TCP peer; or, when the peer is a trusted proxy
+# (TRUSTED_PROXY_CIDRS in Caddyfile, the checked-in Cloudflare ranges in
+# Caddyfile.cloudflare), the right-most untrusted address that proxy forwarded
+# (trusted_proxies_strict), so a client cannot prepend a fake one. The other
+# client-identity headers (X-Real-IP, CF-Connecting-IP, True-Client-IP,
+# X-Client-IP, Forwarded) are removed, so the apps see one verified address.
+# The backend trusts X-Forwarded-For only from private peers (TRUSTED_PROXIES,
+# default: the private ranges), and Caddy is its only peer.
+#
+# Rate limiting happens in the backend (per client IP, per route group); this
+# edge does not add its own. Put a CDN or WAF in front for volumetric limits.
+
+# Response headers. Each default below is set only when the app did not send
+# that header itself, so the frontend/backend policies (Permissions-Policy,
+# a page that allows framing) win header by header. Every default needs its
+# own `header ?Name` directive: `?` lines grouped in one `header { }` block
+# compile to a single handler that requires ALL of them to be absent, so one
+# header from the app would drop the other defaults.
+#
+# Strict-Transport-Security is the exception: the edge owns it and REPLACES
+# whatever the apps send, because only the operator knows whether every
+# subdomain of DOMAIN serves HTTPS. The default covers DOMAIN alone; set
+# HSTS_POLICY in .env (CADDY_HSTS here) to add includeSubDomains or preload,
+# or to max-age=0 to withdraw it.
+(payverge_security_headers) {
+	header ?X-Frame-Options "DENY"
+	header ?X-Content-Type-Options "nosniff"
+	header ?X-XSS-Protection "1; mode=block"
+	header ?Referrer-Policy "strict-origin-when-cross-origin"
+	header ?Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+	header {
+		Strict-Transport-Security "{$CADDY_HSTS:max-age=31536000}"
+		-Server
+		-Via
+	}
+}
+
+# Request headers for both upstreams: one verified client address, nothing a
+# client could choose, and the public scheme (always https; see TLS above).
+# Imported inside each reverse_proxy block.
+(payverge_client_ip) {
+	header_up X-Forwarded-For {client_ip}
+	header_up X-Forwarded-Proto https
+	header_up -X-Real-IP
+	header_up -CF-Connecting-IP
+	header_up -True-Client-IP
+	header_up -X-Client-IP
+	header_up -Forwarded
+}
+
+# Compress text responses, but never text/event-stream: the realtime
+# dashboards, the AI waiter and the director console are SSE streams.
+(payverge_compress) {
+	encode zstd gzip {
+		match {
+			header Content-Type text/html*
+			header Content-Type text/plain*
+			header Content-Type text/css*
+			header Content-Type text/csv*
+			header Content-Type text/xml*
+			header Content-Type text/javascript*
+			header Content-Type application/javascript*
+			header Content-Type application/json*
+			header Content-Type application/ld+json*
+			header Content-Type application/manifest+json*
+			header Content-Type application/xml*
+			header Content-Type application/rss+xml*
+			header Content-Type image/svg+xml*
+		}
+	}
+}
+
+# Backend proxy. {args[0]} bounds the wait for response headers and for each
+# read/write to the backend. SSE handlers send a heartbeat every 5-15 s, so a
+# 60 s per-read bound never cuts a healthy stream; flush_interval -1 sends
+# every event immediately.
+(payverge_backend) {
+	reverse_proxy backend:8080 {
+		import payverge_client_ip
+		flush_interval -1
+		transport http {
+			dial_timeout 5s
+			response_header_timeout {args[0]}
+			read_timeout {args[0]}
+			write_timeout {args[0]}
+		}
+	}
+}
+
+(payverge_site) {
+	import payverge_compress
+	import payverge_security_headers
+
+	# Uploads are capped at 15 MB end to end (the frontend proxy uses the
+	# same limit).
+	request_body {
+		max_size 15MB
+	}
+
+	# Optional per-deployment additions (the public demo mounts
+	# demo/caddy/ here). No matching file is fine: the glob imports nothing.
+	import /etc/caddy/site.d/*.caddy
+
+	# AI routes (menu wizard, menu extraction, director, ops assistant, AI
+	# waiter) can take minutes on a slow or self-hosted model.
+	@payverge_ai path_regexp ^/api/v1/(?:.*/)?(?:ai|ai-waiter|assistant)(?:/|$)
+	handle @payverge_ai {
+		import payverge_backend 300s
+	}
+
+	handle /api/v1/* {
+		import payverge_backend 60s
+	}
+
+	handle /media/* {
+		import payverge_backend 60s
+	}
+
+	handle {
+		reverse_proxy frontend:3000 {
+			import payverge_client_ip
+			flush_interval -1
+		}
+	}
+}
+
+{$CADDY_SITE_SCHEME}{$DOMAIN} {
+	import payverge_site
+}

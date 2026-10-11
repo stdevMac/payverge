@@ -1,0 +1,70 @@
+{
+  "title": "Account",
+  "subtitle": "Manage your account settings and privacy.",
+  "backToDashboard": "Back to dashboard",
+  "unauthenticated": {
+    "title": "Account Settings",
+    "description": "Sign in to access your account settings.",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "tabs": {
+    "account": "Account",
+    "notifications": "Notifications",
+    "privacy": "Privacy & security"
+  },
+  "info": {
+    "title": "Your information",
+    "email": "Email",
+    "wallet": "Wallet"
+  },
+  "emailPrefs": {
+    "sectionTitle": "Email preferences",
+    "sectionDescription": "Choose which emails Payverge sends you. These apply to your whole account.",
+    "loadingLabel": "Loading your preferences…",
+    "errorMessage": "We couldn't load your email preferences. Refresh the page or try again shortly.",
+    "savedToast": "Preferences saved",
+    "saveErrorToast": "We couldn't save that change. Please try again.",
+    "items": {
+      "transactional": {
+        "label": "Account & transactional",
+        "description": "Essential emails about your account, orders, and payments."
+      },
+      "reports": {
+        "label": "Reports & analytics",
+        "description": "Daily and periodic performance summaries."
+      }
+    }
+  },
+  "notifications": {
+    "sectionTitle": "Per-business alerts",
+    "sectionDescription": "Order, reservation, and Telegram alerts are configured per business. Open a business to manage its alerts.",
+    "manageLink": "Manage notification settings",
+    "emptyTitle": "No businesses yet",
+    "emptyDescription": "Once you create a business, you can manage its per-business alerts here.",
+    "errorMessage": "We couldn't load your businesses. Refresh the page or try again shortly.",
+    "loadingLabel": "Loading your businesses…"
+  },
+  "privacy": {
+    "sectionTitle": "Privacy",
+    "sectionDescription": "Download a copy of your Payverge account data or request that we delete it.",
+    "exportTitle": "Download my data",
+    "exportDescription": "We will assemble a JSON snapshot of your profile and the businesses you own.",
+    "exportButton": "Download data export",
+    "exportingButton": "Preparing your export…",
+    "exportSuccess": "Your export was downloaded. Snapshot is valid for 24 hours — re-run the export if you need fresher data.",
+    "exportError": "We couldn't prepare your export. Please try again or contact support if the issue persists.",
+    "deleteTitle": "Delete my account",
+    "deleteDescription": "Disables your account and starts a 30-day review window. Some tax, fiscal, billing, fraud, security, or legal records may need to be retained.",
+    "deleteButton": "Request account deletion",
+    "modalTitle": "Delete your Payverge account?",
+    "modalIntro": "This disables your account and sets a deletion-review date 30 days from now. Final deletion is reviewed because some records may need to be retained. Type the value below to confirm.",
+    "modalConfirmLabel": "Type your account email to confirm",
+    "modalReasonLabel": "Reason (optional)",
+    "modalReasonPlaceholder": "What's prompting you to delete? (helps us improve)",
+    "modalCancel": "Keep my account",
+    "modalConfirm": "Delete my account",
+    "modalConfirming": "Scheduling deletion…",
+    "modalError": "Account deletion failed. Make sure the confirmation matches and try again.",
+    "modalSuccess": "Account disabled and deletion review scheduled. Signing you out…"
+  }
+}

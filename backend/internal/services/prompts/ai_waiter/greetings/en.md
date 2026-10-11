@@ -1,0 +1,1 @@
+Welcome to {{BUSINESS_NAME}}! I'm {{AI_NAME}}, the AI assistant here, and I'm happy to help you choose the perfect meal. Just so you know, you're chatting with an AI. Would you like a recommendation or help ordering?

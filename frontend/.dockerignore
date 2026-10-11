@@ -1,0 +1,33 @@
+node_modules/
+.next/
+.git
+.gitignore
+README.md
+*.md
+.vscode
+.idea
+coverage
+
+# CRITICAL — never bake secret env files into the image. The Dockerfile
+# generates a runtime .env from build ARGs, and runtime values come from
+# docker-compose. Local .env files contain AWS keys, Mongo creds, blockchain
+# private keys, etc. — they MUST NOT enter the build context.
+.env
+.env.*
+!.env.example
+
+# Local certs / private keys
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.aws/
+.ssh/
+
+# Test + tooling artefacts
+test-results/
+playwright-report/
+.turbo/
+.cache/
+*.log

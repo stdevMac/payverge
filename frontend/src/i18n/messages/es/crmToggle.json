@@ -1,0 +1,59 @@
+{
+  "updateError": "No se pudieron actualizar los ajustes. Inténtalo de nuevo.",
+  "button": {
+    "disableCRM": "Desactivar CRM"
+  },
+  "disableModal": {
+    "title": "¿Desactivar CRM?",
+    "description": "Esto desactivará las funciones de Gestión de Relaciones con Clientes. No podrás:",
+    "features": {
+      "customers": "Gestionar perfiles de clientes",
+      "loyalty": "Rastrear puntos de lealtad y recompensas",
+      "visits": "Registrar visitas de clientes",
+      "marketing": "Enviar marketing dirigido"
+    },
+    "confirmation": "¿Estás seguro de que quieres continuar?",
+    "buttons": {
+      "cancel": "Cancelar",
+      "confirm": "Sí, Desactivar"
+    }
+  },
+  "enableModal": {
+    "title": "¿Activar CRM?",
+    "description": "Esto habilitará las funciones de Gestión de Relaciones con Clientes para tu negocio.",
+    "features": {
+      "customers": "Gestionar perfiles de clientes e información de contacto",
+      "loyalty": "Rastrear puntos de lealtad y recompensas por cliente",
+      "visits": "Registrar visitas de clientes e historial de gastos",
+      "marketing": "Enviar promociones y comunicaciones dirigidas"
+    },
+    "buttons": {
+      "cancel": "Cancelar",
+      "confirm": "Activar"
+    }
+  },
+  "activationCard": {
+    "title": "Activar Gestión de Relaciones con Clientes",
+    "description": "Construye relaciones duraderas con tus clientes a través de programas de lealtad, seguimiento de visitas y marketing personalizado.",
+    "hint": "Mantén perfiles, recompensas, visitas y campañas en un solo espacio.",
+    "features": {
+      "customers": {
+        "title": "Perfiles de Clientes",
+        "description": "Gestiona información de clientes y detalles de contacto"
+      },
+      "loyalty": {
+        "title": "Programas de Lealtad",
+        "description": "Rastrea puntos y recompensas para clientes recurrentes"
+      },
+      "visits": {
+        "title": "Seguimiento de Visitas",
+        "description": "Registra visitas de clientes e historial de gastos"
+      },
+      "marketing": {
+        "title": "Herramientas de Marketing",
+        "description": "Envía promociones y comunicaciones dirigidas"
+      }
+    },
+    "button": "Activar CRM"
+  }
+}

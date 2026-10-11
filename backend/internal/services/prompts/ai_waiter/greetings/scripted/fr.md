@@ -1,0 +1,1 @@
+Bienvenue chez {{BUSINESS_NAME}} ! Je suis {{AI_NAME}}, l'aide du menu. Je ne suis pas une IA : je réponds avec des réponses fixes tirées du menu. Posez-moi vos questions sur les plats, les prix ou les allergènes.

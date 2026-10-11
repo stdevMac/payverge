@@ -1,0 +1,70 @@
+{
+  "title": "Cuenta",
+  "subtitle": "Administra la configuración y privacidad de tu cuenta.",
+  "backToDashboard": "Volver al panel",
+  "unauthenticated": {
+    "title": "Configuración de Cuenta",
+    "description": "Inicia sesión para acceder a la configuración de tu cuenta.",
+    "goToDashboard": "Ir al Panel"
+  },
+  "tabs": {
+    "account": "Cuenta",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad y seguridad"
+  },
+  "info": {
+    "title": "Tu información",
+    "email": "Correo electrónico",
+    "wallet": "Billetera"
+  },
+  "emailPrefs": {
+    "sectionTitle": "Preferencias de correo",
+    "sectionDescription": "Elige qué correos te envía Payverge. Se aplican a toda tu cuenta.",
+    "loadingLabel": "Cargando tus preferencias…",
+    "errorMessage": "No pudimos cargar tus preferencias de correo. Actualiza la página o vuelve a intentarlo en un momento.",
+    "savedToast": "Preferencias guardadas",
+    "saveErrorToast": "No pudimos guardar ese cambio. Inténtalo de nuevo.",
+    "items": {
+      "transactional": {
+        "label": "Cuenta y transacciones",
+        "description": "Correos esenciales sobre tu cuenta, pedidos y pagos."
+      },
+      "reports": {
+        "label": "Informes y analíticas",
+        "description": "Resúmenes de rendimiento diarios y periódicos."
+      }
+    }
+  },
+  "notifications": {
+    "sectionTitle": "Alertas por negocio",
+    "sectionDescription": "Las alertas de pedidos, reservas y Telegram se configuran por negocio. Abre un negocio para administrar sus alertas.",
+    "manageLink": "Administrar notificaciones",
+    "emptyTitle": "Aún no tienes negocios",
+    "emptyDescription": "Cuando crees un negocio, podrás administrar sus alertas por negocio desde aquí.",
+    "errorMessage": "No pudimos cargar tus negocios. Actualiza la página o vuelve a intentarlo en un momento.",
+    "loadingLabel": "Cargando tus negocios…"
+  },
+  "privacy": {
+    "sectionTitle": "Privacidad",
+    "sectionDescription": "Descarga una copia de los datos de tu cuenta Payverge o solicita su eliminación.",
+    "exportTitle": "Descargar mis datos",
+    "exportDescription": "Prepararemos un archivo JSON con tu perfil y los negocios de tu propiedad.",
+    "exportButton": "Descargar exportación",
+    "exportingButton": "Preparando tu exportación…",
+    "exportSuccess": "Tu exportación fue descargada. El archivo es válido por 24 horas — vuelve a exportar si necesitas datos más recientes.",
+    "exportError": "No pudimos preparar tu exportación. Inténtalo de nuevo o contacta a soporte si el problema persiste.",
+    "deleteTitle": "Eliminar mi cuenta",
+    "deleteDescription": "Desactiva tu cuenta e inicia un período de revisión de 30 días. Puede ser necesario conservar algunos registros tributarios, fiscales, de facturación, fraude, seguridad o legales.",
+    "deleteButton": "Solicitar eliminación de cuenta",
+    "modalTitle": "¿Eliminar tu cuenta de Payverge?",
+    "modalIntro": "Esto desactiva tu cuenta y fija una fecha de revisión de eliminación dentro de 30 días. La eliminación final se revisa porque puede ser necesario conservar algunos registros. Escribe el valor de abajo para confirmar.",
+    "modalConfirmLabel": "Escribe tu correo electrónico para confirmar",
+    "modalReasonLabel": "Motivo (opcional)",
+    "modalReasonPlaceholder": "¿Qué te lleva a eliminar tu cuenta? (nos ayuda a mejorar)",
+    "modalCancel": "Mantener mi cuenta",
+    "modalConfirm": "Eliminar mi cuenta",
+    "modalConfirming": "Programando eliminación…",
+    "modalError": "La eliminación falló. Asegúrate de que la confirmación coincida e intenta de nuevo.",
+    "modalSuccess": "Cuenta desactivada y revisión de eliminación programada. Cerrando sesión…"
+  }
+}

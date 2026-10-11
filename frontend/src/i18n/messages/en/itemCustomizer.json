@@ -1,0 +1,17 @@
+{
+  "title": "Customize Item",
+  "basePrice": "Base Price",
+  "quantity": "Quantity",
+  "addOnsOptions": "Add-ons & Options",
+  "required": "Required",
+  "requiredMissing": "Please choose: {options}",
+  "free": "Free",
+  "specialRequests": "Special Requests",
+  "specialRequestsPlaceholder": "Any special instructions or modifications...",
+  "characters": "characters",
+  "basePriceQuantity": "Base Price",
+  "addOnsQuantity": "Add-ons",
+  "total": "Total",
+  "cancel": "Cancel",
+  "addToCart": "Add to Cart"
+}

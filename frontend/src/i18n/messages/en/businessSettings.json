@@ -1,0 +1,626 @@
+{
+  "title": "Business Settings",
+  "description": "Manage your business profile, customize your brand, and configure payment settings.",
+  "shell": {
+    "badge": "Configuration command",
+    "activeMode": "Workspace guarded",
+    "profile": "Profile",
+    "profileValue": "Identity and contact",
+    "payments": "Payments",
+    "paymentsValue": "Taxes and rails",
+    "localization": "Localization",
+    "localizationValue": "Timezone, currency, and languages",
+    "notifications": "Notifications",
+    "notificationsValue": "Operator alerts"
+  },
+  "tabs": {
+    "ariaLabel": "Business settings tabs",
+    "profile": "Profile & Contact",
+    "design": "Design & Branding",
+    "businessPage": "Business Page",
+    "payments": "Payments & Taxes",
+    "localization": "Currency & Languages",
+    "delivery": "Delivery Settings"
+  },
+  "saveBar": {
+    "save": "Save changes",
+    "saving": "Saving…",
+    "unsaved": "You have unsaved changes",
+    "auto": "Changes saved automatically",
+    "clean": "No unsaved changes"
+  },
+  "messages": {
+    "updateSuccess": "Settings Updated!",
+    "updateSuccessDescription": "Your business settings have been saved successfully.",
+    "updateFailed": "Failed to update business settings",
+    "updateFailedTitle": "Update Failed",
+    "fixValidationErrors": "Please fix the highlighted fields before saving.",
+    "loadProfileError": "Failed to load business profile",
+    "error": "Error",
+    "success": "Success",
+    "someFieldsNotSavedTitle": "Some fields were not saved",
+    "someFieldsNotSavedDescription": "Owner-only fields (payout wallets, AI settings) were ignored. Ask the business owner to change them."
+  },
+  "buttons": {
+    "saving": "Saving Changes...",
+    "saveAll": "Save All Changes"
+  },
+  "profile": {
+    "basicInfo": "Basic information",
+    "basicInfoDescription": "Name and type for your business profile",
+    "contactReadOnlyTitle": "Contact details",
+    "contactReadOnlyDescription": "Phone, website, and address are edited on the Business Page → Contact tab so Settings and the public page never overwrite each other.",
+    "editContactOnBusinessPage": "Edit on Business Page",
+    "contactEmpty": "Not set",
+    "guestOrderingTitle": "Guest ordering",
+    "guestOrderingDescription": "Turns off guest self-ordering and stops sending bills to the kitchen display. Confirm before you change this — it is a service switch, not a profile field.",
+    "kitchenOrdersTitle": "Kitchen orders",
+    "kitchenOrdersDescription": "Send approved bills to a kitchen display so cooks can mark items as in-progress or ready.",
+    "operatingHoursTitle": "Operating hours",
+    "operatingHoursDescription": "Set your weekly recurring schedule. Times are in your business's local timezone.",
+    "operatingHoursSavedDescription": "Operating hours saved successfully.",
+    "businessName": "Business Name",
+    "businessNamePlaceholder": "Enter your business name",
+    "phoneNumber": "Phone Number",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "websiteUrl": "Website URL",
+    "websitePlaceholder": "https://yourrestaurant.com",
+    "customUrl": "Custom URL Slug",
+    "customUrlPlaceholder": "my-restaurant",
+    "customUrlDescription": "Create a custom URL for your business page",
+    "description": "Business Description",
+    "descriptionPlaceholder": "Tell customers about your restaurant, cuisine, and what makes you special...",
+    "logoBranding": "Logo & branding",
+    "businessLogo": "Business Logo",
+    "logoDescription": "Upload your business logo. Appears on menus and receipts.",
+    "location": "Location",
+    "locationDescription": "Where customers can find you",
+    "streetAddress": "Street Address",
+    "streetPlaceholder": "123 Main Street",
+    "city": "City",
+    "cityPlaceholder": "City name",
+    "state": "State/Province",
+    "statePlaceholder": "State or province",
+    "postalCode": "Postal Code",
+    "postalPlaceholder": "Postal code",
+    "country": "Country",
+    "countryPlaceholder": "Country name",
+    "businessType": "Business type",
+    "businessTypePlaceholder": "Select a type"
+  },
+  "customUrlInput": {
+    "defaultPlaceholder": "my-restaurant",
+    "defaultLabel": "Custom URL",
+    "defaultDescription": "Create a custom URL for your business page",
+    "yourLivePage": "Your live page",
+    "openLivePage": "Open live page",
+    "tooltips": {
+      "copyUrl": "Copy URL",
+      "generateQr": "Generate QR Code",
+      "openLivePage": "Open your live page in a new tab"
+    },
+    "status": {
+      "checking": "Checking availability...",
+      "available": "URL is available",
+      "taken": "This URL is already taken",
+      "currentUrl": "This is your current URL"
+    },
+    "validation": {
+      "minLength": "URL must be at least 2 characters",
+      "reserved": "This URL is reserved and not available"
+    },
+    "errors": {
+      "checkFailed": "Failed to check URL availability",
+      "copyFailed": "Couldn't copy to clipboard."
+    },
+    "preview": {
+      "message": "Your business page will be available at:"
+    },
+    "qrModal": {
+      "title": "QR Code for Your Business Page",
+      "description": "Scan this QR code to visit your business page",
+      "close": "Close",
+      "download": "Download PNG"
+    },
+    "copySuccess": "URL copied to clipboard!"
+  },
+  "operatingHoursEditor": {
+    "title": "Operating Hours",
+    "saveHours": "Save Hours",
+    "open": "Open",
+    "closed": "Closed",
+    "opens": "Opens",
+    "closes": "Closes",
+    "kitchenCloses": "Kitchen closes",
+    "kitchenClosesHint": "Last seating / last kitchen order. Leave blank if the kitchen stays open until door close.",
+    "honestyNote": "Guest OPEN NOW and reservation slots use kitchen close when set. Door/bar close can run later.",
+    "nextDay": "next day",
+    "nextDayHint": "Closes after midnight",
+    "closedAllDay": "Closed all day",
+    "addSecondPeriod": "Add a second period",
+    "removePeriod": "Remove period",
+    "copyToAll": "Copy to all",
+    "quickPresets": "Presets:",
+    "businessHours": "9–5, Mon–Fri",
+    "restaurantHours": "11–10, Daily",
+    "lunchDinner": "Lunch + dinner",
+    "twentyFourSeven": "24/7",
+    "exceptionsTitle": "Holidays & closed dates",
+    "exceptionsHelp": "One-off closures override the weekly grid. Reservation slots and OPEN NOW respect these dates.",
+    "addException": "Add closed date",
+    "exceptionDate": "Date",
+    "exceptionLabel": "Label (optional)",
+    "exceptionLabelPlaceholder": "e.g. Private event, Christmas",
+    "removeException": "Remove",
+    "noExceptions": "No holiday closures yet.",
+    "dayNames": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "unknown": "Unknown"
+    }
+  },
+  "specialFeaturesEditor": {
+    "title": "Special Features & Amenities",
+    "addFeature": "Add feature",
+    "saveChanges": "Save Changes",
+    "noFeaturesYet": "No special features added yet",
+    "addFirstFeature": "Add your first feature",
+    "new": "New",
+    "quickTemplates": "or start from a template:",
+    "restaurantTemplate": "Restaurant",
+    "cafeTemplate": "Cafe",
+    "titlePlaceholder": "Feature name (e.g. Free WiFi)",
+    "descriptionPlaceholder": "Short description for customers",
+    "removeFeature": "Remove",
+    "iconAria": "Icon",
+    "activeAria": "Visible to customers",
+    "iconOptions": {
+      "wifi": "WiFi",
+      "car": "Parking",
+      "credit-card": "Card Payments",
+      "coffee": "Takeaway",
+      "music": "Live Music",
+      "utensils": "Dining",
+      "shield": "Security",
+      "heart": "Family Friendly",
+      "star": "Premium Service",
+      "gift": "Special Offers",
+      "zap": "Fast Service",
+      "users": "Group Friendly",
+      "clock": "24/7 Service",
+      "map-pin": "Great Location",
+      "phone": "Phone Orders",
+      "award": "Award Winning"
+    },
+    "templates": {
+      "restaurant": {
+        "freeWifi": {
+          "title": "Free WiFi",
+          "description": "High-speed internet access for all customers"
+        },
+        "cardPayments": {
+          "title": "Card Payments",
+          "description": "We accept all major credit and debit cards"
+        },
+        "familyFriendly": {
+          "title": "Family Friendly",
+          "description": "Welcoming environment for families with children"
+        },
+        "parkingAvailable": {
+          "title": "Parking Available",
+          "description": "Free parking spaces available for customers"
+        }
+      },
+      "cafe": {
+        "freeWifi": {
+          "title": "Free WiFi",
+          "description": "Perfect for remote work and studying"
+        },
+        "premiumCoffee": {
+          "title": "Premium Coffee",
+          "description": "Freshly roasted beans and expert baristas"
+        },
+        "quietEnvironment": {
+          "title": "Quiet Environment",
+          "description": "Peaceful atmosphere for work and relaxation"
+        }
+      }
+    }
+  },
+  "businessPage": {
+    "customUrlTakenError": "That page URL is already taken. Choose another before saving.",
+    "tabs": {
+      "essentials": "Content",
+      "design": "Design",
+      "visuals": "Visuals",
+      "lookAndFeel": "Look & feel",
+      "operations": "Hours & Features",
+      "reviews": "Reviews",
+      "contact": "Contact",
+      "ariaLabel": "Business page sections"
+    },
+    "status": {
+      "published": "Published",
+      "needsUrl": "Needs a URL",
+      "draft": "Draft",
+      "unknown": "Status unavailable"
+    },
+    "unknownStatusDescription": "We couldn't load whether this page is live. Retry before changing publish state.",
+    "shell": {
+      "badge": "Public page command",
+      "activeMode": "Publishing controls live",
+      "status": "Status",
+      "statusLiveValue": "Public page active",
+      "statusDraftValue": "Draft controls ready",
+      "liveSlug": "Live URL",
+      "slugMissing": "URL not set",
+      "sections": "Sections",
+      "sectionsValue": "{count} workspaces",
+      "visuals": "Visual system",
+      "visualsValue": "Gallery, reviews, hours"
+    },
+    "contactTitle": "Contact details",
+    "contactDescription": "Phone, website, address, and social links shown on your public page.",
+    "showOnPublicPageHint": "Edits here always save; this switch only controls whether the section appears on your public page.",
+    "activationCard": {
+      "title": "Premium Business Page",
+      "description": "Establish your digital presence with a professional business page. Showcase your gallery, hours, and features to attract more customers.",
+      "features": {
+        "showcase": {
+          "title": "Visual Showcase",
+          "description": "Gallery, banner, and brand identity"
+        },
+        "seo": {
+          "title": "Search Optimized",
+          "description": "Custom URL and Google integration"
+        }
+      },
+      "buttons": {
+        "activate": "Activate Business Page"
+      },
+      "footnote": "You can turn your business page off anytime from settings."
+    },
+    "dangerZone": {
+      "title": "Unpublish this page",
+      "description": "Takes the public page offline. Table QR codes that open this page will stop working until you publish again."
+    },
+    "button": {
+      "disable": "Disable Page",
+      "preview": "Preview page",
+      "save": "Save Changes",
+      "setUrl": "Set your page URL",
+      "previewDraftDisabled": "Publish to open the public page",
+      "previewLiveDesign": "Open design live preview",
+      "previewDraftTooltip": "This page is still a draft. Publish it to open the public URL, or open the design tab for a live preview."
+    },
+    "disableModal": {
+      "title": "Disable Business Page?",
+      "description": "Your business page will no longer be publicly accessible. Customers won't be able to view your hours, gallery, or specials.",
+      "qrConsequence": "Table QR codes that open this page will stop working for guests until you publish again.",
+      "typeConfirmLabel": "Type DISABLE to confirm",
+      "confirmation": "Are you sure you want to disable it?",
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Disable Page"
+      }
+    },
+    "enableModal": {
+      "title": "Enable Business Page?",
+      "description": "This will promote your page to the public. You can customize the content before sharing the URL.",
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Activate Page"
+      }
+    },
+    "toasts": {
+      "errorTitle": "Error",
+      "loadPageError": "Failed to load business page settings",
+      "saveSuccess": {
+        "title": "Success",
+        "message": "Business page settings saved successfully"
+      },
+      "saveError": {
+        "title": "Error",
+        "message": "Failed to save settings"
+      },
+      "partialSave": {
+        "title": "Partial Save",
+        "message": "Some sections failed to save: {sections}. Other changes were saved successfully.",
+        "sections": {
+          "businessProfile": "business profile",
+          "design": "design",
+          "operatingHours": "operating hours",
+          "specialFeatures": "special features",
+          "galleryImages": "gallery images"
+        }
+      },
+      "publishSuccess": {
+        "title": "Success",
+        "enabled": "Business page published",
+        "disabled": "Business page disabled"
+      },
+      "statusError": {
+        "title": "Error",
+        "message": "Failed to update business page status"
+      },
+      "loadFailedSaveBlocked": "The page data failed to load, so saving is disabled to protect your existing content. Retry loading first."
+    },
+    "title": "Business Page",
+    "enableTitle": "Enable Business Page",
+    "enableDescription": "Create a public page for your business at /b/your-slug",
+    "needsUrlDescription": "Published, but guests cannot reach it until you save a Custom URL Slug.",
+    "publishedDescriptionWithUrl": "Your public page is live at /b/{slug}. Manage content, hours, and reviews shown to guests.",
+    "customUrlLabel": "Custom URL Slug",
+    "customUrlPlaceholder": "my-restaurant",
+    "customUrlDescription": "Create a custom URL for your business page",
+    "aboutLabel": "About Your Business",
+    "aboutPlaceholder": "Tell customers about your restaurant, cuisine, history, and what makes you special...",
+    "essentialsTitle": "Basic information",
+    "essentialsDescription": "URL slug and short pitch shown on your public page",
+    "socialMediaTitle": "Social media",
+    "socialMediaDescription": "Where customers can follow you",
+    "contactInfoHint": "Your phone, website and address shown on the public page are managed here. Logo lives under Look & feel.",
+    "logoTitle": "Logo",
+    "logoDescription": "Upload your business logo. It appears on the public page hero, sticky bar, and receipts.",
+    "instagram": "Instagram",
+    "instagramPlaceholder": "@yourrestaurant",
+    "facebook": "Facebook",
+    "facebookPlaceholder": "yourrestaurant",
+    "twitter": "Twitter",
+    "twitterPlaceholder": "@yourrestaurant",
+    "linkedin": "LinkedIn",
+    "linkedinPlaceholder": "your-company",
+    "youtube": "YouTube",
+    "youtubePlaceholder": "yourchannel",
+    "tiktok": "TikTok",
+    "tiktokPlaceholder": "yourbusiness",
+    "bannerTitle": "Banner Images",
+    "bannerDescription": "Upload up to 3 banner images to showcase your restaurant. These will appear at the top of your business page.",
+    "reviewsTitle": "Reviews & Social Proof",
+    "showReviewsTitle": "Show Customer Reviews",
+    "showReviewsDescription": "Display customer reviews on your business page",
+    "reviewProviders": {
+      "google": "Google",
+      "trustpilot": "Trustpilot",
+      "trustpilotConnected": "Connected via the Trustpilot plugin.",
+      "trustpilotEnabled": "Trustpilot plugin is enabled for this business.",
+      "viewTrustpilot": "View Trustpilot profile",
+      "configureInPlugins": "Finish configuration under Plugins → Trustpilot."
+    },
+    "googleReviewsTitle": "Google Reviews Integration",
+    "googleReviewsDescription": "Automatically sync and display Google Reviews (Coming Soon)",
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonDescription": "Google Reviews integration, customer testimonials, and social media feed integration will be available in a future update.",
+    "welcomeMessageTitle": "Welcome Message",
+    "showWelcomeMessageTitle": "Show Welcome Message",
+    "showWelcomeMessageDescription": "Display a personal greeting to your customers",
+    "welcomeMessageLabel": "Welcome Message",
+    "welcomeMessagePlaceholder": "Welcome to our restaurant! We're excited to serve you...",
+    "ourStoryTitle": "Our Story",
+    "showOurStoryTitle": "Show Our Story",
+    "showOurStoryDescription": "Share your business history and what makes you special",
+    "ourStoryLabel": "Our Story",
+    "ourStoryPlaceholder": "Tell your customers about your journey, mission, and what makes your business unique...",
+    "photoGalleryTitle": "Photo Gallery",
+    "showPhotoGalleryTitle": "Show Photo Gallery",
+    "showPhotoGalleryDescription": "Display a gallery of your food, space, and atmosphere",
+    "photoGalleryInstructions": "Upload and manage photos to showcase your business.",
+    "operatingHoursTitle": "Operating hours",
+    "operatingHoursDescription": "Manage your business hours and timezone",
+    "timezoneLabel": "Business timezone",
+    "timezonePlaceholder": "Choose a timezone…",
+    "showOnPage": "Show on page",
+    "visibleToCustomers": "Visible to customers",
+    "showOperatingHoursTitle": "Show Operating Hours",
+    "showOperatingHoursDescription": "Display your daily operating schedule",
+    "operatingHoursInstructions": "Set your operating hours for each day of the week.",
+    "specialFeaturesTitle": "Special Features",
+    "showSpecialFeaturesTitle": "Show Special Features",
+    "showSpecialFeaturesDescription": "Highlight amenities like WiFi, parking, payment options, etc.",
+    "specialFeaturesInstructions": "Add features and amenities that make your business special.",
+    "storyTitle": "Welcome & story",
+    "storyDescription": "Optional greeting and longer story shown on your page",
+    "showWelcomeMessage": "Show welcome message",
+    "showAboutStory": "Show about story",
+    "aboutStoryLabel": "About story",
+    "retryLoad": "Retry loading"
+  },
+  "payment": {
+    "cryptoAddressesTitle": "Optional crypto payout wallets",
+    "feesAndTaxesTitle": "Fees & taxes",
+    "feesAndTaxesDescription": "How service fees and taxes apply to each order",
+    "checkoutRailsNotice": "Guest card and checkout methods (like Mercado Pago) are set up under Plugins. This page is for fees, taxes, and optional crypto wallets only.",
+    "settlementAddressLabel": "Sales settlement wallet",
+    "settlementAddressPlaceholder": "0x1234...abcd",
+    "settlementAddressDescription": "Optional wallet where crypto sales settle. Not required for Mercado Pago or card checkout.",
+    "walletOwnerOnly": "Only the business owner can change payout wallets.",
+    "addressInvalid": "Enter a valid wallet address (0x followed by 40 hex characters).",
+    "rateOutOfRange": "Enter a rate between 0 and 100.",
+    "tipWalletMustDiffer": "Tip wallet must be different from the sales settlement wallet so tips can be paid out separately.",
+    "confirmAddressChangeTitle": "Confirm payout wallet change",
+    "confirmAddressChangeDescription": "You are changing a payout wallet. Funds sent to the old address won't reach the new one. Current: {old} — New: {new}. Continue?",
+    "confirmAddressChangeTipNotice": "Tips go to the tip wallet; sales go to the settlement wallet — keep them different.",
+    "confirmAddressChangeConfirm": "Save wallet change",
+    "confirmAddressChangeCancel": "Keep current",
+    "copySettlementAddress": "Copy settlement address",
+    "tippingAddressLabel": "Staff tip wallet",
+    "tippingAddressPlaceholder": "0x5678...efgh",
+    "tippingAddressDescription": "Separate wallet for tips so staff tip pools stay apart from sales revenue.",
+    "copyTippingAddress": "Copy tipping address",
+    "payoutNotice": "Only needed if you accept crypto. Keep the tip wallet different from the sales wallet.",
+    "walletAutofillTitle": "Wallet Auto-fill",
+    "noWalletConnected": "No wallet connected",
+    "connectWallet": "Connect Wallet",
+    "disconnectWallet": "Disconnect",
+    "useWalletForBothAddresses": "Use Wallet for Both Addresses",
+    "copySuccessTitle": "Copied",
+    "copySuccessSuffix": "copied to clipboard.",
+    "copyEmptyTitle": "Nothing to copy",
+    "copyEmptyDescription": "Address field is empty.",
+    "copyFailedTitle": "Copy failed",
+    "copyFailedDescription": "Could not copy to clipboard.",
+    "walletConnectionUnavailableTitle": "Wallet connection unavailable",
+    "walletConnectionUnavailableDescription": "No injected wallet found and WalletConnect is not configured.",
+    "walletNotConnectedTitle": "Wallet not connected",
+    "walletNotConnectedDescription": "Connect your wallet first, then try again.",
+    "addressesUpdatedTitle": "Addresses updated",
+    "addressesUpdatedDescription": "Settlement and tipping addresses were updated from your wallet.",
+    "addressUpdatedTitle": "Address updated",
+    "addressUpdatedDescription": "Address was updated from your wallet.",
+    "feesTitle": "Fees & Pricing",
+    "serviceFeeLabel": "Service Fee Rate (%)",
+    "serviceFeeRateLabel": "Service fee (%)",
+    "serviceFeeRatePlaceholder": "0.00",
+    "serviceFeeRateDescription": "Applied on top of subtotal",
+    "taxRateLabel": "Tax Rate (%)",
+    "taxRatePlaceholder": "0.00",
+    "taxRateDescription": "Local tax rate as a percent",
+    "percentagePlaceholder": "0.00",
+    "taxInclusiveTitle": "Tax Inclusive Pricing",
+    "taxInclusiveDescription": "Include tax in displayed prices",
+    "serviceFeeInclusiveTitle": "Service Fee Inclusive",
+    "serviceFeeInclusiveDescription": "Include service fee in displayed prices",
+    "feeSummaryTitle": "Fee Summary",
+    "serviceFeeRate": "Service Fee Rate",
+    "taxRate": "Tax Rate",
+    "taxInclusive": "Tax Inclusive",
+    "serviceInclusive": "Service Inclusive",
+    "sampleCheckTitle": "Sample check preview",
+    "sampleCheckDescription": "Live preview for a {{amount}} subtotal using the rates above — what a new bill would charge after you save.",
+    "sampleCheckSubtotal": "Subtotal",
+    "sampleCheckTax": "Tax",
+    "sampleCheckServiceFee": "Service fee",
+    "sampleCheckTotal": "Guest total",
+    "sampleCheckInclusiveNote": "Inclusive toggles change how menu prices are labeled. Bill math still applies tax and service fee to the subtotal, as shown above.",
+    "effectiveDateLabel": "Effective date",
+    "effectiveDateValue": "On save · {{date}}",
+    "effectiveDateDescription": "These rates apply to new bills as soon as you save. Scheduling a future rate change is not available yet.",
+    "effectiveDateOpenBillsNote": "Open bills already on the floor keep their current totals; only new checks use the saved rates."
+  },
+  "design": {
+    "title": "Design & Branding",
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonDescription": "Customize your menu colors, fonts, and layout"
+  },
+  "timezone": "Timezone",
+  "timezoneDescription": "Affects bill timestamps, analytics, and operating hours",
+  "timezoneSearch": "Search timezones...",
+  "reopenWizard": "Reopen setup wizard",
+  "reopenWizardDescription": "Review your setup progress and complete any remaining steps",
+  "notifications": {
+    "tabTitle": "Notifications",
+    "emailSection": "Email Notifications",
+    "emailDescription": "Control which emails you receive from Payverge",
+    "ordersAndPayments": "Orders & Payments",
+    "ordersAndPaymentsDesc": "Receive emails when orders are placed or payments are received",
+    "reportsAndAnalytics": "Reports & Analytics",
+    "reportsAndAnalyticsDesc": "Periodic business reports and performance summaries",
+    "operationalSection": "Operational Alerts",
+    "operationalDescription": "Repeating staff alerts for orders, kitchen tickets, reservations, delivery, bills, and payments.",
+    "operationalEnabled": "Enable operational alerts",
+    "operationalEnabledDesc": "Create staff-visible alerts for active workflows.",
+    "operationalSoundEnabled": "Alarm sound",
+    "operationalSoundEnabledDesc": "Play sounds until a repeating alert is claimed or resolved. Off by default — turn on only when you want audible alarms.",
+    "operationalSoundOptInHint": "Opt-in: leaving this off keeps the dinner floor quiet while alerts still appear on screen.",
+    "operationalBrowserEnabled": "Desktop alerts",
+    "operationalBrowserEnabledDesc": "Show browser notifications when new alerts arrive. Requires permission in this browser.",
+    "operationalVolume": "Alarm volume",
+    "operationalRepeatInterval": "Repeat interval",
+    "operationalRepeatIntervalValue": "Every {{seconds}}s",
+    "operationalRepeatIntervalFloorHint": "30 seconds minimum so repeats cannot fire every 8s during dinner service.",
+    "operationalEventsTitle": "Alert events",
+    "operationalEventsDescription": "Choose which workflows create alerts and which ones repeat until staff addresses them.",
+    "operationalEventEnabled": "Enabled",
+    "operationalEventRepeats": "Repeats",
+    "operationalPreviewSound": "Preview {{type}} sound",
+    "chatSoundsTitle": "Chat sounds (this device)",
+    "chatSoundsDescription": "These only affect this browser/device — they aren't synced to your account.",
+    "chatAnnouncementSound": "Announcement sound",
+    "chatAnnouncementSoundDesc": "Play a sound when a manager posts a business-wide announcement.",
+    "chatMessageSound": "Message sound",
+    "chatMessageSoundDesc": "Play a sound for regular channel and DM messages. Off by default to stay quiet during service.",
+    "operationalTypes": {
+      "order_new": "New orders",
+      "kitchen_order_ready": "Kitchen tickets",
+      "reservation_new": "New reservations",
+      "reservation_approval": "Reservation approval needed",
+      "delivery_new": "Delivery orders",
+      "bill_new": "New bills",
+      "payment_requested": "Payments requested",
+      "payment_received": "Payments received",
+      "payment_refund_review": "Refund needs review",
+      "service_call": "Service call",
+      "table_stale_occupied": "Occupied table with no recent activity",
+      "ai_takeover": "AI needs a human"
+    },
+    "operationalTypeDescriptions": {
+      "order_new": "Alerts bills staff when a customer or staff member creates an order.",
+      "kitchen_order_ready": "Alerts kitchen staff when an approved order is ready for preparation.",
+      "reservation_new": "Alerts hosts when a booking is confirmed or a waitlist request is created.",
+      "reservation_approval": "Alerts hosts when a guest reservation request is waiting for manual approval. Repeats until handled.",
+      "delivery_new": "Alerts dispatch staff when a delivery order is created.",
+      "bill_new": "Alerts staff when a new bill is opened.",
+      "payment_requested": "Alerts staff when a guest asks to pay with an alternative method.",
+      "payment_received": "Alerts staff when a payment is received or confirmed.",
+      "payment_refund_review": "Alerts staff when a partial provider refund needs manual reconciliation.",
+      "service_call": "Alerts floor staff when a guest taps Call waiter at their table. Repeats until acknowledged.",
+      "ai_takeover": "Alerts staff when a guest writes in a paused AI chat that nobody has claimed. Repeats until someone takes over."
+    },
+    "claimedBy": "Claimed by {{name}}",
+    "enableAlertSound": "Enable alert sound",
+    "alertSoundReady": "Alert sound ready",
+    "volume": "Volume",
+    "telegramSection": "Telegram Notifications",
+    "telegramDescription": "Events that trigger a Telegram message to your connected chat",
+    "telegramNotConnected": "Connect Telegram in the Plugins tab to configure notifications",
+    "orderCreated": "New orders",
+    "paymentReceived": "Payments received",
+    "reservationCreated": "New reservations",
+    "reservationStatusChanged": "Reservation updates",
+    "inventoryLowStock": "Low stock alerts",
+    "telegramComingSoon": "Per-event Telegram preferences coming soon — all events are currently sent.",
+    "pushSection": "Push Notifications",
+    "pushDescription": "Receive alerts even when the dashboard is closed",
+    "pushEnable": "Enable push notifications",
+    "pushDisable": "Disable push notifications",
+    "pushDevices": "Subscribed devices",
+    "pushNoDevices": "No devices registered",
+    "directorDigest": "Daily AI Briefing",
+    "directorDigestDesc": "Receive a daily email digest with AI-generated business insights",
+    "directorDigestTime": "Send at",
+    "scopeLegendTitle": "These settings use different scopes",
+    "scopeLegendDescription": "Email follows your login, operational alerts and Telegram follow this business, chat sounds stay on this device, and desktop alerts also need permission in this browser. Each section is labeled so nothing is saved in the wrong place.",
+    "saveModelHint": "These toggles save immediately. Profile, payments, and languages still use Save changes.",
+    "scope": {
+      "account": {
+        "label": "This account",
+        "helper": "Saved to your Payverge login — follows you across devices and businesses."
+      },
+      "device": {
+        "label": "This device",
+        "helper": "Stored only in this browser. Not synced to your account or other devices."
+      },
+      "business": {
+        "label": "This business",
+        "helper": "Applies only to this business and its connected integrations."
+      },
+      "browser": {
+        "label": "This browser",
+        "helper": "Preference is stored for this business, but the OS/browser must also allow notifications on this machine."
+      }
+    }
+  },
+  "loyalty": {
+    "redemptionRate": "Points per dollar discount",
+    "redemptionRateDesc": "How many points equal $1 off (0 = disabled)",
+    "minRedemption": "Minimum points to redeem",
+    "minRedemptionDesc": "Guests need at least this many points to use them",
+    "maxRedemptionPercentage": "Maximum bill percentage",
+    "maxRedemptionPercentageDesc": "Maximum percentage of a bill that can be paid with points"
+  }
+}

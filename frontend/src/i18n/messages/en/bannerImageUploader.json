@@ -1,0 +1,23 @@
+{
+  "errors": {
+    "selectImageFile": "Please select an image file",
+    "imageSizeLimit": "Banner image size must be less than {maxSize}MB",
+    "uploadFailed": "Failed to upload banner image",
+    "uploadFailedTitle": "Banner Upload Failed"
+  },
+  "success": {
+    "uploaded": "Banner Uploaded!",
+    "uploadedDescription": "Banner {index} has been uploaded successfully."
+  },
+  "status": {
+    "uploading": "Uploading…"
+  },
+  "bannerInfo": "{index} · {maxSize}MB max · 3:1",
+  "addBanner": "Add banner {index}",
+  "hint": "1200×400 · PNG, JPG, WebP",
+  "buttons": {
+    "dismiss": "Dismiss",
+    "remove": "Remove",
+    "replace": "Replace"
+  }
+}

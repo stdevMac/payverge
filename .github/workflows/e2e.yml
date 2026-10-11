@@ -1,0 +1,182 @@
+# End-to-end journeys against the full docker compose stack (Postgres,
+# backend, frontend), in Chromium.
+#
+# Runs nightly, on demand, and on pull requests that carry the `e2e` label.
+# It is not part of `ci-ok`: a compose build plus the journeys takes most of
+# half an hour, which is too slow for every push.
+#
+# Boot strategy: .github/e2e/ci.env.fixture is a committed, non-secret, CI-only env
+# file with ENV=production, so the backend runs its production preflight
+# (backend/internal/config/production_preflight.go). Every URL points at
+# localhost or a compose service name and every external provider is a stub.
+# scripts/ci/rotate-ci-secrets.sh replaces the placeholder signing keys with
+# fresh random values per run, so nothing committed is ever a live key.
+# docker compose reads .env for the image build arguments and for the
+# containers' runtime settings alike, so the env file must exist before
+# `docker compose up --build`.
+name: E2E
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push to a labelled PR cancels the run it supersedes. Concurrency is
+# resolved before the job `if`, so a `labeled` event for any other label gets
+# a throwaway group of its own (its run_id): otherwise adding, say, `docs` to
+# a PR that already carries `e2e` would cancel the journeys in progress and
+# then skip its own job, leaving the PR with no e2e verdict. The event name
+# keeps the nightly run and a manual dispatch on main from cancelling each
+# other.
+concurrency:
+  group: e2e-${{ github.event_name }}-${{ github.ref }}-${{ (github.event.action == 'labeled' && github.event.label.name != 'e2e') && github.run_id || 'journeys' }}
+  cancel-in-progress: true
+
+jobs:
+  journeys:
+    name: Playwright journeys (Chromium)
+    # On pull requests, only when labelled `e2e`. Adding an unrelated label
+    # to an already-labelled PR neither starts nor cancels a run (see the
+    # concurrency group above).
+    if: >-
+      github.event_name != 'pull_request' ||
+      (contains(github.event.pull_request.labels.*.name, 'e2e') &&
+       (github.event.action != 'labeled' || github.event.label.name == 'e2e'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Boot the stack
+        run: |
+          cp .github/e2e/ci.env.fixture .env
+          bash scripts/ci/rotate-ci-secrets.sh .env
+          # Fail fast if compose cannot interpolate the env file.
+          docker compose --env-file .env config >/dev/null
+          # `up` fails on its own when a service with a depends_on health
+          # condition never turns healthy; print why before giving up.
+          if ! docker compose --env-file .env up -d --build; then
+            echo "::error::docker compose up failed; compose ps and service logs follow."
+            docker compose --env-file .env ps --all || true
+            for service in backend frontend postgres; do
+              echo "--- $service logs (tail 200) ---"
+              docker compose --env-file .env logs --no-color --tail=200 "$service" || true
+            done
+            exit 1
+          fi
+          # Independent polls for postgres, backend live/ready and frontend;
+          # dumps compose ps and service logs on any timeout.
+          bash scripts/ci/wait-for-stack.sh
+
+      - name: Apply and verify the demo seed twice
+        run: |
+          # The second pass catches broken ON CONFLICT clauses and other
+          # non-idempotent fixture writes.
+          for _ in 1 2; do
+            docker compose exec -T postgres psql -U payverge -d payverge \
+              -v ON_ERROR_STOP=1 -f - < backend/scripts/demo_seed.sql
+            docker compose exec -T postgres psql -U payverge -d payverge \
+              -v ON_ERROR_STOP=1 -f - < backend/scripts/verify_demo_seed.sql
+          done
+
+      - name: Install frontend dependencies and Chromium
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run journey specs
+        working-directory: frontend
+        env:
+          # journeys.ts gates every journey spec on PLAYWRIGHT_RUN_JOURNEYS_E2E,
+          # the delivery specs on PLAYWRIGHT_RUN_DELIVERY_E2E, and Assistant V2
+          # on its own flag. All three are set so nothing self-skips (the
+          # no-skipped-tests reporter fails the run on a skip).
+          PLAYWRIGHT_RUN_JOURNEYS_E2E: "1"
+          PLAYWRIGHT_RUN_DELIVERY_E2E: "1"
+          PLAYWRIGHT_RUN_ASSISTANT_V2_E2E: "1"
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          # The staff-login seed helper shells out to `docker compose exec -T
+          # postgres psql` against the repository-root docker-compose.yml.
+          PLAYWRIGHT_API_BASE: http://localhost:8080/api/v1
+        run: |
+          npx playwright test \
+            guest-dinein-journey delivery-operator-journey \
+            reservation-public-journey staff-shift-journey \
+            owner-onboarding-journey staff-roles spaces-tables \
+            --project=chromium
+          npx playwright test assistant-v2 --project=chromium
+
+      - name: Collect compose diagnostics
+        if: always()
+        run: |
+          out="$RUNNER_TEMP/e2e-compose-logs"
+          mkdir -p "$out"
+          docker compose --env-file .env ps >"$out/ps.txt" 2>&1 || true
+          docker compose --env-file .env logs --tail=500 >"$out/all.txt" 2>&1 || true
+          for svc in backend frontend postgres; do
+            docker compose --env-file .env logs --tail=300 "$svc" >"$out/$svc.txt" 2>&1 || true
+          done
+
+      - name: Upload compose diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-compose-logs
+          path: ${{ runner.temp }}/e2e-compose-logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload Playwright diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-traces
+          path: |
+            frontend/test-results/
+            frontend/playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Tear down
+        if: always()
+        run: docker compose --env-file .env down -v || docker compose down -v
+
+  jest-open-handles:
+    # --detectOpenHandles forces --runInBand and is about 30% slower than the
+    # sharded unit run in ci.yml, so it runs nightly instead of per push.
+    name: Jest open-handle check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run Jest with open-handle detection
+        working-directory: frontend
+        run: node scripts/check-jest-open-handles.js

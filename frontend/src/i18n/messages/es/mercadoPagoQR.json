@@ -1,0 +1,36 @@
+{
+  "chargeButton": "Cobrar con QR",
+  "modalTitle": "Cobrar con QR de Mercado Pago",
+  "amountLabel": "Monto",
+  "amountHint": "Saldo pendiente: {remaining}",
+  "confirmCharge": "Generar QR",
+  "cancel": "Cancelar",
+  "cancelCharge": "Cancelar cobro",
+  "retry": "Generar nuevo QR",
+  "done": "Listo",
+  "scanHint": "El cliente escanea con la app de Mercado Pago",
+  "brandChip": "Mercado Pago",
+  "countdown": "Expira en {time}",
+  "expired": "Este código QR expiró.",
+  "regenerate": "Generar nuevo código",
+  "status": {
+    "pending": "Esperando el pago del cliente…",
+    "completed": "Pago completado.",
+    "cancelled": "El cobro fue cancelado o falló.",
+    "expired": "El cobro con QR expiró.",
+    "failed": "El cobro falló."
+  },
+  "toasts": {
+    "charged": "QR listo — muéstraselo al cliente",
+    "completed": "Pago con QR completado",
+    "cancelled": "Cobro con QR cancelado",
+    "cancelFailed": "No se pudo cancelar el cobro con QR",
+    "chargeFailed": "No se pudo crear el cobro con QR"
+  },
+  "errors": {
+    "amountInvalid": "Ingresa un monto válido mayor que cero.",
+    "amountTooHigh": "El monto supera el saldo pendiente.",
+    "pendingConflict": "Ya hay un cobro de Mercado Pago pendiente en esta cuenta.",
+    "otherDevice": "Ya hay un cobro en curso en otro dispositivo — cancela para reintentar."
+  }
+}

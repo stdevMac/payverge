@@ -1,0 +1,13 @@
+{
+  "key": "3bcc2cfdf23bee2f",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "¡Hola! Tenemos varios platos excelentes. Algunos de los favoritos de nuestros clientes son los platos del chef que cambian cada día. ¿Te gustaría que te cuente más sobre nuestras opciones?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

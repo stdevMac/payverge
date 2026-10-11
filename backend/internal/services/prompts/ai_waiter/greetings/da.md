@@ -1,0 +1,1 @@
+Velkommen til {{BUSINESS_NAME}}! Jeg er {{AI_NAME}}, AI-assistenten, og jeg er her for at hjælpe dig med at vælge det perfekte måltid. Til orientering chatter du med en AI. Vil du have en anbefaling eller hjælp til at bestille?

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-v-in-tag": true,
+  "include-component-in-tag": false,
+  "draft": true,
+  "force-tag-creation": true,
+  "changelog-path": "docs/CHANGELOG.md",
+  "changelog-sections": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Fixes" },
+    { "type": "perf", "section": "Fixes" },
+    { "type": "revert", "section": "Fixes" },
+    { "type": "docs", "section": "Other changes" },
+    { "type": "chore", "section": "Other changes", "hidden": true },
+    { "type": "refactor", "section": "Other changes", "hidden": true },
+    { "type": "test", "section": "Other changes", "hidden": true },
+    { "type": "ci", "section": "Other changes", "hidden": true },
+    { "type": "build", "section": "Other changes", "hidden": true },
+    { "type": "style", "section": "Other changes", "hidden": true }
+  ],
+  "packages": {
+    ".": {
+      "package-name": "payverge",
+      "extra-files": [
+        { "type": "json", "path": "frontend/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "frontend/package-lock.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "frontend/package-lock.json", "jsonpath": "$.packages[''].version" },
+        { "type": "json", "path": "tools/payverge-admin-mcp/package.json", "jsonpath": "$.version" },
+        { "type": "generic", "path": "tools/payverge-admin-mcp/src/mcpProtocol.mjs" },
+        { "type": "generic", "path": "deploy/docker-compose.yml" },
+        { "type": "generic", "path": "deploy/.env.example" },
+        { "type": "generic", "path": "deploy/platforms/coolify/docker-compose.yml" },
+        { "type": "generic", "path": "deploy/platforms/render/render.yaml" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "runbooks": [
+    {"path": "alerts.md", "owner": "operations_owner", "reviewed_on": "2026-10-06", "review_due": "2027-04-01"},
+    {"path": "credential-exposure-response.md", "owner": "security_owner", "reviewed_on": "2026-10-03", "review_due": "2027-04-01"},
+    {"path": "migration-dirty-recovery.md", "owner": "database_owner", "reviewed_on": "2026-10-03", "review_due": "2027-04-01"},
+    {"path": "runtime-launch-controls.md", "owner": "release_owner", "reviewed_on": "2026-10-03", "review_due": "2027-04-01"}
+  ]
+}

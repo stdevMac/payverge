@@ -1,0 +1,5 @@
+{
+  "_comment": "Gzipped-KB client-JS budgets enforced by scripts/check-bundle-budget.js. Reseed with --write ONLY after an intentional, reviewed size change — investigate before raising.",
+  "sharedRootJsGzipKB": 247,
+  "totalClientJsGzipKB": 4683
+}

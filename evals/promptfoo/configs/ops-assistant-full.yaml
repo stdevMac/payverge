@@ -1,0 +1,68 @@
+description: Ops Assistant — JSON navigation help for operators
+prompts:
+  - file://../lib/prod_prompts.js:opsAssistant
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    config:
+      temperature: 0.2
+      max_tokens: 2048
+      response_format: { type: json_object }
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+  vars:
+    business_id: "42"
+    active_tab: overview
+tests:
+  - vars:
+      {
+        LANG: en,
+        user_message: "How do I add my first menu item?",
+        active_tab: bills,
+      }
+    assert:
+      - type: javascript
+        value: |
+          let t=String(output).replace(/```json\n?|```/g,'').trim();
+          const v=JSON.parse(t);
+          return typeof v.answer==='string' && Array.isArray(v.actions) && v.actions.some(a=>/menu/.test(a.href||''));
+  - vars:
+      { LANG: es, user_message: "¿Dónde conecto Stripe?", active_tab: plugins }
+    assert:
+      - type: llm-rubric
+        value: JSON válido con answer en español y acción hacia plugins o configuración de pagos.
+  - vars:
+      LANG: es
+      user_message: "Necesito agregar un producto al menú, crear una mesa con QR, conectar pagos, revisar inventario y configurar Camarero IA."
+      active_tab: overview
+    assert:
+      - type: javascript
+        value: |
+          const raw=String(output).replace(/```json\n?|```/g,'').trim();
+          const v=JSON.parse(raw);
+          if(typeof v.answer!=='string'||!Array.isArray(v.steps)||!Array.isArray(v.actions)||!Array.isArray(v.follow_ups)) return false;
+          const visible=[v.answer,...v.steps,...v.follow_ups,...v.actions.map(a=>a.label)].join(' ').toLowerCase();
+          const topics=[/menú|menu/,/mesa|código qr|codigo qr/,/plugin|integración|integracion|pagos?/,/inventario|existencias|stock/,/camarero ia|mozo ia|asistente/];
+          if(!topics.every(re=>re.test(visible))) return false;
+          if(/menu-add-item|tables-create-qr|plugins-connect|inventory-stock|ai-waiter-configure/.test(visible)) return false;
+          if(/\b(add|create|open|review|configure)\b/i.test(visible)) return false;
+          const expectedTabs=['menu','tables','plugins','inventory','ai-waiter'];
+          if(v.actions.length!==expectedTabs.length) return false;
+          return v.actions.every((a,i)=>a&&a.kind==='navigate'&&typeof a.label==='string'&&a.href===`/business/42/dashboard?tab=${expectedTabs[i]}`&&typeof a.disabled==='boolean'&&('disabled_reason' in a));
+  - vars:
+      LANG: es-AR
+      user_message: "Quiero agregar platos al menú y configurar el Mozo IA."
+      active_tab: menu
+    assert:
+      - type: javascript
+        value: |
+          const raw=String(output).replace(/```json\n?|```/g,'').trim();
+          const v=JSON.parse(raw);
+          if(typeof v.answer!=='string'||!Array.isArray(v.steps)||!Array.isArray(v.actions)||!Array.isArray(v.follow_ups)) return false;
+          const visible=[v.answer,...v.steps,...v.follow_ups,...v.actions.map(a=>a.label)].join(' ');
+          if(!/(podés|agregá|abrí|elegí|creá|configurá|activá|definí|guardá)/i.test(visible)) return false;
+          if(/\b(puedes|agrega|abre|elige|crea|configura|activa|define|guarda)\b/i.test(visible)) return false;
+          if(!/menú/i.test(visible)||!/mozo ia/i.test(visible)) return false;
+          const expectedTabs=['menu','ai-waiter'];
+          if(v.actions.length!==expectedTabs.length) return false;
+          return v.actions.every((a,i)=>a&&a.kind==='navigate'&&typeof a.label==='string'&&a.href===`/business/42/dashboard?tab=${expectedTabs[i]}`&&typeof a.disabled==='boolean'&&('disabled_reason' in a));

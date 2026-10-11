@@ -1,0 +1,13 @@
+{
+  "key": "4c94f976f637a7fe",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "El Pad Thai tiene cacahuetes listados en sus alérgenos, así que no te lo recomendaría para tu alergia. Por favor, confirma con el personal antes de pedir cualquier plato.",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 200,
+      "CompletionTokens": 50,
+      "TotalTokens": 250
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "key": "f464604d2eadb136",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Let me check our menu for you. It looks like we have a few items available. What kind of food are you in the mood for — maybe I can help narrow it down?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

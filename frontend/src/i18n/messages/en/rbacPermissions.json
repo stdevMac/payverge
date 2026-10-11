@@ -1,0 +1,542 @@
+{
+  "business:read": {
+    "label": "Business — view profile",
+    "description": "View the business profile, basic details, and dashboard access."
+  },
+  "business:write": {
+    "label": "Business — edit profile",
+    "description": "Edit core business information such as name, contact details, and addresses."
+  },
+  "business:delete": {
+    "label": "Business — delete business",
+    "description": "Permanently close and delete this business. Owner-level action."
+  },
+  "business:settings": {
+    "label": "Business — manage settings",
+    "description": "Change business-level settings, including profile updates and closing the business."
+  },
+  "staff:read": {
+    "label": "Team — view members",
+    "description": "View the team roster and each member's roles and permissions."
+  },
+  "staff:write": {
+    "label": "Team — edit members",
+    "description": "Edit team member details such as name and contact information."
+  },
+  "staff:invite": {
+    "label": "Team — invite members",
+    "description": "Send, resend, and revoke staff invitations and share invite links."
+  },
+  "staff:remove": {
+    "label": "Team — remove members",
+    "description": "Take a member off the team roster."
+  },
+  "staff:roles": {
+    "label": "Team — manage roles",
+    "description": "Manage the set of staff roles used across the team."
+  },
+  "staff:delete": {
+    "label": "Team — delete accounts",
+    "description": "Delete a staff member's account and revoke their access."
+  },
+  "staff:role": {
+    "label": "Team — change a member's role",
+    "description": "Change an individual member's role (server, host, kitchen, manager)."
+  },
+  "staff:permissions": {
+    "label": "Team — grant custom permissions",
+    "description": "Grant, revoke, or deny individual permissions beyond role defaults."
+  },
+  "staff:deactivate": {
+    "label": "Team — deactivate members",
+    "description": "Temporarily deactivate a staff member's access without deleting the account."
+  },
+  "staff:reactivate": {
+    "label": "Team — reactivate members",
+    "description": "Restore access for a previously deactivated staff member."
+  },
+  "staff:audit": {
+    "label": "Team — view audit log",
+    "description": "Review the audit trail of role and permission changes."
+  },
+  "staff:admin": {
+    "label": "Team — full staff administration",
+    "description": "Full control over staff management, including all team operations."
+  },
+  "menu:read": {
+    "label": "Menu — view",
+    "description": "View the menu, offers, and bundles in the dashboard."
+  },
+  "menu:write": {
+    "label": "Menu — edit and build",
+    "description": "Create and reorder menus, manage offers and bundles, and use the AI menu tools."
+  },
+  "menu:translate": {
+    "label": "Menu — translate",
+    "description": "Run and manage menu translations for guest languages."
+  },
+  "menu:categories": {
+    "label": "Menu — manage categories",
+    "description": "Add, edit, and delete menu categories."
+  },
+  "menu:items": {
+    "label": "Menu — manage items",
+    "description": "Add, edit, and delete menu items."
+  },
+  "tables:read": {
+    "label": "Tables — view",
+    "description": "View tables, spaces, and live table status."
+  },
+  "tables:write": {
+    "label": "Tables — edit",
+    "description": "Edit table details, arrange spaces, and apply QR branding."
+  },
+  "tables:create": {
+    "label": "Tables — create",
+    "description": "Create new tables with QR codes, and set up dining spaces."
+  },
+  "tables:delete": {
+    "label": "Tables — delete",
+    "description": "Remove tables from the floor plan."
+  },
+  "tables:qr": {
+    "label": "Tables — manage QR codes",
+    "description": "Manage and regenerate the QR codes guests scan at each table."
+  },
+  "bills:read": {
+    "label": "Bills — view",
+    "description": "View open and past guest bills."
+  },
+  "bills:write": {
+    "label": "Bills — edit",
+    "description": "Update bill details, including the fiscal customer on a bill."
+  },
+  "bills:create": {
+    "label": "Bills — create",
+    "description": "Open new guest bills."
+  },
+  "bills:close": {
+    "label": "Bills — close",
+    "description": "Close out settled guest bills."
+  },
+  "bills:items": {
+    "label": "Bills — manage items",
+    "description": "Add items to a bill and adjust or void line items."
+  },
+  "bills:payment": {
+    "label": "Bills — record payments",
+    "description": "Record in-person payments such as cash and card so staff can settle tabs."
+  },
+  "bills:refund": {
+    "label": "Bills — void and refund",
+    "description": "Void or refund a bill, reversing money. Owner-only by default."
+  },
+  "refunds:crypto:request": {
+    "label": "Crypto refunds — request",
+    "description": "Start an on-chain crypto refund request for a paid bill. Owner-only by default."
+  },
+  "refunds:crypto:approve": {
+    "label": "Crypto refunds — approve",
+    "description": "Approve crypto refund requests and advance them to signing. Owner-only by default."
+  },
+  "orders:read": {
+    "label": "Orders — view",
+    "description": "View incoming and past orders."
+  },
+  "orders:write": {
+    "label": "Orders — edit",
+    "description": "Edit order details and contents."
+  },
+  "orders:create": {
+    "label": "Orders — create",
+    "description": "Create new orders and price quotes on behalf of guests."
+  },
+  "orders:status": {
+    "label": "Orders — update status",
+    "description": "Advance or cancel orders as they move through preparation."
+  },
+  "orders:kitchen": {
+    "label": "Kitchen — display and tickets",
+    "description": "Use the kitchen display and receive kitchen ticket print jobs."
+  },
+  "analytics:read": {
+    "label": "Analytics — view dashboard",
+    "description": "Open the analytics tab and view performance reports."
+  },
+  "analytics:sales": {
+    "label": "Analytics — sales",
+    "description": "View sales analytics and revenue over time."
+  },
+  "analytics:tips": {
+    "label": "Analytics — tips",
+    "description": "View tip analytics, including tips by staff member."
+  },
+  "analytics:items": {
+    "label": "Analytics — menu items",
+    "description": "View item-level sales performance."
+  },
+  "reports:read": {
+    "label": "Reports — view",
+    "description": "View business reports."
+  },
+  "reports:export": {
+    "label": "Reports — export",
+    "description": "Export sales data and payment history as CSV files."
+  },
+  "financial:read": {
+    "label": "Finance — view",
+    "description": "View accounting data: profit and loss, ledger entries, and payroll runs."
+  },
+  "financial:write": {
+    "label": "Finance — manage ledger",
+    "description": "Create and void manual ledger entries, categories, recurring templates, and period locks."
+  },
+  "financial:withdraw": {
+    "label": "Finance — withdraw funds",
+    "description": "Withdraw settled funds from the business balance."
+  },
+  "financial:blockchain": {
+    "label": "Finance — crypto settlement",
+    "description": "Manage blockchain settlement details and crypto payout addresses."
+  },
+  "payroll:write": {
+    "label": "Payroll — run and pay",
+    "description": "Create, pay, and void payroll runs and set staff pay rates. Owner-only by default."
+  },
+  "plugins:read": {
+    "label": "Plugins — view",
+    "description": "See installed plugins and their connection status."
+  },
+  "plugins:write": {
+    "label": "Plugins — enable and disable",
+    "description": "Enable or disable payment and integration plugins."
+  },
+  "plugins:config": {
+    "label": "Plugins — configure",
+    "description": "View and edit plugin settings and test connections."
+  },
+  "plugins:payments": {
+    "label": "Plugins — record payments",
+    "description": "Record plugin payments and view plugin payment history."
+  },
+  "delivery:settings:read": {
+    "label": "Delivery — view settings",
+    "description": "View delivery settings, zones, and fees."
+  },
+  "delivery:settings:write": {
+    "label": "Delivery — edit settings",
+    "description": "Edit delivery zones, fees, hours, and partner links."
+  },
+  "delivery:dispatch:read": {
+    "label": "Delivery — view dispatch",
+    "description": "View delivery orders and their live status."
+  },
+  "delivery:dispatch:write": {
+    "label": "Delivery — manage dispatch",
+    "description": "Create and update delivery orders, assign drivers, and change delivery status."
+  },
+  "delivery:drivers:read": {
+    "label": "Delivery — view drivers",
+    "description": "View the driver roster, availability, and performance."
+  },
+  "delivery:drivers:write": {
+    "label": "Delivery — manage drivers",
+    "description": "Add, edit, and remove delivery drivers."
+  },
+  "settings:read": {
+    "label": "Settings — view",
+    "description": "View business settings such as hours, gallery, and connected services."
+  },
+  "settings:write": {
+    "label": "Settings — edit",
+    "description": "Edit operating hours, gallery, features, and connected services like WhatsApp."
+  },
+  "settings:design": {
+    "label": "Settings — design and branding",
+    "description": "Customize the business page design, colors, and branding."
+  },
+  "settings:google": {
+    "label": "Settings — Google profile",
+    "description": "Link, update, or remove the Google Business profile."
+  },
+  "settings:currency": {
+    "label": "Settings — currency",
+    "description": "Manage the business's currency configuration."
+  },
+  "settings:language": {
+    "label": "Settings — languages",
+    "description": "Manage the business's language configuration."
+  },
+  "currencies:read": {
+    "label": "Currencies — view",
+    "description": "View the currencies enabled for this business."
+  },
+  "currencies:write": {
+    "label": "Currencies — edit",
+    "description": "Change which currencies the business accepts and displays."
+  },
+  "languages:read": {
+    "label": "Languages — view",
+    "description": "View the languages enabled for guests and the menu."
+  },
+  "languages:write": {
+    "label": "Languages — edit",
+    "description": "Change which languages the business offers to guests."
+  },
+  "files:upload": {
+    "label": "Files — upload",
+    "description": "Upload images and files, including the business logo."
+  },
+  "files:delete": {
+    "label": "Files — delete",
+    "description": "Delete previously uploaded files."
+  },
+  "counter:read": {
+    "label": "Counters — view",
+    "description": "View pickup counters and their availability."
+  },
+  "counter:write": {
+    "label": "Counters — edit",
+    "description": "Create and edit pickup counters for takeaway orders."
+  },
+  "counter:settings": {
+    "label": "Counters — settings",
+    "description": "Change counter configuration and ordering options."
+  },
+  "overview:read": {
+    "label": "Overview — view",
+    "description": "Open the overview tab and receive real-time dashboard events."
+  },
+  "overview:kpi": {
+    "label": "Overview — KPIs",
+    "description": "View KPI summaries and live bills on the overview dashboard."
+  },
+  "crm:read": {
+    "label": "Customers — view",
+    "description": "View customer profiles, segments, addresses, and loyalty status."
+  },
+  "crm:write": {
+    "label": "Customers — edit",
+    "description": "Edit customer notes, tags, addresses, and loyalty settings, and link or unlink customers."
+  },
+  "crm:export": {
+    "label": "Customers — export",
+    "description": "Export the customer list as a CSV file."
+  },
+  "inventory:read": {
+    "label": "Inventory — view",
+    "description": "View stock levels, movements, and inventory settings."
+  },
+  "inventory:write": {
+    "label": "Inventory — edit",
+    "description": "Create and edit inventory items and inventory settings."
+  },
+  "inventory:adjust": {
+    "label": "Inventory — adjust stock",
+    "description": "Record stock adjustments and counts."
+  },
+  "inventory:recipes": {
+    "label": "Inventory — recipes",
+    "description": "View and edit the recipes that link menu items to ingredients."
+  },
+  "reservations:read": {
+    "label": "Reservations — view",
+    "description": "View reservations, stats, and reservation settings."
+  },
+  "reservations:write": {
+    "label": "Reservations — manage",
+    "description": "Update reservations: assign tables, check guests in, mark no-shows, and promote the waitlist."
+  },
+  "reservations:create": {
+    "label": "Reservations — create",
+    "description": "Create reservations on behalf of guests."
+  },
+  "reservations:delete": {
+    "label": "Reservations — cancel",
+    "description": "Cancel reservations."
+  },
+  "reservations:settings": {
+    "label": "Reservations — settings",
+    "description": "Change reservation windows, party sizes, and approval rules."
+  },
+  "director:read": {
+    "label": "Director Console — view",
+    "description": "View Director briefings, insights, and conversation threads. Owner-only by default."
+  },
+  "director:write": {
+    "label": "Director Console — use",
+    "description": "Ask the Director, manage threads, and apply its proposed actions. Owner-only by default."
+  },
+  "assistant:read": {
+    "label": "Ops Assistant — ask and view",
+    "description": "Ask the Ops Assistant questions and view previous threads."
+  },
+  "assistant:write": {
+    "label": "Ops Assistant — manage threads",
+    "description": "Archive and manage Ops Assistant threads."
+  },
+  "ai_waiter:read": {
+    "label": "AI Waiter — view conversations",
+    "description": "View and monitor AI Waiter guest conversations."
+  },
+  "ai_waiter:reply": {
+    "label": "AI Waiter — take over and reply",
+    "description": "Claim a conversation, pause the AI, and reply to guests directly."
+  },
+  "ai_waiter:insights": {
+    "label": "AI Waiter — insights",
+    "description": "View aggregate AI Waiter metrics and insights."
+  },
+  "ai_waiter:write": {
+    "label": "AI Waiter — close conversations",
+    "description": "Close AI Waiter conversations when they are finished."
+  },
+  "marketing:read": {
+    "label": "Marketing — view",
+    "description": "View marketing suggestions, activity, and settings."
+  },
+  "marketing:write": {
+    "label": "Marketing — create",
+    "description": "Generate marketing images and captions, record activity, and edit settings."
+  },
+  "printers:read": {
+    "label": "Printers — view",
+    "description": "View configured printers and the print station."
+  },
+  "printers:write": {
+    "label": "Printers — manage",
+    "description": "Add, edit, and remove thermal printers."
+  },
+  "print:bill": {
+    "label": "Printing — guest bills",
+    "description": "Print guest bills and receive bill print jobs at the print station."
+  },
+  "print:receipt": {
+    "label": "Printing — payment receipts",
+    "description": "Print payment receipts and receive receipt print jobs."
+  },
+  "cash_register:read": {
+    "label": "Cash register — view",
+    "description": "View cash register sessions and unassigned cash payments."
+  },
+  "cash_register:operate": {
+    "label": "Cash register — operate",
+    "description": "Open and close cash sessions and record cash movements."
+  },
+  "alerts:read": {
+    "label": "Alerts — view",
+    "description": "View operational alerts and alert settings."
+  },
+  "alerts:claim": {
+    "label": "Alerts — claim",
+    "description": "Claim an alert to take ownership of handling it."
+  },
+  "alerts:resolve": {
+    "label": "Alerts — resolve",
+    "description": "Resolve or snooze operational alerts."
+  },
+  "alerts:settings": {
+    "label": "Alerts — settings",
+    "description": "Change alert rules and notification settings."
+  },
+  "fiscal:read": {
+    "label": "Fiscal — view receipts",
+    "description": "View fiscal receipts and their issuance status, and export them as CSV."
+  },
+  "fiscal:write": {
+    "label": "Fiscal — settings",
+    "description": "Edit the fiscal configuration, such as issuance settings and point of sale."
+  },
+  "fiscal:issue": {
+    "label": "Fiscal — issue invoices",
+    "description": "Issue official fiscal invoices for bills."
+  },
+  "fiscal:retry": {
+    "label": "Fiscal — retry issuance",
+    "description": "Retry fiscal invoices that failed to issue."
+  },
+  "fiscal:export": {
+    "label": "Fiscal — export",
+    "description": "Export fiscal documents and reports."
+  },
+  "fiscal:credit": {
+    "label": "Fiscal — credit notes",
+    "description": "Issue credit notes that reverse tax documents. Owner-only by default."
+  },
+  "fiscal:credentials": {
+    "label": "Fiscal — tax credentials",
+    "description": "Upload and manage the tax authority (AFIP/ARCA) credentials. Owner-only by default."
+  },
+  "schedule:read": {
+    "label": "Schedule — view",
+    "description": "View published schedules, positions, time off, and shift coverage."
+  },
+  "schedule:write": {
+    "label": "Schedule — build",
+    "description": "Build and edit schedule drafts, shifts, positions, and schedule settings."
+  },
+  "schedule:publish": {
+    "label": "Schedule — publish",
+    "description": "Publish schedules so the team can see their shifts."
+  },
+  "schedule:approve": {
+    "label": "Schedule — approve requests",
+    "description": "Approve or decline time-off, swap, and coverage requests."
+  },
+  "schedule:self": {
+    "label": "Schedule — self-service",
+    "description": "Manage own availability, request time off, and claim or swap shifts."
+  },
+  "timeclock:punch": {
+    "label": "Time clock — punch",
+    "description": "Clock in and out, take breaks, and view own timesheet."
+  },
+  "timeclock:manage": {
+    "label": "Time clock — manage timesheets",
+    "description": "Review, approve, and edit timesheets, add manual entries, and run the punch kiosk."
+  },
+  "chat:read": {
+    "label": "Team chat — read",
+    "description": "Read channels, messages, and announcements."
+  },
+  "chat:send": {
+    "label": "Team chat — send",
+    "description": "Send messages and direct messages to the team."
+  },
+  "chat:announce": {
+    "label": "Team chat — announcements",
+    "description": "Create and manage announcements and track acknowledgements."
+  },
+  "chat:moderate": {
+    "label": "Team chat — moderate",
+    "description": "Delete messages to moderate team chat."
+  },
+  "checklist:complete": {
+    "label": "Checklists — complete tasks",
+    "description": "View assigned checklists and tick off tasks."
+  },
+  "checklist:manage": {
+    "label": "Checklists — manage",
+    "description": "Create checklist templates and start runs for the team."
+  },
+  "doc:read": {
+    "label": "Documents — read",
+    "description": "Read and acknowledge team documents and policies."
+  },
+  "doc:manage": {
+    "label": "Documents — manage",
+    "description": "Create, publish, and update team documents."
+  },
+  "recognition:send": {
+    "label": "Recognition — send",
+    "description": "Send and view shout-outs recognizing teammates."
+  },
+  "poll:vote": {
+    "label": "Polls — vote",
+    "description": "View team polls, vote, and see results."
+  },
+  "poll:manage": {
+    "label": "Polls — manage",
+    "description": "Create and close team polls."
+  }
+}

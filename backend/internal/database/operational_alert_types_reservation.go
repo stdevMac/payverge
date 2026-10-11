@@ -1,0 +1,3 @@
+package database
+
+const OperationalAlertTypeTableStaleOccupied OperationalAlertType = "table_stale_occupied"

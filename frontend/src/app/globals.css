@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/theme.css';
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/dm-sans/dm-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/dm-sans/dm-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-regular-latin.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-regular-latin-ext.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-italic-latin.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-italic-latin-ext.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/* Latin-ext-only families that lead the brand stacks in :root. next/font/local
+   serves only the latin files, and the size-adjusted fallback face it inserts
+   right after them has no unicode-range, so a later family is never reached
+   for ą ę ś ż ł ş ğ … Listed first, these faces match nothing in basic latin
+   (no download for latin-only pages) and catch the latin-ext glyphs before the
+   next/font family. */
+@font-face {
+  font-family: "DM Sans Latin Ext";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/dm-sans/dm-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "DM Serif Display Latin Ext";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-regular-latin-ext.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "DM Serif Display Latin Ext";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/dm-serif-display/dm-serif-display-italic-latin-ext.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+:root {
+  --font-title: "DM Serif Display Latin Ext", var(--font-dm-serif-display), "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-inter: "DM Sans Latin Ext", var(--font-dm-sans), "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-poppins: "DM Sans Latin Ext", var(--font-dm-sans), "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --primary: #1a6b6a;
+  --primary-dark: #145554;
+  --foreground-rgb: 28, 25, 23;
+  --background-start-rgb: 250, 249, 246;
+  --background-end-rgb: 243, 241, 236;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: #faf9f6;
+  overflow-wrap: break-word;
+  scrollbar-width: thin;
+  scrollbar-color: #cfc9bd #f3f1ec;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfc9bd;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #857d6e;
+}
+
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.02em;
+}
+
+/* ⌘K command palette entrance — backdrop fade + panel pop. Only ever runs
+   under `motion-safe:` utilities, and the reduced-motion guard above neutralizes
+   it regardless. */
+@keyframes cmdk-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cmdk-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* "Money moment" payment celebration entrance — slides in from the right.
+   Only applied via `motion-safe:`, and the reduced-motion guard above
+   neutralizes it regardless. */
+@keyframes money-moment-in {
+  from { opacity: 0; transform: translateX(16px) scale(0.97); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* Sidebar rail notification badge — one-shot "blink in" pop. Applied only via
+   `motion-safe:` utilities, and the global `prefers-reduced-motion: reduce`
+   guard above neutralizes it regardless. */
+@keyframes badge-pop-in {
+  0%   { opacity: 0; transform: scale(0.6); }
+  70%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* #800: while the cookie-consent banner owns the viewport bottom edge
+   (CookieConsent sets data-cookie-banner + --cookie-banner-height), reserve
+   its measured height at the end of the page so bottom-of-page CTAs
+   (pricing Start-trial / Talk-to-us) can scroll clear of the fixed banner. */
+html[data-cookie-banner="1"] body {
+  padding-bottom: var(--cookie-banner-height, 7rem);
+}

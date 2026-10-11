@@ -1,0 +1,39 @@
+{{ define "subject" }}Nuevo miembro del equipo{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Nuevo miembro del equipo
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Sumamos un nuevo miembro del equipo a tu negocio en Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Le asignamos el rol de <strong>{{ .staff_role }}</strong> y ahora puede acceder a las partes del panel
+    vinculadas con sus responsabilidades.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Podés gestionar accesos y roles del equipo en cualquier momento desde el panel.
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Gestionar equipo
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    Si esto no era esperado o necesitás hacer cambios, podés actualizar el acceso del equipo directamente en el
+    panel.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

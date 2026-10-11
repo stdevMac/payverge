@@ -1,0 +1,17 @@
+{
+  "connect": "Conectar Billetera",
+  "profile": "Menú",
+  "profileActionsAria": "Acciones de perfil",
+  "toggleMenuAria": "Alternar menú",
+  "dashboard": "Panel",
+  "staffDashboard": "Panel del personal",
+  "home": "Inicio",
+  "admin": "Admin",
+  "logout": "Cerrar Sesión",
+  "toggleMenu": "Alternar Menú",
+  "profileActions": "Acciones de Perfil",
+  "staffLogin": "Acceso Personal",
+  "signIn": "Iniciar sesión",
+  "account": "Cuenta",
+  "navigation": "Navegación"
+}

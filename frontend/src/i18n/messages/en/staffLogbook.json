@@ -1,0 +1,23 @@
+{
+  "menu": {
+    "entry": "Shift logbook",
+    "hint": "Handover notes for the next shift"
+  },
+  "title": "Shift logbook",
+  "subtitle": "Notes from the team for handover",
+  "composeLabel": "Add a note",
+  "categoryLabel": "Category",
+  "contentLabel": "Note",
+  "contentPlaceholder": "What should the next shift know?",
+  "submit": "Log note",
+  "emptyTitle": "No notes yet",
+  "emptySubtitle": "Log the first handover note for today.",
+  "loading": "Loading logbook",
+  "categories": {
+    "sales": "Sales",
+    "guests": "Guests",
+    "staffing": "Staffing",
+    "maintenance": "Maintenance",
+    "other": "Other"
+  }
+}

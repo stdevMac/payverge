@@ -1,0 +1,44 @@
+{
+  "metaDescription": "Aceptá tu invitación de personal de Payverge y terminá de configurar tu cuenta.",
+  "title": "Unite al Equipo",
+  "subtitle": "Te invitaron a unirte como miembro del personal",
+  "form": {
+    "invitationInfo": {
+      "description": "Te invitaron a unirte al equipo de personal. Completá tu registro a continuación para comenzar."
+    },
+    "nameField": {
+      "placeholder": "Ingresá tu nombre completo"
+    },
+    "whatHappensNext": {
+      "items": [
+        "Tu cuenta de personal va a ser creada",
+        "Vas a poder iniciar sesión con tu dirección de correo y códigos de acceso",
+        "El acceso se va a basar en tu rol asignado",
+        "No se requiere billetera de criptomonedas"
+      ]
+    }
+  },
+  "success": {
+    "subtitle": "Tu cuenta de personal fue creada con éxito.",
+    "loginInfo": "Tu sesión de personal ya está lista. Continuá al panel para empezar a trabajar."
+  },
+  "roles": {
+    "server": "Mozo"
+  },
+  "messages": {
+    "nameRequired": "Por favor ingresá tu nombre completo",
+    "accountCreated": "¡Cuenta creada con éxito!",
+    "expiredHelp": "Es posible que haya expirado o ya se haya usado. Pedile a tu gerente que envíe una nueva invitación.",
+    "transientHelp": "Revisá tu conexión e intentá de nuevo — el enlace de invitación sigue siendo válido."
+  },
+  "actions": {
+    "tryAgain": "Intentá de nuevo"
+  },
+  "existingSession": {
+    "title": "Ya hay una sesión iniciada",
+    "description": "Aceptar esta invitación cerrará la sesión actual en este navegador:",
+    "signOutCta": "Cerrar sesión y continuar",
+    "cancelCta": "Mantener mi sesión actual",
+    "signOutFailed": "No se pudo cerrar la sesión actual. Intentá de nuevo."
+  }
+}

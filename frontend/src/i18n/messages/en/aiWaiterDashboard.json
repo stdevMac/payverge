@@ -1,0 +1,222 @@
+{
+  "title": "AI Waiter",
+  "subtitle": "Configure your digital concierge and monitor guest interactions.",
+  "shell": {
+    "badge": "AI service command",
+    "activeMode": "Guest channel ready",
+    "service": "Table AI",
+    "serviceOn": "Guest chat enabled",
+    "serviceOnDetail": "Guests can chat and order from the QR menu; it suggests sides and never pushes 86'd or allergen-unsafe dishes.",
+    "serviceOnIdle": "Guest chat on — no conversations yet",
+    "serviceOnIdleDetail": "Guests can chat and order from the QR menu; it suggests sides and never pushes 86'd or allergen-unsafe dishes. Nothing is happening yet — there isn't enough data to show.",
+    "idleBanner": "Guest chat is enabled, but no guests have talked to the AI yet. Use Test chat below to preview it before dinner service.",
+    "serviceOff": "Service paused",
+    "channel": "Public page",
+    "channelOn": "Concierge visible",
+    "channelOff": "Table QR only",
+    "liveChats": "Live chats",
+    "priority": "Priority"
+  },
+  "businessPageRedirect": {
+    "title": "Enable Business Page",
+    "description": "To use AI Waiter, you must first enable your Business Page. Go to Business Page settings now?",
+    "cancel": "Not now",
+    "confirm": "Open settings"
+  },
+  "tabs": {
+    "overview": "Overview & Settings",
+    "monitor": "Live Monitor",
+    "insights": "Insights"
+  },
+  "tabsAria": "AI Dashboard tabs",
+  "stats": {
+    "totalConversations": "Total Conversations",
+    "totalConversationsHint": "All-time chats with guests.",
+    "upsellSuccessRate": "Upsell Success Rate",
+    "upsellSuccessRateHint": "Share of chats that ended in an upsell.",
+    "avgMessages": "Avg. Messages",
+    "avgMessagesHint": "Mean messages exchanged per chat.",
+    "avgMessagesSession": "Avg. Messages",
+    "conversationsTrend7d": "Conversations (last 7 days)",
+    "busiestHours": "Busiest hours",
+    "noData": "No data yet"
+  },
+  "settings": {
+    "configuration": "Configuration",
+    "personalityTitle": "AI Personality Settings",
+    "personalitySubtitle": "Customize how your AI waiter interacts with guests.",
+    "aiName": "AI Name",
+    "aiNameDescription": "This is the name the AI will use to introduce itself.",
+    "aiNameTooLong": "Name must be 40 characters or fewer.",
+    "priorityMode": "Priority Mode",
+    "priorityDescription": "Determines the AI's behavior and suggestion strategy.",
+    "priorities": {
+      "upselling": "Upselling (Maximize Revenue)",
+      "upsellingDesc": "Aggressively promotes high-margin items. Increases Average Order Value (AOV).",
+      "balanced": "Balanced (Recommended)",
+      "balancedDesc": "A perfect mix of helpful service and gentle suggestions. Best for customer satisfaction.",
+      "service": "Service Focused (Speed)",
+      "serviceDesc": "Focuses purely on efficiency and speed. Minimal conversation, fast ordering."
+    },
+    "specialInstructions": "Special Instructions (Advanced)",
+    "specialInstructionsPlaceholder": "e.g. Always suggest the daily special. Don't mention alcohol. Be extra polite.",
+    "specialInstructionsDescription": "Give specific rules or knowledge to your AI.",
+    "specialInstructionsWarning": "Guests may see anything you write here. Don't include secrets, internal notes, or staff-only policies.",
+    "allergenGuardrail": "Never write allergen-free, nut-free, gluten-free, or health claims here unless staff will confirm every time. The AI already refuses to invent allergen safety and will not recommend 86'd or out-of-stock dishes.",
+    "upsellingGuardrail": "Upselling still skips 86'd and out-of-stock dishes, and never invents allergen-safe claims. Use Test chat below before dinner service.",
+    "upsellingConfirmTitle": "Switch to Upselling?",
+    "upsellingConfirmDescription": "This mode promotes high-margin items more aggressively. It still skips 86'd and out-of-stock dishes and never invents allergen-safe or health claims. Use Test chat below before dinner service.",
+    "upsellingConfirmConfirm": "Use upselling",
+    "upsellingConfirmCancel": "Keep current mode",
+    "testChat": {
+      "title": "Test chat",
+      "subtitle": "Try a private sandbox conversation with the live AI before guests see it. Does not change your saved settings until you hit Save.",
+      "empty": "Ask a question, or use a probe below.",
+      "emptyReply": "(No reply)",
+      "error": "Couldn't reach the AI. Check that Guest chat is enabled and try again.",
+      "thinking": "Thinking…",
+      "you": "You",
+      "assistant": "AI",
+      "inputLabel": "Test message",
+      "placeholder": "e.g. Does the salad contain nuts?",
+      "send": "Send",
+      "probeAllergen": "Probe allergens",
+      "probeAllergenText": "I have a nut allergy — what can I safely order?",
+      "probeRecommend": "Probe recommendations",
+      "probeRecommendText": "What do you recommend tonight?"
+    },
+    "simulatedIntro": "Simulated Intro:",
+    "introTemplates": {
+      "default": "Hello! I'm {name}. Welcome to {business}!",
+      "upsellingItems": "Can I start you off with our {first} or {second}?",
+      "upsellingItem": "Can I start you off with our {first}?",
+      "upsellingGeneric": "Can I start you off with one of our most popular dishes?",
+      "balanced": "Let me know if you need any recommendations!",
+      "service": "How can I help you order today?"
+    },
+    "saveButton": "Save Configuration",
+    "aiNamePlaceholder": "e.g. Sage, Atlas, Jarvis"
+  },
+  "monitor": {
+    "recentConversations": "Recent Conversations",
+    "refresh": "Refresh",
+    "table": {
+      "session": "SESSION ID",
+      "table": "TABLE",
+      "language": "LANGUAGE",
+      "started": "STARTED",
+      "lastActivity": "LAST ACTIVITY",
+      "status": "STATUS",
+      "action": "ACTION",
+      "tableAria": "Conversations table"
+    },
+    "empty": "No conversations found.",
+    "loading": "Loading conversations...",
+    "viewChat": "View Chat",
+    "unknownTable": "Unknown",
+    "status": {
+      "active": "ACTIVE",
+      "closed": "CLOSED",
+      "abandoned": "ABANDONED",
+      "fallback": "OPEN"
+    },
+    "badges": {
+      "paused": "PAUSED",
+      "upsell": "UPSELL"
+    },
+    "pauseInline": "Pause AI for this conversation",
+    "resumeInline": "Resume AI for this conversation",
+    "pauseFailed": "Couldn't update this conversation. Please try again.",
+    "pickUp": "Pick up",
+    "handBack": "Hand back to AI",
+    "handledBy": "Handled by {name}",
+    "someoneElse": "another teammate",
+    "claimConflict": "{name} is already handling this chat",
+    "claimFailed": "Couldn't pick up the conversation",
+    "releaseFailed": "Couldn't hand the conversation back",
+    "emptyTitle": "No conversations yet",
+    "emptyBody": "Guest chats with the AI waiter will appear here as they happen.",
+    "servicePausedBanner": "AI answering is paused. You can still review history; guests will not get new AI replies until you turn the service back on.",
+    "statusFilter": {
+      "label": "Filter by status",
+      "all": "All",
+      "active": "Live",
+      "closed": "Closed"
+    },
+    "stealRequired": "{name} is handling this chat. Take over?",
+    "stealConfirm": "Take over",
+    "stealCancel": "Cancel",
+    "stealSuccess": "You took over from {name}"
+  },
+  "errors": {
+    "saveFailed": "Couldn't save settings. Please try again.",
+    "pauseFailed": "Couldn't pause AI Waiter. Please try again.",
+    "sendReplyFailed": "Couldn't send reply. Please try again.",
+    "closeFailed": "Couldn't close conversation.",
+    "fetchInsightsFailed": "Couldn't load insights.",
+    "fetchConversationsFailed": "Couldn't load conversations.",
+    "retry": "Retry",
+    "saveSuccess": "Configuration saved."
+  },
+  "transcript": {
+    "title": "Conversation Transcript",
+    "session": "Session: {{id}}",
+    "roles": {
+      "guest": "Guest",
+      "system": "System"
+    },
+    "staffReplyPlaceholder": "Type a reply as staff...",
+    "sendReply": "Send Reply",
+    "pauseAi": "Pause AI (Takeover)",
+    "resumeAi": "Resume AI",
+    "closeConversation": "Close Conversation",
+    "closeConfirmTitle": "Close this conversation?",
+    "closeConfirmDescription": "This ends the live chat with the guest. It can't be reopened. The AI stops responding on this session.",
+    "closeConfirmConfirm": "Close conversation",
+    "closeConfirmCancel": "Keep open",
+    "close": "Close",
+    "loadFailed": "Couldn't load this conversation.",
+    "retry": "Retry",
+    "pickUpToReply": "Pick up this conversation to reply",
+    "claimExpired": "Your claim expired. Pick up the conversation again to reply.",
+    "claimExpiresIn": "Claim expires in {time}",
+    "claimExpiredChip": "Claim expired",
+    "pickUpToReplyIdle": "Pick up this chat to reply.",
+    "conversationClosed": "This conversation is closed."
+  },
+  "visibility": {
+    "title": "Channel Visibility",
+    "subtitle": "Choose where the AI Waiter is active.",
+    "publicBusinessPage": "Public Business Page",
+    "publicBusinessPageDesc": "Enable AI Concierge on your public landing page",
+    "businessPageDisabled": "Business Page is currently disabled. Enable it in Design settings to use this feature.",
+    "enableAIWaiterFirst": "Enable AI Waiter to configure channel visibility."
+  },
+  "whatsapp": {
+    "title": "WhatsApp channel",
+    "subtitle": "Connection status for the guest WhatsApp waiter.",
+    "status": {
+      "connected": "Connected",
+      "connecting": "Connecting",
+      "pairing": "Pairing",
+      "degraded": "Degraded — reconnecting",
+      "disconnected": "Disconnected"
+    },
+    "lastConnected": "Last connected {time}",
+    "retryAt": "Next retry {time}",
+    "errors": {
+      "device_missing": "Saved device is no longer available",
+      "connect_timeout": "Connection timed out",
+      "connect_failed": "Could not reconnect",
+      "fallback": "Channel needs attention"
+    },
+    "connect": "Connect WhatsApp",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "notEnabled": "WhatsApp is installed on this server but not turned on. Ask your server administrator to set WHATSAPP_ENABLED=true and restart the backend.",
+    "actionFailed": "Could not update the WhatsApp channel. Try again.",
+    "startFailed": "WhatsApp is turned on for this server but could not start. Ask your server administrator to check the backend logs.",
+    "qrAlt": "QR code to link WhatsApp",
+    "scanHint": "On the phone for this business, open WhatsApp, go to Linked devices, tap Link a device and scan this code. It refreshes on its own until you scan it."
+  }
+}

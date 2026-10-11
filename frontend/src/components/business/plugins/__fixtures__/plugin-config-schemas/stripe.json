@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "connection_mode": {
+      "type": "string",
+      "title": "Connection Mode",
+      "description": "oauth or manual",
+      "enum": ["oauth", "manual"]
+    },
+    "stripe_user_id": {
+      "type": "string",
+      "title": "Stripe Connected Account ID",
+      "description": "Connected account id (acct_…) from Connect OAuth"
+    },
+    "secret_key": {
+      "type": "string",
+      "title": "Secret Key",
+      "description": "Your Stripe secret key (starts with sk_) — manual mode",
+      "format": "password"
+    },
+    "publishable_key": {
+      "type": "string",
+      "title": "Publishable Key",
+      "description": "Your Stripe publishable key (starts with pk_)"
+    },
+    "webhook_endpoint": {
+      "type": "string",
+      "title": "Webhook Endpoint",
+      "description": "Webhook URL for payment notifications",
+      "format": "uri"
+    },
+    "webhook_secret": {
+      "type": "string",
+      "title": "Webhook Signing Secret",
+      "description": "Stripe webhook signing secret (starts with whsec_)",
+      "format": "password"
+    },
+    "webhook_secret_previous": {
+      "type": "string",
+      "title": "Previous Webhook Signing Secret",
+      "description": "Temporary overlap key used while rotating webhook signing secrets",
+      "format": "password"
+    },
+    "auto_capture": {
+      "type": "boolean",
+      "title": "Auto Capture Payments",
+      "description": "Automatically capture payments when authorized",
+      "default": true
+    },
+    "access_token": {
+      "type": "string",
+      "title": "OAuth Access Token",
+      "format": "password"
+    },
+    "refresh_token": {
+      "type": "string",
+      "title": "OAuth Refresh Token",
+      "format": "password"
+    }
+  }
+}

@@ -1,0 +1,861 @@
+# Pull-request and main-branch gate. Every job is required through `ci-ok`,
+# the single status check a branch ruleset should require.
+#
+# Hardening rules for every workflow in this repository (enforced by
+# scripts/ci/d10_hygiene_contract.test.mjs):
+#   - actions pinned to a full commit SHA with a "# vX.Y.Z" comment;
+#   - checkout with persist-credentials: false;
+#   - read-only top-level permissions, widened per job only where needed;
+#   - timeout-minutes on every job;
+#   - no pull_request_target, and no ${{ github.event.* }} inside run: blocks.
+#
+# The workflow needs no secrets and runs on GitHub-hosted runners only, so it
+# behaves the same on forks.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # Nightly: the race detector over the unit shards plus fresh advisories.
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Pull requests share one group per PR, so a new push cancels the run it
+  # supersedes. Every other event gets a group per commit: a group holds one
+  # running and one pending run, and a newer pending run replaces the older
+  # one even with cancel-in-progress: false. Keying main by SHA keeps a verdict
+  # for every commit release-please may cut a release from: release.yml builds
+  # nothing until a push, schedule or dispatch run here passed on the release
+  # commit (scripts/ci/wait-for-ci.sh).
+  group: ci-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  contracts:
+    name: Repository contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: |
+            backend/go.sum
+            scripts/ci/workflowcontract/go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Guard against raw SQL concatenation
+        run: ./scripts/check-raw-sql.sh
+
+      # shellcheck is preinstalled on the ubuntu-24.04 runner image.
+      - name: Shell scripts pass shellcheck (warning and above)
+        run: git ls-files -z '*.sh' | xargs -0 shellcheck -S warning
+
+      # A self-hosted instance must never link, mail, redirect to or trust the
+      # upstream deployment: runtime code reads PUBLIC_URL & co. instead.
+      # On the release-please pull request, KNOWN_DEBT counts too (--release),
+      # so a release cannot be merged and tagged while any remains.
+      - name: Guard against a hard-coded upstream domain (backend + frontend)
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          bash scripts/check-hardcoded-domain.test.sh
+          ./scripts/check-hardcoded-domain.sh
+          if [[ "$HEAD_REF" == release-please--* ]]; then
+            ./scripts/check-hardcoded-domain.sh --release
+          fi
+
+      - name: Workflow and release contracts
+        run: (cd scripts/ci/workflowcontract && go test -count=1 ./...)
+
+      - name: Repository hygiene contract
+        run: node --test scripts/ci/d10_hygiene_contract.test.mjs
+
+      # Reader-doc links (docs_links_contract) and the env-var inventory.
+      - name: Documentation contracts
+        run: node --test scripts/ci/docs_links_contract.test.mjs scripts/docs/env-inventory.test.mjs
+
+      - name: CI helper scripts
+        run: |
+          bash scripts/ci/go-test-shard_test.sh
+          bash scripts/ci/go-pg-packages_test.sh
+          bash scripts/ci/release-assets_test.sh
+          bash scripts/ci/image-build-args_test.sh
+          bash scripts/ci/wait-for-ci_test.sh
+          bash scripts/ci/wait-for-stack_test.sh
+          bash scripts/ci/check-gpl-free_test.sh
+          bash scripts/ci/deploy-backup_test.sh
+          bash scripts/ci/deploy-install_test.sh
+          bash scripts/ci/deploy-upgrade-postgres_test.sh
+
+      - name: Backup script contracts
+        run: |
+          bash backend/scripts/backup-db.test.sh
+          bash backend/scripts/check-backup-age.test.sh
+          bash backend/scripts/check-offsite-backup.test.sh
+          bash backend/scripts/restore-db.test.sh
+          bash backend/scripts/run-restore-drill.test.sh
+          bash backend/scripts/validate-backup-policy.test.sh
+
+      - name: Performance gate script contracts
+        run: |
+          bash backend/perf/bench/scripts/gate_test.sh
+          bash backend/perf/bench/scripts/validate-inputs_test.sh
+          bash backend/perf/observe/evaluate_test.sh
+
+      # The self-host edge: stock caddy:2 with the deploy/ Caddyfiles in front
+      # of a stub app (routing, spoofed client-IP headers, body limit,
+      # security headers). Docker is preinstalled on the hosted runner.
+      - name: Self-host Caddy edge behaviour
+        run: bash scripts/ci/deploy-caddy-edge_test.sh
+
+      # The self-host Postgres init: the app connects as a NOSUPERUSER owner
+      # role and the postgres superuser has no password (no TCP login).
+      - name: Self-host Postgres app role
+        run: bash scripts/ci/deploy-postgres-role_test.sh
+
+      # deploy/upgrade-postgres.sh against the real images: a PostgreSQL 15
+      # db volume is guarded (no empty 18 database over it), moved to 18 on
+      # pgdata with every row and role password, and kept for rollback.
+      - name: Self-host PostgreSQL 15 to 18 upgrade
+        run: bash scripts/ci/deploy-upgrade-postgres-docker_test.sh
+
+      # deploy/monitoring/alerts.yml: syntax plus promtool unit tests.
+      - name: Self-host alert rules
+        run: |
+          docker run --rm -v "$PWD/deploy/monitoring:/m:ro" --entrypoint promtool \
+            prom/prometheus:v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e \
+            check rules /m/alerts.yml
+          docker run --rm -v "$PWD/deploy/monitoring:/m:ro" --entrypoint promtool \
+            prom/prometheus:v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e \
+            test rules /m/alerts.test.yml
+
+      - name: Admin MCP server tests
+        working-directory: tools/payverge-admin-mcp
+        run: |
+          npm test
+          npm run check
+
+      # The marketing screenshot extension (tools/screenshot-extension): unit
+      # tests only; the extension itself needs a browser and a running stack.
+      - name: Screenshot extension tests
+        working-directory: tools/screenshot-extension
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+
+      # Zero-dependency Node checks: the static landing page in site/ (links,
+      # CSP hashes, contrast; --self-test proves each check can fail) and the
+      # export tool against throwaway fixture repos with stub scanners.
+      - name: Landing page static checks
+        run: |
+          node site/tools/check.mjs
+          node site/tools/check.mjs --self-test
+
+      - name: Export tool tests
+        run: bash tools/oss-export/test.sh
+
+      - name: Release notes match the code
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          # On the release-please pull request the changelog section must be
+          # final: RELEASE_VERSION switches the contract to release mode.
+          if [[ "$HEAD_REF" == release-please--* ]]; then
+            RELEASE_VERSION="$(node -p "require('./.github/.release-please-manifest.json')['.']")"
+            export RELEASE_VERSION
+            echo "release-please branch: checking notes for ${RELEASE_VERSION}"
+          fi
+          node --test scripts/ci/release_notes_contract.test.mjs
+
+  genesis-schema:
+    name: Genesis schema baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: generate-genesis-schema.sh contract tests
+        run: bash backend/scripts/generate-genesis-schema.test.sh
+
+      - name: Committed baseline matches a fresh reconcile
+        run: |
+          bash backend/scripts/generate-genesis-schema.sh
+          if ! git diff --exit-code backend/schema/genesis/current_schema.sql backend/schema/genesis/version.json; then
+            echo "::error::The committed genesis baseline is stale. Run bash backend/scripts/generate-genesis-schema.sh and commit current_schema.sql and version.json."
+            exit 1
+          fi
+
+  backend:
+    name: Backend tests (${{ matrix.shard }}/3)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    env:
+      # Placeholder signing key, as in the previous gate: code paths that read
+      # JWT_SECRET_KEY directly would panic without one.
+      JWT_SECRET_KEY: test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Build every package
+        if: matrix.shard == 1
+        run: scripts/ci/backend-env.sh go build ./...
+
+      # Tag-gated tests that no job runs (payment-provider sandbox tests need
+      # live credentials; afip_homo needs ARCA homologation certificates) must
+      # still compile: vet type-checks them without running anything.
+      - name: Compile tag-gated tests
+        if: matrix.shard == 1
+        run: scripts/ci/backend-env.sh go vet -tags integration,integration_postgres,afip_homo,paypal_sandbox,mercadopago_sandbox ./...
+
+      - name: Vet and test this shard
+        env:
+          SHARD: ${{ matrix.shard }}
+          # The race detector roughly doubles test time, so pull requests skip
+          # it; every push to main and the nightly run pay for it.
+          RACE: ${{ (github.event_name == 'schedule' || (github.event_name == 'push' && github.ref == 'refs/heads/main')) && 'true' || 'false' }}
+        run: |
+          mapfile -t pkgs < <(bash scripts/ci/go-test-shard.sh "$SHARD" 3)
+          echo "shard ${SHARD}/3: ${#pkgs[@]} packages"
+          race=()
+          if [[ "$RACE" == true ]]; then race=(-race); fi
+          scripts/ci/backend-env.sh go vet "${pkgs[@]}"
+          # -count=1: a cached PASS proves nothing about the race detector.
+          scripts/ci/backend-env.sh go test -short -count=1 "${race[@]}" "${pkgs[@]}"
+
+  backend-pg:
+    name: Backend Postgres integration (${{ matrix.shard }}/2)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    services:
+      postgres:
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 # postgres:18
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JWT_SECRET_KEY: test
+      # internal/testperf creates a throwaway pv_test_<hex> database per test
+      # on this server, so the role must be able to CREATE DATABASE.
+      TEST_DATABASE_URL: postgres://test:test@localhost:5432/test?sslmode=disable
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Run Postgres-backed tests (integration, integration_postgres)
+        env:
+          SHARD: ${{ matrix.shard }}
+          GO_TEST_SHARD_TAGS: integration,integration_postgres
+        run: |
+          mapfile -t pg < <(bash scripts/ci/go-pg-packages.sh)
+          mapfile -t pkgs < <(bash scripts/ci/go-test-shard.sh "$SHARD" 2 "${pg[@]}")
+          echo "shard ${SHARD}/2: ${pkgs[*]}"
+          # -p 1: suites in internal/llm, internal/server and internal/tests
+          # reset shared tables on the one database server.
+          scripts/ci/backend-env.sh go test -count=1 -p 1 -tags "$GO_TEST_SHARD_TAGS" "${pkgs[@]}"
+
+  boot-zero-accounts:
+    # The wave-1 self-host contract, enforced on every pull request: the
+    # backend boots in production mode with no third-party account (generated
+    # secrets, PUBLIC_URL and the bootstrap admin only), reports ready, serves
+    # /api/v1/instance, and a restaurant runs end to end through the API.
+    # No image build: the full Docker stack runs weekly in acceptance.yml.
+    name: Production boot, zero accounts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336 # postgres:18
+        env:
+          POSTGRES_USER: payverge
+          # Throwaway service database; a per-run value keeps the literal out of
+          # the repo (the secret-denylist contract rejects committed secrets).
+          POSTGRES_PASSWORD: acceptance-ci-${{ github.run_id }}-${{ github.run_attempt }}
+          POSTGRES_DB: payverge
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      ACCEPTANCE_STATE: /tmp/payverge-acceptance
+      PAYVERGE_BIN: /tmp/payverge-backend
+      DB_PASSWORD: acceptance-ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Build the backend
+        working-directory: backend
+        run: go build -o "$PAYVERGE_BIN" ./cmd/app
+
+      - name: Boot in production mode and run the API acceptance flow
+        run: |
+          scripts/acceptance/boot-native.sh start
+          set -a
+          # shellcheck disable=SC1091
+          source "$ACCEPTANCE_STATE/boot.env"
+          set +a
+          scripts/acceptance/zero-accounts.sh --target http://127.0.0.1:8080 \
+            --backend-log "$ACCEPTANCE_STATE/backend.log" \
+            --restart-cmd "scripts/acceptance/boot-native.sh restart"
+
+      - name: Backend log
+        if: failure()
+        run: tail -n 200 "$ACCEPTANCE_STATE/backend.log" || true
+
+  backend-lint:
+    name: Backend lint (new issues)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # The lint step reports only lines changed since HEAD~1
+          # (--new-from-rev below; backend/.golangci.yml sets no baseline).
+          fetch-depth: 2
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      # A root commit (the repository's first push) has no HEAD~1. golangci-lint
+      # then only warns that the diff failed and reports every existing issue,
+      # so compare with HEAD itself there: nothing changed, nothing to report.
+      - name: Lint baseline
+        id: lint-base
+        run: |
+          if git rev-parse -q --verify 'HEAD~1^{commit}' >/dev/null; then
+            echo "rev=HEAD~1" >>"$GITHUB_OUTPUT"
+          else
+            echo "::notice::Root commit: no parent to compare with, so no lines count as new."
+            echo "rev=HEAD" >>"$GITHUB_OUTPUT"
+          fi
+
+      # golangci-lint loads packages with the module cache it finds. A proxy
+      # hiccup while it downloads them fails the job as a typecheck error, so
+      # fill the cache first and retry a failed download.
+      - name: Download modules (retried)
+        working-directory: backend
+        run: |
+          for attempt in 1 2 3; do
+            if go mod download; then
+              exit 0
+            fi
+            echo "::warning::go mod download failed (attempt $attempt of 3)"
+            if [ "$attempt" -lt 3 ]; then
+              sleep $((attempt * 15))
+            fi
+          done
+          exit 1
+
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.14.0
+          working-directory: backend
+          args: --new-from-rev=${{ steps.lint-base.outputs.rev }}
+
+      # Every backend route needs a first-party caller (frontend, admin MCP,
+      # docs/api) or a reasoned entry in tools/route-coverage/allowlist.txt.
+      - name: Route coverage
+        working-directory: tools/route-coverage
+        run: go run . -repo ../..
+
+  whatsapp:
+    name: WhatsApp build tag compiles
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      # Opt-in build only: it links GPL-3.0 code (go.mau.fi/libsignal), so no
+      # published image or release artefact is ever built with this tag.
+      - name: go build -tags whatsapp
+        run: scripts/ci/backend-env.sh go build -tags whatsapp ./...
+
+      # Build alone misses the tagged tests; vet type-checks them too.
+      - name: go vet -tags whatsapp
+        run: scripts/ci/backend-env.sh go vet -tags whatsapp ./...
+
+  gpl-guard:
+    name: Default build links no GPL code
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Shipped binaries have no go.mau.fi dependency
+        working-directory: backend
+        env:
+          # Same configuration as backend/Dockerfile.
+          GOOS: linux
+          CGO_ENABLED: "0"
+        run: |
+          # The three binaries in the backend image.
+          go list -deps ./cmd/app ./cmd/email-smoke ./cmd/healthcheck >"$RUNNER_TEMP/deps.txt"
+          if grep -E '^(go\.mau\.fi|github\.com/ethereum/go-ethereum/cmd)(/|$)' "$RUNNER_TEMP/deps.txt"; then
+            echo "::error::The default backend build links GPL code (listed above). Keep it behind the whatsapp build tag."
+            exit 1
+          fi
+          echo "default build: $(wc -l <"$RUNNER_TEMP/deps.txt") packages, no go.mau.fi"
+          # Prove the check is not vacuous: the opt-in tag must still pull
+          # whatsmeow in, or the grep above tests nothing.
+          if ! go list -deps -tags whatsapp ./cmd/app | grep -q '^go\.mau\.fi/whatsmeow'; then
+            echo "::error::-tags whatsapp no longer links go.mau.fi/whatsmeow; update this guard."
+            exit 1
+          fi
+
+  ai-offline:
+    name: AI suites (offline)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      # Fixture replay and contract scenarios only: no provider keys, no
+      # network. Live evals stay a local, opt-in run (evals/promptfoo).
+      - name: Eval suites (fixture replay)
+        run: scripts/ci/backend-env.sh go test ./internal/llmeval/... -run 'TestEvalOffline|TestSuitesWellFormed' -count=1
+
+      - name: AI contract scenarios
+        run: |
+          scripts/ci/backend-env.sh go test ./internal/assistantcontract/... ./internal/aicontract/... -count=1
+          scripts/ci/backend-env.sh go test ./internal/llm/... -run 'Privacy|ZDR' -count=1
+          scripts/ci/backend-env.sh go test ./internal/agents/ops_guides -run 'OpsAssistantHasNoOperational' -count=1
+
+  i18n:
+    name: i18n validators
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      # Launch-critical keys first: the Jest and build jobs below assume them.
+      - name: Launch-critical guest translations and public error mappings
+        run: node frontend/scripts/check-guest-locales.js --critical
+
+      - name: Generated i18n files match locales/registry.json
+        working-directory: frontend
+        run: npm run i18n:check
+
+      # Every surface a locale declares in locales/registry.json must ship its
+      # files; a removed surface left in the registry fails here.
+      - name: Locale registry surfaces ship their files
+        working-directory: frontend
+        run: npm run i18n:validate
+
+      - name: Guest locale parity (pre-commit mode and strict mode)
+        run: |
+          node frontend/scripts/check-guest-locales.js
+          node frontend/scripts/check-guest-locales.js --strict
+
+      - name: Guest i18n keys exist
+        run: node frontend/scripts/check-guest-locales.js --keys
+
+      - name: Guest cookies and viewMode locale keys
+        run: node frontend/scripts/check-guest-locales.js --cookies
+
+      - name: Operator locale parity
+        run: node frontend/scripts/check-operator-locales.js
+
+      - name: No UTC date keys in UI code
+        run: node frontend/scripts/check-utc-datekeys.js
+
+      - name: No dynamic Tailwind classes
+        run: node frontend/scripts/check-dynamic-tailwind.js
+
+      - name: No hard-coded UI strings
+        working-directory: frontend
+        run: npx tsx scripts/i18n/check-hardcoded-strings.ts
+
+  frontend-static:
+    name: Frontend lint, typecheck and contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: docker-compose forwards the backend environment
+        run: |
+          node frontend/node_modules/tsx/dist/cli.mjs scripts/check-compose-env-contract.ts
+          node frontend/node_modules/tsx/dist/cli.mjs --test scripts/check-compose-env-contract.test.ts
+
+      - name: Cloudflare CIDR updater
+        run: node frontend/node_modules/tsx/dist/cli.mjs --test scripts/update-cloudflare-cidrs.test.ts
+
+      - name: Advertised-feature contract registry
+        working-directory: frontend
+        run: |
+          npx tsx scripts/check-advertised-feature-contract.ts --strict-tests
+          npx tsx scripts/check-advertised-contract-journeys.ts --require-live-coverage
+
+      - name: No unsupported claims in locale catalogs
+        working-directory: frontend
+        run: npx tsx scripts/check-public-legal-claims.ts
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Typecheck
+        working-directory: frontend
+        run: npm run typecheck
+
+      # Unused files, exports, dependencies (frontend/knip.ts). Fails on any
+      # new dead code; duplicate named+default exports only warn.
+      - name: Dead code (knip)
+        working-directory: frontend
+        run: npm run knip
+
+  frontend-unit:
+    name: Frontend unit tests (${{ matrix.shard }}/4)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Jest shard
+        working-directory: frontend
+        env:
+          SHARD: ${{ matrix.shard }}
+        # --maxWorkers=2 matches jest.config.js. --testTimeout raises the
+        # 15 s default: shared runners are slower than a laptop, and a timeout
+        # there is noise rather than a regression. Coverage runs locally only.
+        run: npx jest --ci --watchman=false --maxWorkers=2 --testTimeout=30000 --shard="${SHARD}/4"
+
+  frontend-build:
+    name: Frontend build and bundle budgets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: next build (release environment)
+        working-directory: frontend
+        # Exactly what a release image gets: build metadata from
+        # scripts/ci/image-build-args.sh and no deployment settings at all.
+        # URLs, network and support address are runtime settings; a build
+        # that needs them would ship an image that only works for one host.
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: |
+          args="$(bash ../scripts/ci/image-build-args.sh frontend 0.0.0-ci)"
+          while IFS= read -r arg; do
+            export "${arg?}"
+          done <<<"$args"
+          NODE_OPTIONS="--max-old-space-size=4096" npm run build
+
+      - name: Bundle-size budget
+        working-directory: frontend
+        run: node scripts/check-bundle-budget.js
+
+      # Per-route raw KiB from the app build manifest; the gzip total above
+      # would not catch one route regressing on its own.
+      - name: Route bundle budget
+        working-directory: frontend
+        run: node scripts/check-route-bundle-budget.js
+
+  images:
+    name: Image build (${{ matrix.image }})
+    # Builds both release Dockerfiles the way release.yml does (same build
+    # arguments, from scratch) without pushing, so a Dockerfile or build-
+    # argument regression fails here instead of after a tag. amd64 only;
+    # the release builds arm64 natively from the same Dockerfiles.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [backend, frontend]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build arguments
+        id: args
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: |
+          args="$(bash scripts/ci/image-build-args.sh "$IMAGE" 0.0.0-ci)"
+          {
+            echo "build-args<<BUILD_ARGS_EOF"
+            if [[ -n "$args" ]]; then echo "$args"; fi
+            echo "BUILD_ARGS_EOF"
+          } >>"$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ matrix.image }}
+          file: ${{ matrix.image }}/Dockerfile
+          platforms: linux/amd64
+          build-args: ${{ steps.args.outputs.build-args }}
+          # Like the release: no registry or GHA cache, nothing pushed.
+          no-cache: true
+          push: false
+
+  licenses:
+    name: Dependency licences
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # The npm half reads licences of packages the lockfile omits from the
+      # installed package.json files.
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Licence tooling tests
+        run: node --test scripts/licenses/lib.test.mjs scripts/licenses/npm-licenses.test.mjs scripts/licenses/image-licenses.test.mjs scripts/licenses/allergen-icons.test.mjs
+
+      # Go binaries in the backend image (default build, no whatsapp tag),
+      # bundled fonts and frontend production dependencies.
+      - name: Licence policy gate
+        run: bash scripts/licenses/check.sh
+
+      - name: THIRD_PARTY_LICENSES.md is current
+        run: bash scripts/licenses/generate-third-party.sh --check
+
+  audit:
+    name: Secrets and dependency audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Both secret scanners walk the whole history.
+          fetch-depth: 0
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Secret scanner self-test and history scan
+        run: |
+          node --test scripts/scan-secrets.test.mjs
+          node scripts/scan-secrets.mjs --all
+          node scripts/scan-secrets.mjs --history
+
+      # Each later step runs even when an earlier one failed, so one run
+      # reports every finding.
+      - name: gitleaks (full history)
+        if: ${{ !cancelled() }}
+        run: |
+          docker run --rm -u "$(id -u):$(id -g)" -v "$GITHUB_WORKSPACE:/repo:ro" \
+            ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git --config /repo/.github/gitleaks.toml --redact --no-banner --verbose /repo
+
+      - name: govulncheck
+        if: ${{ !cancelled() }}
+        working-directory: backend
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...
+
+      # Blocking: what ships in the frontend image. Dev-only tooling (Jest,
+      # ESLint, build plugins) never reaches a deployment, so its advisories
+      # are reported by the next step without failing the gate. Reviewed,
+      # build-time-only advisories are accepted through
+      # frontend/scripts/npm-audit-allowlist.json (each with a review date).
+      - name: npm audit (production dependencies)
+        if: ${{ !cancelled() }}
+        working-directory: frontend
+        run: node scripts/check-npm-audit.js --level high
+
+      - name: npm audit (all dependencies, report only)
+        if: ${{ !cancelled() }}
+        working-directory: frontend
+        run: |
+          if ! npm audit --audit-level=high; then
+            echo "::warning::npm audit reports high or critical advisories in development dependencies."
+          fi
+
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs:
+      - contracts
+      - genesis-schema
+      - backend
+      - backend-pg
+      - boot-zero-accounts
+      - backend-lint
+      - whatsapp
+      - gpl-guard
+      - ai-offline
+      - i18n
+      - frontend-static
+      - frontend-unit
+      - frontend-build
+      - images
+      - licenses
+      - audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Every required job succeeded
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<<"$NEEDS"
+          # Anything but success fails the gate: failure, cancelled, and a
+          # skipped job too, so a future `if:` cannot silently drop a check.
+          if jq -e 'to_entries | map(select(.value.result != "success")) | length > 0' <<<"$NEEDS" >/dev/null; then
+            echo "::error::At least one required job failed, was cancelled or was skipped."
+            exit 1
+          fi

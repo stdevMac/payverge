@@ -1,0 +1,29 @@
+# Menu Extraction — Model Benchmark
+# SKIP: requires actual menu images for meaningful testing.
+# This config serves as a placeholder. To run: add real menu photos
+# to evals/promptfoo/vars/images/ and reference them as image_url vars.
+description: "Menu Extraction: OCR accuracy from menu images (SKIPPED - needs images)"
+
+prompts:
+  - file://../prompts/extraction_system.txt
+
+providers:
+  - id: openrouter:google/gemini-2.5-flash
+    config:
+      temperature: 0.1
+      max_tokens: 16384
+  - id: openrouter:openai/gpt-4o-mini
+    config:
+      temperature: 0.1
+      max_tokens: 16384
+
+defaultTest:
+  options:
+    provider: openrouter:google/gemini-2.5-flash-lite
+
+tests:
+  - vars:
+      skip_reason: "SKIPPED: requires real menu images"
+    assert:
+      - type: llm-rubric
+        value: "The output is a response to the prompt."

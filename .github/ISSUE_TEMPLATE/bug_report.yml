@@ -1,0 +1,121 @@
+name: Bug report
+description: Something in Payverge is broken or behaves differently from what the docs say.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        - **Security vulnerability?** Stop here and follow [SECURITY.md](https://github.com/stdevMac/payverge/blob/main/.github/SECURITY.md). Never post one publicly.
+        - **Question or setup help?** Ask in [Discussions](https://github.com/stdevMac/payverge/discussions) instead.
+        - **Redact** API keys, tokens, passwords and guest personal data from everything you paste below.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Where does the problem show up?
+      options:
+        - Guest QR menu, ordering or bill
+        - Payments, refunds or webhooks (Stripe, PayPal, MercadoPago, USDC)
+        - Owner and staff console
+        - Kitchen display (KDS) or printing
+        - Reservations, waitlist or delivery
+        - AI waiter, operations assistant or director console
+        - Translations and locales
+        - Installation, upgrades or self-hosting
+        - Backend API
+        - Admin MCP tool
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug. Screenshots help for UI problems (blur any personal data).
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps on a fresh or demo-seeded instance, if you can.
+      placeholder: |
+        1. Log in as an owner
+        2. Go to …
+        3. Click …
+        4. See the error
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Payverge version
+      description: The release tag (for example v1.0.0) or the commit SHA you are running.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: How is it deployed?
+      options:
+        - Docker Compose
+        - Built from source
+        - Local development servers
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, device and locale
+      description: Needed for UI bugs. For example, "Safari 18 on iPhone 15, guest locale ja".
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: |
+        Backend or browser console output around the failure. Include the `X-Request-Id` response header if you have it.
+        This is rendered as code, so there is no need for backticks. **Redact secrets and personal data.**
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Configuration that might matter (enabled payment plugins, AI provider, reverse proxy), or when it started happening.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and discussions, and this is not a duplicate.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true
+        - label: I removed secrets, tokens and personal data from this report.
+          required: true

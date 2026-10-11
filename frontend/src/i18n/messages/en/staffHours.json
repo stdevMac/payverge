@@ -1,0 +1,10 @@
+{
+  "title": "Hours",
+  "subtitle": "Your recent shifts",
+  "loading": "Loading your hours…",
+  "empty": "No hours recorded yet",
+  "weekTotal": "Week total",
+  "hoursUnit": "h",
+  "statusPending": "Pending",
+  "statusApproved": "Approved"
+}

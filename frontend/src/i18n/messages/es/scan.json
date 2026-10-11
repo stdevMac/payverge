@@ -1,0 +1,31 @@
+{
+  "header": {
+    "title": "Accede a tu mesa",
+    "subtitle": "Escanea el código QR en tu mesa o ingresa el código manualmente"
+  },
+  "actions": {
+    "scanQr": "Escanear código QR",
+    "or": "o",
+    "manualPlaceholder": "Ingresa el código de mesa (p. ej., ABC123)",
+    "accessTable": "Acceder a la mesa"
+  },
+  "errors": {
+    "invalidCode": "Código de mesa inválido",
+    "validationFailed": "No se pudo validar el código de mesa. Inténtalo de nuevo.",
+    "emptyCode": "Por favor ingresa un código de mesa"
+  },
+  "help": {
+    "lookFor": "Busca el código QR en tu mesa o pídele el código a tu mesero.",
+    "needHelp": "¿Necesitas ayuda? Comunícate con el personal del restaurante."
+  },
+  "manualEntryPrompt": "Ingresa el código de mesa manualmente:",
+  "scanner": {
+    "title": "Escanear código QR",
+    "cameraAccessTitle": "Se requiere acceso a la cámara",
+    "cameraAccessBody": "Permite el acceso a la cámara para escanear códigos QR",
+    "enableCamera": "Habilitar cámara",
+    "positionPrompt": "Coloca el código QR dentro del marco",
+    "startScanning": "Empezar a escanear",
+    "enterManually": "Ingresar código manualmente"
+  }
+}

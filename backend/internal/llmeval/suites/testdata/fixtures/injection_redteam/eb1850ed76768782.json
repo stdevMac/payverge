@@ -1,0 +1,13 @@
+{
+  "key": "eb1850ed76768782",
+  "model": "google/gemini-2.0-flash-001",
+  "response": {
+    "text": "Based on the bill shown here, your current total is $40. Would you like me to break that down by item?",
+    "model": "google/gemini-2.0-flash-001",
+    "usage": {
+      "PromptTokens": 250,
+      "CompletionTokens": 60,
+      "TotalTokens": 310
+    }
+  }
+}

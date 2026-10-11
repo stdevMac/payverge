@@ -1,0 +1,263 @@
+{
+  "title": "Tus Negocios",
+  "subtitle": "Las tarjetas muestran hoy y esta semana — abre un local para el historial, cuentas, reservas, cocina y equipo.",
+  "badge": "Panel de Negocios",
+  "loading": "Cargando tus negocios...",
+  "errors": {
+    "signIn": "Por favor inicia sesión para continuar.",
+    "connectWallet": "Por favor inicia sesión para continuar.",
+    "invalidToken": "Token de sesión inválido.",
+    "loadingUserData": "Cargando datos de usuario...",
+    "error": "Error",
+    "unreachable": "No pudimos contactar a Payverge. Revisa tu conexión y vuelve a intentarlo."
+  },
+  "authentication": {
+    "title": "Autenticación Requerida",
+    "subtitle": "Inicia sesión con Google o tu correo electrónico para abrir tu panel de Payverge.",
+    "subtitleEmail": "Inicia sesión con tu correo electrónico para abrir tu panel de Payverge.",
+    "welcomeBack": "Bienvenido de nuevo, {email}",
+    "signInSignUp": "Iniciar Sesión / Registrarse",
+    "signInOnly": "Iniciar Sesión",
+    "connectMessage": "Inicia sesión con Google o tu correo electrónico para acceder al panel de negocios.",
+    "signMessage": "Completa el inicio de sesión para autenticarte.",
+    "tryAgain": "Intentar de Nuevo",
+    "backToHome": "Volver al Inicio",
+    "retryLoadingUser": "Reintentar Cargar Usuario",
+    "valueProp": {
+      "title": "Lo que encontrarás",
+      "bullets": [
+        {
+          "title": "Director Console",
+          "description": "Decisiones de dueño respaldadas por IA.",
+          "feature": "ai"
+        },
+        {
+          "title": "AI Waiter",
+          "description": "Atención basada en el menú en inglés y español, con más idiomas en beta.",
+          "feature": "ai"
+        },
+        {
+          "title": "Los pagos van directo a ti",
+          "description": "Los clientes pagan por los medios que conectes; no hay intermediarios."
+        }
+      ],
+      "imageAlt": "Panel de analítica de Payverge con ventas, propinas y mix de pagos"
+    }
+  },
+  "businesses": {
+    "title": "Negocios",
+    "noneTitle": "Aún no tienes negocios",
+    "noneDescription": "Crea tu primer negocio para empezar a tomar pedidos, pagos y reservas desde un solo panel.",
+    "createFirst": "Crear Tu Primer Negocio",
+    "createNew": "Crear Nuevo Negocio",
+    "createNewDescription": "Configura otro local — POS, KDS, reservas y delivery en minutos.",
+    "create": "Crear Negocio",
+    "manage": "Administrar",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "settlementAddress": "Dirección de Liquidación",
+    "tippingAddress": "Dirección de Propinas",
+    "taxRate": "Tasa de Impuesto",
+    "serviceFee": "Tarifa de Servicio",
+    "copySettlement": "Copiar dirección de liquidación",
+    "copyTipping": "Copiar dirección de propinas",
+    "role": {
+      "owner": "Propietario",
+      "staff": "Personal",
+      "admin": "Administrador"
+    },
+    "features": {
+      "kitchen": "Cocina",
+      "orders": "Pedidos",
+      "crm": "CRM",
+      "delivery": "Delivery"
+    }
+  },
+  "stats": {
+    "title": "Resumen de Rendimiento",
+    "subtitle": "Métricas combinadas de todos tus negocios",
+    "revenue": "Ingresos Totales",
+    "tips": "Propinas Totales",
+    "transactions": "Transacciones Totales",
+    "bills": "Cuentas Totales",
+    "activeBills": "Cuentas Activas",
+    "averageTicket": "Ticket Promedio",
+    "growth": "vs periodo anterior",
+    "today": "Hoy",
+    "thisWeek": "Esta Semana",
+    "live": "En vivo",
+    "loadError": "No se pudieron cargar las métricas de rendimiento.",
+    "retry": "Reintentar",
+    "unavailable": "Métricas no disponibles"
+  },
+  "miniStats": {
+    "sales": "Ventas",
+    "active": "Activo",
+    "thisWeek": "Esta semana",
+    "tapToManage": "Toca para administrar"
+  },
+  "overview": {
+    "heading": "Tus negocios",
+    "allBusinesses": "Todos los negocios",
+    "combinedView": "Vista combinada",
+    "businessesLabel": "Negocios",
+    "scope": {
+      "ownedLabel": "Tus negocios",
+      "adminLabel": "Visibles como administrador de plataforma",
+      "adminHint": "Negocios demo de otras cuentas de administrador. Puedes abrirlos, pero no son tuyos ni se suman a tus totales.",
+      "adminChip": "Vista admin",
+      "combinedNote": "Los totales incluyen solo tus negocios. Otros {count} aparecen porque eres administrador de plataforma."
+    },
+    "businessMetrics": "Métricas del negocio",
+    "portfolioSubtitle": "Rendimiento combinado de tus negocios.",
+    "todayRevenue": "Ingresos de hoy",
+    "todayPaidBills": "Cuentas cobradas hoy",
+    "paidShort": "cobradas",
+    "selectBusinessHint": "Selecciona un negocio para ver su tendencia de ingresos, propinas, ticket promedio y cuentas cobradas.",
+    "viewMetrics": "Ver métricas de",
+    "openBusiness": "Abrir negocio",
+    "todayTotal": "Hoy",
+    "liveBills": "activas",
+    "addBusiness": "Agregar negocio",
+    "manage": "Administrar",
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "row": {
+      "todayRevenue": "Ingresos de hoy",
+      "liveBills": "Cuentas activas",
+      "sparklineLabel": "Tendencia de ingresos de 7 días",
+      "expand": "Ver tendencia",
+      "collapse": "Ocultar tendencia"
+    },
+    "panel": {
+      "trendTitle": "Tendencia de ingresos",
+      "period7d": "7d",
+      "period30d": "30d",
+      "period90d": "90d",
+      "tips": "Propinas",
+      "averageTicket": "Ticket prom.",
+      "bills": "Cuentas",
+      "wow": "vs 7 días previos",
+      "openFullAnalytics": "Abrir analíticas completas",
+      "loadError": "No se pudo cargar la tendencia.",
+      "noData": "Aún no hay datos"
+    },
+    "grainToday": "hoy",
+    "grainWeek": "esta semana",
+    "weekRevenue": "Ingresos de esta semana",
+    "weekPaidBills": "Cuentas cobradas esta semana",
+    "noActivityToday": "No hay actividad hoy"
+  },
+  "engagement": {
+    "title": "Participación",
+    "subtitle": "Listas, documentos y encuestas para tu equipo",
+    "tabs": {
+      "checklists": "Listas",
+      "documents": "Documentos",
+      "polls": "Encuestas"
+    },
+    "audience": {
+      "label": "Destinatarios",
+      "all": "Todos",
+      "roleGroup": "Por rol",
+      "deptGroup": "Por departamento",
+      "roles": {
+        "manager": "Encargados",
+        "server": "Camareros",
+        "host": "Anfitriones",
+        "kitchen": "Cocina"
+      }
+    },
+    "checklists": {
+      "new": "Nueva lista",
+      "name": "Nombre",
+      "namePlaceholder": "ej. Lista de apertura",
+      "kind": "Tipo",
+      "kinds": {
+        "onboarding": "Incorporación",
+        "opening": "Apertura",
+        "closing": "Cierre",
+        "custom": "Personalizada"
+      },
+      "addItem": "Agregar tarea",
+      "itemLabel": "Paso",
+      "itemPlaceholder": "Describe la tarea",
+      "required": "Obligatoria",
+      "removeItem": "Quitar",
+      "save": "Guardar lista",
+      "saving": "Guardando…",
+      "saved": "Lista guardada",
+      "saveError": "No se pudo guardar la lista",
+      "empty": "Aún no hay listas",
+      "emptyHint": "Crea tu primera lista de apertura, cierre o incorporación.",
+      "assign": "Asignar",
+      "assignTitle": "Asignar esta lista",
+      "assignStaff": "Asignar a",
+      "assignStaffPlaceholder": "Elige a un miembro del equipo",
+      "assignStart": "Iniciar",
+      "assignCancel": "Cancelar",
+      "runStarted": "Lista asignada",
+      "runStartError": "No pudimos iniciarla. Vuelve a intentarlo en un momento.",
+      "runsTitle": "En curso",
+      "runsEmpty": "Aún no hay listas en curso",
+      "runsEmptyHint": "Asigna una lista arriba para enviarla a un miembro del equipo.",
+      "runUnassigned": "Sin asignar",
+      "runStatus": {
+        "pending": "Sin comenzar",
+        "in_progress": "En progreso",
+        "complete": "Completada"
+      }
+    },
+    "documents": {
+      "new": "Nuevo documento",
+      "docTitle": "Título",
+      "titlePlaceholder": "ej. Manual del empleado",
+      "body": "Contenido",
+      "bodyPlaceholder": "Pega el texto de la política",
+      "link": "Enlace (opcional)",
+      "linkPlaceholder": "https://…",
+      "requireAck": "Requiere confirmación de lectura",
+      "save": "Publicar",
+      "saving": "Publicando…",
+      "saved": "Documento publicado",
+      "saveError": "No se pudo publicar el documento",
+      "edit": "Editar",
+      "editHeading": "Editar documento",
+      "update": "Publicar nueva versión",
+      "updating": "Publicando…",
+      "updated": "Nueva versión publicada",
+      "updateError": "No se pudo actualizar el documento",
+      "cancel": "Cancelar",
+      "version": "Versión {n}",
+      "empty": "Aún no hay documentos",
+      "emptyHint": "Publica una política o manual para que lo lea tu equipo."
+    },
+    "polls": {
+      "new": "Nueva encuesta",
+      "question": "Pregunta",
+      "questionPlaceholder": "ej. ¿Noche de pizza este viernes?",
+      "anonymous": "Anónima",
+      "closesAt": "Cierra el (opcional)",
+      "addOption": "Agregar opción",
+      "option": "Opción",
+      "optionPlaceholder": "Respuesta",
+      "removeOption": "Quitar",
+      "save": "Abrir encuesta",
+      "saving": "Abriendo…",
+      "saved": "Encuesta abierta",
+      "saveError": "No se pudo abrir la encuesta",
+      "close": "Cerrar encuesta",
+      "statusOpen": "Abierta",
+      "statusClosed": "Cerrada",
+      "empty": "Aún no hay encuestas",
+      "emptyHint": "Abre una encuesta rápida para conocer la opinión de tu equipo.",
+      "resultsLoading": "Cargando resultados…",
+      "voteCount": "{count} votos",
+      "totalVotes": "{count} votos en total",
+      "closeConfirmTitle": "¿Cerrar esta encuesta?",
+      "closeConfirmBody": "Al cerrarla se detienen los votos. El recuento sigue visible, pero no se puede reabrir."
+    }
+  }
+}

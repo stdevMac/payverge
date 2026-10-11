@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://payverge.io/schemas/advertised-feature-contract.json",
+  "title": "Payverge Advertised Feature Contract",
+  "description": "Registry of public product claims (marketing, operator, legal) with evidence paths and honest status. Used by frontend/scripts/check-advertised-feature-contract.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "features"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema pointer for editor tooling."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Registry document version."
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/FeatureRow" }
+    }
+  },
+  "$defs": {
+    "FeatureRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "keys",
+        "status",
+        "audience",
+        "markets",
+        "prerequisites",
+        "evidence",
+        "test_ids",
+        "last_verified",
+        "owner"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stable kebab-case identifier, unique within the registry."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short human label for the claim."
+        },
+        "keys": {
+          "type": "array",
+          "description": "Public content locations as file#dot.path (i18n under frontend/src/i18n/messages/en/) or docs/... paths. Empty when the claim lives only in non-i18n code.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": ["live", "market_limited", "beta", "coming_soon", "removed"]
+        },
+        "audience": {
+          "type": "string",
+          "enum": ["guest", "operator", "admin", "public-marketing"]
+        },
+        "markets": {
+          "type": "array",
+          "description": "Market scope, e.g. [\"global\"], [\"AR\"], [\"US\",\"AR\"].",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "description": "Runtime prerequisites (plugins, secrets, instance config). Empty if none.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "description": "Repo-relative paths proving the capability (or documenting its absence).",
+          "items": { "$ref": "#/$defs/EvidenceEntry" }
+        },
+        "test_ids": {
+          "type": "array",
+          "description": "Playwright journey IDs. Empty until Wave 5 Task 4 lands journeys.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "last_verified": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sha", "date"],
+          "properties": {
+            "sha": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{7,40}$"
+            },
+            "date": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          }
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Team ownership string (payments, ai, platform, legal, growth, ...)."
+        }
+      }
+    },
+    "EvidenceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "note"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repo-relative path (frontend/..., backend/..., docs/...)."
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What this path proves about the claim."
+        }
+      }
+    }
+  }
+}

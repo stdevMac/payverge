@@ -1,0 +1,6 @@
+{
+    "subtitle": "Administrá los plugins e integraciones de la plataforma",
+    "deleteModal": {
+        "confirmMessage": "¿Estás seguro de que querés eliminar el plugin \"{name}\"?"
+    }
+}

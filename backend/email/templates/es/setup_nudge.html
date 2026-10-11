@@ -1,0 +1,48 @@
+{{ define "subject" }}Falta un paso para recibir tu primer pedido{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Falta un paso para recibir tu primer pedido
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .owner_name }},
+</p>
+
+{{ if eq .missing_step "menu" }}
+<p style="margin:0 0 18px 0;">
+    Tu menú todavía está vacío. La forma más rápida: <strong>fotografía tu menú impreso y deja que la IA lo
+    construya</strong>, o agrega tus primeros artículos en un par de minutos. Los restaurantes con un
+    menú publicado reciben su primer pedido 5× más rápido.
+</p>
+{{ else if eq .missing_step "tables" }}
+<p style="margin:0 0 18px 0;">
+    Tu menú está listo — ahora agrega tus mesas para que los clientes puedan escanear un QR y pedir.
+</p>
+{{ else }}
+<p style="margin:0 0 18px 0;">
+    Completa el perfil de tu negocio (nombre, dirección, moneda) para salir en vivo.
+</p>
+{{ end }}
+
+{{ if .verify_email }}
+<p style="margin:0 0 18px 0;">
+    <strong>Una cosa más:</strong> tu dirección de correo todavía no está verificada. Busca nuestro enlace de
+    verificación en tu bandeja de entrada (revisa también spam) — lo necesitarás para volver a iniciar sesión.
+</p>
+{{ end }}
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .dashboard_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Terminar configuración
+    </a>
+</div>
+
+<p style="margin:24px 0 0 0;">
+    ¿Te trabaste con algo? Responde a este correo y te ayudamos a terminar.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}

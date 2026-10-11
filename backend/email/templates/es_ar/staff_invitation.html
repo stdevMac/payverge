@@ -1,0 +1,42 @@
+{{ define "subject" }}Te invitaron a sumarte a {{ .business_name }}{{ end }}
+{{ define "content" }}
+<h1 style="margin:0 0 14px 0; font-size:20px; line-height:1.3; color:#1c1917;">
+    Te invitaron a sumarte a {{ .business_name }}
+</h1>
+
+<p style="margin:0 0 16px 0;">
+    Hola {{ .staff_name }},
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Te invitaron a sumarte a <strong>{{ .business_name }}</strong> en Payverge.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Vas a sumarte como <strong>{{ .role }}</strong>, lo que te da acceso a las partes del sistema relacionadas con tu
+    rol.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Para aceptar la invitación y obtener acceso, usá el siguiente enlace:
+</p>
+
+<div style="text-align:center; margin:28px 0;">
+    <a href="{{ .invitation_url }}"
+        style="display:inline-block; padding:12px 18px; background:#1a6b6a; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">
+        Aceptar invitación
+    </a>
+</div>
+
+<p style="margin:0 0 18px 0;">
+    Esta invitación vence en {{ .expires_days }} días.
+</p>
+
+<p style="margin:0 0 18px 0;">
+    Si no esperabas esta invitación, podés ignorar este mail de forma segura.
+</p>
+
+<p style="margin:16px 0 0 0;">
+    El equipo de Payverge
+</p>
+{{ end }}
