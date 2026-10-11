@@ -579,6 +579,11 @@ async function selfTest() {
     for (const g of j.gates) g.confirmed = { by: 'self-test', on: '2026-01-01', ref: 'v0.0.0', note: 'fixture' };
     return JSON.stringify(j, null, 2);
   });
+  const openFirstGate = (dir) => edit(dir, GATES_FILE, (s) => {
+    const j = JSON.parse(s);
+    j.gates[0].confirmed = null;
+    return JSON.stringify(j, null, 2);
+  });
 
   const cases = [
     ['broken #anchor', (d) => edit(d, 'index.html', beforeMainEnd('<a href="#nowhere">x</a>')), /fragment reference "#nowhere"/],
@@ -740,6 +745,7 @@ async function selfTest() {
   const ok200 = async () => ({ ok: true, status: 200 });
   {
     const d = copy();
+    openFirstGate(d);
     const r = await checkLaunch(checkSite(d), ok200);
     record('launch: open gates block publishing', r.failures.some((f) => /is not confirmed/.test(f)), r.failures[0] || 'no failure');
   }

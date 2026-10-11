@@ -112,7 +112,7 @@
     {
       "id": "live-demo",
       "claim": "A public demo at https://demo.payverge.io/ where anyone can enter a seeded restaurant as owner, staff or guest without signing up, and which resets every night at 03:00 UTC. It runs with no AI model connected and online payments (cards and USDC) off; guests pay at the counter. Made by the hero and closing 'Try the live demo' buttons, the nav 'Live demo' button, the closing heading and the 'Can I try it before installing?' answer.",
-      "needs": "The demo bundle (deploy/demo/, docs/self-hosting/public-demo.md) and DEMO_MODE are in the repository. Still needed: release v1.0.1, which contains the staff sign-in fix (cabe42e); upgrade the demo host to it; re-take the pristine snapshot; and prove the nightly reset timer by watching one 03:00 UTC run succeed.",
+      "needs": "The demo bundle (deploy/demo/, docs/self-hosting/public-demo.md) and DEMO_MODE at v1.0.1 (which contains the staff sign-in fix), deployed to the demo host with a pristine snapshot taken on v1.0.1 and the nightly reset timer enabled.",
       "verify": "Open https://demo.payverge.io/, enter as Owner, as Staff (kitchen) and as a guest from the banner's table links; confirm the banner shows the 03:00 UTC reset, that the AI waiter answers as a menu helper (no model connected) and checkout offers only paying at the counter, and that `systemctl list-timers payverge-demo-reset.timer` on the demo host shows the next run. The URL probe checks that the demo answers.",
       "urls": [
         "https://demo.payverge.io/"
@@ -120,7 +120,12 @@
       "phrases": [
         "live demo"
       ],
-      "confirmed": null
+      "confirmed": {
+        "by": "Claude Code for Marcos Maceo",
+        "on": "2026-10-11",
+        "ref": "v1.0.1",
+        "note": "demo.payverge.io serves build 3740c43@1.0.1 (backend and frontend 1.0.1 from GHCR); the pristine snapshot was re-taken on 1.0.1 after a --maintenance reset. In headless Chromium, Owner lands on the dashboard and Staff (kitchen) and Staff (waiter) land on the Bodegón Mesa Larga venue dashboard, not the spinner. The banner shows the 03:00 UTC reset. A guest from a banner table link ordered a bundle (Order Submitted!) and the bill offers only paying with the cashier. Parrilla Quebracho Azul tables open the 'Mozo, menu helper' that says it is not an AI; /api/v1/instance reports ai, crypto and fiscal_ar false. The 2026-10-11 03:00 UTC timer run reset ok in 48s and the hourly watchdog check passed; the next run is listed by systemctl list-timers."
+      }
     }
   ]
 }
