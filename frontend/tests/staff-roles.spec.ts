@@ -294,6 +294,9 @@ test.describe.serial("staff dashboard fixes", () => {
     browser,
     playwright,
   }) => {
+    // Two logins, a reservation create, and a retried Select open can
+    // together outlast the 30s default on a cold CI stack.
+    test.setTimeout(60_000);
     const ctx = await browser.newContext();
     const apiRequest = await playwright.request.newContext({
       baseURL:
@@ -373,8 +376,29 @@ test.describe.serial("staff dashboard fixes", () => {
       // The list defaults to "Today" in the business timezone; the earliest
       // open slot may be on a later day, so widen to "Upcoming"
       // (today → +30 days) and narrow by the unique guest name.
-      await page.getByRole("button", { name: /Date Range/i }).click();
-      await page.getByRole("option", { name: "Upcoming", exact: true }).click();
+      //
+      // The dashboard scroller is `scroll-behavior: smooth`, and React Aria
+      // closes a Select popover on any scroll of an ancestor of its trigger.
+      // A click that lands while the panel is still settling (first data
+      // load shifts the layout, and the scroll-into-view animates after the
+      // click) opens the listbox and closes it in the same frame, leaving the
+      // option click to wait forever. Reopen until the option is actually
+      // clickable, then assert the trigger committed the selection.
+      const dateRangeTrigger = page.getByRole("button", {
+        name: /Date Range/i,
+      });
+      const upcomingOption = page.getByRole("option", {
+        name: "Upcoming",
+        exact: true,
+      });
+      await expect(dateRangeTrigger).toBeVisible({ timeout: 15_000 });
+      await expect(async () => {
+        if (!(await upcomingOption.isVisible())) {
+          await dateRangeTrigger.click();
+        }
+        await upcomingOption.click({ timeout: 2_000 });
+      }).toPass({ timeout: 15_000 });
+      await expect(dateRangeTrigger).toHaveText(/Upcoming/);
       await page
         .getByRole("textbox", { name: /Search by customer name/i })
         .fill(customerName);
