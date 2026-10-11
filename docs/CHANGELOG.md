@@ -6,6 +6,27 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1](https://github.com/stdevMac/payverge/compare/v1.0.0...v1.0.1) (2026-10-11)
+
+
+### Fixes
+
+* **chat:** cap message and announcement length ([6268185](https://github.com/stdevMac/payverge/commit/6268185dcfcfcc06804ed8f57d30c5dfaff3afa6))
+* **config:** accept loopback http PUBLIC_URL in the production instance check ([0760dde](https://github.com/stdevMac/payverge/commit/0760dde7bb379aa05f0321cfb7cb46d0bef57282))
+* **dashboard:** let staff demo sign-in reach the venue ([cabe42e](https://github.com/stdevMac/payverge/commit/cabe42e0bf7679f1a4264476eb1a9abc13e200a9))
+* **demo:** refuse outside image URLs and hide fiscal invoicing on the public demo ([b134f1c](https://github.com/stdevMac/payverge/commit/b134f1cb543fedc01c06ec16498f22336ba8e82c))
+* **security:** address CodeQL hardening findings ([a626083](https://github.com/stdevMac/payverge/commit/a626083a1c0e3cd7d30b2fa0b42ae07bf8f52098))
+* **security:** keep API keys out of logged outbound HTTP errors ([b360dc3](https://github.com/stdevMac/payverge/commit/b360dc3d9b71732aa6f6402fc50532fe53646356))
+
+
+### Other changes
+
+* correct guides that drifted from the tree ([1bcf1bb](https://github.com/stdevMac/payverge/commit/1bcf1bb97d57b6ebdfd3f1d44b9b928959332108))
+* **deploy:** forward documented secrets and fix operator skills ([7bf82df](https://github.com/stdevMac/payverge/commit/7bf82dfbf000d20a901b4d49f6a6f04863fb2f85))
+* remove pre-release private-history residue ([44d46e6](https://github.com/stdevMac/payverge/commit/44d46e6a86bc1ffe98678a6fb3d63a213ff8443a))
+* **site:** confirm six landing launch gates for v1.0.0 ([338620c](https://github.com/stdevMac/payverge/commit/338620c7ee8a848fbb69fea13f629a72e117048a))
+* **site:** qualify the language claim and add robots.txt ([a5bcf81](https://github.com/stdevMac/payverge/commit/a5bcf81a7001c6f6051a3cdcf75d75960bb14eed))
+
 ## [1.0.0] - 2026-10-09
 
 Payverge's first public release under the Apache License 2.0. The system was
