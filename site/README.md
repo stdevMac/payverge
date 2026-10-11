@@ -4,7 +4,7 @@
 
 It has no build step, no framework and no JavaScript dependencies. There is one small inline script, and all it does is copy the install command. Any static host can serve it.
 
-> **Launch status.** The public repository and the v1.0.0 release are live, and every gate in `tools/launch-gates.json` is confirmed except `live-demo`. That gate waits on v1.0.1 (it contains the staff sign-in fix) being released and deployed to the demo host; its `needs` lists the remaining steps. Until it is confirmed, `node site/tools/check.mjs --launch` fails, and so does every deploy recipe below.
+> **Launch status.** The public repository, the v1.0.1 release and the live demo are up, and every gate in `tools/launch-gates.json` is confirmed (`live-demo` on 2026-10-11 against v1.0.1). `node site/tools/check.mjs --launch` passes; re-confirm a gate whenever its claim or the thing it describes changes.
 >
 > Deploy payverge.io only through the gated recipes in this file: `node site/tools/check.mjs --launch --stage <dir>` followed by the upload, or the Cloudflare Pages Git build command, which runs the same check. Do not upload `site/` by hand. On 2026-10-09 the page was deployed before the gates were confirmed; that must not happen again.
 
