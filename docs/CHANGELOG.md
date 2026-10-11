@@ -6,6 +6,19 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.2](https://github.com/stdevMac/payverge/compare/v1.0.1...v1.0.2) (2026-10-11)
+
+
+### Fixes
+
+* **deploy:** forward media rate limits and AI retention settings to the backend ([c13a9c9](https://github.com/stdevMac/payverge/commit/c13a9c9cc938320de3196f44d687e46f8d326b22))
+* **deploy:** require a domain at the installer prompt, withdraw HSTS on trial names and flag an unreachable install ([a291d0c](https://github.com/stdevMac/payverge/commit/a291d0c4afc50dadaf468f8fb4d66f4c935bc636))
+
+
+### Other changes
+
+* **self-hosting:** pin manual installs to a release tag and correct the proxy-trust defaults ([5116e8c](https://github.com/stdevMac/payverge/commit/5116e8c5531908ff87c6567785db8add68aefb07))
+
 ## [1.0.1](https://github.com/stdevMac/payverge/compare/v1.0.0...v1.0.1) (2026-10-11)
 
 
