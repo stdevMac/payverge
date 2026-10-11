@@ -23,10 +23,10 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/andybalholm/brotli | v1.1.1 | MIT | [link](https://github.com/andybalholm/brotli/blob/v1.1.1/LICENSE) |
 | github.com/aws/aws-sdk-go-v2 | v1.47.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.47.1/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream | v1.7.20 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/aws/protocol/eventstream/v1.7.20/aws/protocol/eventstream/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/config | v1.33.6 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/config/v1.33.6/config/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/credentials | v1.20.6 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/credentials/v1.20.6/credentials/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/config | v1.33.7 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/config/v1.33.7/config/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/credentials | v1.20.7 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/credentials/v1.20.7/credentials/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/feature/ec2/imds | v1.20.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/ec2/imds/v1.20.1/feature/ec2/imds/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/feature/s3/manager | v1.23.11 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/s3/manager/v1.23.11/feature/s3/manager/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/feature/s3/manager | v1.23.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/s3/manager/v1.23.12/feature/s3/manager/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/internal/configsources | v1.5.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/internal/configsources/v1.5.4/internal/configsources/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 | v2.8.4 | Apache-2.0 | [link](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/internal/endpoints/v2@v2.8.4?tab=licenses) |
 | github.com/aws/aws-sdk-go-v2/internal/sync/singleflight | v1.47.1 | BSD-3-Clause | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.47.1/internal/sync/singleflight/LICENSE) |
@@ -35,11 +35,11 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/aws/aws-sdk-go-v2/service/internal/checksum | v1.11.5 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/checksum/v1.11.5/service/internal/checksum/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/service/internal/presigned-url | v1.14.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/presigned-url/v1.14.4/service/internal/presigned-url/LICENSE.txt) |
 | github.com/aws/aws-sdk-go-v2/service/internal/s3shared | v1.20.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/s3shared/v1.20.4/service/internal/s3shared/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/s3 | v1.114.0 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/s3/v1.114.0/service/s3/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/signin | v1.10.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/signin/v1.10.1/service/signin/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/sso | v1.38.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sso/v1.38.1/service/sso/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/ssooidc | v1.43.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/ssooidc/v1.43.1/service/ssooidc/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/sts | v1.51.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sts/v1.51.1/service/sts/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/s3 | v1.114.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/s3/v1.114.1/service/s3/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/signin | v1.10.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/signin/v1.10.2/service/signin/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/sso | v1.38.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sso/v1.38.2/service/sso/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/ssooidc | v1.43.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/ssooidc/v1.43.2/service/ssooidc/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/sts | v1.51.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sts/v1.51.2/service/sts/LICENSE.txt) |
 | github.com/aws/smithy-go | v1.28.1 | Apache-2.0 | [link](https://github.com/aws/smithy-go/blob/v1.28.1/LICENSE) |
 | github.com/aws/smithy-go/internal/sync/singleflight | v1.28.1 | BSD-3-Clause | [link](https://github.com/aws/smithy-go/blob/v1.28.1/internal/sync/singleflight/LICENSE) |
 | github.com/beorn7/perks/quantile | v1.0.1 | MIT | [link](https://github.com/beorn7/perks/blob/v1.0.1/LICENSE) |
@@ -96,10 +96,10 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/mattn/go-isatty | v0.0.22 | MIT | [link](https://github.com/mattn/go-isatty/blob/v0.0.22/LICENSE) |
 | github.com/munnerz/goautoneg | v0.0.0-20191010083416-a7dc8b61c822 | BSD-3-Clause | [link](https://github.com/munnerz/goautoneg/blob/a7dc8b61c822/LICENSE) |
 | github.com/pelletier/go-toml/v2 | v2.2.4 | MIT | [link](https://github.com/pelletier/go-toml/blob/v2.2.4/LICENSE) |
-| github.com/posthog/posthog-go | v1.32.0 | MIT | [link](https://github.com/posthog/posthog-go/blob/v1.32.0/LICENSE.md) |
+| github.com/posthog/posthog-go | v1.33.0 | MIT | [link](https://github.com/posthog/posthog-go/blob/v1.33.0/LICENSE.md) |
 | github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil | v1.24.1 | BSD-3-Clause | [link](https://github.com/prometheus/client_golang/blob/v1.24.1/internal/github.com/golang/gddo/LICENSE) |
 | github.com/prometheus/client_golang/prometheus | v1.24.1 | Apache-2.0 | [link](https://github.com/prometheus/client_golang/blob/v1.24.1/LICENSE) |
-| github.com/prometheus/client_model/go | v0.6.2 | Apache-2.0 | [link](https://github.com/prometheus/client_model/blob/v0.6.2/LICENSE) |
+| github.com/prometheus/client_model/go | v0.6.3 | Apache-2.0 | [link](https://github.com/prometheus/client_model/blob/v0.6.3/LICENSE) |
 | github.com/prometheus/common | v0.70.1 | Apache-2.0 | [link](https://github.com/prometheus/common/blob/v0.70.1/LICENSE) |
 | github.com/prometheus/procfs | v0.21.1 | Apache-2.0 | [link](https://github.com/prometheus/procfs/blob/v0.21.1/LICENSE) |
 | github.com/quic-go/qpack | v0.6.0 | MIT | [link](https://github.com/quic-go/qpack/blob/v0.6.0/LICENSE.md) |
@@ -124,11 +124,11 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | golang.org/x/crypto | v0.57.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/crypto/+/v0.57.0:LICENSE) |
 | golang.org/x/image | v0.46.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/image/+/v0.46.0:LICENSE) |
 | golang.org/x/net | v0.60.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/net/+/v0.60.0:LICENSE) |
-| golang.org/x/oauth2 | v0.36.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/oauth2/+/v0.36.0:LICENSE) |
-| golang.org/x/sync | v0.23.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sync/+/v0.23.0:LICENSE) |
+| golang.org/x/oauth2 | v0.37.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/oauth2/+/v0.37.0:LICENSE) |
+| golang.org/x/sync | v0.24.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sync/+/v0.24.0:LICENSE) |
 | golang.org/x/sys | v0.48.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sys/+/v0.48.0:LICENSE) |
 | golang.org/x/text | v0.42.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/text/+/v0.42.0:LICENSE) |
-| golang.org/x/time/rate | v0.15.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/time/+/v0.15.0:LICENSE) |
+| golang.org/x/time/rate | v0.16.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/time/+/v0.16.0:LICENSE) |
 | google.golang.org/protobuf | v1.36.12 | BSD-3-Clause | [link](https://github.com/protocolbuffers/protobuf-go/blob/v1.36.12/LICENSE) |
 | gorm.io/driver/postgres | v1.6.1 | MIT | [link](https://github.com/go-gorm/postgres/blob/v1.6.1/License) |
 | gorm.io/gorm | v1.30.5 | MIT | [link](https://github.com/go-gorm/gorm/blob/v1.30.5/LICENSE) |
@@ -622,7 +622,7 @@ the lockfile, then the installed `package.json`, then
 | [electron-to-chromium](https://www.npmjs.com/package/electron-to-chromium/v/1.5.444) | 1.5.444 | ISC |
 | [emoji-regex](https://www.npmjs.com/package/emoji-regex/v/8.0.0) | 8.0.0 | MIT |
 | [encoding](https://www.npmjs.com/package/encoding/v/0.1.13) | 0.1.13 | MIT |
-| [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.4) | 1.4.4 | MIT |
+| [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.5) | 1.4.5 | MIT |
 | [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve/v/5.22.0) | 5.22.0 | MIT |
 | [entities](https://www.npmjs.com/package/entities/v/4.5.0) | 4.5.0 | BSD-2-Clause |
 | [es-define-property](https://www.npmjs.com/package/es-define-property/v/1.0.1) | 1.0.1 | MIT |
@@ -642,7 +642,7 @@ the lockfile, then the installed `package.json`, then
 | [eventemitter3](https://www.npmjs.com/package/eventemitter3/v/5.0.1) | 5.0.1 | MIT |
 | [events](https://www.npmjs.com/package/events/v/3.3.0) | 3.3.0 | MIT |
 | [extend](https://www.npmjs.com/package/extend/v/3.0.2) | 3.0.2 | MIT |
-| [fast-copy](https://www.npmjs.com/package/fast-copy/v/4.0.2) | 4.0.2 | MIT |
+| [fast-copy](https://www.npmjs.com/package/fast-copy/v/4.1.2) | 4.1.2 | MIT |
 | [fast-deep-equal](https://www.npmjs.com/package/fast-deep-equal/v/3.1.3) | 3.1.3 | MIT |
 | [fast-glob](https://www.npmjs.com/package/fast-glob/v/3.3.3) | 3.3.3 | MIT |
 | [fast-png](https://www.npmjs.com/package/fast-png/v/6.4.0) | 6.4.0 | MIT |
@@ -815,7 +815,7 @@ the lockfile, then the installed `package.json`, then
 | [picomatch](https://www.npmjs.com/package/picomatch/v/4.0.4) | 4.0.4 | MIT |
 | [pify](https://www.npmjs.com/package/pify/v/2.3.0) | 2.3.0 | MIT |
 | [pino-abstract-transport](https://www.npmjs.com/package/pino-abstract-transport/v/3.0.0) | 3.0.0 | MIT |
-| [pino-pretty](https://www.npmjs.com/package/pino-pretty/v/13.1.3) | 13.1.3 | MIT |
+| [pino-pretty](https://www.npmjs.com/package/pino-pretty/v/13.2.0) | 13.2.0 | MIT |
 | [pirates](https://www.npmjs.com/package/pirates/v/4.0.7) | 4.0.7 | MIT |
 | [pngjs](https://www.npmjs.com/package/pngjs/v/5.0.0) | 5.0.0 | MIT |
 | [postcss](https://www.npmjs.com/package/postcss/v/8.5.23) | 8.5.23 | MIT |
@@ -831,7 +831,7 @@ the lockfile, then the installed `package.json`, then
 | [property-information](https://www.npmjs.com/package/property-information/v/7.1.0) | 7.1.0 | MIT |
 | [proxy-from-env](https://www.npmjs.com/package/proxy-from-env/v/1.1.0) | 1.1.0 | MIT |
 | [proxy-from-env](https://www.npmjs.com/package/proxy-from-env/v/2.1.0) | 2.1.0 | MIT |
-| [pump](https://www.npmjs.com/package/pump/v/3.0.2) | 3.0.2 | MIT |
+| [pump](https://www.npmjs.com/package/pump/v/3.0.4) | 3.0.4 | MIT |
 | [qrcode](https://www.npmjs.com/package/qrcode/v/1.5.4) | 1.5.4 | MIT |
 | [queue-microtask](https://www.npmjs.com/package/queue-microtask/v/1.2.3) | 1.2.3 | MIT |
 | [raf](https://www.npmjs.com/package/raf/v/3.4.1) | 3.4.1 | MIT |
@@ -874,7 +874,7 @@ the lockfile, then the installed `package.json`, then
 | [set-blocking](https://www.npmjs.com/package/set-blocking/v/2.0.0) | 2.0.0 | ISC |
 | [sharp](https://www.npmjs.com/package/sharp/v/0.35.5) | 0.35.5 | Apache-2.0 |
 | [simple-swizzle](https://www.npmjs.com/package/simple-swizzle/v/0.2.2) | 0.2.2 | MIT |
-| [sonic-boom](https://www.npmjs.com/package/sonic-boom/v/4.2.0) | 4.2.0 | MIT |
+| [sonic-boom](https://www.npmjs.com/package/sonic-boom/v/5.0.2) | 5.0.2 | MIT |
 | [source-map](https://www.npmjs.com/package/source-map/v/0.6.1) | 0.6.1 | BSD-3-Clause |
 | [source-map-js](https://www.npmjs.com/package/source-map-js/v/1.2.2) | 1.2.2 | BSD-3-Clause |
 | [source-map-support](https://www.npmjs.com/package/source-map-support/v/0.5.21) | 0.5.21 | MIT |
