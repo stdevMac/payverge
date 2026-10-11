@@ -1,5 +1,5 @@
 const MCP_PROTOCOL_VERSION = "2025-11-25";
-export const MCP_SERVER_VERSION = "1.0.1"; // x-release-please-version
+export const MCP_SERVER_VERSION = "1.0.2"; // x-release-please-version
 
 export async function handleJsonRpcMessage(message, { tools }) {
   if (!message || message.jsonrpc !== "2.0") {
