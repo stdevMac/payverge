@@ -6,6 +6,13 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.3](https://github.com/stdevMac/payverge/compare/v1.0.2...v1.0.3) (2026-11-09)
+
+
+### Fixes
+
+* **deps:** clear the security audit failing CI since 30 Oct ([#70](https://github.com/stdevMac/payverge/issues/70)) ([1e940bd](https://github.com/stdevMac/payverge/commit/1e940bda6e688c05809a01fa2ee98c255fd4075f))
+
 ## [1.0.2](https://github.com/stdevMac/payverge/compare/v1.0.1...v1.0.2) (2026-10-11)
 
 
