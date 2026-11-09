@@ -30,7 +30,7 @@ The codebase lives in a monorepo with three main workspaces:
 
 | Workspace | Technology | Purpose |
 |-----------|-----------|---------|
-| `backend/` | Go 1.26 + Gin (Go 1.27.2 toolchain) | REST API, business logic, blockchain integration |
+| `backend/` | Go 1.26 + Gin (Go 1.27.3 toolchain) | REST API, business logic, blockchain integration |
 | `frontend/` | Next.js 15 + React 19 | Web application (App Router) |
 | `docs/` | Plain Markdown (no build step) | Self-hosting, AI, architecture, ADRs, runbooks, codemaps |
 | `deploy/` | Docker Compose + Caddy + shell | Self-hosting stack and `install.sh` |
@@ -41,7 +41,7 @@ The codebase lives in a monorepo with three main workspaces:
 ## 2. Technology Stack
 
 ### Backend
-- **Language**: Go 1.26 (`go 1.26.0` in backend/go.mod); repository and release toolchain pinned to Go 1.27.2
+- **Language**: Go 1.26 (`go 1.26.0` in backend/go.mod); repository and release toolchain pinned to Go 1.27.3
 - **Framework**: Gin web framework
 - **ORM**: GORM with PostgreSQL driver
 - **Migrations**: `golang-migrate/migrate/v4` (versioned SQL files in `backend/migrations/`)

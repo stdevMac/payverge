@@ -85,11 +85,11 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/jackc/puddle/v2 | v2.2.2 | MIT | [link](https://github.com/jackc/puddle/blob/v2.2.2/LICENSE) |
 | github.com/jinzhu/inflection | v1.0.0 | MIT | [link](https://github.com/jinzhu/inflection/blob/v1.0.0/LICENSE) |
 | github.com/jinzhu/now | v1.1.5 | MIT | [link](https://github.com/jinzhu/now/blob/v1.1.5/License) |
-| github.com/klauspost/compress | v1.19.1 | Apache-2.0 | [link](https://github.com/klauspost/compress/blob/v1.19.1/LICENSE) |
-| github.com/klauspost/compress | v1.19.1 | BSD-3-Clause | [link](https://github.com/klauspost/compress/blob/v1.19.1/LICENSE) |
-| github.com/klauspost/compress | v1.19.1 | MIT | [link](https://github.com/klauspost/compress/blob/v1.19.1/LICENSE) |
-| github.com/klauspost/compress/internal/snapref | v1.19.1 | BSD-3-Clause | [link](https://github.com/klauspost/compress/blob/v1.19.1/internal/snapref/LICENSE) |
-| github.com/klauspost/compress/zstd/internal/xxhash | v1.19.1 | MIT | [link](https://github.com/klauspost/compress/blob/v1.19.1/zstd/internal/xxhash/LICENSE.txt) |
+| github.com/klauspost/compress | v1.20.2 | Apache-2.0 | [link](https://github.com/klauspost/compress/blob/v1.20.2/LICENSE) |
+| github.com/klauspost/compress | v1.20.2 | BSD-3-Clause | [link](https://github.com/klauspost/compress/blob/v1.20.2/LICENSE) |
+| github.com/klauspost/compress | v1.20.2 | MIT | [link](https://github.com/klauspost/compress/blob/v1.20.2/LICENSE) |
+| github.com/klauspost/compress/internal/snapref | v1.20.2 | BSD-3-Clause | [link](https://github.com/klauspost/compress/blob/v1.20.2/internal/snapref/LICENSE) |
+| github.com/klauspost/compress/zstd/internal/xxhash | v1.20.2 | MIT | [link](https://github.com/klauspost/compress/blob/v1.20.2/zstd/internal/xxhash/LICENSE.txt) |
 | github.com/leodido/go-urn | v1.4.0 | MIT | [link](https://github.com/leodido/go-urn/blob/v1.4.0/LICENSE) |
 | github.com/lib/pq | v1.12.3 | MIT | [link](https://github.com/lib/pq/blob/v1.12.3/LICENSE) |
 | github.com/mattevans/postmark-go | v1.0.0 | MIT | [link](https://github.com/mattevans/postmark-go/blob/v1.0.0/LICENSE) |
@@ -148,7 +148,7 @@ A deployment installs only the ones for its own platform. Licences come from
 the lockfile, then the installed `package.json`, then
 `scripts/licenses/npm-overrides.tsv`.
 
-799 distinct packages (name@version).
+784 distinct packages (name@version).
 
 | Package | Version | License |
 | --- | --- | --- |
@@ -157,9 +157,6 @@ the lockfile, then the installed `package.json`, then
 | [@adobe/react-spectrum-workflow](https://www.npmjs.com/package/@adobe/react-spectrum-workflow/v/2.3.5) | 2.3.5 | Apache-2.0 |
 | [@adraffy/ens-normalize](https://www.npmjs.com/package/@adraffy/ens-normalize/v/1.11.1) | 1.11.1 | MIT |
 | [@alloc/quick-lru](https://www.npmjs.com/package/@alloc/quick-lru/v/5.2.0) | 5.2.0 | MIT |
-| [@apm-js-collab/code-transformer](https://www.npmjs.com/package/@apm-js-collab/code-transformer/v/0.15.0) | 0.15.0 | Apache-2.0 |
-| [@apm-js-collab/code-transformer-bundler-plugins](https://www.npmjs.com/package/@apm-js-collab/code-transformer-bundler-plugins/v/0.5.0) | 0.5.0 | MIT |
-| [@apm-js-collab/tracing-hooks](https://www.npmjs.com/package/@apm-js-collab/tracing-hooks/v/0.10.1) | 0.10.1 | Apache-2.0 |
 | [@babel/code-frame](https://www.npmjs.com/package/@babel/code-frame/v/7.29.7) | 7.29.7 | MIT |
 | [@babel/compat-data](https://www.npmjs.com/package/@babel/compat-data/v/7.29.7) | 7.29.7 | MIT |
 | [@babel/core](https://www.npmjs.com/package/@babel/core/v/7.29.7) | 7.29.7 | MIT |
@@ -240,15 +237,15 @@ the lockfile, then the installed `package.json`, then
 | [@napi-rs/canvas-linux-x64-musl](https://www.npmjs.com/package/@napi-rs/canvas-linux-x64-musl/v/0.1.92) | 0.1.92 | MIT |
 | [@napi-rs/canvas-win32-arm64-msvc](https://www.npmjs.com/package/@napi-rs/canvas-win32-arm64-msvc/v/0.1.92) | 0.1.92 | MIT |
 | [@napi-rs/canvas-win32-x64-msvc](https://www.npmjs.com/package/@napi-rs/canvas-win32-x64-msvc/v/0.1.92) | 0.1.92 | MIT |
-| [@next/env](https://www.npmjs.com/package/@next/env/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-darwin-arm64](https://www.npmjs.com/package/@next/swc-darwin-arm64/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-darwin-x64](https://www.npmjs.com/package/@next/swc-darwin-x64/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-linux-arm64-gnu](https://www.npmjs.com/package/@next/swc-linux-arm64-gnu/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-linux-arm64-musl](https://www.npmjs.com/package/@next/swc-linux-arm64-musl/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-linux-x64-gnu](https://www.npmjs.com/package/@next/swc-linux-x64-gnu/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-linux-x64-musl](https://www.npmjs.com/package/@next/swc-linux-x64-musl/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-win32-arm64-msvc](https://www.npmjs.com/package/@next/swc-win32-arm64-msvc/v/15.5.27) | 15.5.27 | MIT |
-| [@next/swc-win32-x64-msvc](https://www.npmjs.com/package/@next/swc-win32-x64-msvc/v/15.5.27) | 15.5.27 | MIT |
+| [@next/env](https://www.npmjs.com/package/@next/env/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-darwin-arm64](https://www.npmjs.com/package/@next/swc-darwin-arm64/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-darwin-x64](https://www.npmjs.com/package/@next/swc-darwin-x64/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-linux-arm64-gnu](https://www.npmjs.com/package/@next/swc-linux-arm64-gnu/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-linux-arm64-musl](https://www.npmjs.com/package/@next/swc-linux-arm64-musl/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-linux-x64-gnu](https://www.npmjs.com/package/@next/swc-linux-x64-gnu/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-linux-x64-musl](https://www.npmjs.com/package/@next/swc-linux-x64-musl/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-win32-arm64-msvc](https://www.npmjs.com/package/@next/swc-win32-arm64-msvc/v/15.5.29) | 15.5.29 | MIT |
+| [@next/swc-win32-x64-msvc](https://www.npmjs.com/package/@next/swc-win32-x64-msvc/v/15.5.29) | 15.5.29 | MIT |
 | [@nextui-org/accordion](https://www.npmjs.com/package/@nextui-org/accordion/v/2.2.7) | 2.2.7 | MIT |
 | [@nextui-org/alert](https://www.npmjs.com/package/@nextui-org/alert/v/2.2.9) | 2.2.9 | MIT |
 | [@nextui-org/aria-utils](https://www.npmjs.com/package/@nextui-org/aria-utils/v/2.2.7) | 2.2.7 | MIT |
@@ -331,12 +328,12 @@ the lockfile, then the installed `package.json`, then
 | [@nodelib/fs.walk](https://www.npmjs.com/package/@nodelib/fs.walk/v/1.2.8) | 1.2.8 | MIT |
 | [@opentelemetry/api](https://www.npmjs.com/package/@opentelemetry/api/v/1.9.1) | 1.9.1 | Apache-2.0 |
 | [@opentelemetry/api-logs](https://www.npmjs.com/package/@opentelemetry/api-logs/v/0.220.0) | 0.220.0 | Apache-2.0 |
-| [@opentelemetry/core](https://www.npmjs.com/package/@opentelemetry/core/v/2.9.0) | 2.9.0 | Apache-2.0 |
+| [@opentelemetry/core](https://www.npmjs.com/package/@opentelemetry/core/v/2.12.0) | 2.12.0 | Apache-2.0 |
 | [@opentelemetry/instrumentation](https://www.npmjs.com/package/@opentelemetry/instrumentation/v/0.220.0) | 0.220.0 | Apache-2.0 |
-| [@opentelemetry/resources](https://www.npmjs.com/package/@opentelemetry/resources/v/2.9.0) | 2.9.0 | Apache-2.0 |
-| [@opentelemetry/sdk-trace](https://www.npmjs.com/package/@opentelemetry/sdk-trace/v/2.9.0) | 2.9.0 | Apache-2.0 |
-| [@opentelemetry/sdk-trace-base](https://www.npmjs.com/package/@opentelemetry/sdk-trace-base/v/2.9.0) | 2.9.0 | Apache-2.0 |
-| [@opentelemetry/semantic-conventions](https://www.npmjs.com/package/@opentelemetry/semantic-conventions/v/1.43.0) | 1.43.0 | Apache-2.0 |
+| [@opentelemetry/resources](https://www.npmjs.com/package/@opentelemetry/resources/v/2.12.0) | 2.12.0 | Apache-2.0 |
+| [@opentelemetry/sdk-trace](https://www.npmjs.com/package/@opentelemetry/sdk-trace/v/2.12.0) | 2.12.0 | Apache-2.0 |
+| [@opentelemetry/sdk-trace-base](https://www.npmjs.com/package/@opentelemetry/sdk-trace-base/v/2.12.0) | 2.12.0 | Apache-2.0 |
+| [@opentelemetry/semantic-conventions](https://www.npmjs.com/package/@opentelemetry/semantic-conventions/v/1.45.0) | 1.45.0 | Apache-2.0 |
 | [@react-aria/breadcrumbs](https://www.npmjs.com/package/@react-aria/breadcrumbs/v/3.5.19) | 3.5.19 | Apache-2.0 |
 | [@react-aria/button](https://www.npmjs.com/package/@react-aria/button/v/3.11.0) | 3.11.0 | Apache-2.0 |
 | [@react-aria/calendar](https://www.npmjs.com/package/@react-aria/calendar/v/3.6.0) | 3.6.0 | Apache-2.0 |
@@ -458,10 +455,9 @@ the lockfile, then the installed `package.json`, then
 | [@scure/base](https://www.npmjs.com/package/@scure/base/v/1.2.6) | 1.2.6 | MIT |
 | [@scure/bip32](https://www.npmjs.com/package/@scure/bip32/v/1.7.0) | 1.7.0 | MIT |
 | [@scure/bip39](https://www.npmjs.com/package/@scure/bip39/v/1.6.0) | 1.6.0 | MIT |
-| [@sentry/babel-plugin-component-annotate](https://www.npmjs.com/package/@sentry/babel-plugin-component-annotate/v/5.3.0) | 5.3.0 | MIT |
-| [@sentry/browser](https://www.npmjs.com/package/@sentry/browser/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/browser-utils](https://www.npmjs.com/package/@sentry/browser-utils/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/bundler-plugin-core](https://www.npmjs.com/package/@sentry/bundler-plugin-core/v/5.3.0) | 5.3.0 | MIT |
+| [@sentry/browser](https://www.npmjs.com/package/@sentry/browser/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/browser-utils](https://www.npmjs.com/package/@sentry/browser-utils/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/bundler-plugins](https://www.npmjs.com/package/@sentry/bundler-plugins/v/10.78.0) | 10.78.0 | MIT |
 | [@sentry/cli](https://www.npmjs.com/package/@sentry/cli/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
 | [@sentry/cli-darwin](https://www.npmjs.com/package/@sentry/cli-darwin/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
 | [@sentry/cli-linux-arm](https://www.npmjs.com/package/@sentry/cli-linux-arm/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
@@ -471,19 +467,19 @@ the lockfile, then the installed `package.json`, then
 | [@sentry/cli-win32-arm64](https://www.npmjs.com/package/@sentry/cli-win32-arm64/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
 | [@sentry/cli-win32-i686](https://www.npmjs.com/package/@sentry/cli-win32-i686/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
 | [@sentry/cli-win32-x64](https://www.npmjs.com/package/@sentry/cli-win32-x64/v/2.58.6) | 2.58.6 | FSL-1.1-MIT |
-| [@sentry/conventions](https://www.npmjs.com/package/@sentry/conventions/v/0.15.1) | 0.15.1 | MIT |
-| [@sentry/core](https://www.npmjs.com/package/@sentry/core/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/feedback](https://www.npmjs.com/package/@sentry/feedback/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/nextjs](https://www.npmjs.com/package/@sentry/nextjs/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/node](https://www.npmjs.com/package/@sentry/node/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/node-core](https://www.npmjs.com/package/@sentry/node-core/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/opentelemetry](https://www.npmjs.com/package/@sentry/opentelemetry/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/react](https://www.npmjs.com/package/@sentry/react/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/replay](https://www.npmjs.com/package/@sentry/replay/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/replay-canvas](https://www.npmjs.com/package/@sentry/replay-canvas/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/server-utils](https://www.npmjs.com/package/@sentry/server-utils/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/vercel-edge](https://www.npmjs.com/package/@sentry/vercel-edge/v/10.65.0) | 10.65.0 | MIT |
-| [@sentry/webpack-plugin](https://www.npmjs.com/package/@sentry/webpack-plugin/v/5.3.0) | 5.3.0 | MIT |
+| [@sentry/conventions](https://www.npmjs.com/package/@sentry/conventions/v/0.16.0) | 0.16.0 | MIT |
+| [@sentry/core](https://www.npmjs.com/package/@sentry/core/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/feedback](https://www.npmjs.com/package/@sentry/feedback/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/nextjs](https://www.npmjs.com/package/@sentry/nextjs/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/node](https://www.npmjs.com/package/@sentry/node/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/node-core](https://www.npmjs.com/package/@sentry/node-core/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/opentelemetry](https://www.npmjs.com/package/@sentry/opentelemetry/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/react](https://www.npmjs.com/package/@sentry/react/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/replay](https://www.npmjs.com/package/@sentry/replay/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/replay-canvas](https://www.npmjs.com/package/@sentry/replay-canvas/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/server-utils](https://www.npmjs.com/package/@sentry/server-utils/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/vercel-edge](https://www.npmjs.com/package/@sentry/vercel-edge/v/10.78.0) | 10.78.0 | MIT |
+| [@sentry/webpack-plugin](https://www.npmjs.com/package/@sentry/webpack-plugin/v/5.4.1) | 5.4.1 | MIT |
 | [@spectrum-icons/ui](https://www.npmjs.com/package/@spectrum-icons/ui/v/3.7.2) | 3.7.2 | Apache-2.0 |
 | [@spectrum-icons/workflow](https://www.npmjs.com/package/@spectrum-icons/workflow/v/4.3.2) | 4.3.2 | Apache-2.0 |
 | [@swc/helpers](https://www.npmjs.com/package/@swc/helpers/v/0.5.15) | 0.5.15 | Apache-2.0 |
@@ -532,10 +528,9 @@ the lockfile, then the installed `package.json`, then
 | [@xtuc/long](https://www.npmjs.com/package/@xtuc/long/v/4.2.2) | 4.2.2 | Apache-2.0 |
 | [abitype](https://www.npmjs.com/package/abitype/v/1.2.3) | 1.2.3 | MIT |
 | [acorn](https://www.npmjs.com/package/acorn/v/8.16.0) | 8.16.0 | MIT |
-| [acorn-import-phases](https://www.npmjs.com/package/acorn-import-phases/v/1.0.4) | 1.0.4 | MIT |
 | [agent-base](https://www.npmjs.com/package/agent-base/v/6.0.2) | 6.0.2 | MIT |
 | [ajv](https://www.npmjs.com/package/ajv/v/8.20.0) | 8.20.0 | MIT |
-| [ajv-formats](https://www.npmjs.com/package/ajv-formats/v/2.1.1) | 2.1.1 | MIT |
+| [ajv-formats](https://www.npmjs.com/package/ajv-formats/v/3.0.1) | 3.0.1 | MIT |
 | [ajv-keywords](https://www.npmjs.com/package/ajv-keywords/v/5.1.0) | 5.1.0 | MIT |
 | [ansi-regex](https://www.npmjs.com/package/ansi-regex/v/5.0.1) | 5.0.1 | MIT |
 | [ansi-styles](https://www.npmjs.com/package/ansi-styles/v/4.3.0) | 4.3.0 | MIT |
@@ -543,7 +538,6 @@ the lockfile, then the installed `package.json`, then
 | [anymatch](https://www.npmjs.com/package/anymatch/v/3.1.3) | 3.1.3 | ISC |
 | [arg](https://www.npmjs.com/package/arg/v/5.0.2) | 5.0.2 | MIT |
 | [aria-hidden](https://www.npmjs.com/package/aria-hidden/v/1.2.6) | 1.2.6 | MIT |
-| [astring](https://www.npmjs.com/package/astring/v/1.9.0) | 1.9.0 | MIT |
 | [asynckit](https://www.npmjs.com/package/asynckit/v/0.4.0) | 0.4.0 | MIT |
 | [atomic-sleep](https://www.npmjs.com/package/atomic-sleep/v/1.0.0) | 1.0.0 | MIT |
 | [axios](https://www.npmjs.com/package/axios/v/1.20.0) | 1.20.0 | MIT |
@@ -594,7 +588,6 @@ the lockfile, then the installed `package.json`, then
 | [css-line-break](https://www.npmjs.com/package/css-line-break/v/2.1.0) | 2.1.0 | MIT |
 | [css-select](https://www.npmjs.com/package/css-select/v/5.2.2) | 5.2.2 | BSD-2-Clause |
 | [css-what](https://www.npmjs.com/package/css-what/v/6.2.2) | 6.2.2 | BSD-2-Clause |
-| [cssesc](https://www.npmjs.com/package/cssesc/v/3.0.0) | 3.0.0 | MIT |
 | [csstype](https://www.npmjs.com/package/csstype/v/3.2.3) | 3.2.3 | MIT |
 | [date-fns](https://www.npmjs.com/package/date-fns/v/3.6.0) | 3.6.0 | MIT |
 | [date-fns-tz](https://www.npmjs.com/package/date-fns-tz/v/3.2.0) | 3.2.0 | MIT |
@@ -615,28 +608,24 @@ the lockfile, then the installed `package.json`, then
 | [dom-serializer](https://www.npmjs.com/package/dom-serializer/v/2.0.0) | 2.0.0 | MIT |
 | [domelementtype](https://www.npmjs.com/package/domelementtype/v/2.3.0) | 2.3.0 | BSD-2-Clause |
 | [domhandler](https://www.npmjs.com/package/domhandler/v/5.0.3) | 5.0.3 | BSD-2-Clause |
-| [dompurify](https://www.npmjs.com/package/dompurify/v/3.4.16) | 3.4.16 | (MPL-2.0 OR Apache-2.0) |
+| [dompurify](https://www.npmjs.com/package/dompurify/v/3.4.17) | 3.4.17 | (MPL-2.0 OR Apache-2.0) |
 | [domutils](https://www.npmjs.com/package/domutils/v/3.2.2) | 3.2.2 | BSD-2-Clause |
-| [dotenv](https://www.npmjs.com/package/dotenv/v/16.6.1) | 16.6.1 | BSD-2-Clause |
+| [dotenv](https://www.npmjs.com/package/dotenv/v/17.4.2) | 17.4.2 | BSD-2-Clause |
 | [dunder-proto](https://www.npmjs.com/package/dunder-proto/v/1.0.1) | 1.0.1 | MIT |
 | [electron-to-chromium](https://www.npmjs.com/package/electron-to-chromium/v/1.5.444) | 1.5.444 | ISC |
 | [emoji-regex](https://www.npmjs.com/package/emoji-regex/v/8.0.0) | 8.0.0 | MIT |
 | [encoding](https://www.npmjs.com/package/encoding/v/0.1.13) | 0.1.13 | MIT |
 | [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.5) | 1.4.5 | MIT |
-| [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve/v/5.22.0) | 5.22.0 | MIT |
+| [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve/v/5.26.1) | 5.26.1 | MIT |
 | [entities](https://www.npmjs.com/package/entities/v/4.5.0) | 4.5.0 | BSD-2-Clause |
 | [es-define-property](https://www.npmjs.com/package/es-define-property/v/1.0.1) | 1.0.1 | MIT |
 | [es-errors](https://www.npmjs.com/package/es-errors/v/1.3.0) | 1.3.0 | MIT |
 | [es-module-lexer](https://www.npmjs.com/package/es-module-lexer/v/2.3.0) | 2.3.0 | MIT |
+| [es-module-lexer](https://www.npmjs.com/package/es-module-lexer/v/3.0.4) | 3.0.4 | MIT |
 | [es-object-atoms](https://www.npmjs.com/package/es-object-atoms/v/1.1.2) | 1.1.2 | MIT |
 | [es-set-tostringtag](https://www.npmjs.com/package/es-set-tostringtag/v/2.1.0) | 2.1.0 | MIT |
 | [escalade](https://www.npmjs.com/package/escalade/v/3.2.0) | 3.2.0 | MIT |
 | [escape-string-regexp](https://www.npmjs.com/package/escape-string-regexp/v/5.0.0) | 5.0.0 | MIT |
-| [eslint-scope](https://www.npmjs.com/package/eslint-scope/v/5.1.1) | 5.1.1 | BSD-2-Clause |
-| [esquery](https://www.npmjs.com/package/esquery/v/1.7.0) | 1.7.0 | BSD-3-Clause |
-| [esrecurse](https://www.npmjs.com/package/esrecurse/v/4.3.0) | 4.3.0 | BSD-2-Clause |
-| [estraverse](https://www.npmjs.com/package/estraverse/v/4.3.0) | 4.3.0 | BSD-2-Clause |
-| [estraverse](https://www.npmjs.com/package/estraverse/v/5.3.0) | 5.3.0 | BSD-2-Clause |
 | [estree-util-is-identifier-name](https://www.npmjs.com/package/estree-util-is-identifier-name/v/3.0.0) | 3.0.0 | MIT |
 | [estree-walker](https://www.npmjs.com/package/estree-walker/v/2.0.2) | 2.0.2 | MIT |
 | [eventemitter3](https://www.npmjs.com/package/eventemitter3/v/5.0.1) | 5.0.1 | MIT |
@@ -647,7 +636,7 @@ the lockfile, then the installed `package.json`, then
 | [fast-glob](https://www.npmjs.com/package/fast-glob/v/3.3.3) | 3.3.3 | MIT |
 | [fast-png](https://www.npmjs.com/package/fast-png/v/6.4.0) | 6.4.0 | MIT |
 | [fast-safe-stringify](https://www.npmjs.com/package/fast-safe-stringify/v/2.1.1) | 2.1.1 | MIT |
-| [fast-uri](https://www.npmjs.com/package/fast-uri/v/3.1.8) | 3.1.8 | BSD-3-Clause |
+| [fast-uri](https://www.npmjs.com/package/fast-uri/v/3.1.9) | 3.1.9 | BSD-3-Clause |
 | [fastq](https://www.npmjs.com/package/fastq/v/1.19.0) | 1.19.0 | ISC |
 | [fdir](https://www.npmjs.com/package/fdir/v/6.5.0) | 6.5.0 | MIT |
 | [fflate](https://www.npmjs.com/package/fflate/v/0.8.3) | 0.8.3 | MIT |
@@ -655,7 +644,7 @@ the lockfile, then the installed `package.json`, then
 | [find-up](https://www.npmjs.com/package/find-up/v/4.1.0) | 4.1.0 | MIT |
 | [find-up](https://www.npmjs.com/package/find-up/v/5.0.0) | 5.0.0 | MIT |
 | [flat](https://www.npmjs.com/package/flat/v/5.0.2) | 5.0.2 | BSD-3-Clause |
-| [follow-redirects](https://www.npmjs.com/package/follow-redirects/v/1.16.0) | 1.16.0 | MIT |
+| [follow-redirects](https://www.npmjs.com/package/follow-redirects/v/1.16.3) | 1.16.3 | MIT |
 | [form-data](https://www.npmjs.com/package/form-data/v/4.0.6) | 4.0.6 | MIT |
 | [framer-motion](https://www.npmjs.com/package/framer-motion/v/11.18.2) | 11.18.2 | MIT |
 | [fsevents](https://www.npmjs.com/package/fsevents/v/2.3.3) | 2.3.3 | MIT |
@@ -664,10 +653,9 @@ the lockfile, then the installed `package.json`, then
 | [get-caller-file](https://www.npmjs.com/package/get-caller-file/v/2.0.5) | 2.0.5 | ISC |
 | [get-intrinsic](https://www.npmjs.com/package/get-intrinsic/v/1.3.0) | 1.3.0 | MIT |
 | [get-proto](https://www.npmjs.com/package/get-proto/v/1.0.1) | 1.0.1 | MIT |
-| [glob](https://www.npmjs.com/package/glob/v/13.0.6) | 13.0.6 | BlueOak-1.0.0 |
+| [glob](https://www.npmjs.com/package/glob/v/13.0.7) | 13.0.7 | BlueOak-1.0.0 |
 | [glob-parent](https://www.npmjs.com/package/glob-parent/v/5.1.2) | 5.1.2 | ISC |
 | [glob-parent](https://www.npmjs.com/package/glob-parent/v/6.0.2) | 6.0.2 | ISC |
-| [glob-to-regexp](https://www.npmjs.com/package/glob-to-regexp/v/0.4.1) | 0.4.1 | BSD-2-Clause |
 | [goober](https://www.npmjs.com/package/goober/v/2.1.16) | 2.1.16 | MIT |
 | [gopd](https://www.npmjs.com/package/gopd/v/1.2.0) | 1.2.0 | MIT |
 | [graceful-fs](https://www.npmjs.com/package/graceful-fs/v/4.2.11) | 4.2.11 | ISC |
@@ -683,7 +671,7 @@ the lockfile, then the installed `package.json`, then
 | [htmlparser2](https://www.npmjs.com/package/htmlparser2/v/8.0.2) | 8.0.2 | MIT |
 | [https-proxy-agent](https://www.npmjs.com/package/https-proxy-agent/v/5.0.1) | 5.0.1 | MIT |
 | [iconv-lite](https://www.npmjs.com/package/iconv-lite/v/0.6.3) | 0.6.3 | MIT |
-| [import-in-the-middle](https://www.npmjs.com/package/import-in-the-middle/v/3.3.1) | 3.3.1 | Apache-2.0 |
+| [import-in-the-middle](https://www.npmjs.com/package/import-in-the-middle/v/3.6.0) | 3.6.0 | Apache-2.0 |
 | [inline-style-parser](https://www.npmjs.com/package/inline-style-parser/v/0.2.7) | 0.2.7 | MIT |
 | [input-otp](https://www.npmjs.com/package/input-otp/v/1.4.1) | 1.4.1 | MIT |
 | [intl-messageformat](https://www.npmjs.com/package/intl-messageformat/v/10.7.15) | 10.7.15 | BSD-3-Clause |
@@ -714,7 +702,6 @@ the lockfile, then the installed `package.json`, then
 | [jsqr](https://www.npmjs.com/package/jsqr/v/1.4.0) | 1.4.0 | Apache-2.0 |
 | [lilconfig](https://www.npmjs.com/package/lilconfig/v/3.1.3) | 3.1.3 | MIT |
 | [lines-and-columns](https://www.npmjs.com/package/lines-and-columns/v/1.2.4) | 1.2.4 | MIT |
-| [loader-runner](https://www.npmjs.com/package/loader-runner/v/4.3.2) | 4.3.2 | MIT |
 | [locate-path](https://www.npmjs.com/package/locate-path/v/5.0.0) | 5.0.0 | MIT |
 | [locate-path](https://www.npmjs.com/package/locate-path/v/6.0.0) | 6.0.0 | MIT |
 | [lodash](https://www.npmjs.com/package/lodash/v/4.18.1) | 4.18.1 | MIT |
@@ -743,7 +730,6 @@ the lockfile, then the installed `package.json`, then
 | [mdast-util-to-string](https://www.npmjs.com/package/mdast-util-to-string/v/4.0.0) | 4.0.0 | MIT |
 | [merge-stream](https://www.npmjs.com/package/merge-stream/v/2.0.0) | 2.0.0 | MIT |
 | [merge2](https://www.npmjs.com/package/merge2/v/1.4.1) | 1.4.1 | MIT |
-| [meriyah](https://www.npmjs.com/package/meriyah/v/6.1.4) | 6.1.4 | ISC |
 | [micromark](https://www.npmjs.com/package/micromark/v/4.0.2) | 4.0.2 | MIT |
 | [micromark-core-commonmark](https://www.npmjs.com/package/micromark-core-commonmark/v/2.0.3) | 2.0.3 | MIT |
 | [micromark-extension-gfm](https://www.npmjs.com/package/micromark-extension-gfm/v/3.0.0) | 3.0.0 | MIT |
@@ -776,8 +762,9 @@ the lockfile, then the installed `package.json`, then
 | [mime-db](https://www.npmjs.com/package/mime-db/v/1.52.0) | 1.52.0 | MIT |
 | [mime-db](https://www.npmjs.com/package/mime-db/v/1.54.0) | 1.54.0 | MIT |
 | [mime-types](https://www.npmjs.com/package/mime-types/v/2.1.35) | 2.1.35 | MIT |
-| [minimatch](https://www.npmjs.com/package/minimatch/v/10.2.5) | 10.2.5 | BlueOak-1.0.0 |
+| [minimatch](https://www.npmjs.com/package/minimatch/v/10.2.6) | 10.2.6 | BlueOak-1.0.0 |
 | [minimist](https://www.npmjs.com/package/minimist/v/1.2.8) | 1.2.8 | MIT |
+| [minimizer-webpack-plugin](https://www.npmjs.com/package/minimizer-webpack-plugin/v/5.14.0) | 5.14.0 | MIT |
 | [minipass](https://www.npmjs.com/package/minipass/v/7.1.3) | 7.1.3 | BlueOak-1.0.0 |
 | [mipd](https://www.npmjs.com/package/mipd/v/0.0.7) | 0.0.7 | MIT |
 | [module-details-from-path](https://www.npmjs.com/package/module-details-from-path/v/1.0.4) | 1.0.4 | MIT |
@@ -787,8 +774,7 @@ the lockfile, then the installed `package.json`, then
 | [ms](https://www.npmjs.com/package/ms/v/2.1.3) | 2.1.3 | MIT |
 | [mz](https://www.npmjs.com/package/mz/v/2.7.0) | 2.7.0 | MIT |
 | [nanoid](https://www.npmjs.com/package/nanoid/v/3.3.18) | 3.3.18 | MIT |
-| [neo-async](https://www.npmjs.com/package/neo-async/v/2.6.2) | 2.6.2 | MIT |
-| [next](https://www.npmjs.com/package/next/v/15.5.27) | 15.5.27 | MIT |
+| [next](https://www.npmjs.com/package/next/v/15.5.29) | 15.5.29 | MIT |
 | [node-fetch](https://www.npmjs.com/package/node-fetch/v/2.7.0) | 2.7.0 | MIT |
 | [node-releases](https://www.npmjs.com/package/node-releases/v/2.0.57) | 2.0.57 | MIT |
 | [normalize-path](https://www.npmjs.com/package/normalize-path/v/3.0.0) | 3.0.0 | MIT |
@@ -824,7 +810,7 @@ the lockfile, then the installed `package.json`, then
 | [postcss-load-config](https://www.npmjs.com/package/postcss-load-config/v/4.0.2) | 4.0.2 | MIT |
 | [postcss-media-query-parser](https://www.npmjs.com/package/postcss-media-query-parser/v/0.2.3) | 0.2.3 | MIT |
 | [postcss-nested](https://www.npmjs.com/package/postcss-nested/v/6.2.0) | 6.2.0 | MIT |
-| [postcss-selector-parser](https://www.npmjs.com/package/postcss-selector-parser/v/6.1.4) | 6.1.4 | MIT |
+| [postcss-selector-parser](https://www.npmjs.com/package/postcss-selector-parser/v/6.1.6) | 6.1.6 | MIT |
 | [postcss-value-parser](https://www.npmjs.com/package/postcss-value-parser/v/4.2.0) | 4.2.0 | MIT |
 | [progress](https://www.npmjs.com/package/progress/v/2.0.3) | 2.0.3 | MIT |
 | [prop-types](https://www.npmjs.com/package/prop-types/v/15.8.1) | 15.8.1 | MIT |
@@ -865,10 +851,9 @@ the lockfile, then the installed `package.json`, then
 | [run-parallel](https://www.npmjs.com/package/run-parallel/v/1.2.0) | 1.2.0 | MIT |
 | [safer-buffer](https://www.npmjs.com/package/safer-buffer/v/2.1.2) | 2.1.2 | MIT |
 | [scheduler](https://www.npmjs.com/package/scheduler/v/0.28.0) | 0.28.0 | MIT |
-| [schema-utils](https://www.npmjs.com/package/schema-utils/v/4.3.3) | 4.3.3 | MIT |
+| [schema-utils](https://www.npmjs.com/package/schema-utils/v/4.8.3) | 4.8.3 | MIT |
 | [scroll-into-view-if-needed](https://www.npmjs.com/package/scroll-into-view-if-needed/v/3.0.10) | 3.0.10 | MIT |
 | [secure-json-parse](https://www.npmjs.com/package/secure-json-parse/v/4.1.0) | 4.1.0 | BSD-3-Clause |
-| [semifies](https://www.npmjs.com/package/semifies/v/1.0.0) | 1.0.0 | Apache-2.0 |
 | [semver](https://www.npmjs.com/package/semver/v/6.3.1) | 6.3.1 | ISC |
 | [semver](https://www.npmjs.com/package/semver/v/7.8.5) | 7.8.5 | ISC |
 | [set-blocking](https://www.npmjs.com/package/set-blocking/v/2.0.0) | 2.0.0 | ISC |
@@ -889,7 +874,7 @@ the lockfile, then the installed `package.json`, then
 | [style-to-js](https://www.npmjs.com/package/style-to-js/v/1.1.21) | 1.1.21 | MIT |
 | [style-to-object](https://www.npmjs.com/package/style-to-object/v/1.0.14) | 1.0.14 | MIT |
 | [styled-jsx](https://www.npmjs.com/package/styled-jsx/v/5.1.6) | 5.1.6 | MIT |
-| [sucrase](https://www.npmjs.com/package/sucrase/v/3.35.0) | 3.35.0 | MIT |
+| [sucrase](https://www.npmjs.com/package/sucrase/v/3.35.1) | 3.35.1 | MIT |
 | [supports-color](https://www.npmjs.com/package/supports-color/v/7.2.0) | 7.2.0 | MIT |
 | [supports-color](https://www.npmjs.com/package/supports-color/v/8.1.1) | 8.1.1 | MIT |
 | [supports-preserve-symlinks-flag](https://www.npmjs.com/package/supports-preserve-symlinks-flag/v/1.0.0) | 1.0.0 | MIT |
@@ -900,11 +885,11 @@ the lockfile, then the installed `package.json`, then
 | [tailwind-variants](https://www.npmjs.com/package/tailwind-variants/v/0.1.20) | 0.1.20 | MIT |
 | [tailwindcss](https://www.npmjs.com/package/tailwindcss/v/3.4.19) | 3.4.19 | MIT |
 | [tapable](https://www.npmjs.com/package/tapable/v/2.3.3) | 2.3.3 | MIT |
-| [terser](https://www.npmjs.com/package/terser/v/5.48.0) | 5.48.0 | BSD-2-Clause |
-| [terser-webpack-plugin](https://www.npmjs.com/package/terser-webpack-plugin/v/5.6.0) | 5.6.0 | MIT |
+| [terser](https://www.npmjs.com/package/terser/v/5.51.2) | 5.51.2 | BSD-2-Clause |
 | [text-segmentation](https://www.npmjs.com/package/text-segmentation/v/1.0.3) | 1.0.3 | MIT |
 | [thenify](https://www.npmjs.com/package/thenify/v/3.3.1) | 3.3.1 | MIT |
 | [thenify-all](https://www.npmjs.com/package/thenify-all/v/1.6.0) | 1.6.0 | MIT |
+| [tinyglobby](https://www.npmjs.com/package/tinyglobby/v/0.2.15) | 0.2.15 | MIT |
 | [to-regex-range](https://www.npmjs.com/package/to-regex-range/v/5.0.1) | 5.0.1 | MIT |
 | [tr46](https://www.npmjs.com/package/tr46/v/0.0.3) | 0.0.3 | MIT |
 | [trim-lines](https://www.npmjs.com/package/trim-lines/v/3.0.1) | 3.0.1 | MIT |
@@ -931,10 +916,10 @@ the lockfile, then the installed `package.json`, then
 | [vfile-message](https://www.npmjs.com/package/vfile-message/v/4.0.3) | 4.0.3 | MIT |
 | [viem](https://www.npmjs.com/package/viem/v/2.57.3) | 2.57.3 | MIT |
 | [wagmi](https://www.npmjs.com/package/wagmi/v/3.7.7) | 3.7.7 | MIT |
-| [watchpack](https://www.npmjs.com/package/watchpack/v/2.5.1) | 2.5.1 | MIT |
+| [watchpack](https://www.npmjs.com/package/watchpack/v/2.6.4) | 2.6.4 | MIT |
 | [webidl-conversions](https://www.npmjs.com/package/webidl-conversions/v/3.0.1) | 3.0.1 | BSD-2-Clause |
-| [webpack](https://www.npmjs.com/package/webpack/v/5.107.1) | 5.107.1 | MIT |
-| [webpack-sources](https://www.npmjs.com/package/webpack-sources/v/3.5.0) | 3.5.0 | MIT |
+| [webpack](https://www.npmjs.com/package/webpack/v/5.112.2) | 5.112.2 | MIT |
+| [webpack-sources](https://www.npmjs.com/package/webpack-sources/v/3.7.0) | 3.7.0 | MIT |
 | [whatwg-url](https://www.npmjs.com/package/whatwg-url/v/5.0.0) | 5.0.0 | MIT |
 | [which](https://www.npmjs.com/package/which/v/2.0.2) | 2.0.2 | ISC |
 | [which-module](https://www.npmjs.com/package/which-module/v/2.0.1) | 2.0.1 | ISC |
@@ -947,7 +932,7 @@ the lockfile, then the installed `package.json`, then
 | [yargs](https://www.npmjs.com/package/yargs/v/15.4.1) | 15.4.1 | MIT |
 | [yargs-parser](https://www.npmjs.com/package/yargs-parser/v/18.1.3) | 18.1.3 | ISC |
 | [yocto-queue](https://www.npmjs.com/package/yocto-queue/v/0.1.0) | 0.1.0 | MIT |
-| [zod](https://www.npmjs.com/package/zod/v/4.6.5) | 4.6.5 | MIT |
+| [zod](https://www.npmjs.com/package/zod/v/4.6.7) | 4.6.7 | MIT |
 | [zustand](https://www.npmjs.com/package/zustand/v/4.5.7) | 4.5.7 | MIT |
 | [zustand](https://www.npmjs.com/package/zustand/v/5.0.0) | 5.0.0 | MIT |
 | [zwitch](https://www.npmjs.com/package/zwitch/v/2.0.4) | 2.0.4 | MIT |

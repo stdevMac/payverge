@@ -19,7 +19,7 @@
 | PostHog | Product analytics | `backend/internal/metrics/`, frontend providers |
 | Prometheus | Metrics scrape (`/metrics` gated by `METRICS_TOKEN(S)`) | `backend/internal/observability/` |
 
-## Backend (Go 1.26 language target; Go 1.27.2 toolchain) — key libs
+## Backend (Go 1.26 language target; Go 1.27.3 toolchain) — key libs
 ```
 gin-gonic/gin              HTTP framework
 gorm.io/gorm + driver/postgres
