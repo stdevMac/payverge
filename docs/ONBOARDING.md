@@ -12,7 +12,7 @@ AI-powered restaurant management platform with Web3 (USDC) payment support. Mono
 | UI | NextUI 2.4 + Tailwind 3.4 + lucide-react | DM Serif Display headings, DM Sans body |
 | Web3 | Wagmi 3 + Viem 2 | USDC reads only; `ethers` is **not** a direct dependency |
 | State | Zustand + TanStack Query | |
-| Backend | Go 1.26 + Gin + GORM | Repository and CI pin Go 1.27.2 |
+| Backend | Go 1.26 + Gin + GORM | Repository and CI pin Go 1.27.3 |
 | DB | PostgreSQL 18 | Production schema SoT: genesis baseline (`backend/schema/genesis/`) + versioned SQL (`backend/migrations/`); startup performs no GORM AutoMigrate or ad-hoc schema ensures |
 | Infra | Docker Compose + Caddy (TLS) | Self-host stack and installer in `deploy/`; release images on GHCR |
 | Notifications | Email via `EMAIL_PROVIDER` (`log` default, `smtp`, Resend, Postmark), Telegram bot, `whatsmeow` | WhatsApp only in the `-tags whatsapp` build |

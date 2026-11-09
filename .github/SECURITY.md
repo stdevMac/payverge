@@ -153,13 +153,6 @@ when you deploy.
 - **On-chain payment verification trusts your RPC endpoint.** Without
   `RPC_URL`, the backend uses the public Base RPC. Use an RPC provider you
   trust, and the mainnet chain in production.
-- **`npm audit` reports a high advisory in `braces` (GHSA-vfj7-8cjw-p6xm).**
-  It reaches the frontend through Tailwind CSS 3, which only runs while the
-  frontend is built and only reads the project's own source files. The running
-  server never loads it. No fixed `braces` release exists; the advisory goes
-  away with the planned move to Tailwind 4. CI accepts it through a reviewed
-  allowlist (`frontend/scripts/npm-audit-allowlist.json`) that expires, and any
-  other high advisory still fails the build.
 
 <!--
   Maintainers: if a residual finding is formally accepted instead of fixed,
