@@ -42,7 +42,7 @@ x-public-url: &public-url ${PUBLIC_URL:-https://${DOMAIN:?DOMAIN must be set in 
 
 services:
   postgres:
-    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    image: postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-payverge}
@@ -406,7 +406,7 @@ services:
     logging: *default-logging
 
   caddy:
-    image: caddy:2.11.7-alpine@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
+    image: caddy:2.11.9-alpine@sha256:003a97808e781aa9f7e75cc2f43d34d461099031faf5e20faefb9f61126836f0
     restart: unless-stopped
     # EDGE picks the Caddyfile: none -> Caddyfile, cloudflare -> Caddyfile.cloudflare.
     # TLS_TERMINATION=proxy: another web server on this host terminates TLS
@@ -579,7 +579,7 @@ services:
   # Runs backup/backup.sh daily at BACKUP_TIME (container time zone, UTC by
   # default). One-off backup: docker compose run --rm backup once
   backup:
-    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    image: postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
     profiles: ["backup"]
     restart: unless-stopped
     entrypoint: ["/bin/sh", "/scripts/backup.sh"]
@@ -635,7 +635,7 @@ services:
     logging: *default-logging
 
   backup-offsite:
-    image: rclone/rclone:1.75.1@sha256:45401ad7410db1d67ffdb58e19059ad20b0d8e0285a60e38bbec55cc1019c7a5
+    image: rclone/rclone:1.76.0@sha256:7cbeec24a44f206067597c0368be4de90ae19a64d5113c7d1938bd737a81e466
     profiles: ["backup-offsite"]
     restart: unless-stopped
     entrypoint: ["/bin/sh", "-ec"]
@@ -670,7 +670,7 @@ services:
   # docker compose --profile restore run --rm restore latest --yes
   # docker compose up -d
   restore:
-    image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+    image: postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
     profiles: ["restore"]
     restart: "no"
     entrypoint: ["/bin/sh", "/scripts/restore.sh"]
