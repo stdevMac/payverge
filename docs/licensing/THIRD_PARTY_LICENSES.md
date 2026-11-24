@@ -21,27 +21,28 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | cloud.google.com/go/compute/metadata | v0.9.0 | Apache-2.0 | [link](https://github.com/googleapis/google-cloud-go/blob/compute/metadata/v0.9.0/compute/metadata/LICENSE) |
 | github.com/SherClockHolmes/webpush-go | v1.4.0 | MIT | [link](https://github.com/SherClockHolmes/webpush-go/blob/v1.4.0/LICENSE) |
 | github.com/andybalholm/brotli | v1.1.1 | MIT | [link](https://github.com/andybalholm/brotli/blob/v1.1.1/LICENSE) |
-| github.com/aws/aws-sdk-go-v2 | v1.47.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.47.1/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream | v1.7.20 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/aws/protocol/eventstream/v1.7.20/aws/protocol/eventstream/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/config | v1.33.7 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/config/v1.33.7/config/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/credentials | v1.20.7 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/credentials/v1.20.7/credentials/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/feature/ec2/imds | v1.20.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/ec2/imds/v1.20.1/feature/ec2/imds/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/feature/s3/manager | v1.23.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/s3/manager/v1.23.12/feature/s3/manager/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/internal/configsources | v1.5.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/internal/configsources/v1.5.4/internal/configsources/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 | v2.8.4 | Apache-2.0 | [link](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/internal/endpoints/v2@v2.8.4?tab=licenses) |
-| github.com/aws/aws-sdk-go-v2/internal/sync/singleflight | v1.47.1 | BSD-3-Clause | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.47.1/internal/sync/singleflight/LICENSE) |
-| github.com/aws/aws-sdk-go-v2/internal/v4a | v1.5.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/internal/v4a/v1.5.4/internal/v4a/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding | v1.13.19 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/accept-encoding/v1.13.19/service/internal/accept-encoding/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/internal/checksum | v1.11.5 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/checksum/v1.11.5/service/internal/checksum/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/internal/presigned-url | v1.14.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/presigned-url/v1.14.4/service/internal/presigned-url/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/internal/s3shared | v1.20.4 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/s3shared/v1.20.4/service/internal/s3shared/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/s3 | v1.114.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/s3/v1.114.1/service/s3/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/signin | v1.10.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/signin/v1.10.2/service/signin/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/sso | v1.38.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sso/v1.38.2/service/sso/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/ssooidc | v1.43.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/ssooidc/v1.43.2/service/ssooidc/LICENSE.txt) |
-| github.com/aws/aws-sdk-go-v2/service/sts | v1.51.2 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sts/v1.51.2/service/sts/LICENSE.txt) |
-| github.com/aws/smithy-go | v1.28.1 | Apache-2.0 | [link](https://github.com/aws/smithy-go/blob/v1.28.1/LICENSE) |
-| github.com/aws/smithy-go/internal/sync/singleflight | v1.28.1 | BSD-3-Clause | [link](https://github.com/aws/smithy-go/blob/v1.28.1/internal/sync/singleflight/LICENSE) |
+| github.com/aws/aws-sdk-go-v2 | v1.48.0 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.48.0/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream | v1.7.27 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/aws/protocol/eventstream/v1.7.27/aws/protocol/eventstream/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/config | v1.33.18 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/config/v1.33.18/config/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/credentials | v1.21.0 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/credentials/v1.21.0/credentials/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/feature/ec2/imds | v1.20.9 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/ec2/imds/v1.20.9/feature/ec2/imds/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/feature/s3/manager | v1.23.24 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/feature/s3/manager/v1.23.24/feature/s3/manager/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/internal/configsources | v1.5.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/internal/configsources/v1.5.12/internal/configsources/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 | v2.8.12 | Apache-2.0 | [link](https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/internal/endpoints/v2@v2.8.12?tab=licenses) |
+| github.com/aws/aws-sdk-go-v2/internal/sync/singleflight | v1.48.0 | BSD-3-Clause | [link](https://github.com/aws/aws-sdk-go-v2/blob/v1.48.0/internal/sync/singleflight/LICENSE) |
+| github.com/aws/aws-sdk-go-v2/internal/v4a | v1.5.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/internal/v4a/v1.5.12/internal/v4a/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding | v1.13.25 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/accept-encoding/v1.13.25/service/internal/accept-encoding/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/internal/checksum | v1.11.13 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/checksum/v1.11.13/service/internal/checksum/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/internal/presigned-url | v1.14.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/presigned-url/v1.14.12/service/internal/presigned-url/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/internal/s3shared | v1.20.12 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/internal/s3shared/v1.20.12/service/internal/s3shared/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/s3 | v1.114.10 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/s3/v1.114.10/service/s3/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/signin | v1.13.1 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/signin/v1.13.1/service/signin/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/sso | v1.39.5 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sso/v1.39.5/service/sso/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/ssooidc | v1.44.5 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/ssooidc/v1.44.5/service/ssooidc/LICENSE.txt) |
+| github.com/aws/aws-sdk-go-v2/service/sts | v1.52.0 | Apache-2.0 | [link](https://github.com/aws/aws-sdk-go-v2/blob/service/sts/v1.52.0/service/sts/LICENSE.txt) |
+| github.com/aws/smithy-go | v1.28.9 | Apache-2.0 | [link](https://github.com/aws/smithy-go/blob/v1.28.9/LICENSE) |
+| github.com/aws/smithy-go/internal/sync/singleflight | v1.28.9 | BSD-3-Clause | [link](https://github.com/aws/smithy-go/blob/v1.28.9/internal/sync/singleflight/LICENSE) |
+| github.com/aws/smithy-go/transport/http/protocol/internal/json/internal/stdlib | v1.28.9 | BSD-3-Clause | [link](https://github.com/aws/smithy-go/blob/v1.28.9/transport/http/protocol/internal/json/internal/stdlib/LICENSE) |
 | github.com/beorn7/perks/quantile | v1.0.1 | MIT | [link](https://github.com/beorn7/perks/blob/v1.0.1/LICENSE) |
 | github.com/bits-and-blooms/bitset | v1.20.0 | BSD-3-Clause | [link](https://github.com/bits-and-blooms/bitset/blob/v1.20.0/LICENSE) |
 | github.com/cespare/xxhash/v2 | v2.3.0 | MIT | [link](https://github.com/cespare/xxhash/blob/v2.3.0/LICENSE.txt) |
@@ -49,15 +50,15 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/crate-crypto/go-eth-kzg | v1.5.0 | Apache-2.0 | [link](https://github.com/crate-crypto/go-eth-kzg/blob/v1.5.0/LICENSE) |
 | github.com/deckarep/golang-set/v2 | v2.6.0 | MIT | [link](https://github.com/deckarep/golang-set/blob/v2.6.0/LICENSE) |
 | github.com/decred/dcrd/dcrec/secp256k1/v4 | v4.0.1 | ISC | [link](https://github.com/decred/dcrd/blob/dcrec/secp256k1/v4.0.1/dcrec/secp256k1/LICENSE) |
-| github.com/ethereum/go-ethereum | v1.17.7 | LGPL-3.0-or-later * | [link](https://pkg.go.dev/github.com/ethereum/go-ethereum@v1.17.7?tab=licenses) |
-| github.com/ethereum/go-ethereum/crypto/keccak | v1.17.7 | BSD-3-Clause | [link](https://github.com/ethereum/go-ethereum/blob/v1.17.7/crypto/keccak/LICENSE) |
-| github.com/ethereum/go-ethereum/metrics | v1.17.7 | BSD-2-Clause | [link](https://github.com/ethereum/go-ethereum/blob/v1.17.7/metrics/LICENSE) |
+| github.com/ethereum/go-ethereum | v1.17.10 | LGPL-3.0-or-later * | [link](https://pkg.go.dev/github.com/ethereum/go-ethereum@v1.17.10?tab=licenses) |
+| github.com/ethereum/go-ethereum/crypto/keccak | v1.17.10 | BSD-3-Clause | [link](https://github.com/ethereum/go-ethereum/blob/v1.17.10/crypto/keccak/LICENSE) |
+| github.com/ethereum/go-ethereum/metrics | v1.17.10 | BSD-2-Clause | [link](https://github.com/ethereum/go-ethereum/blob/v1.17.10/metrics/LICENSE) |
 | github.com/fjl/jsonw | v0.1.0 | MIT | [link](https://github.com/fjl/jsonw/blob/v0.1.0/LICENSE) |
 | github.com/fogleman/gg | v1.3.0 | MIT | [link](https://github.com/fogleman/gg/blob/v1.3.0/LICENSE.md) |
 | github.com/gabriel-vasile/mimetype | v1.4.12 | MIT | [link](https://github.com/gabriel-vasile/mimetype/blob/v1.4.12/LICENSE) |
-| github.com/getsentry/sentry-go | v0.49.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/v0.49.0/LICENSE) |
-| github.com/getsentry/sentry-go/gin | v0.49.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/gin/v0.49.0/gin/LICENSE) |
-| github.com/getsentry/sentry-go/logrus | v0.49.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/logrus/v0.49.0/logrus/LICENSE) |
+| github.com/getsentry/sentry-go | v0.50.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/v0.50.0/LICENSE) |
+| github.com/getsentry/sentry-go/gin | v0.50.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/gin/v0.50.0/gin/LICENSE) |
+| github.com/getsentry/sentry-go/logrus | v0.50.0 | MIT | [link](https://github.com/getsentry/sentry-go/blob/logrus/v0.50.0/logrus/LICENSE) |
 | github.com/gin-contrib/sse | v1.1.0 | MIT | [link](https://github.com/gin-contrib/sse/blob/v1.1.0/LICENSE) |
 | github.com/gin-gonic/gin | v1.12.0 | MIT | [link](https://github.com/gin-gonic/gin/blob/v1.12.0/LICENSE) |
 | github.com/go-logr/logr | v1.4.4 | Apache-2.0 | [link](https://github.com/go-logr/logr/blob/v1.4.4/LICENSE) |
@@ -75,14 +76,14 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/golang/freetype/raster | v0.0.0-20170609003504-e2365dfdc4a0 | FTL * | [link](https://pkg.go.dev/github.com/golang/freetype/raster@v0.0.0-20170609003504-e2365dfdc4a0?tab=licenses) |
 | github.com/golang/freetype/truetype | v0.0.0-20170609003504-e2365dfdc4a0 | FTL * | [link](https://pkg.go.dev/github.com/golang/freetype/truetype@v0.0.0-20170609003504-e2365dfdc4a0?tab=licenses) |
 | github.com/google/uuid | v1.6.0 | BSD-3-Clause | [link](https://github.com/google/uuid/blob/v1.6.0/LICENSE) |
-| github.com/gorilla/websocket | v1.5.3 | BSD-2-Clause | [link](https://github.com/gorilla/websocket/blob/v1.5.3/LICENSE) |
+| github.com/gorilla/websocket | v1.5.4-0.20240701034025-d67f41855da4 | BSD-2-Clause | [link](https://github.com/gorilla/websocket/blob/d67f41855da4/LICENSE) |
 | github.com/hashicorp/golang-lru/v2 | v2.0.7 | MPL-2.0 | [link](https://github.com/hashicorp/golang-lru/blob/v2.0.7/LICENSE) |
 | github.com/hashicorp/golang-lru/v2/simplelru | v2.0.7 | BSD-3-Clause | [link](https://github.com/hashicorp/golang-lru/blob/v2.0.7/simplelru/LICENSE_list) |
 | github.com/holiman/uint256 | v1.3.2 | BSD-3-Clause | [link](https://github.com/holiman/uint256/blob/v1.3.2/COPYING) |
 | github.com/jackc/pgpassfile | v1.0.0 | MIT | [link](https://github.com/jackc/pgpassfile/blob/v1.0.0/LICENSE) |
 | github.com/jackc/pgservicefile | v0.0.0-20240606120523-5a60cdf6a761 | MIT | [link](https://github.com/jackc/pgservicefile/blob/5a60cdf6a761/LICENSE) |
-| github.com/jackc/pgx/v5 | v5.11.0 | MIT | [link](https://github.com/jackc/pgx/blob/v5.11.0/LICENSE) |
-| github.com/jackc/puddle/v2 | v2.2.2 | MIT | [link](https://github.com/jackc/puddle/blob/v2.2.2/LICENSE) |
+| github.com/jackc/pgx/v5 | v5.13.0 | MIT | [link](https://github.com/jackc/pgx/blob/v5.13.0/LICENSE) |
+| github.com/jackc/puddle/v2 | v2.2.3 | MIT | [link](https://github.com/jackc/puddle/blob/v2.2.3/LICENSE) |
 | github.com/jinzhu/inflection | v1.0.0 | MIT | [link](https://github.com/jinzhu/inflection/blob/v1.0.0/LICENSE) |
 | github.com/jinzhu/now | v1.1.5 | MIT | [link](https://github.com/jinzhu/now/blob/v1.1.5/License) |
 | github.com/klauspost/compress | v1.20.2 | Apache-2.0 | [link](https://github.com/klauspost/compress/blob/v1.20.2/LICENSE) |
@@ -96,12 +97,12 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | github.com/mattn/go-isatty | v0.0.22 | MIT | [link](https://github.com/mattn/go-isatty/blob/v0.0.22/LICENSE) |
 | github.com/munnerz/goautoneg | v0.0.0-20191010083416-a7dc8b61c822 | BSD-3-Clause | [link](https://github.com/munnerz/goautoneg/blob/a7dc8b61c822/LICENSE) |
 | github.com/pelletier/go-toml/v2 | v2.2.4 | MIT | [link](https://github.com/pelletier/go-toml/blob/v2.2.4/LICENSE) |
-| github.com/posthog/posthog-go | v1.33.0 | MIT | [link](https://github.com/posthog/posthog-go/blob/v1.33.0/LICENSE.md) |
-| github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil | v1.24.1 | BSD-3-Clause | [link](https://github.com/prometheus/client_golang/blob/v1.24.1/internal/github.com/golang/gddo/LICENSE) |
-| github.com/prometheus/client_golang/prometheus | v1.24.1 | Apache-2.0 | [link](https://github.com/prometheus/client_golang/blob/v1.24.1/LICENSE) |
+| github.com/posthog/posthog-go | v1.43.0 | MIT | [link](https://github.com/posthog/posthog-go/blob/v1.43.0/LICENSE.md) |
+| github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil | v1.25.0 | BSD-3-Clause | [link](https://github.com/prometheus/client_golang/blob/v1.25.0/internal/github.com/golang/gddo/LICENSE) |
+| github.com/prometheus/client_golang/prometheus | v1.25.0 | Apache-2.0 | [link](https://github.com/prometheus/client_golang/blob/v1.25.0/LICENSE) |
 | github.com/prometheus/client_model/go | v0.6.3 | Apache-2.0 | [link](https://github.com/prometheus/client_model/blob/v0.6.3/LICENSE) |
-| github.com/prometheus/common | v0.70.1 | Apache-2.0 | [link](https://github.com/prometheus/common/blob/v0.70.1/LICENSE) |
-| github.com/prometheus/procfs | v0.21.1 | Apache-2.0 | [link](https://github.com/prometheus/procfs/blob/v0.21.1/LICENSE) |
+| github.com/prometheus/common | v0.72.0 | Apache-2.0 | [link](https://github.com/prometheus/common/blob/v0.72.0/LICENSE) |
+| github.com/prometheus/procfs | v0.22.0 | Apache-2.0 | [link](https://github.com/prometheus/procfs/blob/v0.22.0/LICENSE) |
 | github.com/quic-go/qpack | v0.6.0 | MIT | [link](https://github.com/quic-go/qpack/blob/v0.6.0/LICENSE.md) |
 | github.com/quic-go/quic-go | v0.59.1 | MIT | [link](https://github.com/quic-go/quic-go/blob/v0.59.1/LICENSE) |
 | github.com/resend/resend-go/v3 | v3.17.0 | MIT | [link](https://github.com/resend/resend-go/blob/v3.17.0/LICENSE.md) |
@@ -115,19 +116,21 @@ an override from `scripts/licenses/go-overrides.tsv` (reasons below).
 | go.mongodb.org/mongo-driver/v2 | v2.5.0 | Apache-2.0 | [link](https://github.com/mongodb/mongo-go-driver/blob/v2.5.0/LICENSE) |
 | go.mozilla.org/pkcs7 | v0.10.0 | MIT | [link](https://github.com/mozilla-services/pkcs7/blob/v0.10.0/LICENSE) |
 | go.opentelemetry.io/auto/sdk | v1.2.1 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/sdk/v1.2.1/sdk/LICENSE) |
-| go.opentelemetry.io/otel | v1.46.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/v1.46.0/LICENSE) |
-| go.opentelemetry.io/otel | v1.46.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/v1.46.0/LICENSE) |
-| go.opentelemetry.io/otel/metric | v1.46.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/metric/v1.46.0/metric/LICENSE) |
-| go.opentelemetry.io/otel/metric | v1.46.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/metric/v1.46.0/metric/LICENSE) |
-| go.opentelemetry.io/otel/trace | v1.46.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/trace/v1.46.0/trace/LICENSE) |
-| go.opentelemetry.io/otel/trace | v1.46.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/trace/v1.46.0/trace/LICENSE) |
-| golang.org/x/crypto | v0.57.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/crypto/+/v0.57.0:LICENSE) |
-| golang.org/x/image | v0.46.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/image/+/v0.46.0:LICENSE) |
+| go.opentelemetry.io/otel | v1.47.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/v1.47.0/LICENSE) |
+| go.opentelemetry.io/otel | v1.47.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/v1.47.0/LICENSE) |
+| go.opentelemetry.io/otel/log | v1.47.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/log/v1.47.0/log/LICENSE) |
+| go.opentelemetry.io/otel/log | v1.47.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/log/v1.47.0/log/LICENSE) |
+| go.opentelemetry.io/otel/metric | v1.47.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/metric/v1.47.0/metric/LICENSE) |
+| go.opentelemetry.io/otel/metric | v1.47.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/metric/v1.47.0/metric/LICENSE) |
+| go.opentelemetry.io/otel/trace | v1.47.0 | Apache-2.0 | [link](https://github.com/open-telemetry/opentelemetry-go/blob/trace/v1.47.0/trace/LICENSE) |
+| go.opentelemetry.io/otel/trace | v1.47.0 | BSD-3-Clause | [link](https://github.com/open-telemetry/opentelemetry-go/blob/trace/v1.47.0/trace/LICENSE) |
+| golang.org/x/crypto | v0.58.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/crypto/+/v0.58.0:LICENSE) |
+| golang.org/x/image | v0.48.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/image/+/v0.48.0:LICENSE) |
 | golang.org/x/net | v0.60.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/net/+/v0.60.0:LICENSE) |
-| golang.org/x/oauth2 | v0.37.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/oauth2/+/v0.37.0:LICENSE) |
-| golang.org/x/sync | v0.24.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sync/+/v0.24.0:LICENSE) |
-| golang.org/x/sys | v0.48.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sys/+/v0.48.0:LICENSE) |
-| golang.org/x/text | v0.42.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/text/+/v0.42.0:LICENSE) |
+| golang.org/x/oauth2 | v0.38.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/oauth2/+/v0.38.0:LICENSE) |
+| golang.org/x/sync | v0.25.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sync/+/v0.25.0:LICENSE) |
+| golang.org/x/sys | v0.50.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/sys/+/v0.50.0:LICENSE) |
+| golang.org/x/text | v0.44.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/text/+/v0.44.0:LICENSE) |
 | golang.org/x/time/rate | v0.16.0 | BSD-3-Clause | [link](https://cs.opensource.google/go/x/time/+/v0.16.0:LICENSE) |
 | google.golang.org/protobuf | v1.36.12 | BSD-3-Clause | [link](https://github.com/protocolbuffers/protobuf-go/blob/v1.36.12/LICENSE) |
 | gorm.io/driver/postgres | v1.6.1 | MIT | [link](https://github.com/go-gorm/postgres/blob/v1.6.1/License) |
@@ -222,8 +225,8 @@ the lockfile, then the installed `package.json`, then
 | [@jridgewell/sourcemap-codec](https://www.npmjs.com/package/@jridgewell/sourcemap-codec/v/1.5.5) | 1.5.5 | MIT |
 | [@jridgewell/trace-mapping](https://www.npmjs.com/package/@jridgewell/trace-mapping/v/0.3.31) | 0.3.31 | MIT |
 | [@kurkle/color](https://www.npmjs.com/package/@kurkle/color/v/0.3.4) | 0.3.4 | MIT |
-| [@lifi/sdk](https://www.npmjs.com/package/@lifi/sdk/v/4.11.0) | 4.11.0 | Apache-2.0 |
-| [@lifi/sdk-provider-ethereum](https://www.npmjs.com/package/@lifi/sdk-provider-ethereum/v/4.2.7) | 4.2.7 | Apache-2.0 |
+| [@lifi/sdk](https://www.npmjs.com/package/@lifi/sdk/v/4.12.1) | 4.12.1 | Apache-2.0 |
+| [@lifi/sdk-provider-ethereum](https://www.npmjs.com/package/@lifi/sdk-provider-ethereum/v/4.2.12) | 4.2.12 | Apache-2.0 |
 | [@lifi/types](https://www.npmjs.com/package/@lifi/types/v/18.13.0) | 18.13.0 | Apache-2.0 |
 | [@napi-rs/canvas](https://www.npmjs.com/package/@napi-rs/canvas/v/0.1.92) | 0.1.92 | MIT |
 | [@napi-rs/canvas-android-arm64](https://www.npmjs.com/package/@napi-rs/canvas-android-arm64/v/0.1.92) | 0.1.92 | MIT |
@@ -484,8 +487,8 @@ the lockfile, then the installed `package.json`, then
 | [@spectrum-icons/workflow](https://www.npmjs.com/package/@spectrum-icons/workflow/v/4.3.2) | 4.3.2 | Apache-2.0 |
 | [@swc/helpers](https://www.npmjs.com/package/@swc/helpers/v/0.5.15) | 0.5.15 | Apache-2.0 |
 | [@swc/helpers](https://www.npmjs.com/package/@swc/helpers/v/0.5.18) | 0.5.18 | Apache-2.0 |
-| [@tanstack/query-core](https://www.npmjs.com/package/@tanstack/query-core/v/5.104.1) | 5.104.1 | MIT |
-| [@tanstack/react-query](https://www.npmjs.com/package/@tanstack/react-query/v/5.104.1) | 5.104.1 | MIT |
+| [@tanstack/query-core](https://www.npmjs.com/package/@tanstack/query-core/v/5.107.1) | 5.107.1 | MIT |
+| [@tanstack/react-query](https://www.npmjs.com/package/@tanstack/react-query/v/5.107.1) | 5.107.1 | MIT |
 | [@tanstack/react-virtual](https://www.npmjs.com/package/@tanstack/react-virtual/v/3.11.2) | 3.11.2 | MIT |
 | [@tanstack/virtual-core](https://www.npmjs.com/package/@tanstack/virtual-core/v/3.11.2) | 3.11.2 | MIT |
 | [@types/debug](https://www.npmjs.com/package/@types/debug/v/4.1.12) | 4.1.12 | MIT |
@@ -494,11 +497,11 @@ the lockfile, then the installed `package.json`, then
 | [@types/estree-jsx](https://www.npmjs.com/package/@types/estree-jsx/v/1.0.5) | 1.0.5 | MIT |
 | [@types/hast](https://www.npmjs.com/package/@types/hast/v/3.0.4) | 3.0.4 | MIT |
 | [@types/json-schema](https://www.npmjs.com/package/@types/json-schema/v/7.0.15) | 7.0.15 | MIT |
-| [@types/lodash](https://www.npmjs.com/package/@types/lodash/v/4.17.25) | 4.17.25 | MIT |
+| [@types/lodash](https://www.npmjs.com/package/@types/lodash/v/4.17.27) | 4.17.27 | MIT |
 | [@types/lodash.debounce](https://www.npmjs.com/package/@types/lodash.debounce/v/4.0.9) | 4.0.9 | MIT |
 | [@types/mdast](https://www.npmjs.com/package/@types/mdast/v/4.0.4) | 4.0.4 | MIT |
 | [@types/ms](https://www.npmjs.com/package/@types/ms/v/2.1.0) | 2.1.0 | MIT |
-| [@types/node](https://www.npmjs.com/package/@types/node/v/26.6.4) | 26.6.4 | MIT |
+| [@types/node](https://www.npmjs.com/package/@types/node/v/26.6.6) | 26.6.6 | MIT |
 | [@types/pako](https://www.npmjs.com/package/@types/pako/v/2.0.4) | 2.0.4 | MIT |
 | [@types/raf](https://www.npmjs.com/package/@types/raf/v/3.4.3) | 3.4.3 | MIT |
 | [@types/react](https://www.npmjs.com/package/@types/react/v/19.3.0) | 19.3.0 | MIT |
@@ -507,8 +510,8 @@ the lockfile, then the installed `package.json`, then
 | [@types/unist](https://www.npmjs.com/package/@types/unist/v/3.0.3) | 3.0.3 | MIT |
 | [@types/wicg-file-system-access](https://www.npmjs.com/package/@types/wicg-file-system-access/v/2020.9.8) | 2020.9.8 | MIT |
 | [@ungap/structured-clone](https://www.npmjs.com/package/@ungap/structured-clone/v/1.3.0) | 1.3.0 | ISC |
-| [@wagmi/connectors](https://www.npmjs.com/package/@wagmi/connectors/v/8.2.0) | 8.2.0 | MIT |
-| [@wagmi/core](https://www.npmjs.com/package/@wagmi/core/v/3.6.5) | 3.6.5 | MIT |
+| [@wagmi/connectors](https://www.npmjs.com/package/@wagmi/connectors/v/8.2.4) | 8.2.4 | MIT |
+| [@wagmi/core](https://www.npmjs.com/package/@wagmi/core/v/3.6.9) | 3.6.9 | MIT |
 | [@webassemblyjs/ast](https://www.npmjs.com/package/@webassemblyjs/ast/v/1.14.1) | 1.14.1 | MIT |
 | [@webassemblyjs/floating-point-hex-parser](https://www.npmjs.com/package/@webassemblyjs/floating-point-hex-parser/v/1.13.2) | 1.13.2 | MIT |
 | [@webassemblyjs/helper-api-error](https://www.npmjs.com/package/@webassemblyjs/helper-api-error/v/1.13.2) | 1.13.2 | MIT |
@@ -540,7 +543,7 @@ the lockfile, then the installed `package.json`, then
 | [aria-hidden](https://www.npmjs.com/package/aria-hidden/v/1.2.6) | 1.2.6 | MIT |
 | [asynckit](https://www.npmjs.com/package/asynckit/v/0.4.0) | 0.4.0 | MIT |
 | [atomic-sleep](https://www.npmjs.com/package/atomic-sleep/v/1.0.0) | 1.0.0 | MIT |
-| [axios](https://www.npmjs.com/package/axios/v/1.20.0) | 1.20.0 | MIT |
+| [axios](https://www.npmjs.com/package/axios/v/1.21.1) | 1.21.1 | MIT |
 | [bail](https://www.npmjs.com/package/bail/v/2.0.2) | 2.0.2 | MIT |
 | [balanced-match](https://www.npmjs.com/package/balanced-match/v/4.0.4) | 4.0.4 | MIT |
 | [base64-arraybuffer](https://www.npmjs.com/package/base64-arraybuffer/v/1.0.2) | 1.0.2 | MIT |
@@ -562,7 +565,7 @@ the lockfile, then the installed `package.json`, then
 | [character-entities-html4](https://www.npmjs.com/package/character-entities-html4/v/2.1.0) | 2.1.0 | MIT |
 | [character-entities-legacy](https://www.npmjs.com/package/character-entities-legacy/v/3.0.0) | 3.0.0 | MIT |
 | [character-reference-invalid](https://www.npmjs.com/package/character-reference-invalid/v/2.0.1) | 2.0.1 | MIT |
-| [chart.js](https://www.npmjs.com/package/chart.js/v/4.5.1) | 4.5.1 | MIT |
+| [chart.js](https://www.npmjs.com/package/chart.js/v/4.6.1) | 4.6.1 | MIT |
 | [chokidar](https://www.npmjs.com/package/chokidar/v/3.6.0) | 3.6.0 | MIT |
 | [chrome-trace-event](https://www.npmjs.com/package/chrome-trace-event/v/1.0.4) | 1.0.4 | MIT |
 | [cjs-module-lexer](https://www.npmjs.com/package/cjs-module-lexer/v/2.2.0) | 2.2.0 | MIT |
@@ -614,7 +617,7 @@ the lockfile, then the installed `package.json`, then
 | [dunder-proto](https://www.npmjs.com/package/dunder-proto/v/1.0.1) | 1.0.1 | MIT |
 | [electron-to-chromium](https://www.npmjs.com/package/electron-to-chromium/v/1.5.444) | 1.5.444 | ISC |
 | [emoji-regex](https://www.npmjs.com/package/emoji-regex/v/8.0.0) | 8.0.0 | MIT |
-| [encoding](https://www.npmjs.com/package/encoding/v/0.1.13) | 0.1.13 | MIT |
+| [encoding](https://www.npmjs.com/package/encoding/v/0.1.14) | 0.1.14 | MIT |
 | [end-of-stream](https://www.npmjs.com/package/end-of-stream/v/1.4.5) | 1.4.5 | MIT |
 | [enhanced-resolve](https://www.npmjs.com/package/enhanced-resolve/v/5.26.1) | 5.26.1 | MIT |
 | [entities](https://www.npmjs.com/package/entities/v/4.5.0) | 4.5.0 | BSD-2-Clause |
@@ -670,7 +673,7 @@ the lockfile, then the installed `package.json`, then
 | [html2canvas](https://www.npmjs.com/package/html2canvas/v/1.4.1) | 1.4.1 | MIT |
 | [htmlparser2](https://www.npmjs.com/package/htmlparser2/v/8.0.2) | 8.0.2 | MIT |
 | [https-proxy-agent](https://www.npmjs.com/package/https-proxy-agent/v/5.0.1) | 5.0.1 | MIT |
-| [iconv-lite](https://www.npmjs.com/package/iconv-lite/v/0.6.3) | 0.6.3 | MIT |
+| [iconv-lite](https://www.npmjs.com/package/iconv-lite/v/0.7.3) | 0.7.3 | MIT |
 | [import-in-the-middle](https://www.npmjs.com/package/import-in-the-middle/v/3.6.0) | 3.6.0 | Apache-2.0 |
 | [inline-style-parser](https://www.npmjs.com/package/inline-style-parser/v/0.2.7) | 0.2.7 | MIT |
 | [input-otp](https://www.npmjs.com/package/input-otp/v/1.4.1) | 1.4.1 | MIT |
@@ -709,7 +712,7 @@ the lockfile, then the installed `package.json`, then
 | [loose-envify](https://www.npmjs.com/package/loose-envify/v/1.4.0) | 1.4.0 | MIT |
 | [lru-cache](https://www.npmjs.com/package/lru-cache/v/11.5.2) | 11.5.2 | BlueOak-1.0.0 |
 | [lru-cache](https://www.npmjs.com/package/lru-cache/v/5.1.1) | 5.1.1 | ISC |
-| [lucide-react](https://www.npmjs.com/package/lucide-react/v/1.52.0) | 1.52.0 | ISC |
+| [lucide-react](https://www.npmjs.com/package/lucide-react/v/1.72.0) | 1.72.0 | ISC |
 | [magic-string](https://www.npmjs.com/package/magic-string/v/0.30.21) | 0.30.21 | MIT |
 | [markdown-table](https://www.npmjs.com/package/markdown-table/v/3.0.4) | 3.0.4 | MIT |
 | [math-intrinsics](https://www.npmjs.com/package/math-intrinsics/v/1.1.0) | 1.1.0 | MIT |
@@ -783,7 +786,7 @@ the lockfile, then the installed `package.json`, then
 | [object-hash](https://www.npmjs.com/package/object-hash/v/3.0.0) | 3.0.0 | MIT |
 | [on-exit-leak-free](https://www.npmjs.com/package/on-exit-leak-free/v/2.1.2) | 2.1.2 | MIT |
 | [once](https://www.npmjs.com/package/once/v/1.4.0) | 1.4.0 | ISC |
-| [ox](https://www.npmjs.com/package/ox/v/0.14.45) | 0.14.45 | MIT |
+| [ox](https://www.npmjs.com/package/ox/v/0.14.65) | 0.14.65 | MIT |
 | [p-limit](https://www.npmjs.com/package/p-limit/v/2.3.0) | 2.3.0 | MIT |
 | [p-limit](https://www.npmjs.com/package/p-limit/v/3.1.0) | 3.1.0 | MIT |
 | [p-locate](https://www.npmjs.com/package/p-locate/v/4.1.0) | 4.1.0 | MIT |
@@ -821,11 +824,11 @@ the lockfile, then the installed `package.json`, then
 | [qrcode](https://www.npmjs.com/package/qrcode/v/1.5.4) | 1.5.4 | MIT |
 | [queue-microtask](https://www.npmjs.com/package/queue-microtask/v/1.2.3) | 1.2.3 | MIT |
 | [raf](https://www.npmjs.com/package/raf/v/3.4.1) | 3.4.1 | MIT |
-| [react](https://www.npmjs.com/package/react/v/19.3.0) | 19.3.0 | MIT |
+| [react](https://www.npmjs.com/package/react/v/19.3.1) | 19.3.1 | MIT |
 | [react-aria](https://www.npmjs.com/package/react-aria/v/3.52.1) | 3.52.1 | Apache-2.0 |
 | [react-aria-components](https://www.npmjs.com/package/react-aria-components/v/1.21.1) | 1.21.1 | Apache-2.0 |
 | [react-chartjs-2](https://www.npmjs.com/package/react-chartjs-2/v/5.3.1) | 5.3.1 | MIT |
-| [react-dom](https://www.npmjs.com/package/react-dom/v/19.3.0) | 19.3.0 | MIT |
+| [react-dom](https://www.npmjs.com/package/react-dom/v/19.3.1) | 19.3.1 | MIT |
 | [react-error-boundary](https://www.npmjs.com/package/react-error-boundary/v/6.1.6) | 6.1.6 | MIT |
 | [react-hot-toast](https://www.npmjs.com/package/react-hot-toast/v/2.6.1) | 2.6.1 | MIT |
 | [react-is](https://www.npmjs.com/package/react-is/v/16.13.1) | 16.13.1 | MIT |
@@ -914,8 +917,8 @@ the lockfile, then the installed `package.json`, then
 | [utrie](https://www.npmjs.com/package/utrie/v/1.0.2) | 1.0.2 | MIT |
 | [vfile](https://www.npmjs.com/package/vfile/v/6.0.3) | 6.0.3 | MIT |
 | [vfile-message](https://www.npmjs.com/package/vfile-message/v/4.0.3) | 4.0.3 | MIT |
-| [viem](https://www.npmjs.com/package/viem/v/2.57.3) | 2.57.3 | MIT |
-| [wagmi](https://www.npmjs.com/package/wagmi/v/3.7.7) | 3.7.7 | MIT |
+| [viem](https://www.npmjs.com/package/viem/v/2.57.19) | 2.57.19 | MIT |
+| [wagmi](https://www.npmjs.com/package/wagmi/v/3.7.11) | 3.7.11 | MIT |
 | [watchpack](https://www.npmjs.com/package/watchpack/v/2.6.4) | 2.6.4 | MIT |
 | [webidl-conversions](https://www.npmjs.com/package/webidl-conversions/v/3.0.1) | 3.0.1 | BSD-2-Clause |
 | [webpack](https://www.npmjs.com/package/webpack/v/5.112.2) | 5.112.2 | MIT |

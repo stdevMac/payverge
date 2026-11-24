@@ -488,7 +488,7 @@ of yours, and so on.
 
 ```sh
 mkdir -p rclone
-docker run --rm -it -v "$PWD/rclone:/config/rclone" rclone/rclone:1.75.1 config
+docker run --rm -it -v "$PWD/rclone:/config/rclone" rclone/rclone:1.76.0 config
 ```
 
 Then set the following in `.env` and run `docker compose up -d`:
