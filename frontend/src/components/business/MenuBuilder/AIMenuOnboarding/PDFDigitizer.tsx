@@ -217,7 +217,7 @@ export default function PDFDigitizer({
             const context = canvas.getContext("2d")!;
             canvas.width = viewport.width;
             canvas.height = viewport.height;
-            await page.render({ canvasContext: context, viewport }).promise;
+            await page.render({ canvas, canvasContext: context, viewport }).promise;
             if (!isRunActive(runGeneration)) return images;
             const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/jpeg", 0.8));
             if (!isRunActive(runGeneration)) return images;

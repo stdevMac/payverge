@@ -25,6 +25,11 @@ const customJestConfig = {
     // instrumentation reads an undefined Router.events). No-op it in tests so
     // the ~14 suites that transitively import errorLogger.ts actually run.
     '^@sentry/nextjs$': '<rootDir>/__mocks__/@sentry/nextjs.js',
+    // unicode-properties (a fontkit 3 dependency) loads its trie through the
+    // "#binary-trie" import, whose node variant reads a file via import.meta,
+    // which CommonJS Jest cannot run. The browser variant decodes the same
+    // trie from an inlined base64 string.
+    '^#binary-trie$': '<rootDir>/node_modules/unicode-properties/binaryTrie.browser.js',
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
@@ -39,7 +44,9 @@ const customJestConfig = {
       'react-markdown|remark(?:-[^/]+)?|rehype(?:-[^/]+)?|unified|vfile(?:-[^/]+)?|unist(?:-[^/]+)?|mdast(?:-[^/]+)?|micromark(?:-[^/]+)?|' +
       '@ungap/structured-clone|bail|ccount|character-entities(?:-[^/]+)?|character-reference-invalid|comma-separated-tokens|decode-named-character-reference|devlop|' +
       'escape-string-regexp|estree-util-is-identifier-name|hast-util-to-jsx-runtime|hast-util-whitespace|html-url-attributes|is-alphabetical|is-alphanumerical|is-decimal|is-hexadecimal|' +
-      'is-plain-obj|longest-streak|markdown-table|parse-entities|property-information|space-separated-tokens|stringify-entities|style-to-js|trim-lines|trough|zwitch)(?:/|$))',
+      'is-plain-obj|longest-streak|markdown-table|parse-entities|property-information|space-separated-tokens|stringify-entities|style-to-js|trim-lines|trough|zwitch|' +
+      // fontkit 3 and its font-table deps are ESM-only (src/lib/menuPrint/fonts.cmap.test.ts).
+      'fontkit|brotli|dfa|restructure|unicode-properties|unicode-trie)(?:/|$))',
   ],
   testPathIgnorePatterns: [
     '/node_modules/',

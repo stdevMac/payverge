@@ -72,7 +72,7 @@ func TestHermeticFrontendVerificationEntryPoint(t *testing.T) {
 }
 
 func TestReleaseToolchainsUseExactRepositoryVersions(t *testing.T) {
-	const nodeVersion = "26.13.0"
+	const nodeVersion = "26.13.1"
 	const npmVersion = "11.19.1"
 	const goVersion = "1.27.4"
 

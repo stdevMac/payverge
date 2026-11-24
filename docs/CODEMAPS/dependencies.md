@@ -39,7 +39,7 @@ stretchr/testify           Test assertions
 skip2/go-qrcode + fogleman/gg + golang/freetype  QR + image gen
 ```
 
-## Frontend (Node 26.13.0 release toolchain; Node 20.18+ package minimum) — key libs
+## Frontend (Node 26.13.1 release toolchain; Node 20.18+ package minimum) — key libs
 ```
 next 15.5                  App Router
 react 19.3
