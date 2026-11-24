@@ -58,7 +58,7 @@ The codebase lives in a monorepo with three main workspaces:
 
 ### Frontend
 - **Framework**: Next.js 15.5 with App Router
-- **Language**: TypeScript 5.9
+- **Language**: TypeScript 6.0
 - **Styling**: Tailwind CSS 3.4 + NextUI 2.4
 - **State**: Zustand + React Query (`@tanstack/react-query`)
 - **Forms**: Zod

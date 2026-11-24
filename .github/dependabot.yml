@@ -73,6 +73,11 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: tailwind-scrollbar
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 is the native (typescript-go) compiler and ships no JS
+      # compiler API, which ts-jest, Next and typescript-eslint still need.
+      # Stay on 6.x until those tools support it.
+      - dependency-name: typescript
+        versions: [">= 7"]
     groups:
       frontend-minor-patch:
         patterns:

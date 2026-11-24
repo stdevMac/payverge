@@ -11,6 +11,7 @@ import {
   scrubSentryLog,
   scrubSentryReplayRecordingEvent,
   scrubSentryTransaction,
+  SENTRY_DATA_COLLECTION,
 } from "./src/lib/sentry/config";
 
 // Next evaluates this module from its async main chunk, which can run before
@@ -82,13 +83,12 @@ function initSentry() {
     dsn: sentryConfig.dsn,
     environment: sentryConfig.environment,
     release: sentryConfig.release,
-    sendDefaultPii: false,
+    dataCollection: SENTRY_DATA_COLLECTION,
     tracesSampleRate: sentryConfig.tracesSampleRate,
     replaysSessionSampleRate: sentryConfig.replaysSessionSampleRate,
     replaysOnErrorSampleRate: sentryConfig.replaysOnErrorSampleRate,
     beforeSend: scrubSentryEvent,
     beforeSendTransaction: scrubSentryTransaction,
-    enableLogs: true,
     beforeSendLog: scrubSentryLog,
   });
 

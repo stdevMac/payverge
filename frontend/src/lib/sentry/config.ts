@@ -501,3 +501,23 @@ function normalizeKey(key: string): string {
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
 }
+
+/**
+ * Sentry 11 replaced `sendDefaultPii` with per-category `dataCollection`, and
+ * every category defaults to collecting. Payverge sends no PII to Sentry, so
+ * each category is switched off explicitly (the equivalent of the old
+ * `sendDefaultPii: false`). The scrubbers above still run on every event.
+ */
+export const SENTRY_DATA_COLLECTION = {
+  userInfo: false,
+  cookies: false,
+  httpHeaders: false,
+  httpBodies: [],
+  urlQueryParams: false,
+  graphQL: { document: false, variables: false },
+  genAI: { inputs: false, outputs: false },
+  mcp: { inputs: false, outputs: false },
+  databaseQueryData: false,
+  queues: false,
+  stackFrameVariables: false,
+} satisfies NonNullable<import("@sentry/nextjs").BrowserOptions["dataCollection"]>;

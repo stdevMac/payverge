@@ -22,4 +22,5 @@ allow	@img/sharp-libvips-*	LGPL-3.0-or-later	libvips is an unmodified shared lib
 allow	@img/sharp-win32-*	Apache-2.0 AND LGPL-3.0-or-later	Same unmodified libvips, bundled as DLLs for Windows; only used on Windows dev machines.
 allow	@img/sharp-wasm32	Apache-2.0 AND LGPL-3.0-or-later AND MIT	Same unmodified libvips compiled to WebAssembly; only used where no native build exists.
 allow	caniuse-lite	CC-BY-4.0	Browser-support data read by browserslist at build time; CC-BY-4.0 attribution to Alexis Deveria in NOTICE.
+allow	sentry	FSL-1.1-Apache-2.0	Sentry CLI (package renamed from @sentry/cli in @sentry/nextjs 11), pulled in by @sentry/bundler-plugins for build-time source-map upload; not imported at runtime. FSL-1.1 permits this use, and each release turns Apache-2.0 two years after publication.
 allow	@sentry/cli*	FSL-1.1-MIT	Build-time source-map upload CLI pulled in by @sentry/nextjs; not imported at runtime. FSL-1.1 permits this use, and each release turns MIT two years after publication.
