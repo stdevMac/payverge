@@ -6,6 +6,13 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.4](https://github.com/stdevMac/payverge/compare/v1.0.3...v1.0.4) (2026-11-24)
+
+
+### Fixes
+
+* **deps:** Node 26.13.1, zustand 5, pdfjs-dist 6, fontkit 3 and the late-November minor/patch rollup ([#91](https://github.com/stdevMac/payverge/issues/91)) ([fe68412](https://github.com/stdevMac/payverge/commit/fe6841241519c49ae5c7b7a64f21204fb0e22398))
+
 ## [1.0.3](https://github.com/stdevMac/payverge/compare/v1.0.2...v1.0.3) (2026-11-24)
 
 
