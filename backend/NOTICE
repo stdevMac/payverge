@@ -64,6 +64,9 @@ reproduced verbatim in LICENSES/go-subpackages.txt.
   github.com/aws/smithy-go/internal/sync/singleflight
   Copyright (c) 2009 The Go Authors. All rights reserved. BSD-3-Clause.
 
+  github.com/aws/smithy-go/transport/http/protocol/internal/json/internal/stdlib
+  Copyright (c) 2009 The Go Authors. All rights reserved. BSD-3-Clause.
+
   github.com/klauspost/compress/internal/snapref
   Copyright (c) 2011 The Snappy-Go Authors. All rights reserved. BSD-3-Clause.
 

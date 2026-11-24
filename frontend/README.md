@@ -14,7 +14,7 @@ The API lives in [`../backend`](../backend). The product overview is
 
 Node.js 26 and npm.
 
-The repository, CI, and release builds use Node `26.10.0`, recorded in the
+The repository, CI, and release builds use Node `26.13.0`, recorded in the
 repo root [`.nvmrc`](../.nvmrc). This package sets
 `"packageManager": "npm@11.19.1"` in `package.json`. npm is the only supported
 package manager (no yarn, pnpm, or bun). Dependencies are locked in

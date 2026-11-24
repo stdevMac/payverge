@@ -30,7 +30,7 @@ The codebase lives in a monorepo with three main workspaces:
 
 | Workspace | Technology | Purpose |
 |-----------|-----------|---------|
-| `backend/` | Go 1.26 + Gin (Go 1.27.3 toolchain) | REST API, business logic, blockchain integration |
+| `backend/` | Go 1.26 + Gin (Go 1.27.4 toolchain) | REST API, business logic, blockchain integration |
 | `frontend/` | Next.js 15 + React 19 | Web application (App Router) |
 | `docs/` | Plain Markdown (no build step) | Self-hosting, AI, architecture, ADRs, runbooks, codemaps |
 | `deploy/` | Docker Compose + Caddy + shell | Self-hosting stack and `install.sh` |
@@ -41,7 +41,7 @@ The codebase lives in a monorepo with three main workspaces:
 ## 2. Technology Stack
 
 ### Backend
-- **Language**: Go 1.26 (`go 1.26.0` in backend/go.mod); repository and release toolchain pinned to Go 1.27.3
+- **Language**: Go 1.26 (`go 1.26.0` in backend/go.mod); repository and release toolchain pinned to Go 1.27.4
 - **Framework**: Gin web framework
 - **ORM**: GORM with PostgreSQL driver
 - **Migrations**: `golang-migrate/migrate/v4` (versioned SQL files in `backend/migrations/`)
@@ -72,7 +72,7 @@ The codebase lives in a monorepo with three main workspaces:
 - **Reverse Proxy**: Caddy (stock image; self-host config and edge test under `deploy/` and `scripts/ci/deploy-caddy-edge_test.sh`)
 - **Containerization**: Docker + Docker Compose
 - **CI/CD**: GitHub Actions (`.github/workflows/ci.yml`, `e2e.yml`, `acceptance.yml`, `codeql.yml`, `scorecard.yml`, `release.yml`)
-- **Node Version**: 26.10.0 for repository, CI, and release builds (package minimum remains >= 20.18.0)
+- **Node Version**: 26.13.0 for repository, CI, and release builds (package minimum remains >= 20.18.0)
 
 ---
 
@@ -181,7 +181,7 @@ allow-list. Community files (`CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`,
 | `promptfooconfig.yaml` | Referenced as `-c promptfooconfig.yaml` by those scripts |
 | `.env.example` | Canonical env template; compose reads the root `.env` |
 | `.gitignore` | — |
-| `.nvmrc` | Node version pin (26.10.0) picked up by nvm/CI |
+| `.nvmrc` | Node version pin (26.13.0) picked up by nvm/CI |
 | `summary.md` | Benchmark log written by the Backend Performance Gate |
 
 Two untracked-but-expected files also live at root, both tool-managed and

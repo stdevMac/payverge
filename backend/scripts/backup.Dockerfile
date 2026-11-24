@@ -11,7 +11,7 @@
 # proposes digest bumps; scripts/ci/workflowcontract keeps the two equal.
 #
 #   docker build -f backend/scripts/backup.Dockerfile backend/scripts
-FROM postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+FROM postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015
 
 RUN apk add --no-cache \
     bash \

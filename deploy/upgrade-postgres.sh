@@ -32,7 +32,7 @@ set -Eeuo pipefail
 # The release that wrote the db volume, and the one deploy/docker-compose.yml
 # now runs. Both pinned by digest.
 readonly OLD_IMAGE="postgres:15.19-alpine@sha256:f7d23353e1b15400d22ebe31189f4d314b87a4c129cc400c8c2d8d4ca127bf81"
-readonly NEW_IMAGE_DEFAULT="postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873"
+readonly NEW_IMAGE_DEFAULT="postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015"
 readonly READY_TIMEOUT=${PG_UPGRADE_READY_TIMEOUT:-120}
 
 say() { printf '%s\n' "$*"; }

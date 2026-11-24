@@ -6,7 +6,7 @@
 # 2026. That is accepted deliberately: it is the line with a clean Alpine base,
 # and it becomes LTS within weeks. .nvmrc (and so CI) uses the same 26.x, so
 # builds and tests run on what ships.
-FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS deps
+FROM node:26.13.0-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS deps
 
 # Install dependencies only when needed
 WORKDIR /app
@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm cache clean --force
 
 # Builder stage
-FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS builder
+FROM node:26.13.0-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS builder
 
 # Add build arguments
 ARG NODE_ENV=production
@@ -125,7 +125,7 @@ RUN --mount=type=secret,id=sentry_auth_token,required=false \
     npm run build
 
 # Production image
-FROM node:26.10.0-alpine@sha256:0b36e8c136b94cd4fcf02188228e76c31ad5872eef3fec8cbd2eee500cfd9e80 AS runner
+FROM node:26.13.0-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS runner
 
 # Drop npm/npx. They're build-only and bundle their own copy of picomatch
 # (HIGH CVE) that isn't reachable at runtime but still shows up in any

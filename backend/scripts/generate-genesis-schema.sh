@@ -37,7 +37,7 @@ POSTGRES_MAJOR=18
 # The PostgreSQL build deploy/docker-compose.yml runs, pinned by digest so the
 # baseline is dumped by a known server. scripts/ci/workflowcontract fails when
 # the two differ: bump this line with the deploy compose pin.
-GENESIS_POSTGRES_IMAGE="${GENESIS_POSTGRES_IMAGE:-postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873}"
+GENESIS_POSTGRES_IMAGE="${GENESIS_POSTGRES_IMAGE:-postgres:18.7-alpine@sha256:b6972e1115a4ff8eba5d7f7d19184926d1e16d7d1136ae1e1a7ebf286da0f015}"
 GENERATOR_PATH="backend/scripts/generate-genesis-schema.sh"
 
 # --- free port on 127.0.0.1 ---
