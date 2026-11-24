@@ -146,6 +146,7 @@ Current `allow` rows:
 - sharp-libvips (LGPL-3.0-or-later): loaded dynamically and unmodified.
 - caniuse-lite (CC-BY-4.0): attribution in `NOTICE`.
 - @sentry/cli (FSL-1.1-MIT): build-time only.
+- sentry (FSL-1.1-Apache-2.0): the renamed Sentry CLI, build-time only.
 
 Elections recorded in `NOTICE`:
 
