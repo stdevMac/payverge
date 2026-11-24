@@ -63,6 +63,9 @@ const ignoreDependencies = [
   "pino-pretty",
   // Pins the jsdom that jest-environment-jsdom resolves.
   "jsdom",
+  // fontkit's own dependency; jest.config.js maps its "#binary-trie" import
+  // to a file inside it.
+  "unicode-properties",
 ];
 
 const productionIgnoreDependencies = [
