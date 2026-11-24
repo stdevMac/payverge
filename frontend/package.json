@@ -63,7 +63,7 @@
     "lodash": "^4.17.23",
     "lucide-react": "^1.77.0",
     "mp4-muxer": "5.2.2",
-    "next": "15.5.29",
+    "next": "16.4.6",
     "pdfjs-dist": "^6.5.438",
     "pino-pretty": "^13.2.0",
     "qrcode": "^1.5.4",
