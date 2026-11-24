@@ -6,6 +6,15 @@ and versioning rules are described in
 [docs/governance/RELEASING.md](governance/RELEASING.md), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.3](https://github.com/stdevMac/payverge/compare/v1.0.2...v1.0.3) (2026-11-24)
+
+
+### Fixes
+
+* **deps:** clear the security audit failing CI since 30 Oct ([#70](https://github.com/stdevMac/payverge/issues/70)) ([1e940bd](https://github.com/stdevMac/payverge/commit/1e940bda6e688c05809a01fa2ee98c255fd4075f))
+* **deps:** Go 1.27.4, Postgres 18.7, Node 26.13 and the November minor/patch rollup ([#81](https://github.com/stdevMac/payverge/issues/81)) ([0d4fe8c](https://github.com/stdevMac/payverge/commit/0d4fe8c05572e1cba417638c2abdf868ddb8472b))
+* **deps:** Sentry 11, framer-motion 14 and TypeScript 6.0 ([#82](https://github.com/stdevMac/payverge/issues/82)) ([68bd180](https://github.com/stdevMac/payverge/commit/68bd1808ce7a3a26b4a206164c17de65e04450f2))
+
 ## [1.0.2](https://github.com/stdevMac/payverge/compare/v1.0.1...v1.0.2) (2026-10-11)
 
 
